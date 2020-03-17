@@ -16,7 +16,7 @@ import PasswordReset from './auth/PasswordReset';
 
 import * as routes from './routes';
 
-const RenderRoutes = props => (
+const RenderRoutes = () => (
     <Switch>
         <AuthenticatedRoute exact path={constants.URL.PROFILE} component={Profile} />
 
@@ -33,23 +33,23 @@ const RenderRoutes = props => (
         <UnauthenticatedRoute
             path={constants.URL.SIGN_IN}
             component={SignIn}
-            redirect={`${constants.URL.OVERVIEW}/${props.auth.uid}/${props.maxGameWeek}`}
+            redirect={`${constants.URL.OVERVIEW}`}
         />
         <UnauthenticatedRoute
             path={constants.URL.SIGN_UP}
             component={SignUp}
-            redirect={`${constants.URL.OVERVIEW}/${props.auth.uid}/${props.maxGameWeek}`}
+            redirect={`${constants.URL.OVERVIEW}`}
         />
         <UnauthenticatedRoute
             path={constants.URL.RESET_PASSWORD}
             component={PasswordReset}
-            redirect={`${constants.URL.OVERVIEW}/${props.auth.uid}/${props.maxGameWeek}`}
+            redirect={`${constants.URL.OVERVIEW}`}
         />
         <UnauthenticatedRoute
             exact
             path="/"
             component={SignIn}
-            redirect={`${constants.URL.OVERVIEW}/${props.auth.uid}/${props.maxGameWeek}`}
+            redirect={`${constants.URL.OVERVIEW}`}
         />
         <UnauthenticatedEmailRoute
             path={constants.URL.VERIFY_EMAIL}
@@ -73,16 +73,14 @@ const RenderRoutes = props => (
 RenderRoutes.defaultProps = {
     auth: {
         isLoaded: false
-    },
-    maxGameWeek: null
+    }
 };
 
 RenderRoutes.propTypes = {
     auth: PropTypes.shape({
         isLoaded: PropTypes.bool,
         uid: PropTypes.string
-    }),
-    maxGameWeek: PropTypes.number
+    })
 };
 
 export default RenderRoutes;

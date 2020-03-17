@@ -6,8 +6,7 @@ import { noop } from 'lodash';
 import defaultStyles from './ManageUsers.module.scss';
 import {
     fetchUsersWithExtraRolesRequest, addUserRoleRequest, removeUserRoleRequest,
-    clearDatabaseRequest, rollOverToNextYearRequest,
-    deleteAllOldUsersRequest, closeSuccessMessage, closeAdminError
+    closeSuccessMessage, closeAdminError
 } from '../actions';
 import Grid from '../../common/grid/Grid';
 import StyledButton from '../../common/StyledButton/StyledButton';
@@ -190,23 +189,6 @@ const ManageUsers = props => {
                     submit={removeRole}
                     text={`Are you sure you want to remove ${role === 'ALL' ? 'all roles ' : role} from ${email}`}
                 />
-                <div className={props.styles.clearDatabaseWrapper}>
-                    <StyledButton
-                        onClick={props.clearDatabaseRequest}
-                        color="secondary"
-                        text="Clear DB"
-                    />
-                    <StyledButton
-                        onClick={props.rollOverToNextYearRequest}
-                        color="secondary"
-                        text="Roll Over to Next Year"
-                    />
-                    <StyledButton
-                        onClick={props.deleteAllOldUsersRequest}
-                        color="secondary"
-                        text="Delete all old users"
-                    />
-                </div>
             </div>
             <ErrorModal
                 closeModal={props.closeAdminError}
@@ -242,17 +224,14 @@ ManageUsers.defaultProps = {
 ManageUsers.propTypes = {
     allRoles: PropTypes.arrayOf(PropTypes.string),
     addUserRoleRequest: PropTypes.func.isRequired,
-    clearDatabaseRequest: PropTypes.func.isRequired,
     closeAdminError: PropTypes.func.isRequired,
     closeSuccessMessage: PropTypes.func.isRequired,
-    deleteAllOldUsersRequest: PropTypes.func.isRequired,
     errorMessage: PropTypes.string,
     errorCode: PropTypes.string,
     errorHeader: PropTypes.string,
     fetchingUsersWithExtraRoles: PropTypes.bool,
     fetchUsersWithExtraRolesRequest: PropTypes.func.isRequired,
     removeUserRoleRequest: PropTypes.func.isRequired,
-    rollOverToNextYearRequest: PropTypes.func.isRequired,
     successMessage: PropTypes.string,
     styles: PropTypes.objectOf(PropTypes.string),
     usersWithExtraRoles: PropTypes.arrayOf(PropTypes.shape({
@@ -266,12 +245,9 @@ ManageUsers.propTypes = {
 const mapDispatchToProps = {
     addUserRoleRequest,
     closeAdminError,
-    clearDatabaseRequest,
     closeSuccessMessage,
-    deleteAllOldUsersRequest,
     fetchUsersWithExtraRolesRequest,
-    removeUserRoleRequest,
-    rollOverToNextYearRequest
+    removeUserRoleRequest
 };
 
 const mapStateToProps = state => ({

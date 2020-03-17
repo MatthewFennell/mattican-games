@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import defaultStyles from './Overview.module.scss';
-import * as selectors from './selectors';
 
 const Overview = props => (
     <div className={props.styles.overviewWrapper}>
@@ -21,7 +20,7 @@ Overview.propTypes = {
 const mapDispatchToProps = {
 };
 
-const mapStateToProps = (state, props) => ({
+const mapStateToProps = () => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Overview);
