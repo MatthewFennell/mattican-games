@@ -1,0 +1,28 @@
+@import "../Styles.scss";
+
+.modalWrapper:last-child {
+  background-color: transparent !important;
+  max-height: 100% !important;
+}
+
+.modalContent{
+  margin-top: 150px;
+}
+
+.modalHeader {
+  text-align: center;
+  color: $color-green;
+  font-weight: $font-weight-normal;
+  :first-child {
+    width: 100%;
+  }  
+  :nth-child(2) {
+    outline: 0px;
+  }
+}
+
+.modalWrapper {
+  > div {
+    max-height: 100%;
+  }
+}

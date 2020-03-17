@@ -1,0 +1,35 @@
+@import "../Styles.scss";
+
+.featureRequestWrapper {
+    // padding: $spacing-medium;
+    background-color: $color-white;
+
+    .author {
+        font-weight: bold;
+        margin-left: $spacing-small;
+        color: $color-green;
+    }
+
+    .description{
+        margin-left: $spacing-small;
+        margin-bottom: $spacing-small;
+        font-weight: bold;
+        color: $color-green;
+    }
+
+    .comments {
+        margin-top: $spacing-medium;
+        font-size: $font-size-large;
+    }
+
+    .commentsWrapper{
+        height: 300px;
+        overflow-y: scroll;
+        padding: $spacing-small;
+        background-color: wheat;
+    }
+}
+
+.shiftRight{
+    margin-left: $spacing-medium;
+}

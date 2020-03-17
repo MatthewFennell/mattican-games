@@ -1,0 +1,20 @@
+@import "../../common/Styles.scss";
+
+.updateWrapper{
+  flex-grow: 1;
+  margin-top: $spacing-large;
+  @include light-box-shadow();
+  padding: $spacing-small $spacing-large $spacing-small $spacing-large;
+  margin: $spacing-medium;
+
+  .hidden{
+    visibility: hidden;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .updateWrapper {
+    margin: 0px;
+    margin-top: $spacing-medium;
+  }
+}

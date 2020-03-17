@@ -1,0 +1,16 @@
+@import "../../common/Styles.scss";
+
+.votingWrapper{
+  display: flex;
+  justify-content: center;
+  > div {
+    @include vertical-center-div();
+  }
+  .karma{
+    font-weight: bold;
+    font-size: $font-size-massive;
+  }
+  .upvoteIcon, .downvoteIcon {
+    cursor: pointer;
+  }
+}

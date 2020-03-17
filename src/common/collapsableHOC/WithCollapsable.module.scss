@@ -1,0 +1,53 @@
+@import "../../common/Styles.scss";
+
+.collapsableWrapper{
+  margin: $spacing-medium;
+  @include light-box-shadow();
+  background-color: $color-white;
+
+  .expandLess{
+    text-align: right;
+    margin-right: $spacing-small;
+    padding-top: $spacing-small;
+    
+
+    :first-child{
+      cursor: pointer;
+    }
+  }
+}
+
+.expandWrapper{
+  margin: $spacing-medium;
+  padding-top: $spacing-small;
+  padding-bottom: $spacing-small;
+  @include light-box-shadow();
+  background-color: $color-white;
+  display: flex;
+  text-align: center;
+
+  .iconWrapper{
+    width: 100%;
+    display: flex;
+    position: relative;
+  }
+
+  .collapsedTitle{
+    font-weight: bold;
+    margin-left: auto;
+    margin-right: auto;
+    cursor: pointer;
+    outline-width: 0px;
+    width: 75%;
+  }
+
+  .expandIcon{
+    position: absolute;
+    text-align: right;
+    padding-right: $spacing-small;
+    right: 0;
+    :first-child{
+      cursor: pointer;
+    }
+  }
+}

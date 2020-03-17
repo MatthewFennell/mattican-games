@@ -1,0 +1,21 @@
+@import "../Styles.scss";
+
+.modalWrapper{
+  text-align: center;
+  font-size: $font-size-huge;
+}
+
+.buttonsWrapper{
+  padding: $spacing-small;
+  justify-content: center;
+  display: flex;
+}
+
+
+
+
+
+.modalText{
+  text-align: center;
+  font-size: $font-size-medium;
+}

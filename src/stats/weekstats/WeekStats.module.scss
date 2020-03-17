@@ -1,0 +1,38 @@
+@import "../../common/Styles.scss";
+
+.weekStatsWrapper{
+  margin: $spacing-medium;
+  padding: $spacing-small;
+  @include light-box-shadow();
+
+  .weekStatsHeader{
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .stat{
+    color: $color-blue;
+    font-weight: bold;
+  }
+
+  .statTitle{
+    font-weight: bold;
+  }
+  
+  .statsWrapper{
+    display: flex;
+    flex-wrap: wrap;
+    > div {
+      flex-grow: 1;
+      text-align: center;
+      padding: $spacing-small
+    }
+  }
+}
+
+.spinnerWrapper{
+  margin: $spacing-medium;
+  padding: $spacing-small;
+  @include light-box-shadow();
+  @include vertical-center-div();
+}

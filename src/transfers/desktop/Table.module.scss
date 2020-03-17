@@ -1,0 +1,41 @@
+@import "../../common/Styles.scss";
+
+.dropdownsWrapper{
+    display: flex;
+
+    > * {
+        flex-grow: 1;
+        justify-content: center;
+        text-align: center;
+    }
+}
+
+.tableWrapper{
+    margin: $spacing-small;
+    padding: $spacing-medium;
+    background-color: $color-white;
+    @include light-box-shadow();
+    .filterWrapper{
+        display: flex;
+        margin-top: $spacing-medium;
+        > div {
+            flex-grow: 1;
+            width: 50%;
+        }
+
+        .sliderWrapper{
+            margin-left: 10%;
+            margin-right: 10%;
+        }
+}
+
+}
+
+.rightHandWrapper{
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+.gridWrapper{
+    padding: $spacing-medium;
+}

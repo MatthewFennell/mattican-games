@@ -1,0 +1,61 @@
+$font-size-enormous: 60px;
+$font-size-gigantic: 40px;
+$font-size-massive: 32px;
+$font-size-huge: 24px;
+$font-size-large: 20px;
+$font-size-medium: 16px;
+$font-size-small: 14px;
+$font-size-tiny: 12px;
+$font-size-miniscule: 10px;
+
+$color-white: white;
+$color-black: black;
+$color-green: green;
+$color-light-green: #00C851;
+$color-dark-green: #1b5e20;
+$color-nearly-dark-green: #2e7d32;
+$color-amber: #ffa000;
+$color-amber-dark: #774c02;
+$color-blue: #3f51b5;
+$color-dark-blue: #091a79;
+$color-light-blue: #78a5ee;
+$color-danger-red: #CC0000;
+$color-info: #0099CC;
+$color-warning: #FF8800;
+$color-elegant-dark: #212121;
+$color-gray: #bdbdbd ;
+$color-red: #f44336 ;
+$color-pink: #f50057 ;
+$color-light-gray: #fafafa ;
+$color-dark-gray: #757575 ;
+$color-very-very-light-blue: #eff4ff;
+$color-hover: rgba(0,0,0,0.4);
+$color-separator: rgba(0,0,0,0.1);
+$color-trophy: darkgoldenrod;
+
+$profile-hover: #686585;
+$profile-sidebar-text: #00C851;
+
+$spacing-gigantic: 100px;
+$spacing-massive: 70px;
+$spacing-huge: 50px;
+$spacing-large: 40px;
+$spacing-medium: 30px;
+$spacing-average: 20px;
+$spacing-small: 10px;
+$spacing-tiny: 5px;
+
+$normal-transition: 0.5s;
+
+$font-family: "Courier New", Courier, monospace;
+$font-weight-normal: 400;
+
+@mixin vertical-center-div() {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin light-box-shadow() {
+  box-shadow: 0px 0px 11px 1px rgba(0,0,0,0.3);
+}

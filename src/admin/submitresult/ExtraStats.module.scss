@@ -1,0 +1,50 @@
+@import "../../common//Styles.scss";
+
+.extraStatsWrapper{
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: $spacing-medium;
+    padding-top: $spacing-medium;
+    padding-bottom: $spacing-medium;
+    @include light-box-shadow();
+    justify-content: center;
+    background-color: $color-white;
+
+    .extraStatsTitle {
+        text-align: center;
+        color: $color-blue;
+        font-size: $font-size-medium;
+    }
+
+    .dropdownWrapper{
+        display: flex;
+        flex-wrap: wrap;
+
+        > * {
+            flex-grow: 1;
+            text-align: center;
+          }
+    }
+
+    .submitExtraStatsButton{
+        text-align: center;
+        margin-top: $spacing-medium;        
+    }
+}
+
+.hidden{
+    visibility: hidden;
+    text-align: center;
+    justify-content: center;
+}
+
+.central{
+    text-align: center;
+}
+
+@media only screen and (max-width: 600px) {
+    .extraStatsWrapper {
+      width: 100%;
+    }
+  }

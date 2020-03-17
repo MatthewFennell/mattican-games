@@ -1,0 +1,73 @@
+@import "../../common//Styles.scss";
+
+.submitResultWrapper{
+  text-align: center;
+  margin: $spacing-huge;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: $spacing-medium;
+  padding-bottom: $spacing-medium;
+  @include light-box-shadow();
+  justify-content: center;
+  background-color: $color-white;
+  
+  .goalsForWrapper{
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    > * {
+      margin-top: $spacing-small;
+      margin-right: $spacing-small;
+      margin-left: $spacing-small;
+    }
+  }
+
+  .goalScorersWrapper, .assistsWrapper, .cleanSheetDropdowns {
+    justify-content: center;
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    flex-wrap: wrap;
+  }
+
+  .assistsHeader{
+    margin-top: $spacing-medium;
+  }
+
+  .cleanSheetWrapper{
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: $spacing-small;
+
+    > div {
+      justify-content: center;
+    }
+  }
+
+  .submitButtonWrapper{
+    margin-top: $spacing-medium;
+    text-align: center;
+  }
+  
+  .hidden{
+    visibility: hidden;
+  }
+
+  .matchAwardsWrapper{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .submitResultWrapper {
+    width: 100%;
+    margin-top: 0px;
+  }
+}

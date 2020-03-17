@@ -1,0 +1,26 @@
+@import "../../common//Styles.scss";
+
+.togglePagesWrapper {
+    @include light-box-shadow();
+    background-color: $color-white;
+    margin: $spacing-medium;
+    padding: $spacing-medium;
+}
+
+.headerMessage {
+    font-size: $font-size-large;
+    color: $color-green;
+    text-align: center;
+    font-weight: bold;
+}
+
+.routesWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.optionWrapper{
+    text-align: center;
+    padding: $spacing-medium;
+}

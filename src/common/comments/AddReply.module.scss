@@ -1,0 +1,27 @@
+@import "../Styles.scss";
+
+.replyingWrapper{
+    margin-left: $spacing-small;
+    margin-right: $spacing-small;
+    width: 100%;
+
+    .replyOptions{
+        display: flex;
+        justify-content: flex-end;
+        font-size: $font-size-tiny;
+        > div {
+            color: $color-gray;
+            margin-top: $spacing-tiny;
+            margin-left: $spacing-small;
+            cursor: pointer;
+        }
+
+        .cancelReply:hover{
+            color: $color-red;            
+        }
+
+        .submitReply:hover{
+            color: $color-blue;
+        }
+    }
+}

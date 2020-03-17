@@ -1,0 +1,36 @@
+@import "../../common/Styles.scss";
+
+.deleteTeamWrapper{
+  text-align: center;
+  margin: $spacing-huge;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: $spacing-medium;
+  padding-bottom: $spacing-medium;
+  background-color: $color-white;
+  
+  @include light-box-shadow();
+  .deleteTeamHeader{
+    font-size: $font-size-gigantic;
+    color: $color-dark-gray;    
+  }
+  .deleteTeamForm{
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+  }
+  .deleteTeamDropdowns{
+    display: flex;
+    justify-content: center;
+  }
+
+  .deleteTeamButton{
+    margin-top: $spacing-small;
+  }
+
+  .hidden{
+    visibility: hidden;
+  }
+}
+

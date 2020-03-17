@@ -1,0 +1,11 @@
+@import "../../common/Styles.scss";
+
+.leagueTableWrapper{
+  .sliderWrapper{
+    padding: $spacing-medium;
+    text-align: center;
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

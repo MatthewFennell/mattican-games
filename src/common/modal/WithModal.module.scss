@@ -1,0 +1,49 @@
+@import "../Styles.scss";
+
+.modalContextWrapper {
+    padding-right: $spacing-large;
+    padding-left: $spacing-large;
+    padding-top: $spacing-medium;
+    padding-bottom: $spacing-medium;
+}
+
+@media only screen and (max-width: 600px) {
+    .modalContextWrapper {
+        padding-right: $spacing-medium;
+        padding-left: $spacing-medium;
+        padding-top: $spacing-small;
+        padding-bottom: $spacing-small;
+    }
+}
+
+.closeModalIcon {
+    text-align: right;
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin-right: $spacing-tiny;
+    margin-top: $spacing-tiny;
+    cursor: pointer;
+
+    :hover {
+        color: $color-blue;
+    }
+}
+
+.headerWrapper {
+    text-align: center;
+    color: $color-blue;
+    padding: $spacing-small;
+    padding-top: 0px;
+
+    margin-bottom: $spacing-small;
+    margin-left: $spacing-tiny;
+    margin-right: $spacing-tiny;
+
+    border-bottom: 1px solid $color-separator;
+    font-size: $font-size-large;
+}
+
+.isSuccess {
+    color: $color-green;
+}

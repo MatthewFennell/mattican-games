@@ -1,0 +1,51 @@
+@import "../common/Styles.scss";
+
+.profileWrapper{  
+  padding-top: $spacing-medium;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+
+  .profileHeader{
+    font-size: $font-size-huge;
+    color: $color-blue;
+    display: inline-block;
+  }
+
+  .modalWrapper{
+    text-align: center;
+    color: $color-danger-red;
+    font-weight: $font-weight-normal;
+  }
+
+  .bodyWrapper{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+  }
+  .deleteButtonWrapper{
+    padding: $spacing-small;
+  }
+}
+
+.enterEmailMessage{
+  margin-top: $spacing-small;
+  color: $color-red;
+  text-align: center;
+}
+
+.emailTextWrapper {
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.submitDeleteAccountWrapper {
+  text-align: center;
+}
+
+@media only screen and (max-width: 600px) {
+  .profileWrapper{
+    width: 100%;
+  }
+}

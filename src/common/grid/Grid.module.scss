@@ -1,0 +1,33 @@
+@import "../Styles.scss";
+
+.gridHeader{
+  display: flex;
+  font-size: $font-size-huge !important;
+  margin-top: $spacing-small !important;
+  margin-bottom: $spacing-small !important;
+
+  .backButton{
+    margin-left: $spacing-small;
+    cursor: pointer;
+  }
+
+  .gridHeaderText{
+    margin-left: $spacing-medium;
+    width: 100%;
+    color: $color-blue;
+  }
+}
+
+
+.active{
+  background-color: $color-gray;
+  > td {
+    font-weight: bold;
+  }
+}
+
+.tableWrap{
+  > div { 
+    margin: 0px !important;
+  }
+}

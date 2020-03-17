@@ -1,0 +1,9 @@
+@import "../../common/modal/StyledModal.module.scss";
+@import "../../common/Styles.scss";
+
+.modalContent{
+  margin-top: $spacing-massive;
+  > div {
+    padding: 0px !important;
+  }
+}

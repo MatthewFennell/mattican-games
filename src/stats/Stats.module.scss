@@ -1,0 +1,47 @@
+@import "../common/Styles.scss";
+
+.statsWrapper{
+  .statsHeader{
+    margin: $spacing-medium;
+    padding: $spacing-small;
+    @include light-box-shadow();
+    display: flex;
+
+    .dropdownWrapper{
+      justify-content: center;
+      width: 100%;
+      text-align: center;
+      display: flex;
+    }
+
+    .editFiltersWrapper{
+      display: flex;
+      @include vertical-center-div();
+      cursor: pointer;
+
+      .editFilter{
+        margin-left: auto;
+      }
+    }
+    .editFiltersWrapper:focus{
+      outline: 0px;
+    }
+    .editFiltersWrapper:hover{
+      // font-weight: bold;
+      :nth-child(2) {
+        color: $color-dark-blue;
+      }
+    }
+  }
+}
+
+.statsMessage {
+  color: $color-blue;
+  @include vertical-center-div();
+}
+
+@media only screen and (max-width: 600px) {
+  .statsHeader {
+      margin: 0px !important;
+  }  
+}

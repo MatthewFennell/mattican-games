@@ -1,0 +1,96 @@
+@import "../common/Styles.scss";
+
+.overviewWrapper {
+  margin-left: 10%;
+  margin-right: 10%;
+
+  .pointsWrapper {
+    padding-bottom: $spacing-medium;
+    background-color: $color-white;
+    text-align: center;
+    color: $color-white;
+    padding-top: $spacing-medium;
+    margin-top: $spacing-medium;
+    @include light-box-shadow();
+
+    .totalPointsWrapper {
+      justify-content: center;
+
+      .totalPointsText{
+        @include vertical-center-div();
+        font-size: $font-size-small;
+        color: $color-gray;
+      }
+      .totalPointsValue {
+        font-size: $font-size-gigantic;
+        color: $color-blue;
+      }
+    }    
+  }
+
+  .gameweekPointsWrapper {
+    margin-top: $spacing-huge;
+    padding: $spacing-average;
+    justify-content: center;
+    @include light-box-shadow();
+    background-color: $color-white;
+    text-align: center;
+
+    .gameWeekText{
+      font-size: $font-size-large;
+      color: $color-gray;
+      display: flex;
+      justify-content: center;
+      .arrowBackWrapper{
+        margin-right: $spacing-medium;
+        cursor: pointer;
+      }
+      .arrowForwardWrapper{
+        margin-left: $spacing-medium;
+        cursor: pointer;
+      }
+    }
+
+    .gameweekStats {
+      margin-top: $spacing-small;
+      text-align: center;      
+      font-size: $font-size-small;      
+      display: flex;
+      color: $color-gray;
+      > div{
+        flex-grow: 1;
+      }
+      .averagePointsValue, .yourPointsValue, .highestPointsValue {
+        font-size: $font-size-gigantic;
+        color: $color-blue;
+      }
+    }
+  }
+
+  .userInfoWrapper {
+    margin-top: $spacing-huge;
+    margin-bottom: $spacing-huge;
+    padding: $spacing-average;
+    justify-content: center;
+    @include light-box-shadow();
+    background-color: $color-white;
+    text-align: center;
+    display: flex;
+    color: $color-gray;
+
+    .remainingTransfersWrapper{
+      margin-right: $spacing-small;
+      flex-grow: 1;
+    }
+
+    .remainingBudgetWrapper{
+      margin-left: $spacing-small;
+      flex-grow: 1;
+    }
+
+    .remainingTransfersValue, .remainingBudgetValue {
+      font-size: $font-size-massive;
+      color: $color-blue;
+    }
+  }
+}

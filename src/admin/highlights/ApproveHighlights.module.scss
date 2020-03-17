@@ -1,0 +1,142 @@
+@import "../../common/Styles.scss";
+
+.approveHighlightsWrapper{
+  color: $color-blue;
+  font-size: $font-size-large;
+  text-align: center;
+  font-weight: bold;
+  padding: $spacing-medium;
+  margin: $spacing-medium;
+  background-color: $color-white;
+  @include light-box-shadow();
+}
+
+.highlightsHeaderMessage{
+  text-align: center;
+  font-size: $font-size-gigantic;
+  color: $color-blue;
+  margin-bottom: $spacing-medium;
+}
+
+.approveHighlightsHeader, .rejectedHighlightsHeader {
+  display: flex;
+  flex-wrap: wrap;
+
+  .highlightInfoWrapper {
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    flex-wrap: wrap;
+
+    > div {
+      max-width: 50%;
+      min-width: 50%;
+    }
+  }
+}
+
+.highlightInfo{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media only screen and (max-width: 600px) {
+  .highlightInfo {
+    width: 100%;
+  }
+}
+
+.youTubeVid{
+  padding: $spacing-medium;
+  margin: $spacing-medium;
+  background-color: $color-white;
+  @include light-box-shadow();
+}
+
+.modalButtons{
+  text-align: center;
+}
+
+.noHighlights{
+  padding: $spacing-medium;
+  margin: $spacing-medium;
+  background-color: $color-white;
+  @include light-box-shadow();
+  text-align: center;
+  font-weight: bold;
+  color: $color-gray;
+  font-size: $font-size-large;
+}
+
+.loadingHighlights{
+  padding: $spacing-medium;
+  margin: $spacing-medium;
+  text-align: center;
+}
+
+.allVideos {
+  padding: $spacing-medium;
+  margin: $spacing-medium;
+  background-color: $color-white;
+  @include light-box-shadow();
+}
+
+.deleteIcon{
+    :hover{
+      color: $color-red;
+    }
+    > * {
+      cursor: pointer;
+    }
+}
+
+.dateFilters{
+  text-align: center;
+}
+
+.videoSearchFilter{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.gridWrapper{
+  @include light-box-shadow();
+}
+
+.allRejectedVideos{
+  padding: $spacing-medium;
+  margin: $spacing-medium;
+  background-color: $color-white;
+  @include light-box-shadow();
+}
+
+
+@media only screen and (max-width: 600px) {
+  .approveHighlightsWrapper {
+    margin: 0px;
+  }
+
+  .allVideos {
+    margin: 0px;
+    padding: 0px;
+    margin-bottom: $spacing-medium;
+  }
+
+  .highlightInfoWrapper {
+    > div {
+      margin-left: auto;
+      margin-right: auto;
+      max-width: 100% !important;
+      min-width: 60% !important;
+    }
+  }
+
+  .gridWrapper { 
+    margin-top: $spacing-medium;
+  }
+
+  .allRejectedVideos {
+    margin: 0px;
+    padding: 0px;
+  }
+}

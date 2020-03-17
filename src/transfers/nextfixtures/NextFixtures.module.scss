@@ -1,0 +1,43 @@
+@import "../../common/Styles.scss";
+
+.nextFixturesWrapper{
+    padding: $spacing-medium;
+    margin: $spacing-medium;
+    background-color: $color-white;
+    @include light-box-shadow();
+
+    .datesWrapper {
+        width: 70%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .headerMessage {
+        color: $color-green;
+        font-size: $font-size-huge;
+        text-align: center;
+    }
+
+    .dateHeader {
+        font-weight: bold;
+        font-size: $font-size-small;
+        text-align: center;
+        margin-top: $spacing-small;
+        margin-bottom: $spacing-tiny;
+        background-color: 	#F0F0F0
+    }
+}
+
+.loadingUpcomingMatches {
+    text-align: center;
+}
+
+@media only screen and (max-width: 600px) {
+    .nextFixturesWrapper {
+      left: 30%;
+
+      .datesWrapper {
+        width: 95%;
+      }
+    }
+}

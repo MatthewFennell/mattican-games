@@ -1,0 +1,88 @@
+@import "../../common/Styles.scss";
+
+.selectProfilePictureWrapper {
+    @include light-box-shadow();
+    margin: $spacing-medium;
+    padding: $spacing-small;
+
+    .selectAvatar{
+        font-size: $font-size-huge;
+        color: $color-dark-blue;
+    }
+
+    .uploadOwnIconMessage{
+        font-weight: bold;
+        color: $color-blue;
+        font-size: $font-size-large;
+    }
+
+    .potentialPicturesWrapper{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+
+        
+
+        .imageWrapper{
+            margin: $spacing-medium;
+
+            .activeAvatar{
+                font-weight: bold;
+                color: $color-blue;
+            }
+
+            .hidden {
+                visibility: hidden;
+            }
+
+            .profilePicture{
+                height: 200px;
+                width: 200px;
+                cursor: pointer;
+            }
+
+            .profilePicture:hover{
+                box-shadow: 0 4px 8px 0 $color-hover, 0 6px 20px 0 $color-hover;
+            }
+        }
+    }
+
+    .selectOwnPictureWrapper{
+        border-right: 1px solid $color-separator;
+        border-left: 1px solid $color-separator;
+
+        .ownPictureOptions{
+            display: flex;
+            flex-wrap: wrap;
+
+            > div {
+                flex-grow: 1;
+            }
+
+            .exampleImage{
+                height: 100px;
+                width: 100px;
+            }
+
+            .enterOwnUrl{
+                text-align: left;
+                color: $color-blue;
+                font-weight: bold;
+                width: 50%;
+                margin-left: $spacing-medium;;
+                margin-right: $spacing-medium;;
+            }
+
+            .infoText{
+                text-align: center;
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .selectProfilePictureWrapper {
+      margin: 0px;
+      margin-top: $spacing-medium;
+    }
+  }

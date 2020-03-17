@@ -1,0 +1,37 @@
+@import "../common/Styles.scss";
+
+.pitchWrapper{
+  right: 0px;
+  position: absolute;
+  height: 90%;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.currentTeamWrapper{
+  height: 90vh;
+  background-color: $color-white;  
+  margin-left: auto;;
+  margin-right: auto;;
+  width: 70%;
+
+  .pitchBackground{
+    height: 100%;
+    padding: $spacing-average;
+    justify-content: center;
+    
+    text-align: center;
+    background-image: url("../common//images/CCAFC.png");
+    background-size: 100% 100%;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .currentTeamWrapper{
+    width: 130%;
+    position: absolute;
+    left: -15%;
+    overflow-x: hidden;
+  }
+}

@@ -1,0 +1,60 @@
+@import "../../common/Styles.scss";
+
+.extraRolesWrapper, .rolesToPermissionsWrapper{
+  padding: $spacing-large;
+}
+
+.manageUserGridHeaderWrapper{
+  display: flex;
+}
+
+.gridHeaderText{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  color: $color-gray;
+  text-align: center;
+}
+
+.addRoleButton{
+  margin-left: auto;
+  margin-right: $spacing-medium;
+  white-space: nowrap;
+}
+
+.modalWrapper{
+  > div {
+    text-align: center;
+  }
+
+  .modalButtons{
+    display: flex;
+    margin-top: $spacing-medium;
+    > * {
+      flex-grow: 1;
+    }
+  }
+}
+
+.clearDatabaseWrapper{
+  margin: $spacing-medium;
+  padding: $spacing-medium;
+  display: flex;
+  
+  @include light-box-shadow();
+}
+
+@media only screen and (max-width: 600px) {
+  .extraRolesWrapper {
+    padding: 0px;
+  }
+
+  .manageUserGridHeaderWrapper {
+    margin-top: $spacing-medium;
+  }
+
+  .rolesToPermissionsWrapper {
+    padding: 0px;
+    margin-top: $spacing-medium;
+  }
+}

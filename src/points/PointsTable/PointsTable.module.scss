@@ -1,0 +1,10 @@
+@import "../../common/Styles.scss";
+
+.playerInfoWrapper{
+  display: flex;
+  text-align: center;
+  margin: $spacing-small;
+  >div{
+    flex-grow: 1;
+  }
+}

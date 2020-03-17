@@ -1,0 +1,26 @@
+@import "../common/Styles.scss";
+
+.editFiltersWrapper {
+  margin-top: $spacing-medium;
+  text-align: center;
+}
+
+.fixturesWrapper, .gridWrapper {
+    margin: $spacing-medium;
+    text-align: center;
+    @include light-box-shadow();
+    background-color: $color-white;
+}
+
+@media only screen and (max-width: 600px) {
+    .fixturesWrapper {
+      padding: 0px;
+      margin: 0px;
+      margin-top: $spacing-medium;
+    }
+    .gridWrapper {
+      padding: 0px;
+      margin: 0px;
+      margin-top: $spacing-medium;
+    }
+}

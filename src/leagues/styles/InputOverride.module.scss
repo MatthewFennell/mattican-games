@@ -1,0 +1,10 @@
+@import "../../common/Styles.scss";
+
+.styledInput{
+  padding: $spacing-small;
+  color: $color-elegant-dark;  
+}
+
+.styledInput:focus{
+  color: $color-elegant-dark;
+}

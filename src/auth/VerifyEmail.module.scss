@@ -1,0 +1,23 @@
+@import "../common//Styles.scss";
+
+.verifyEmailMessage{
+  @include light-box-shadow();
+  padding: $spacing-huge;
+  color: $color-light-blue;
+  font-size: $font-size-huge;
+  font-weight: $font-weight-normal;
+  text-align: center;
+  margin-top: 5%;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+
+  .resendEmailButtonWrapper{
+    margin-top: $spacing-medium;
+  }
+
+  .spinnerWrapper{
+    min-height: $spacing-massive;
+    max-height: $spacing-massive;
+  }
+}

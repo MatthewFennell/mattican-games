@@ -1,0 +1,6 @@
+@import "../common/Styles.scss";
+
+.graphWrapper, .leagueTableWrapper {
+    margin: $spacing-medium;
+    @include light-box-shadow();
+}

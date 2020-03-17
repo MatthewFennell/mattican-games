@@ -1,0 +1,13 @@
+@import "../../common/Styles.scss";
+
+.styledInput{
+  color: $color-black;  
+}
+
+.styledInput:focus{
+  color: $color-black;;
+}
+
+.centerText{
+  text-align: center;
+}

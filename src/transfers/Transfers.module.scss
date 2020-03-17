@@ -1,0 +1,18 @@
+@import "../common/Styles.scss";
+
+.activeSort{
+    font-weight: bold;
+    color: $color-blue;
+}
+
+.headerCell {
+    cursor: pointer;
+}
+
+.headerCell:hover {
+    color: $color-dark-blue;
+}
+
+.headerCell:focus {
+    outline-width: 0px;
+}

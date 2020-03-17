@@ -1,0 +1,46 @@
+@import "../Styles.scss";
+
+.metaData {
+    display: flex;;
+    > div {
+        @include vertical-center-div();
+    }
+    .author{
+        margin-left: $spacing-small;
+        color: $color-blue;
+        font-weight: bold;
+    }
+    .deleteComment{
+        margin-left: auto;
+        margin-right: $spacing-small;
+        cursor: pointer;
+    }
+
+    .deleteComment:hover{
+        :first-child {
+            color: $color-red;
+        }
+    }
+}
+
+.date{
+    color: $color-gray;
+    font-size: $font-size-tiny;
+    margin-left: $spacing-small;
+}
+
+.commentMessage{
+    margin-left: $spacing-small;
+}
+
+.reply{
+    margin-left: $spacing-small;
+    font-size: $font-size-tiny;
+    color: $color-gray;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.reply:hover {
+    color:$color-red;
+}

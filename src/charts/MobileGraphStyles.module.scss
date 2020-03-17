@@ -1,0 +1,10 @@
+@import "../common/Styles.scss";
+@import "../common/collapsableHOC/WithCollapsable.module.scss";
+
+@media only screen and (max-width: 600px) {
+    .collapsableWrapper, .expandWrapper {
+      margin-left: 0px;
+      margin-right: 0px;
+      margin-bottom: 0px;
+    }
+}

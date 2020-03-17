@@ -1,0 +1,32 @@
+@import "../Styles.scss";
+
+.comments {
+    margin-top: $spacing-medium;
+    font-size: $font-size-large;
+}
+
+.shiftRight{
+    margin-left: $spacing-medium;
+}
+
+.addTopLevelComment{
+    margin-left: $spacing-small;
+}
+
+.addNewCommentWrapper{
+    display: flex;
+
+    > * {
+        @include vertical-center-div();
+    }
+
+}
+
+.submitNewComment{
+    font-size: $font-size-small;
+    justify-content: flex-end;
+}
+
+.initialComment{
+    width: 100%;
+}

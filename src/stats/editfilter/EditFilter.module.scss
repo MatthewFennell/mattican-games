@@ -1,0 +1,26 @@
+@import "../../common/Styles.scss";
+
+.confirmButton{
+    text-align: center;
+}
+
+.togglesWrapper{
+    display: flex;
+    flex-wrap: wrap;
+    > div {
+      flex-grow: 1;
+      justify-content: center;
+    }
+    .columnName{
+      text-align: center;
+    }
+  }
+
+  @media only screen and (max-width: 600px) {
+    .togglesWrapper {
+      > div {
+        text-align: center;
+      }
+    } 
+  }
+

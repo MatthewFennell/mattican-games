@@ -1,0 +1,16 @@
+export { default as collingwood } from './collingwood.png';
+export { default as butler } from './butler.png';
+export { default as marys } from './marys.png';
+export { default as university } from './university.png';
+export { default as cuths } from './cuths.png';
+export { default as hatfield } from './hatfield.png';
+export { default as grey } from './grey.png';
+export { default as hildbede } from './hildbede.png';
+export { default as trevs } from './trevs.png';
+export { default as johnsnow } from './johnsnow.png';
+export { default as johns } from './johns.png';
+export { default as chads } from './chads.png';
+export { default as aidans } from './aidans.png';
+export { default as ustinov } from './ustinov.png';
+export { default as mildert } from './mildert.png';
+export { default as stephenson } from './stephenson.png';

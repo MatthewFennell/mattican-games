@@ -1,0 +1,31 @@
+@import "../Styles.scss";
+
+.playerWrapper{
+  display: inline-block;
+  cursor: pointer;  
+}
+
+.playerInfoWrapper{
+  color: $color-white;
+  font-size: 10px;
+  margin: 2px;
+  display: inline-block;
+
+  .nameText{
+    background-color: $color-dark-green;
+    padding-left: $spacing-small;
+    padding-right: $spacing-small;
+  }
+
+  .additionalInfo{
+    background-color: $color-nearly-dark-green;
+    padding-left: $spacing-tiny;
+    padding-right: $spacing-tiny;
+  }
+
+  .captain{
+    // background-color: $color-dark-green;
+    font-size: $font-size-small;
+    color: yellow;
+  }
+}

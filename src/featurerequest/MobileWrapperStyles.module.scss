@@ -1,0 +1,9 @@
+@import "../common/Styles.scss";
+@import "../common/collapsableHOC/WithCollapsable.module.scss";
+
+@media only screen and (max-width: 600px) {
+    .collapsableWrapper, .expandWrapper {
+      margin: 0px;
+      margin-bottom: $spacing-medium;
+    }
+}

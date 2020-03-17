@@ -1,0 +1,101 @@
+@import "../../common/Styles.scss";
+
+.playersWrapper{
+  width: 100vw;
+  .header{
+    display: flex;
+    background-color: $color-blue;
+    color: $color-white;
+    position: fixed;
+    width: 100%;
+    height: 60px; // MAGIC
+    z-index: 1;
+
+    > div { 
+      flex-grow: 1;
+    }
+
+    .backIcon{
+      padding: $spacing-small;
+      display: flex;
+      align-items: center;
+    }
+
+    .inputWrapper {
+      margin-left: auto;
+      margin-right: auto;
+      > div {
+        margin: 0px;        
+      }
+
+      display: flex;
+      align-items: center;
+
+      :first-child {
+        :first-child {
+          margin-bottom: 0px !important;
+          margin-top: 0px !important;
+          :first-child {
+            background-color: wheat !important;
+            :nth-child(2) {
+                padding: 10px !important;
+            }
+          }
+        
+        }
+      }
+    }
+
+    .editColumns {
+      padding: $spacing-small;
+      text-align: center;
+      @include vertical-center-div();
+    }
+  }
+
+  .playerRemoved{
+    margin-top: 60px;
+    padding: $spacing-small;
+    background-color: $color-gray;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 1;
+
+    .playerRemovedText, .remainingBudget{
+      text-align: center;
+    }
+
+    .playerInfo{
+      display: flex;
+      font-weight: bold;
+      > div { 
+        width: 33%;
+        text-align: center;
+      }
+    }
+  }
+}
+
+.bigMarginTop{
+  margin-top: 120px; // MAGIC * 2
+}
+
+.smallMarginTop {
+  margin-top: 60px;  // MAGIC
+}
+
+.priceWrapper{
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  > div {
+    margin-top: $spacing-average;
+    flex-grow: 1;
+    align-items: center;
+    justify-content: center;
+    padding-left: $spacing-average;
+    padding-right: $spacing-average;
+  }
+}

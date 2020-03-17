@@ -1,0 +1,54 @@
+@import "../../common/Styles.scss";
+
+.findPlayerDropdowns{
+  justify-content: center;
+  display: flex;
+  @include light-box-shadow();
+  padding: $spacing-medium;
+  margin: $spacing-medium;
+  background-color: $color-white;
+  flex-wrap: wrap;
+  > div { 
+    justify-content: center;
+    text-align: center;
+    flex-grow: 1;
+  }
+}
+
+.oldStatsWrapper {
+  justify-content: center;
+  display: flex;
+  @include light-box-shadow();
+  margin: $spacing-medium;
+  background-color: $color-white;
+  flex-wrap: wrap;
+
+  .buttonWrapper{
+    margin-top: $spacing-small;
+    margin-bottom: $spacing-small;
+  }
+}
+
+.divWrapper {
+  width: 25%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+@media only screen and (max-width: 600px) {
+  .findPlayerDropdowns {
+    padding: 0px;
+    margin: 0px;
+    margin-top: $spacing-medium;
+  }
+
+  .oldStatsWrapper {
+    margin: 0px;
+    margin-top: $spacing-medium;
+  }
+
+  .divWrapper {
+    width: 80%;
+  }
+}

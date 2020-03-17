@@ -1,0 +1,46 @@
+@import "../Styles.scss";
+
+.pitchBackground{
+    height: 100%;
+    padding: $spacing-average;
+    justify-content: center;
+    
+    text-align: center;
+    background-image: url("../../common/images/CCAFC.png");
+    background-size: 100% 100%;
+  }
+
+  .goalKeepers{
+    margin-top: $spacing-large;
+  }
+
+  .defenders, .midfielders, .attackers{
+    width: 75%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: $spacing-huge;
+    display: flex;
+    justify-content: center;
+    > div {
+      flex-grow: 1;
+      flex-basis: 0;
+    }
+  }
+
+  .loadingSpinner{
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    > div {
+      height: $spacing-massive !important;
+      width: $spacing-massive !important;
+    }
+  }
+
+  @media only screen and (max-width: 600px) {
+    .defenders, .midfielders, .attackers{
+      margin-top: $spacing-large;
+    }
+  }

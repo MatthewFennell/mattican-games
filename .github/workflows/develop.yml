@@ -1,0 +1,84 @@
+name: Build and Deploy
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [8.x]
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: install
+      run:
+        npm ci
+    - name: Load API Config
+      run: |
+          echo 'REACT_APP_API_KEY=${{ secrets.FIREBASE_API_KEY }}' >> .env.production
+          echo 'REACT_APP_AUTH_DOMAIN=${{ secrets.FIREBASE_AUTH_DOMAIN }}' >> .env.production
+          echo 'REACT_APP_DATABASE_URL=${{ secrets.FIREBASE_DATABASE_URL }}' >> .env.production
+          echo 'REACT_APP_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}' >> .env.production
+          echo 'REACT_APP_STORAGE_BUCKET=${{ secrets.FIREBASE_STORAGE_BUCKET }}' >> .env.production
+          echo 'REACT_APP_MESSAGING_SENDER_ID=${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}' >> .env.production
+          echo 'REACT_APP_APP_ID=${{ secrets.FIREBASE_APP_ID }}' >> .env.production
+          echo 'REACT_APP_MEASUREMENT_ID=${{ secrets.FIREBASE_MEASUREMENT_ID }}' >> .env.production
+
+    - name: Build
+      run: 
+        npm run build
+      env:
+        CI: true
+
+    - name: Testing
+      run:
+        npm test
+      env:
+        CI: true
+
+    - name: Archive Production Artifact
+      uses: actions/upload-artifact@master
+      with:
+        name: build
+        path: build
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [8.x]
+    steps:
+    - uses: actions/checkout@master
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    # - name: Deploy Firebase Functions
+    #   run: |
+    #     cd functions
+    #     npm ci
+    #     npx firebase use ccafc-fantasy-football-dev
+    #     npx firebase deploy --only functions
+    #   env:
+    #     FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+    - name: Download Artifact
+      uses: actions/download-artifact@master
+      with:
+        name: build
+    - name: Deploy Firebase Hosting
+      run: |
+        npm ci
+        npx firebase use mattican-games
+        npx firebase deploy --only hosting
+      env:
+        FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}

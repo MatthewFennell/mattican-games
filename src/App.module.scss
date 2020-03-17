@@ -1,0 +1,12 @@
+@import "./common//Styles.scss";
+
+.app{
+  background-color: $color-light-gray;
+  
+  .appContainer{
+    width: 100%;
+    padding: 0px;
+    margin: 0px;
+    max-width: 100%;
+  }
+}

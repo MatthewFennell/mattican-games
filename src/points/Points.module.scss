@@ -1,0 +1,47 @@
+@import "../common/Styles.scss";
+
+.pageWrapper{
+  right: 0px;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.pointsWrapper{
+  height: 100%;
+  margin-left: auto;;
+  margin-right: auto;;
+  width: 70%;  
+}
+
+@media only screen and (max-width: 600px) {
+  .pointsWrapper{
+    width: 130%;
+    position: absolute;
+    left: -15%;
+    overflow-x: hidden;
+  }
+}
+
+.gameWeekText{
+  margin: $spacing-average;
+  font-size: $font-size-large;
+  color: $color-gray;
+  display: flex;
+  justify-content: center;
+  .arrowBackWrapper{
+    margin-right: $spacing-medium;
+    cursor: pointer;
+  }
+  .arrowForwardWrapper{
+    margin-left: $spacing-medium;
+    cursor: pointer;
+  }
+}
+
+.noStats{
+  text-align: center;
+  font-weight: bold;
+}

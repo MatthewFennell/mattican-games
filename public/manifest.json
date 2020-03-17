@@ -1,0 +1,20 @@
+{
+  "short_name": "Cwood Footy",
+  "name": "Collingwood Fantasy Football",
+  "icons": [
+    {
+      "src": "cwood-colors-striped.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "cwood-colors-striped.png",
+      "type": "image/png",
+      "sizes": "192x192 512x512"
+    }
+  ],
+  "start_url": "./index.html",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
