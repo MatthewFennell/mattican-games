@@ -8,7 +8,6 @@ import { constants } from 'react-redux-firebase';
 import * as sagas from './saga';
 import * as consts from '../constants';
 import * as actions from './actions';
-import { fetchMaxGameWeekRequest } from '../overview/actions';
 
 // https://github.com/jfairbank/redux-saga-test-plan - Docs
 
@@ -107,7 +106,6 @@ describe('Auth saga', () => {
             }
         };
         return expectSaga(sagas.loggingIn, api, action)
-            .put(fetchMaxGameWeekRequest())
             .put(push(consts.URL.VERIFY_EMAIL))
             .put(actions.setPermissionsMappingsAndRoles(rolePermissions))
             .put(actions.addPermissions(adminPermissions))
