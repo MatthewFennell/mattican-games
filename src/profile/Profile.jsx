@@ -4,13 +4,11 @@ import PropTypes from 'prop-types';
 import firebase from 'firebase';
 import _ from 'lodash';
 import {
-    linkProfileToFacebook, linkProfileToGoogle, updateTeamNameRequest,
     closeAccountLinkError, updateDisplayNameRequest, closeDisplayNameError,
-    closeTeamNameError, deleteAccountRequest, closeDeleteAccountError,
+    deleteAccountRequest, closeDeleteAccountError,
     updateProfilePictureRequest
 } from './actions';
 import defaultStyles from './Profile.module.scss';
-import LinkAccounts from './linkaccounts/LinkAccounts';
 import SuccessModal from '../common/modal/SuccessModal';
 import Update from './update/Update';
 import StyledButton from '../common/StyledButton/StyledButton';
@@ -47,16 +45,10 @@ const Profile = props => {
         <div className={props.styles.profileWrapper}>
             <div className={props.styles.profileHeader}>
                 <div className={props.styles.fields}>
-                    <div>{props.profile.displayName || 'N/A'}</div>
-                    <div>{props.profile.teamName || 'N/A'}</div>
-                    <div>{props.profile.email || 'N/A'}</div>
+                    <div>{`Display Name: ${props.profile.displayName}`}</div>
                 </div>
             </div>
             <div className={props.styles.bodyWrapper}>
-                <LinkAccounts
-                    linkProfileToFacebook={props.linkProfileToFacebook}
-                    linkProfileToGoogle={props.linkProfileToGoogle}
-                />
                 <Update
                     loading={props.updatingDisplayName}
                     closeError={props.closeDisplayNameError}
@@ -65,14 +57,6 @@ const Profile = props => {
                     updateError={props.updateDisplayNameError}
                     updateErrorCode={props.updateDisplayNameErrorCode}
                     icon={textInputConstants.textInputIcons.user}
-                />
-                <Update
-                    loading={props.updatingTeamName}
-                    closeError={props.closeTeamNameError}
-                    property="Team Name"
-                    updateRequest={props.updateTeamNameRequest}
-                    updateError={props.updateTeamNameError}
-                    updateErrorCode={props.updateTeamNameErrorCode}
                 />
                 <SelectProfilePicture
                     currentPhotoUrl={props.profile.photoUrl}
@@ -157,10 +141,7 @@ Profile.defaultProps = {
     styles: defaultStyles,
     updatingDisplayName: false,
     updateDisplayNameError: '',
-    updateDisplayNameErrorCode: '',
-    updatingTeamName: false,
-    updateTeamNameError: '',
-    updateTeamNameErrorCode: ''
+    updateDisplayNameErrorCode: ''
 };
 
 Profile.propTypes = {
@@ -168,15 +149,12 @@ Profile.propTypes = {
     closeAccountLinkError: PropTypes.func.isRequired,
     closeDeleteAccountError: PropTypes.func.isRequired,
     closeDisplayNameError: PropTypes.func.isRequired,
-    closeTeamNameError: PropTypes.func.isRequired,
     deleteAccountError: PropTypes.string,
     deleteAccountErrorCode: PropTypes.string,
     deleteAccountRequest: PropTypes.func.isRequired,
     deletingAccount: PropTypes.bool,
     linkAccountErrorCode: PropTypes.string,
     linkAccountErrorMessage: PropTypes.string,
-    linkProfileToFacebook: PropTypes.func.isRequired,
-    linkProfileToGoogle: PropTypes.func.isRequired,
     profile: PropTypes.shape({
         displayName: PropTypes.string,
         email: PropTypes.string,
@@ -185,27 +163,19 @@ Profile.propTypes = {
     }),
     styles: PropTypes.objectOf(PropTypes.string),
     updateDisplayNameRequest: PropTypes.func.isRequired,
-    updateTeamNameRequest: PropTypes.func.isRequired,
     updatingDisplayName: PropTypes.bool,
     updateDisplayNameError: PropTypes.string,
     updateDisplayNameErrorCode: PropTypes.string,
-    updateProfilePictureRequest: PropTypes.func.isRequired,
-    updatingTeamName: PropTypes.bool,
-    updateTeamNameError: PropTypes.string,
-    updateTeamNameErrorCode: PropTypes.string
+    updateProfilePictureRequest: PropTypes.func.isRequired
 };
 
 const mapDispatchToProps = {
     closeAccountLinkError,
     closeDeleteAccountError,
     closeDisplayNameError,
-    closeTeamNameError,
     deleteAccountRequest,
-    linkProfileToFacebook,
-    linkProfileToGoogle,
     updateDisplayNameRequest,
-    updateProfilePictureRequest,
-    updateTeamNameRequest
+    updateProfilePictureRequest
 };
 
 const mapStateToProps = state => ({
@@ -217,15 +187,9 @@ const mapStateToProps = state => ({
     deletingAccount: state.profile.deletingAccount,
 
     profile: state.firebase.profile,
-    linkAccountErrorCode: state.profile.linkAccountErrorCode,
-    linkAccountErrorMessage: state.profile.linkAccountError,
     updatingDisplayName: state.profile.updatingDisplayName,
     updateDisplayNameError: state.profile.updateDisplayNameError,
-    updateDisplayNameErrorCode: state.profile.updateDisplayNameErrorCode,
-
-    updatingTeamName: state.profile.updatingTeamName,
-    updateTeamNameError: state.profile.updateTeamNameError,
-    updateTeamNameErrorCode: state.profile.updateTeamNameErrorCode
+    updateDisplayNameErrorCode: state.profile.updateDisplayNameErrorCode
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);

@@ -1,0 +1,102 @@
+@import "../common/Styles.scss";
+
+.lobbyHeader {
+    text-align: center;
+    font-weight: bold;
+    color: $color-blue;
+    font-size: $font-size-large;
+    margin-top: $spacing-small;
+}
+
+.currentPlayersMessage, .gameModeText, .hostWrapper {
+    text-align: center;
+    color: $color-green;
+    font-weight: bold;
+    margin-top: $spacing-small;
+}
+
+.hostValue {
+    text-align: center;
+    color: $color-dark-blue;
+}
+
+.playerName {
+    text-align: center;
+    color: $color-red;
+    display: flex;
+
+    .name {
+        width: 100%;
+    }
+
+    .status {
+        position: absolute;
+        margin-right: $spacing-small;
+        right: 0;
+        -webkit-animation: flickerAnimation 4s infinite;
+        -moz-animation: flickerAnimation 4s infinite;
+        -o-animation: flickerAnimation 4s infinite;
+         animation: flickerAnimation 4s infinite;
+    }
+
+    .ready {
+        color: $color-green;
+    }
+
+    .notReady {
+        color: $color-red;
+    }
+}
+
+@keyframes flickerAnimation {
+    0%   { opacity:1; }
+    50%  { opacity:0; }
+    100% { opacity:1; }
+  }
+  @-o-keyframes flickerAnimation{
+    0%   { opacity:1; }
+    50%  { opacity:0; }
+    100% { opacity:1; }
+  }
+  @-moz-keyframes flickerAnimation{
+    0%   { opacity:1; }
+    50%  { opacity:0; }
+    100% { opacity:1; }
+  }
+  @-webkit-keyframes flickerAnimation{
+    0%   { opacity:1; }
+    50%  { opacity:0; }
+    100% { opacity:1; }
+  }
+
+.testing {
+    $color: yellow;
+}
+
+.rolesMessage {
+    text-align: center;
+    margin-top: $spacing-small;
+    color: $color-green;
+    font-weight: bold;
+}
+
+.goodRole {
+    text-align: center;
+    color: $color-blue;
+}
+
+.badRole {
+    text-align: center;
+    color: $color-red;
+}
+
+.readyUp {
+    margin-top: $spacing-medium;
+    text-align: center;
+    color: $color-green;
+}
+
+.leaveGameWrapper {
+    margin-top: $spacing-large;
+    text-align: center;
+}

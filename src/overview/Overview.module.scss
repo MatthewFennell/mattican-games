@@ -1,47 +1,36 @@
 @import "../common/Styles.scss";
 
-.createGameWrapper {
+.overviewWrapper {
   margin-top: $spacing-medium;
   text-align: center;
 }
 
-.createGameModalWrapper {
-  :first-child {
-    :first-child {
-      width: 100%;
-    }
-  }
-}
-
-.goodGuyRoles, .badGuyRoles {
-  display: flex;
-  justify-content: space-evenly;
-}
-
-.roleWrapper {
-  text-align: center;
-}
-
-.avalonRolesMessage {
+.allGamesHeader {
+  font-size: $font-size-large;
+  font-weight: bold;
   color: $color-green;
   text-align: center;
-  padding: $spacing-small;
+  margin: $spacing-small;
 }
 
-.avalonGoodRoleName {
+
+
+
+
+
+.gameWrapper {
+  margin: $spacing-small;
+  background-color: $color-separator;
+  cursor: pointer;
+}
+
+.gameName {
+  text-align: center;
   color: $color-blue;
+  font-size: $font-size-medium;
   font-weight: bold;
-}
 
-.avalonBadRoleName {
-  color: $color-red;
-  font-weight: bold;
-}
-
-.createGameWrapper {
-  text-align: center;
-}
-
-.spinnerWrapper {
-  text-align: center;
+  > div {
+    padding: $spacing-small;
+  }
 }

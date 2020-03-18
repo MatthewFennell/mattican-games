@@ -1,0 +1,42 @@
+@import "../common/Styles.scss";
+
+.createGameModalWrapper {
+    :first-child {
+      :first-child {
+        width: 100%;
+      }
+    }
+  }
+  
+  .goodGuyRoles, .badGuyRoles {
+    display: flex;
+    justify-content: space-evenly;
+  }
+  
+  .roleWrapper {
+    text-align: center;
+  }
+  
+  .avalonRolesMessage {
+    color: $color-green;
+    text-align: center;
+    padding: $spacing-small;
+  }
+  
+  .avalonGoodRoleName {
+    color: $color-blue;
+    font-weight: bold;
+  }
+  
+  .avalonBadRoleName {
+    color: $color-red;
+    font-weight: bold;
+  }
+  
+  .createGameWrapper {
+    text-align: center;
+  }
+  
+  .spinnerWrapper {
+    text-align: center;
+  }

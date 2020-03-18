@@ -1,39 +1,22 @@
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { firestoreConnect } from 'react-redux-firebase';
+import { compose } from 'redux';
 import defaultStyles from './Overview.module.scss';
-import StyledButton from '../common/StyledButton/StyledButton';
-import SuccessModal from '../common/modal/SuccessModal';
-import Dropdown from '../common/dropdown/Dropdown';
-import TextInput from '../common/TextInput/TextInput';
-import Fade from '../common/Fade/Fade';
-import Switch from '../common/Switch/Switch';
 import * as constants from '../constants';
-import { createGameRequest } from './actions';
-import Spinner from '../common/spinner/Spinner';
+import { createGameRequest, joinGameRequest } from './actions';
+import CreateAvalonGame from './CreateAvalonGame';
+import * as selectors from './selectors';
+import ConfirmModal from '../common/modal/ConfirmModal';
 
-const shouldBeDisabled = (numberOfPlayers, activeAvalonRoles, role) => {
-    if (numberOfPlayers > 6) {
-        return false;
-    }
-
-    if (activeAvalonRoles.includes(role)) {
-        return false;
-    }
-
-    const numberOfCurrentBadGuys = Object.values(constants.avalonRoles)
-        .filter(x => !x.isGood)
-        .reduce((acc, cur) => acc + activeAvalonRoles.includes(cur.name), 0);
-
-
-    return numberOfCurrentBadGuys >= 2;
-};
 
 const Overview = props => {
-    const [creatingGame, setCreatingGame] = useState(false);
+    // ------------------------- AVALON GAME CREATION ------------------------- //
+    const [makingGame, setMakingGame] = useState(false);
     const [gameMode, setGameMode] = useState('');
     const [numberOfPlayers, setNumberOfPlayers] = useState(5);
-
+    const [gameName, setGameName] = useState('');
     const [activeAvalonRoles, setActiveAvalonRoles] = useState([]);
 
     const toggleRole = useCallback(role => {
@@ -58,116 +41,116 @@ const Overview = props => {
             roles = activeAvalonRoles;
         }
 
-        props.createGameRequest(gameMode, numberOfPlayers, roles);
-        setCreatingGame(false);
+        props.createGameRequest(gameMode, gameName, parseInt(numberOfPlayers, 10), roles);
+        setMakingGame(false);
 
         // eslint-disable-next-line
-    }, [activeAvalonRoles, gameMode, numberOfPlayers]);
+    }, [activeAvalonRoles, gameName, gameMode, numberOfPlayers]);
+    // ------------------------------------------------------------------------ //
+
+    const [gameToJoin, setGameToJoin] = useState('');
+    const [gameModeToJoin, setGameModeToJoin] = useState('');
+
+    const clickOnGameToJoin = useCallback(game => {
+        setGameModeToJoin(game.mode);
+        setGameToJoin(game.id);
+    }, [setGameToJoin, setGameModeToJoin]);
+
+    const joinGame = useCallback(() => {
+        props.joinGameRequest(gameToJoin, gameModeToJoin);
+        setGameToJoin('');
+        // eslint-disable-next-line
+    }, [gameToJoin, setGameToJoin, gameModeToJoin])
 
     return (
         <div className={props.styles.overviewWrapper}>
-            <div className={props.styles.createGameWrapper}>
-                <StyledButton text="Create Game" onClick={() => setCreatingGame(true)} />
+            <CreateAvalonGame
+                activeAvalonRoles={activeAvalonRoles}
+                createGame={createGame}
+                creatingGame={props.creatingGame}
+                changeNumberOfPlayers={changeNumberOfPlayers}
+                gameMode={gameMode}
+                gameName={gameName}
+                makingGame={makingGame}
+                numberOfPlayers={numberOfPlayers}
+                setGameMode={setGameMode}
+                setGameName={setGameName}
+                setMakingGame={setMakingGame}
+                toggleRole={toggleRole}
+            />
+
+            <div className={props.styles.allGamesHeader}>
+                {props.allGames.length ? 'All Games' : 'No Games Exist'}
             </div>
 
-            <SuccessModal
-                closeModal={() => setCreatingGame(false)}
-                isOpen={creatingGame}
-                headerMessage="Creating game"
-            >
-                <div className={props.styles.createGameModalWrapper}>
-                    <Dropdown
-                        options={Object.values(constants.gameModes).map(mode => ({
-                            id: mode,
-                            value: mode,
-                            text: mode
-                        }))}
-                        value={gameMode}
-                        onChange={setGameMode}
-                        title="Choose a game"
-                    />
-                </div>
-                <TextInput
-                    onChange={changeNumberOfPlayers}
-                    value={numberOfPlayers}
-                    type="number"
-                    label="Number of players (5-10)"
-                />
-
-                <Fade checked={gameMode === constants.gameModes.Avalon} label="Test">
-                    <div>
-                        <div className={props.styles.avalonRolesMessage}>
-                            Roles
+            {props.allGames.map(game => (
+                <div
+                    className={props.styles.gameWrapper}
+                    onClick={() => clickOnGameToJoin(game)}
+                    role="button"
+                    tabIndex={0}
+                    key={game.name}
+                >
+                    <div className={props.styles.gameName}>
+                        <div>
+                            {`Name: ${game.name}`}
                         </div>
-                        <div className={props.styles.goodGuyRoles}>
-                            {Object.values(constants.avalonRoles)
-                                .filter(role => role.isGood).map(role => (
-                                    <div className={props.styles.roleWrapper}>
-                                        <div className={props.styles.avalonGoodRoleName}>
-                                            {role.name}
-                                        </div>
-                                        <Switch
-                                            checked={activeAvalonRoles.includes(role.name)}
-                                            onChange={() => toggleRole(role.name)}
-                                            color="primary"
-                                        />
-                                    </div>
-                                ))}
+                        <div>
+                            {`Number of players: ${game.currentPlayers.length}/${game.numberOfPlayers}` }
                         </div>
-
-                        <div className={props.styles.badGuyRoles}>
-                            {Object.values(constants.avalonRoles)
-                                .filter(role => !role.isGood).map(role => (
-                                    <div className={props.styles.roleWrapper}>
-                                        <div className={props.styles.avalonBadRoleName}>
-                                            {role.name}
-                                        </div>
-                                        <Switch
-                                            checked={activeAvalonRoles.includes(role.name)}
-                                            onChange={() => toggleRole(role.name)}
-                                            color="secondary"
-                                            disabled={shouldBeDisabled(numberOfPlayers,
-                                                activeAvalonRoles, role.name)}
-                                        />
-                                    </div>
-                                ))}
+                        <div>
+                            {`Game Mode: ${game.mode}` }
+                        </div>
+                        <div>
+                            {`Roles: ${game.roles.toString()}` }
                         </div>
                     </div>
-                </Fade>
-                <div className={props.styles.createGameWrapper}>
-                    <StyledButton text="Create Game" onClick={createGame} />
                 </div>
+            ))}
 
-            </SuccessModal>
+            <ConfirmModal
+                cancel={() => setGameToJoin('')}
+                submit={joinGame}
+                isOpen={Boolean(gameToJoin)}
+                text="Are you sure you want to join this game?"
+            />
 
-            {props.creatingGame && (
-                <div className={props.styles.spinnerWrapper}>
-                    <Spinner color="secondary" />
-                </div>
-            )}
         </div>
     );
 };
 
 Overview.defaultProps = {
+    allGames: [],
     creatingGame: false,
     styles: defaultStyles
 };
 
 Overview.propTypes = {
+    allGames: PropTypes.arrayOf(PropTypes.shape({})),
     createGameRequest: PropTypes.func.isRequired,
     creatingGame: PropTypes.bool,
+    joinGameRequest: PropTypes.func.isRequired,
     styles: PropTypes.objectOf(PropTypes.string)
 };
 
 const mapDispatchToProps = {
-    createGameRequest
+    createGameRequest,
+    joinGameRequest
 };
 
 const mapStateToProps = state => ({
+    allGames: selectors.getGames(state),
     creatingGame: state.overview.creatingGame
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Overview);
+export default compose(
+    connect(mapStateToProps, mapDispatchToProps),
+    firestoreConnect(() => [
+        {
+            collection: 'games'
+        }
+    ]),
+)(Overview);
+
 
 export { Overview as OverviewUnconnected };

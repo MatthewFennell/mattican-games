@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import * as constants from '../../constants';
 
 const AuthenticatedRoute = ({
-    component: Component, auth, loadedPermissions, ...rest
+    component: Component, auth, loadedPermissions, gameId, ...rest
 }) => {
     if (!auth.uid || !auth.emailVerified) {
         return <Redirect to={constants.URL.VERIFY_EMAIL} />;
@@ -13,6 +13,9 @@ const AuthenticatedRoute = ({
     if (!loadedPermissions) {
         return null;
     }
+    // if (gameId) {
+    //     return <Redirect to={`${constants.URL.GAME}/${gameId}`} />;
+    // }
     return (
         <Route
             {...rest}
@@ -29,6 +32,7 @@ const mapStateToProps = state => ({
 AuthenticatedRoute.defaultProps = {
     auth: {},
     component: {},
+    gameId: null,
     loadedPermissions: false
 };
 
@@ -38,6 +42,7 @@ AuthenticatedRoute.propTypes = {
         uid: PropTypes.string
     }),
     component: PropTypes.elementType,
+    gameId: PropTypes.string,
     loadedPermissions: PropTypes.bool
 };
 
