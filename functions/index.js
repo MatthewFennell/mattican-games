@@ -5,6 +5,8 @@ const fp = require('lodash/fp');
 const lodash = require('lodash');
 const firestore = require('@google-cloud/firestore');
 const moment = require('moment');
+const constants = require('./src/constants');
+const common = require('./src/common');
 
 const client = new firestore.v1.FirestoreAdminClient();
 const bucket = 'gs://learning-backups';
@@ -21,3 +23,17 @@ const operations = admin.firestore.FieldValue;
 // currently at v8.13.0 for node
 
 // // https://firebase.google.com/docs/reference/js/firebase.functions.html#functionserrorcod
+
+exports.createAvalonGame = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').add({
+            mode: data.mode,
+            numberOfPlayers: Math.min(data.numberOfPlayers, 10),
+            roles: data.roles,
+            hasStarted: false,
+            currentPlayers: [context.auth.uid],
+            host: context.auth.uid
+        });
+    });

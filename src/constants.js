@@ -7,7 +7,8 @@ export const URL = {
     SIGN_IN: '/sign-in',
     SIGN_UP: '/sign-up',
     VERIFY_EMAIL: '/need-to-verify-email',
-    MANAGE_USERS: '/manage-users'
+    MANAGE_USERS: '/manage-users',
+    GAME: '/game'
 };
 
 // KEEP IN SYNC WITH SERVER
@@ -30,6 +31,29 @@ export const PERMISSIONS = {
 
 export const successDelay = 3500;
 
-// Things to fix
+export const gameModes = {
+    Avalon: 'Avalon'
+};
 
-// Cancel button focus goes blue?
+export const avalonRoles = {
+    Merlin: {
+        isGood: true,
+        name: 'Merlin'
+    },
+    Percival: {
+        isGood: true,
+        name: 'Percival'
+    },
+    Morgana: {
+        isGood: false,
+        name: 'Morgana'
+    },
+    Mordred: {
+        isGood: false,
+        name: 'Mordred'
+    },
+    Oberon: {
+        isGood: false,
+        name: 'Oberon'
+    }
+};
