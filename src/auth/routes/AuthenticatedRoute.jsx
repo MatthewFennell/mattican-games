@@ -7,8 +7,8 @@ import * as constants from '../../constants';
 const AuthenticatedRoute = ({
     component: Component, auth, loadedPermissions, gameId, ...rest
 }) => {
-    if (!auth.uid || !auth.emailVerified) {
-        return <Redirect to={constants.URL.VERIFY_EMAIL} />;
+    if (!auth.uid) {
+        return <Redirect to={constants.URL.SIGN_IN} />;
     }
     if (!loadedPermissions) {
         return null;

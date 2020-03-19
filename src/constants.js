@@ -38,22 +38,37 @@ export const gameModes = {
 export const avalonRoles = {
     Merlin: {
         isGood: true,
-        name: 'Merlin'
+        name: 'Merlin',
+        isSpecial: true
     },
     Percival: {
         isGood: true,
-        name: 'Percival'
+        name: 'Percival',
+        isSpecial: true
     },
     Morgana: {
         isGood: false,
-        name: 'Morgana'
+        name: 'Morgana',
+        isSpecial: true
     },
     Mordred: {
         isGood: false,
-        name: 'Mordred'
+        name: 'Mordred',
+        isSpecial: true
     },
     Oberon: {
         isGood: false,
-        name: 'Oberon'
+        name: 'Oberon',
+        isSpecial: true
+    },
+    RegularGood: {
+        isGood: true,
+        name: 'RegularGood',
+        isSpecial: false
+    },
+    RegularBad: {
+        isGood: false,
+        name: 'Regular Bad',
+        isSpecial: false
     }
 };

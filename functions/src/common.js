@@ -27,6 +27,33 @@ module.exports.hasPermission = (uid, permission) => admin.auth().getUser(uid).th
     }
 });
 
+module.exports.makeRoles = (roles, players) => {
+    const numPlayers = players.length;
+    let allRoles = [];
+
+    const badRoles = roles.filter(role => !constants.avalonRoles[role].isGood);
+    const goodRoles = roles.filter(role => constants.avalonRoles[role].isGood);
+    allRoles = badRoles.concat(goodRoles);
+
+    for (let x = badRoles.length; x < constants.ROLES_LOOKUP[numPlayers].bad; x += 1) {
+        allRoles.push(constants.avalonRoles.RegularBad.name);
+    }
+
+    for (let x = goodRoles.length; x < constants.ROLES_LOOKUP[numPlayers].good; x += 1) {
+        allRoles.push(constants.avalonRoles.RegularGood.name);
+    }
+    allRoles = fp.shuffle(allRoles);
+    const roleAssignments = [];
+
+    for (let x = 0; x < players.length; x += 1) {
+        roleAssignments.push({
+            role: allRoles[x],
+            player: players[x]
+        });
+    }
+    return roleAssignments;
+};
+
 
 module.exports.isIntegerGreaterThanEqualZero = value => Number.isInteger(value) && value >= 0;
 module.exports.isNumber = value => Boolean((Number(value) && value) >= 0 || Number(value) === 0);

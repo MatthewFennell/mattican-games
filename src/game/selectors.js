@@ -1,6 +1,7 @@
 import fp from 'lodash/fp';
 
 export const getGameId = props => fp.flow(fp.get('match'), fp.get('params'), fp.get('gameId'))(props);
+export const getMyId = state => state.firebase.auth.uid;
 
 export const getCurrentGame = (state, props) => {
     const gameId = getGameId(props);
@@ -8,11 +9,21 @@ export const getCurrentGame = (state, props) => {
 };
 
 export const getIsReady = (state, props) => {
-    const myId = state.firebase.auth.uid;
+    const myId = getMyId(state);
 
     const currentGame = getCurrentGame(state, props);
 
     return currentGame
     && currentGame.playersReady
      && currentGame.playersReady.includes(myId);
+};
+
+export const getMyRole = (state, props) => {
+    const myId = getMyId(state);
+    const currentGame = getCurrentGame(state, props);
+    if (!currentGame) {
+        return null;
+    }
+    const myRole = currentGame.playerRoles.find(x => x.player === myId).role;
+    return myRole;
 };

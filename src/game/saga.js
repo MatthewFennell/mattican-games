@@ -25,9 +25,20 @@ export function* readyUp(api, action) {
     }
 }
 
+export function* startGame(api, action) {
+    try {
+        yield call(api.startGame, ({
+            gameId: action.gameId
+        }));
+    } catch (error) {
+        yield put(actions.startGameError(error, 'Ready Up Error'));
+    }
+}
+
 export default function* overviewSaga() {
     yield all([
         takeEvery(actions.LEAVE_GAME_REQUEST, leaveGame, gameApi),
-        takeEvery(actions.READY_UP_REQUEST, readyUp, gameApi)
+        takeEvery(actions.READY_UP_REQUEST, readyUp, gameApi),
+        takeEvery(actions.START_GAME_REQUEST, startGame, gameApi)
     ]);
 }

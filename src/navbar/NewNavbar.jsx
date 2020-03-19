@@ -31,7 +31,7 @@ const NewNavbar = props => {
             <SideNavbar
                 currentPath={props.history.location.pathname}
                 isOpen={sidebarOpen}
-                isSignedIn={props.auth.uid && props.auth.emailVerified}
+                isSignedIn={props.auth.uid}
                 openNavbar={openSidebar}
                 closeNavbar={closeSidebar}
                 redirect={redirect}

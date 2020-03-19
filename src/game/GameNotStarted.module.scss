@@ -96,7 +96,12 @@
     color: $color-green;
 }
 
-.leaveGameWrapper {
+.startGameWrapper {
     margin-top: $spacing-large;
+    text-align: center;
+}
+
+.leaveGameWrapper {
+    margin-top: $spacing-small;
     text-align: center;
 }

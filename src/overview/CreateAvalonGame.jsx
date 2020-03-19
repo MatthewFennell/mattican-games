@@ -68,7 +68,8 @@ const Checkbox = props => (
                     </div>
                     <div className={props.styles.goodGuyRoles}>
                         {Object.values(constants.avalonRoles)
-                            .filter(role => role.isGood).map(role => (
+                            .filter(role => role.isGood).filter(role => role.isSpecial)
+                            .map(role => (
                                 <div className={props.styles.roleWrapper} key={role.name}>
                                     <div className={props.styles.avalonGoodRoleName}>
                                         {role.name}
@@ -84,7 +85,8 @@ const Checkbox = props => (
 
                     <div className={props.styles.badGuyRoles}>
                         {Object.values(constants.avalonRoles)
-                            .filter(role => !role.isGood).map(role => (
+                            .filter(role => !role.isGood).filter(role => role.isSpecial)
+                            .map(role => (
                                 <div className={props.styles.roleWrapper} key={role.name}>
                                     <div className={props.styles.avalonBadRoleName}>
                                         {role.name}

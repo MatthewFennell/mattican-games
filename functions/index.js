@@ -57,6 +57,9 @@ exports.joinAvalonGame = functions
             if (!doc.exists) {
                 throw new functions.https.HttpsError('not-found', 'Game not found');
             }
+            if (doc.data().currentPlayers.length === doc.data().numberOfPlayers) {
+                throw new functions.https.HttpsError('invalid-argument', 'That game is full');
+            }
             return doc.ref.update({
                 currentPlayers: operations.arrayUnion(context.auth.uid)
             });
@@ -77,10 +80,12 @@ exports.leaveGame = functions
             if (doc.data().host === context.auth.uid && doc.data().currentPlayers && doc.data().currentPlayers.length > 1) {
                 return doc.ref.update({
                     host: doc.data().currentPlayers.find(x => x !== context.auth.uid),
+                    playersReady: doc.data().playersReady.arrayRemove(context.auth.uid),
                     currentPlayers: operations.arrayRemove(context.auth.uid)
                 });
             }
             return doc.ref.update({
+                playersReady: doc.data().playersReady.arrayRemove(context.auth.uid),
                 currentPlayers: operations.arrayRemove(context.auth.uid)
             });
         });
@@ -98,6 +103,30 @@ exports.readyUp = functions
             }
             return doc.ref.update({
                 playersReady: operations.arrayRemove(context.auth.uid)
+            });
+        });
+    });
+
+exports.startGame = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+            const playerRoles = common.makeRoles(doc.data().roles, doc.data().currentPlayers);
+            const playerOrder = fp.shuffle(doc.data().currentPlayers);
+            return doc.ref.update({
+                currentPlayers: playerOrder,
+                playerRoles,
+                round: 0.1,
+                leader: fp.first(playerOrder),
+                questNominations: [],
+                votesFor: [],
+                votesAgainst: [],
+                history: [],
+                hasStarted: true
             });
         });
     });

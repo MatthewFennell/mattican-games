@@ -54,10 +54,7 @@ export const signedInLinks = [
         icon: <HomeIcon color="primary" />,
         component: rootComponents.Game,
         addUserId: false,
-        path: props => {
-            console.log('props', props);
-            return `${constants.URL.GAME}`;
-        },
+        path: props => `${constants.URL.GAME}`,
         renderPath: `${constants.URL.GAME}`,
         urlIncludes: constants.URL.GAME
     }

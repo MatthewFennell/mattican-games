@@ -24,9 +24,6 @@ export function* signOut() {
 
 export function* loggingIn(api, action) {
     try {
-        if (action.auth && !action.auth.emailVerified) {
-            yield put(push(consts.URL.VERIFY_EMAIL));
-        }
         const user = yield firebase.auth().currentUser.getIdTokenResult();
         const rolePermissions = yield call(api.getRolePermissions);
         yield put(actions.setPermissionsMappingsAndRoles(rolePermissions));
@@ -39,6 +36,7 @@ export function* loggingIn(api, action) {
             return null;
         }));
         yield put(actions.setLoadedPermissions(true));
+        yield put(push(consts.URL.OVERVIEW));
     } catch (error) {
         yield put(actions.signInError(error));
     }

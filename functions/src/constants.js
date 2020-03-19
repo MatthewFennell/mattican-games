@@ -58,3 +58,68 @@ module.exports.ROLE_PERMISSIONS = {
         PERMISSIONS.MANAGE_SUBS
     ]
 };
+
+module.exports.ROLES_LOOKUP = {
+    5: {
+        bad: 2,
+        good: 3
+    },
+    6: {
+        bad: 2,
+        good: 4
+    },
+    7: {
+        bad: 3,
+        good: 4
+    },
+    8: {
+        bad: 3,
+        good: 5
+    },
+    9: {
+        bad: 4,
+        good: 5
+    },
+    10: {
+        bad: 4,
+        good: 6
+    }
+};
+
+module.exports.avalonRoles = {
+    Merlin: {
+        isGood: true,
+        name: 'Merlin',
+        isSpecial: true
+    },
+    Percival: {
+        isGood: true,
+        name: 'Percival',
+        isSpecial: true
+    },
+    Morgana: {
+        isGood: false,
+        name: 'Morgana',
+        isSpecial: true
+    },
+    Mordred: {
+        isGood: false,
+        name: 'Mordred',
+        isSpecial: true
+    },
+    Oberon: {
+        isGood: false,
+        name: 'Oberon',
+        isSpecial: true
+    },
+    RegularGood: {
+        isGood: true,
+        name: 'RegularGood',
+        isSpecial: false
+    },
+    RegularBad: {
+        isGood: false,
+        name: 'Regular Bad',
+        isSpecial: false
+    }
+};

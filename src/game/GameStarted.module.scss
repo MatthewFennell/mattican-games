@@ -1,0 +1,54 @@
+@import "../common/Styles.scss";
+
+.roundHeader {
+    text-align: center;
+    font-weight: bold;
+    color: $color-blue;
+    font-size: $font-size-large;
+    margin-top: $spacing-small;
+}
+
+.viewSecretInfoWrapper {
+    text-align: center;
+}
+
+.isGood {
+    font-weight: bold;
+    color: $color-blue;
+}
+
+.isBad {
+    font-weight: bold;
+    color: $color-red;
+}
+
+.currentLeaderWrapper {
+    text-align: center;
+    color: $color-blue;
+    margin-bottom: $spacing-small;
+}
+
+.playerWrapper {
+    text-align: center;
+    display: flex;
+    background-color: $color-separator;
+    padding: $spacing-small;
+    margin: $spacing-small;
+}
+
+.playerNumber {
+    margin-left: $spacing-small;
+    color: $color-red;
+    font-weight: bold;
+}
+
+.playerName {
+    width: 100%;
+    text-align: center;
+    margin-left: $spacing-large;
+    color: $color-blue;
+}
+
+.activePlayer {
+    font-weight: bold;
+}
