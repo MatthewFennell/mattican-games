@@ -98,22 +98,6 @@ describe('Auth saga', () => {
             .run();
     });
 
-    it('logging in', () => {
-        const action = {
-            type: constants.actionTypes.LOGIN,
-            auth: {
-                emailVerified: false
-            }
-        };
-        return expectSaga(sagas.loggingIn, api, action)
-            .put(push(consts.URL.VERIFY_EMAIL))
-            .put(actions.setPermissionsMappingsAndRoles(rolePermissions))
-            .put(actions.addPermissions(adminPermissions))
-            .put(actions.addPermissions(editorPermissions))
-            .put(actions.setLoadedPermissions(true))
-            .run();
-    });
-
     it('logging in email verified', () => {
         const action = {
             type: constants.actionTypes.LOGIN,

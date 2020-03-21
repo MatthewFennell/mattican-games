@@ -80,7 +80,7 @@ exports.leaveGame = functions
             if (doc.data().host === context.auth.uid && doc.data().currentPlayers && doc.data().currentPlayers.length > 1) {
                 return doc.ref.update({
                     host: doc.data().currentPlayers.find(x => x !== context.auth.uid),
-                    playersReady: doc.data().playersReady.arrayRemove(context.auth.uid),
+                    playersReady: operations.arrayRemove(context.auth.uid),
                     currentPlayers: operations.arrayRemove(context.auth.uid)
                 });
             }
