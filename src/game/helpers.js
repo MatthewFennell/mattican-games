@@ -5,4 +5,5 @@ import * as constants from '../constants';
 // eslint-disable-next-line import/prefer-default-export
 export const mapUserIdToName = (users, userId) => fp.flow(fp.get(userId), fp.get('displayName'))(users);
 
-export const isRoleGood = role => Object.values(constants.avalonRoles).some(x => x.name === role && x.isGood);
+export const isRoleGood = role => Object.values(constants.avalonRoles)
+    .some(x => x.name === role && x.isGood);

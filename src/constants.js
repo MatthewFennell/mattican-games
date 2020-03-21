@@ -68,7 +68,71 @@ export const avalonRoles = {
     },
     RegularBad: {
         isGood: false,
-        name: 'Regular Bad',
+        name: 'RegularBad',
         isSpecial: false
     }
+};
+
+export const gameStatuses = {
+    Nominating: 'Nominating',
+    Voting: 'Voting',
+    Questing: 'Questing'
+};
+
+// round -> num players
+export const fivePlayerGame = {
+    1: 2,
+    2: 3,
+    3: 2,
+    4: 3,
+    5: 3
+};
+
+export const sixPlayerGame = {
+    1: 2,
+    2: 3,
+    3: 4,
+    4: 3,
+    5: 4
+};
+
+export const sevenPlayerGame = {
+    1: 2,
+    2: 3,
+    3: 3,
+    4: 4,
+    5: 4
+};
+
+export const eightPlayerGame = {
+    1: 3,
+    2: 4,
+    3: 4,
+    4: 5,
+    5: 5
+};
+
+export const ninePlayerGame = {
+    1: 3,
+    2: 4,
+    3: 4,
+    4: 5,
+    5: 5
+};
+
+export const tenPlayerGame = {
+    1: 3,
+    2: 4,
+    3: 4,
+    4: 5,
+    5: 5
+};
+
+export const avalonRounds = {
+    5: fivePlayerGame,
+    6: sixPlayerGame,
+    7: sevenPlayerGame,
+    8: eightPlayerGame,
+    9: ninePlayerGame,
+    10: tenPlayerGame
 };

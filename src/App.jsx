@@ -17,7 +17,7 @@ import NewNavbar from './navbar/NewNavbar';
 import RenderRoutes from './RenderRoutes';
 
 const App = props => (
-    props.auth && props.auth.isLoaded ? (
+    props.auth && props.auth.isLoaded1 ? (
         <ConnectedRouter history={props.history}>
             <>
                 <CssBaseline />

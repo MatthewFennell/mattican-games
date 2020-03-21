@@ -35,10 +35,59 @@ export function* startGame(api, action) {
     }
 }
 
+export function* nominatePlayerForQuest(api, action) {
+    try {
+        yield call(api.nominatePlayer, ({
+            gameId: action.gameId,
+            player: action.player,
+            isOnQuest: action.isOnQuest
+        }));
+    } catch (error) {
+        yield put(actions.nominatePlayerForError(error, 'Nominate Player Error'));
+    }
+}
+
+export function* confirmNominations(api, action) {
+    try {
+        yield call(api.confirmNominations, ({
+            gameId: action.gameId,
+            nominations: action.nominations
+        }));
+    } catch (error) {
+        yield put(actions.confirmNominationsError(error, 'Nominate Player Error'));
+    }
+}
+
+export function* makeVote(api, action) {
+    try {
+        yield call(api.makeVote, ({
+            gameId: action.gameId,
+            vote: action.vote
+        }));
+    } catch (error) {
+        yield put(actions.makeVoteError(error, 'Make Vote Error'));
+    }
+}
+
+export function* goOnQuest(api, action) {
+    try {
+        yield call(api.goOnQuest, ({
+            gameId: action.gameId,
+            isSuccess: action.isSuccess
+        }));
+    } catch (error) {
+        yield put(actions.makeQuestError(error, 'Go On Quest Error'));
+    }
+}
+
 export default function* overviewSaga() {
     yield all([
         takeEvery(actions.LEAVE_GAME_REQUEST, leaveGame, gameApi),
         takeEvery(actions.READY_UP_REQUEST, readyUp, gameApi),
-        takeEvery(actions.START_GAME_REQUEST, startGame, gameApi)
+        takeEvery(actions.START_GAME_REQUEST, startGame, gameApi),
+        takeEvery(actions.NOMINATE_PLAYER_FOR_QUEST_REQUEST, nominatePlayerForQuest, gameApi),
+        takeEvery(actions.CONFIRM_NOMINATIONS_REQUEST, confirmNominations, gameApi),
+        takeEvery(actions.MAKE_VOTE_REQUEST, makeVote, gameApi),
+        takeEvery(actions.MAKE_QUEST_REQUEST, goOnQuest, gameApi)
     ]);
 }

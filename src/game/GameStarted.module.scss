@@ -34,6 +34,11 @@
     background-color: $color-separator;
     padding: $spacing-small;
     margin: $spacing-small;
+    outline: 0px;
+}
+
+.isOnQuest {
+    border: 2px solid rebeccapurple;
 }
 
 .playerNumber {
@@ -50,5 +55,74 @@
 }
 
 .activePlayer {
+    font-weight: bold;
+}
+
+.confirmNominationWrapper {
+    text-align: center;
+}
+
+@keyframes flickerAnimation {
+    0%   { opacity:1; }
+    50%  { opacity:0; }
+    100% { opacity:1; }
+}
+@-o-keyframes flickerAnimation{
+    0%   { opacity:1; }
+    50%  { opacity:0; }
+    100% { opacity:1; }
+}
+@-moz-keyframes flickerAnimation{
+    0%   { opacity:1; }
+    50%  { opacity:0; }
+    100% { opacity:1; }
+}
+@-webkit-keyframes flickerAnimation{
+    0%   { opacity:1; }
+    50%  { opacity:0; }
+    100% { opacity:1; }
+}
+
+.votingStage, .questingStage {
+    position: absolute;
+    margin-right: $spacing-medium;
+    right: 0;
+    -webkit-animation: flickerAnimation 4s infinite;
+    -moz-animation: flickerAnimation 4s infinite;
+    -o-animation: flickerAnimation 4s infinite;
+    animation: flickerAnimation 4s infinite;
+}
+
+.successResult {
+    color: $color-green;
+}
+
+.failResult {
+    color: $color-red;
+}
+
+.viewingBoardWrapper {
+    text-align: center;
+}
+
+.avalonBoard {
+    display: flex;
+    justify-content: space-evenly;
+    margin: $spacing-small;
+    padding: $spacing-small;
+    background-color: $color-gray;
+}
+
+.haveVoted {
+    color: $color-green;
+}
+
+.notVoted {
+    color: $color-red;
+}
+
+.consecutiveRejections {
+    color: $color-blue;
+    text-align: center;
     font-weight: bold;
 }

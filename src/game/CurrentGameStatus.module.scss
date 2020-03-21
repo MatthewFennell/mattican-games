@@ -1,0 +1,25 @@
+@import "../common/Styles.scss";
+
+.nominating {
+    text-align: center;
+    color: $color-green;
+    margin-left: $spacing-medium;
+    margin-right: $spacing-medium;
+}
+
+.votingWrapper {
+    text-align: center;
+    margin: $spacing-small;
+    padding: $spacing-small;
+    background-color: $color-amber;
+}
+
+.questingWrapper {
+    text-align: center;
+}
+
+.notOnQuestMessage {
+    text-align: center;
+    color: $color-green;
+    font-weight: bold;
+}
