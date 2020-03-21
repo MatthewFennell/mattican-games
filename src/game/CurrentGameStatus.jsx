@@ -11,6 +11,7 @@ import * as constants from '../constants';
 import StyledButton from '../common/StyledButton/StyledButton';
 import Fade from '../common/Fade/Fade';
 import { makeVoteRequest, makeQuestRequest } from './actions';
+import GameFinished from './GameFinished';
 
 const CurrentGameStatus = props => {
     const [makingVote, setMakingVote] = useState(false);
@@ -22,6 +23,12 @@ const CurrentGameStatus = props => {
     const toggleMakingQuest = useCallback(() => {
         setMakingQuest(!makingQuest);
     }, [makingQuest, setMakingQuest]);
+
+    const placeVote = useCallback(vote => {
+        props.makeVoteRequest(props.currentGameId, vote);
+        setMakingQuest(false);
+        // eslint-disable-next-line
+    }, [props.currentGameId, setMakingQuest])
 
     if (props.currentGame.status === constants.gameStatuses.Nominating) {
         return (
@@ -46,14 +53,18 @@ const CurrentGameStatus = props => {
                         || props.currentGame.votesFor.includes(props.auth.uid)
                             ? <StyledButton text={`Voted ${props.currentGame.votesFor.includes(props.auth.uid) ? 'Yes' : 'No'}`} disabled /> : (
                                 <>
-                                    <StyledButton text="Vote Yes" onClick={() => props.makeVoteRequest(props.currentGameId, true)} />
-                                    <StyledButton text="Vote No" color="secondary" onClick={() => props.makeVoteRequest(props.currentGameId, false)} />
+                                    <StyledButton text="Vote Yes" onClick={() => placeVote(true)} />
+                                    <StyledButton text="Vote No" color="secondary" onClick={() => placeVote(false)} />
                                 </>
                             )}
                     </div>
                 </Fade>
             </div>
         );
+    }
+
+    if (props.currentGame.status === constants.gameStatuses.Finished) {
+        return <GameFinished />;
     }
 
     if (props.currentGame.status === constants.gameStatuses.Questing) {
@@ -76,14 +87,13 @@ const CurrentGameStatus = props => {
                     <div className={props.styles.questButtons}>
                         {props.currentGame.questSuccesses.includes(props.auth.uid)
                         || props.currentGame.questFails.includes(props.auth.uid)
-                            ? <StyledButton text={`Voted ${props.currentGame.questSuccesses.includes(props.auth.uid) ? 'Succeed' : 'Fail'}`} disabled /> : (
+                            ? <StyledButton text={`Played ${props.currentGame.questSuccesses.includes(props.auth.uid) ? 'Succeed' : 'Fail'}`} disabled /> : (
                                 <>
-                                    <StyledButton text="Vote Succeed" onClick={() => props.makeQuestRequest(props.currentGameId, true)} />
-                                    <StyledButton text="Vote Fail" color="secondary" onClick={() => props.makeQuestRequest(props.currentGameId, false)} />
+                                    <StyledButton text="Play Succeed" onClick={() => props.makeQuestRequest(props.currentGameId, true)} />
+                                    <StyledButton text="Play Fail" color="secondary" onClick={() => props.makeQuestRequest(props.currentGameId, false)} />
                                 </>
                             )}
                     </div>
-
                 </Fade>
             </div>
         );

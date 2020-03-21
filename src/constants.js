@@ -76,7 +76,8 @@ export const avalonRoles = {
 export const gameStatuses = {
     Nominating: 'Nominating',
     Voting: 'Voting',
-    Questing: 'Questing'
+    Questing: 'Questing',
+    Finished: 'Finished'
 };
 
 // round -> num players

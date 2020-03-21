@@ -184,5 +184,6 @@ module.exports.avalonRounds = {
 module.exports.gameStatuses = {
     Nominating: 'Nominating',
     Voting: 'Voting',
-    Questing: 'Questing'
+    Questing: 'Questing',
+    Finished: 'Finished'
 };

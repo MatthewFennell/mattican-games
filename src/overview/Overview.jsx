@@ -110,6 +110,7 @@ const Overview = props => {
 
             <ConfirmModal
                 cancel={() => setGameToJoin('')}
+                closeModal={() => setGameToJoin('')}
                 submit={joinGame}
                 isOpen={Boolean(gameToJoin)}
                 text="Are you sure you want to join this game?"

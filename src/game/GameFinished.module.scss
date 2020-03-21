@@ -1,0 +1,15 @@
+@import "../common/Styles.scss";
+
+.goodGuysHeader {
+    color: $color-green;
+    font-weight: bold;
+    text-align: center;
+    font-size: $font-size-huge;
+}
+
+.badGuysHeader {
+    color: $color-red;
+    font-weight: bold;
+    text-align: center;
+    font-size: $font-size-huge;
+}

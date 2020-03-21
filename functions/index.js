@@ -43,7 +43,12 @@ exports.createAvalonGame = functions
                     hasStarted: false,
                     currentPlayers: [context.auth.uid],
                     host: context.auth.uid,
-                    playersReady: []
+                    playersReady: [],
+                    questResult: [],
+                    playersOnQuest: [],
+                    consecutiveRejections: 0,
+                    questSuccesses: [],
+                    questFails: []
                 });
             }
         );
@@ -120,7 +125,7 @@ exports.startGame = functions
             return doc.ref.update({
                 currentPlayers: playerOrder,
                 playerRoles,
-                round: 0.1,
+                round: 1,
                 leader: fp.first(playerOrder),
                 questNominations: [],
                 votesFor: [],
@@ -325,13 +330,18 @@ exports.goOnQuest = functions
                     const questFailed = hasQuestFailed(round, numberOfPlayers, questFails.length);
                     console.log('quest failed = ', questFailed);
 
+                    const newQuestResult = [...questResult, questFailed ? -1 : 1];
+
+                    const numFail = newQuestResult.filter(x => x === -1);
+                    const numSuc = newQuestResult.filter(x => x === 1);
+
 
                     return doc.ref.update({
-                        questResult: [...questResult, questFailed ? -1 : 1],
+                        questResult: newQuestResult,
                         playersOnQuest: [],
                         leader: findNextUser(leader, currentPlayers),
                         round: operations.increment(1),
-                        status: constants.gameStatuses.Nominating,
+                        status: numFail === 3 || numSuc === 3 ? constants.gameStatuses.Finished : constants.gameStatuses.Nominating,
                         questSuccesses: [],
                         questFails: [],
                         previousQuestSuccesses: questSuccesses.length,

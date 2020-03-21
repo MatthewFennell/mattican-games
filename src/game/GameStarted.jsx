@@ -94,12 +94,16 @@ const GameStarted = props => {
         return <div><FiberManualRecordIcon fontSize="small" /></div>;
     };
 
-
     return (
         <div className={props.styles.gameStartedWrapper}>
-            <div className={props.styles.roundHeader}>
-                {`Round: ${props.currentGame.round}`}
-            </div>
+
+            {props.currentGame.status === constants.gameStatuses.Finished
+                ? <div className={props.styles.gameFinished}>Game finished </div> : (
+                    <div className={props.styles.roundHeader}>
+                        {`Round: ${props.currentGame.round}`}
+                    </div>
+                )}
+
 
             <div className={props.styles.viewSecretInfoWrapper}>
                 <Fade
@@ -120,9 +124,12 @@ const GameStarted = props => {
                 </Fade>
             </div>
 
-            <div className={props.styles.currentLeaderWrapper}>
-                {`The current leader is ${helpers.mapUserIdToName(props.users, props.currentGame.leader)}`}
-            </div>
+            {props.currentGame.status !== constants.gameStatuses.Finished && (
+                <div className={props.styles.currentLeaderWrapper}>
+                    {`The current leader is ${helpers.mapUserIdToName(props.users, props.currentGame.leader)}`}
+                </div>
+            )}
+
 
             <div className={props.styles.viewingBoardWrapper}>
                 <Fade

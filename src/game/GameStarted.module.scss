@@ -121,6 +121,14 @@
     color: $color-red;
 }
 
+.gameFinished {
+    text-align: center;
+    color: $color-blue;
+    font-size: $font-size-huge;
+    margin-top: $spacing-medium;
+    font-weight: bold;
+}
+
 .consecutiveRejections {
     color: $color-blue;
     text-align: center;
