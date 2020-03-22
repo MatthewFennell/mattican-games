@@ -31,14 +31,14 @@
 .playerWrapper {
     text-align: center;
     display: flex;
-    background-color: $color-separator;
+    background-color: lightblue;
     padding: $spacing-small;
     margin: $spacing-small;
     outline: 0px;
 }
 
 .isOnQuest {
-    border: 2px solid rebeccapurple;
+    border: 2px solid crimson;
 }
 
 .playerNumber {
@@ -108,7 +108,7 @@
 .avalonBoard {
     margin: $spacing-small;
     padding: $spacing-small;
-    background-color: $color-gray;
+    background-color: burlywood;
 }
 
 .specialRoundMessage {
@@ -162,4 +162,8 @@
 .missionNum {
     color: $color-dark-blue;
     font-weight: bold;
+}
+
+.historyWrapper {
+    text-align: center;
 }

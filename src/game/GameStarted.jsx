@@ -18,6 +18,7 @@ import {
 } from './actions';
 import StyledButton from '../common/StyledButton/StyledButton';
 import Radio from '../common/radio/RadioButton';
+import History from './History';
 
 const GameStarted = props => {
     const [viewingRole, setViewingRole] = useState(false);
@@ -36,6 +37,12 @@ const GameStarted = props => {
     }, [guessingMerlin, setGuessingMerlin]);
 
     const [merlinGuess, setMerlinGuess] = useState('');
+
+    const [showingHistory, setShowingHistory] = useState(false);
+
+    const toggleShowingHistory = useCallback(() => {
+        setShowingHistory(!showingHistory);
+    }, [showingHistory, setShowingHistory]);
 
     const makeMerlinGuess = useCallback(() => {
         if (merlinGuess) {
@@ -144,29 +151,6 @@ const GameStarted = props => {
                 )}
 
             {props.currentGame.status !== constants.gameStatuses.Finished
-
-            && (
-                <div className={props.styles.viewSecretInfoWrapper}>
-                    <Fade
-                        checked={viewingRole}
-                        label="View secret info"
-                        includeCheckbox
-                        onChange={toggleViewRoles}
-                    >
-                        <div className={classNames({
-                            [props.styles.viewingRole]: true,
-                            [props.styles.isGood]: helpers.isRoleGood(props.myRole),
-                            [props.styles.isBad]: !helpers.isRoleGood(props.myRole)
-                        })}
-                        >
-                            {`Role: ${props.myRole}`}
-                        </div>
-                        {generateSecretInfo(props.myRole)}
-                    </Fade>
-                </div>
-            ) }
-
-            {props.currentGame.status !== constants.gameStatuses.Finished
             && props.currentGame.status !== constants.gameStatuses.GuessingMerlin && (
                 <div className={props.styles.currentLeaderWrapper}>
                     {`The current leader is ${helpers.mapUserIdToName(props.users, props.currentGame.leader)}`}
@@ -174,42 +158,6 @@ const GameStarted = props => {
             )}
 
 
-            <div className={props.styles.viewingBoardWrapper}>
-                <Fade
-                    checked={viewingBoard}
-                    label="View board"
-                    includeCheckbox
-                    onChange={toggleViewingBoard}
-                >
-                    <div className={props.styles.avalonBoard}>
-                        <div className={props.styles.boardState}>
-                            {generateResultIcon(props.currentGame.questResult[0], 1)}
-                            {generateResultIcon(props.currentGame.questResult[1], 2)}
-                            {generateResultIcon(props.currentGame.questResult[2], 3)}
-                            {generateResultIcon(props.currentGame.questResult[3], 4)}
-                            {generateResultIcon(props.currentGame.questResult[4], 5)}
-                        </div>
-
-                        <div className={props.styles.consecutiveRejections}>
-                            {`Consecutive rejections: ${props.currentGame.consecutiveRejections}`}
-                            {props.currentGame.consecutiveRejections === 4
-                            && (
-                                <div className={props.styles.noVoting}>
-                                No voting will occur this round
-                                </div>
-                            )}
-                        </div>
-
-                        {props.currentGame.numberOfPlayers >= 4 && (
-                            <div className={props.styles.specialRoundMessage}>
-                            The 4th mission requires 2 fails for it to fail
-                            </div>
-                        )}
-                    </div>
-
-
-                </Fade>
-            </div>
             <CurrentGameStatus />
 
             {props.currentGame.status === constants.gameStatuses.GuessingMerlin && props.currentGame
@@ -320,6 +268,68 @@ const GameStarted = props => {
                 </div>
             ) }
 
+            {props.currentGame.status !== constants.gameStatuses.Finished
+
+            && (
+                <div className={props.styles.viewSecretInfoWrapper}>
+                    <Fade
+                        checked={viewingRole}
+                        label="View secret info"
+                        includeCheckbox
+                        onChange={toggleViewRoles}
+                    >
+                        <div className={classNames({
+                            [props.styles.viewingRole]: true,
+                            [props.styles.isGood]: helpers.isRoleGood(props.myRole),
+                            [props.styles.isBad]: !helpers.isRoleGood(props.myRole)
+                        })}
+                        >
+                            {`Role: ${props.myRole}`}
+                        </div>
+                        {generateSecretInfo(props.myRole)}
+                    </Fade>
+                </div>
+            ) }
+
+
+            <div className={props.styles.viewingBoardWrapper}>
+                <Fade
+                    checked={viewingBoard}
+                    label="View board"
+                    includeCheckbox
+                    onChange={toggleViewingBoard}
+                >
+                    <div className={props.styles.avalonBoard}>
+                        <div className={props.styles.boardState}>
+                            {generateResultIcon(props.currentGame.questResult[0], 1)}
+                            {generateResultIcon(props.currentGame.questResult[1], 2)}
+                            {generateResultIcon(props.currentGame.questResult[2], 3)}
+                            {generateResultIcon(props.currentGame.questResult[3], 4)}
+                            {generateResultIcon(props.currentGame.questResult[4], 5)}
+                        </div>
+
+                        <div className={props.styles.consecutiveRejections}>
+                            {`Consecutive rejections: ${props.currentGame.consecutiveRejections}`}
+                            {props.currentGame.consecutiveRejections === 4
+                && (
+                    <div className={props.styles.noVoting}>
+                    No voting will occur this round
+                    </div>
+                )}
+                        </div>
+
+                        {props.currentGame.numberOfPlayers >= 7 && (
+                            <div className={props.styles.specialRoundMessage}>
+                The 4th mission requires 2 fails for it to fail
+                            </div>
+                        )}
+                    </div>
+
+
+                </Fade>
+            </div>
+
+
             {props.currentGame.status === constants.gameStatuses.Finished && (
                 <div className={props.styles.leaveGameButton}>
                     <StyledButton text="Leave Game" color="secondary" onClick={() => props.leaveGameRequest(props.currentGameId)} />
@@ -332,6 +342,17 @@ const GameStarted = props => {
                     <StyledButton text="Destroy Game" color="secondary" onClick={() => props.destroyGameRequest(props.currentGameId)} />
                 </div>
             )}
+
+            <div className={props.styles.historyWrapper}>
+                <Fade
+                    includeCheckbox
+                    checked={showingHistory}
+                    onChange={toggleShowingHistory}
+                    label="Show Game History"
+                >
+                    <History />
+                </Fade>
+            </div>
 
         </div>
     );

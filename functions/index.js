@@ -225,14 +225,23 @@ exports.confirmNominations = functions
             }
 
             if (consecutiveRejections === 4) {
-                console.log('Quest forced to go ahead due to multiple no votes');
                 return doc.ref.update({
                     status: constants.gameStatuses.Questing,
                     questNominations: [],
                     votesAgainst: [],
                     votesFor: [],
                     playersOnQuest: questNominations,
-                    consecutiveRejections: 0
+                    consecutiveRejections: 0,
+                    history: [{
+                        type: constants.historyTypes.Vote,
+                        leader: doc.data().leader,
+                        forcedByConsecutiveRejections: true,
+                        votesYes: [],
+                        votesNo: [],
+                        round: doc.data().round,
+                        nominated: questNominations
+                    },
+                    ...doc.data().history]
                 });
             }
 
@@ -277,24 +286,28 @@ exports.makeVote = functions
         })
             .then(() => db.collection('games').doc(data.gameId).get().then(doc => {
                 const {
-                    votesFor, votesAgainst, numberOfPlayers, questNominations, leader, currentPlayers
+                    votesFor, votesAgainst, numberOfPlayers, questNominations, leader, currentPlayers, history
                 } = doc.data();
-                console.log('votes for', votesFor);
-                console.log('votes for', votesAgainst);
-                console.log('questNominations', questNominations);
 
                 if (votesFor.length + votesAgainst.length === numberOfPlayers) {
-                    console.log('voting finished');
-
                     if (votesFor.length > votesAgainst.length) {
-                        console.log('majority voted yes');
                         return doc.ref.update({
                             questNominations: [],
                             status: constants.gameStatuses.Questing,
                             votesAgainst: [],
                             votesFor: [],
                             playersOnQuest: questNominations,
-                            consecutiveRejections: 0
+                            consecutiveRejections: 0,
+                            history: [
+                                {
+                                    type: constants.historyTypes.Vote,
+                                    leader,
+                                    forcedByConsecutiveRejections: false,
+                                    votesYes: votesFor,
+                                    votesNo: votesAgainst,
+                                    nominated: questNominations
+                                }, ...history
+                            ]
                         });
                     }
                     return doc.ref.update({
@@ -304,10 +317,19 @@ exports.makeVote = functions
                         votesFor: [],
                         playersOnQuest: [],
                         consecutiveRejections: operations.increment(1),
-                        leader: findNextUser(leader, currentPlayers)
+                        leader: findNextUser(leader, currentPlayers),
+                        history: [{
+                            type: constants.historyTypes.Vote,
+                            leader,
+                            forcedByConsecutiveRejections: false,
+                            votesYes: votesFor,
+                            votesNo: votesAgainst,
+                            round: doc.data().round,
+                            nominated: questNominations
+                        }, ...history]
                     });
                 }
-                console.log('not enough votes yet');
+                return Promise.resolve();
             }));
     });
 
@@ -351,7 +373,8 @@ exports.goOnQuest = functions
         })
             .then(() => db.collection('games').doc(data.gameId).get().then(doc => {
                 const {
-                    questFails, questSuccesses, numberOfPlayers, round, leader, currentPlayers, questResult, status, playerRoles, playerToGuessMerlin
+                    questFails, questSuccesses, numberOfPlayers, round, leader, history,
+                    currentPlayers, questResult, status, playerRoles, playerToGuessMerlin, playersOnQuest
                 } = doc.data();
 
                 const requiredNumberOfQuesters = constants.avalonRounds[numberOfPlayers][round];
@@ -403,9 +426,16 @@ exports.goOnQuest = functions
                         status: nextStatus,
                         questSuccesses: [],
                         questFails: [],
-                        previousQuestSuccesses: questSuccesses.length,
-                        previousQuestFailures: questFails.length,
-                        playerToGuessMerlin: randomBadGuyToGuessMerlin
+                        playerToGuessMerlin: randomBadGuyToGuessMerlin,
+                        history: [
+                            {
+                                type: constants.historyTypes.Quest,
+                                questers: playersOnQuest,
+                                succeeds: questSuccesses.length,
+                                fails: questFails.length,
+                                round
+                            }, ...history
+                        ]
                     });
                 }
                 return Promise.resolve();
@@ -425,10 +455,6 @@ exports.guessMerlin = functions
                 throw new functions.https.HttpsError('invalid-argument', 'You aren\'t the one to guess Merlin');
             }
             const merlin = doc.data().playerRoles.filter(r => r.role === constants.avalonRoles.Merlin.name).map(r => r.player);
-
-            console.log('merlin actually is', merlin);
-
-            console.log(`guessed merlin was ${data.merlin}`);
 
             return doc.ref.update({
                 guessedMerlinCorrectly: merlin.includes(data.merlin),

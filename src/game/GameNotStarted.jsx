@@ -108,11 +108,19 @@ const GameNotStarted = props => (
             </div>
         )}
 
-        {props.currentGame.playersReady.length < props.currentGame.numberOfPlayers && (
+        {props.currentGame.playersReady.length < props.currentGame.numberOfPlayers
+        && props.currentGame.numberOfPlayers === props.currentGame.currentPlayers.length && (
             <div className={props.styles.waitingForPlayersToReady}>
                 Waiting for players to ready up
             </div>
         )}
+
+        {props.currentGame.currentPlayers.length < props.currentGame.numberOfPlayers && (
+            <div className={props.styles.waitingForPlayersToJoin}>
+                Waiting for players to join the lobby
+            </div>
+        )}
+
 
         <div className={props.styles.leaveGameWrapper}>
             <StyledButton

@@ -188,3 +188,8 @@ module.exports.gameStatuses = {
     Finished: 'Finished',
     GuessingMerlin: 'GuessingMerlin'
 };
+
+module.exports.historyTypes = {
+    Vote: 'Vote',
+    Quest: 'Quest'
+};

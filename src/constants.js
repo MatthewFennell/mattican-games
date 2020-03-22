@@ -138,3 +138,8 @@ export const avalonRounds = {
     9: ninePlayerGame,
     10: tenPlayerGame
 };
+
+export const historyTypes = {
+    Vote: 'Vote',
+    Quest: 'Quest'
+};
