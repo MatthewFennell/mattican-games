@@ -26,7 +26,7 @@ const CurrentGameStatus = props => {
 
     const placeVote = useCallback(vote => {
         props.makeVoteRequest(props.currentGameId, vote);
-        setMakingQuest(false);
+        setMakingVote(false);
         // eslint-disable-next-line
     }, [props.currentGameId, setMakingQuest])
 

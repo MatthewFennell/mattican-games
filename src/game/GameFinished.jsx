@@ -10,13 +10,9 @@ import * as helpers from './helpers';
 import * as constants from '../constants';
 
 const GameFinished = props => {
-    console.log('finished');
-
     const questResults = props.currentGame.questResult;
 
     const goodWon = questResults.filter(x => x === 1).length === 3;
-
-    console.log('good won', goodWon);
 
     if (goodWon) {
         if (props.currentGame.guessedMerlinCorrectly) {

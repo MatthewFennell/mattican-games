@@ -16,6 +16,9 @@
 
 .questingWrapper {
     text-align: center;
+    margin: $spacing-small;
+    padding: $spacing-small;
+    background-color: $color-amber;
 }
 
 .notOnQuestMessage {

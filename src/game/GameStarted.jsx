@@ -55,7 +55,7 @@ const GameStarted = props => {
                 .filter(r => !constants.avalonRoles[r.role].isGood)
                 .filter(r => r.role !== constants.avalonRoles.Mordred.name)
                 .map(r => (
-                    <div>{`${helpers.mapUserIdToName(props.users, r.player)} is bad`}</div>
+                    <div key={r.player}>{`${helpers.mapUserIdToName(props.users, r.player)} is bad`}</div>
                 ));
         }
         if (role === constants.avalonRoles.RegularGood.name
@@ -70,7 +70,7 @@ const GameStarted = props => {
                 .filter(r => r.role !== constants.avalonRoles.Oberon.name)
                 .filter(r => r.role !== role)
                 .map(r => (
-                    <div>{`${helpers.mapUserIdToName(props.users, r.player)} is bad with you`}</div>
+                    <div key={r.player}>{`${helpers.mapUserIdToName(props.users, r.player)} is bad with you`}</div>
                 ));
         }
         if (role === constants.avalonRoles.Percival.name) {
@@ -86,7 +86,7 @@ const GameStarted = props => {
             }
             return props.currentGame.playerRoles
                 .filter(r => r.role === constants.avalonRoles.Merlin.name)
-                .map(r => <div>{`${helpers.mapUserIdToName(props.users, r.player)} is Merlin`}</div>);
+                .map(r => <div key={r.player}>{`${helpers.mapUserIdToName(props.users, r.player)} is Merlin`}</div>);
         }
         return null;
     };
@@ -101,16 +101,36 @@ const GameStarted = props => {
         // eslint-disable-next-line
     }, [props.currentGame, props.auth.uid]);
 
-    const generateResultIcon = result => {
+    const generateResultIcon = (result, round) => {
         if (result === 1) {
-            return <div className={props.styles.successResult}><FiberManualRecordIcon fontSize="small" /></div>;
+            return (
+                <div className={props.styles.successResult}>
+                    <div className={props.styles.missionNum}>
+                        {constants.avalonRounds[props.currentGame.numberOfPlayers][round]}
+                    </div>
+                    <div><FiberManualRecordIcon fontSize="small" /></div>
+                </div>
+            );
         }
         if (result === -1) {
-            return <div className={props.styles.failResult}><FiberManualRecordIcon fontSize="small" /></div>;
+            return (
+                <div className={props.styles.failResult}>
+                    <div className={props.styles.missionNum}>
+                        {constants.avalonRounds[props.currentGame.numberOfPlayers][round]}
+                    </div>
+                    <div><FiberManualRecordIcon fontSize="small" /></div>
+                </div>
+            );
         }
-        return <div><FiberManualRecordIcon fontSize="small" /></div>;
+        return (
+            <div>
+                <div className={props.styles.missionNum}>
+                    {constants.avalonRounds[props.currentGame.numberOfPlayers][round]}
+                </div>
+                <div><FiberManualRecordIcon fontSize="small" /></div>
+            </div>
+        );
     };
-
 
     return (
         <div className={props.styles.gameStartedWrapper}>
@@ -124,7 +144,6 @@ const GameStarted = props => {
                 )}
 
             {props.currentGame.status !== constants.gameStatuses.Finished
-            && props.currentGame.status !== constants.gameStatuses.GuessingMerlin
 
             && (
                 <div className={props.styles.viewSecretInfoWrapper}>
@@ -163,12 +182,32 @@ const GameStarted = props => {
                     onChange={toggleViewingBoard}
                 >
                     <div className={props.styles.avalonBoard}>
-                        {generateResultIcon(props.currentGame.questResult[0])}
-                        {generateResultIcon(props.currentGame.questResult[1])}
-                        {generateResultIcon(props.currentGame.questResult[2])}
-                        {generateResultIcon(props.currentGame.questResult[3])}
-                        {generateResultIcon(props.currentGame.questResult[4])}
+                        <div className={props.styles.boardState}>
+                            {generateResultIcon(props.currentGame.questResult[0], 1)}
+                            {generateResultIcon(props.currentGame.questResult[1], 2)}
+                            {generateResultIcon(props.currentGame.questResult[2], 3)}
+                            {generateResultIcon(props.currentGame.questResult[3], 4)}
+                            {generateResultIcon(props.currentGame.questResult[4], 5)}
+                        </div>
+
+                        <div className={props.styles.consecutiveRejections}>
+                            {`Consecutive rejections: ${props.currentGame.consecutiveRejections}`}
+                            {props.currentGame.consecutiveRejections === 4
+                            && (
+                                <div className={props.styles.noVoting}>
+                                No voting will occur this round
+                                </div>
+                            )}
+                        </div>
+
+                        {props.currentGame.numberOfPlayers >= 4 && (
+                            <div className={props.styles.specialRoundMessage}>
+                            The 4th mission requires 2 fails for it to fail
+                            </div>
+                        )}
                     </div>
+
+
                 </Fade>
             </div>
             <CurrentGameStatus />
@@ -216,6 +255,7 @@ const GameStarted = props => {
                         role="button"
                         tabIndex={0}
                         onClick={() => nominatePlayer(player)}
+                        key={player}
                     >
                         <div className={props.styles.playerNumber}>{`#${index + 1}`}</div>
                         <div className={classNames({
@@ -265,19 +305,6 @@ const GameStarted = props => {
                     </div>
                 ))}
             </div>
-
-            {(props.currentGame.status === constants.gameStatuses.Nominating
-            || props.currentGame.status === constants.gameStatuses.Voting) && (
-                <div className={props.styles.consecutiveRejections}>
-                    {`Consecutive rejections: ${props.currentGame.consecutiveRejections}`}
-                    {props.currentGame.consecutiveRejections === 4
-                    && (
-                        <div className={props.styles.noVoting}>
-                        No voting will occur this round
-                        </div>
-                    )}
-                </div>
-            )}
 
             {props.currentGame.leader === props.auth.uid
             && props.currentGame.status === constants.gameStatuses.Nominating

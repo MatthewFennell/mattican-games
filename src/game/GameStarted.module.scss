@@ -84,8 +84,8 @@
 }
 
 .votingStage, .questingStage {
-    position: absolute;
-    margin-right: $spacing-medium;
+    width: $spacing-medium;
+    margin-right: $spacing-small;
     right: 0;
     -webkit-animation: flickerAnimation 4s infinite;
     -moz-animation: flickerAnimation 4s infinite;
@@ -106,11 +106,20 @@
 }
 
 .avalonBoard {
-    display: flex;
-    justify-content: space-evenly;
     margin: $spacing-small;
     padding: $spacing-small;
     background-color: $color-gray;
+}
+
+.specialRoundMessage {
+    margin-top: $spacing-tiny;
+    text-align: center;
+    color: indigo;
+}
+
+.boardState {
+    display: flex;
+    justify-content: space-evenly;
 }
 
 .haveVoted {
@@ -138,6 +147,8 @@
 .guessingMerlinWrapper {
     text-align: center;
     background-color: $color-amber;
+    margin: $spacing-small;
+    padding: $spacing-small;
 }
 
 .submitMerlinGuessWrapper {
@@ -146,4 +157,9 @@
 
 .leaveGameButton, .destroyGameButton {
     text-align: center;
+}
+
+.missionNum {
+    color: $color-dark-blue;
+    font-weight: bold;
 }

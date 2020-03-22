@@ -50,7 +50,7 @@ exports.createAvalonGame = functions
                     questSuccesses: [],
                     questFails: [],
                     playerToGuessMerlin: '',
-                    guessedMerlinSuccessfully: false
+                    guessedMerlinCorrectly: false
                 });
             }
         );
@@ -144,6 +144,15 @@ exports.startGame = functions
             if (!doc.exists) {
                 throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
             }
+
+            if (doc.data().host !== context.auth.uid) {
+                throw new functions.https.HttpsError('invalid-argument', 'You are not the host');
+            }
+
+            if (doc.data().playersReady.length !== doc.data().numberOfPlayers) {
+                throw new functions.https.HttpsError('invalid-argument', 'Not everybody is ready');
+            }
+
             const playerRoles = common.makeRoles(doc.data().roles, doc.data().currentPlayers);
             const playerOrder = fp.shuffle(doc.data().currentPlayers);
             return doc.ref.update({
@@ -155,7 +164,8 @@ exports.startGame = functions
                 votesFor: [],
                 votesAgainst: [],
                 history: [],
-                hasStarted: true
+                hasStarted: true,
+                status: constants.gameStatuses.Nominating
             });
         });
     });
@@ -349,6 +359,8 @@ exports.goOnQuest = functions
 
                 const numberOfQuesters = questFails.length + questSuccesses.length;
 
+                const playingWithMerlin = playerRoles.some(x => x.role === constants.avalonRoles.Merlin.name);
+
                 if (numberOfQuesters === requiredNumberOfQuesters) {
                     console.log('quest has been completed');
                     const questFailed = hasQuestFailed(round, numberOfPlayers, questFails.length);
@@ -369,7 +381,7 @@ exports.goOnQuest = functions
                     if (numFail === 3) {
                         nextStatus = constants.gameStatuses.Finished;
                     }
-                    if (numSuc === 3) {
+                    if (numSuc === 3 && playingWithMerlin) {
                         console.log('num succ === 3');
                         nextStatus = constants.gameStatuses.GuessingMerlin;
 
@@ -412,14 +424,14 @@ exports.guessMerlin = functions
             if (!doc.data().playerToGuessMerlin === context.auth.uid) {
                 throw new functions.https.HttpsError('invalid-argument', 'You aren\'t the one to guess Merlin');
             }
-            const merlin = doc.data().playerRoles.filter(r => r.role === constants.avalonRoles.Merlin).map(r => r.player);
+            const merlin = doc.data().playerRoles.filter(r => r.role === constants.avalonRoles.Merlin.name).map(r => r.player);
 
             console.log('merlin actually is', merlin);
 
             console.log(`guessed merlin was ${data.merlin}`);
 
             return doc.ref.update({
-                guessedMerlinCorrectly: merlin === data.merlin,
+                guessedMerlinCorrectly: merlin.includes(data.merlin),
                 status: constants.gameStatuses.Finished
             });
         });

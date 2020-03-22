@@ -24,13 +24,17 @@
     text-align: center;
     color: $color-red;
     display: flex;
+    padding: $spacing-tiny;
 
     .name {
         width: 100%;
+        margin-left: $spacing-medium;
+        @include vertical-center-div();
     }
 
     .status {
-        position: absolute;
+        @include vertical-center-div();
+        width: $spacing-medium;
         margin-right: $spacing-small;
         right: 0;
         -webkit-animation: flickerAnimation 4s infinite;
@@ -97,11 +101,16 @@
 }
 
 .startGameWrapper {
-    margin-top: $spacing-large;
+    margin-top: $spacing-small;
     text-align: center;
 }
 
 .leaveGameWrapper {
     margin-top: $spacing-small;
     text-align: center;
+}
+
+.waitingForHost, .waitingForPlayersToReady {
+    text-align: center;
+    color: $color-gray;
 }

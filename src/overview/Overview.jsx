@@ -102,7 +102,7 @@ const Overview = props => {
                             {`Game Mode: ${game.mode}` }
                         </div>
                         <div>
-                            {`Roles: ${game.roles.toString()}` }
+                            {`Roles: ${game.roles.reduce((acc, cur) => `${acc}, ${cur}`)}` }
                         </div>
                     </div>
                 </div>

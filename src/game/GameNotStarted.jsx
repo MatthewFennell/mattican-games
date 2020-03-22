@@ -92,12 +92,27 @@ const GameNotStarted = props => (
                 >
                     <StyledButton
                         text="Start Game"
-                        disabled={props.currentGame.currentPlayers.length
-                            < props.currentGame.numberOfPlayers}
+                        disabled={(props.currentGame.currentPlayers.length
+                            < props.currentGame.numberOfPlayers)
+                            || props.currentGame.playersReady.length
+                            !== props.currentGame.numberOfPlayers}
                         onClick={() => props.startGameRequest(props.currentGameId)}
                     />
                 </div>
             )}
+
+        {props.currentGame.playersReady.length === props.currentGame.numberOfPlayers
+        && props.currentGame.host !== props.auth.uid && (
+            <div className={props.styles.waitingForHost}>
+                {`Waiting for ${mapUserIdToName(props.users, props.currentGame.host)} to start the game`}
+            </div>
+        )}
+
+        {props.currentGame.playersReady.length < props.currentGame.numberOfPlayers && (
+            <div className={props.styles.waitingForPlayersToReady}>
+                Waiting for players to ready up
+            </div>
+        )}
 
         <div className={props.styles.leaveGameWrapper}>
             <StyledButton
