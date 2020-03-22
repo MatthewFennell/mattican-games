@@ -125,7 +125,7 @@
     text-align: center;
     color: $color-blue;
     font-size: $font-size-huge;
-    margin-top: $spacing-medium;
+    margin-top: $spacing-small;
     font-weight: bold;
 }
 
@@ -133,4 +133,17 @@
     color: $color-blue;
     text-align: center;
     font-weight: bold;
+}
+
+.guessingMerlinWrapper {
+    text-align: center;
+    background-color: $color-amber;
+}
+
+.submitMerlinGuessWrapper {
+    text-align: center;
+}
+
+.leaveGameButton, .destroyGameButton {
+    text-align: center;
 }

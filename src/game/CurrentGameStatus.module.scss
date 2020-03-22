@@ -23,3 +23,20 @@
     color: $color-green;
     font-weight: bold;
 }
+
+.guessingMessage {
+    text-align: center;
+    color: $color-red;
+    font-weight: bold;
+}
+
+.badGuysWrapper {
+    text-align: center;
+    color: $color-green;
+}
+
+.playerWithGuess {
+    text-align: center;
+    color: $color-blue;
+    font-weight: bold;
+}

@@ -12,8 +12,12 @@ import Fade from '../common/Fade/Fade';
 import * as helpers from './helpers';
 import * as constants from '../constants';
 import CurrentGameStatus from './CurrentGameStatus';
-import { nominatePlayerForQuest, confirmNominationsRequest } from './actions';
+import {
+    nominatePlayerForQuest, confirmNominationsRequest, guessMerlinRequest, leaveGameRequest,
+    destroyGameRequest
+} from './actions';
 import StyledButton from '../common/StyledButton/StyledButton';
+import Radio from '../common/radio/RadioButton';
 
 const GameStarted = props => {
     const [viewingRole, setViewingRole] = useState(false);
@@ -26,11 +30,24 @@ const GameStarted = props => {
         setViewingBoard(!viewingBoard);
     }, [viewingBoard, setViewingBoard]);
 
+    const [guessingMerlin, setGuessingMerlin] = useState(false);
+    const toggleGuessingMerlin = useCallback(() => {
+        setGuessingMerlin(!guessingMerlin);
+    }, [guessingMerlin, setGuessingMerlin]);
+
+    const [merlinGuess, setMerlinGuess] = useState('');
+
+    const makeMerlinGuess = useCallback(() => {
+        if (merlinGuess) {
+            props.guessMerlinRequest(props.currentGameId, merlinGuess);
+        }
+        // eslint-disable-next-line
+    }, [merlinGuess, props.currentGame])
+
     const submitNominations = useCallback(() => {
         props.confirmNominationsRequest(props.currentGameId, props.currentGame.questNominations);
         // eslint-disable-next-line
     }, [props.currentGame])
-
 
     const generateSecretInfo = role => {
         if (role === constants.avalonRoles.Merlin.name) {
@@ -94,37 +111,44 @@ const GameStarted = props => {
         return <div><FiberManualRecordIcon fontSize="small" /></div>;
     };
 
+
     return (
         <div className={props.styles.gameStartedWrapper}>
 
             {props.currentGame.status === constants.gameStatuses.Finished
+            || props.currentGame.status === constants.gameStatuses.GuessingMerlin
                 ? <div className={props.styles.gameFinished}>Game finished </div> : (
                     <div className={props.styles.roundHeader}>
                         {`Round: ${props.currentGame.round}`}
                     </div>
                 )}
 
+            {props.currentGame.status !== constants.gameStatuses.Finished
+            && props.currentGame.status !== constants.gameStatuses.GuessingMerlin
 
-            <div className={props.styles.viewSecretInfoWrapper}>
-                <Fade
-                    checked={viewingRole}
-                    label="View secret info"
-                    includeCheckbox
-                    onChange={toggleViewRoles}
-                >
-                    <div className={classNames({
-                        [props.styles.viewingRole]: true,
-                        [props.styles.isGood]: helpers.isRoleGood(props.myRole),
-                        [props.styles.isBad]: !helpers.isRoleGood(props.myRole)
-                    })}
+            && (
+                <div className={props.styles.viewSecretInfoWrapper}>
+                    <Fade
+                        checked={viewingRole}
+                        label="View secret info"
+                        includeCheckbox
+                        onChange={toggleViewRoles}
                     >
-                        {`Role: ${props.myRole}`}
-                    </div>
-                    {generateSecretInfo(props.myRole)}
-                </Fade>
-            </div>
+                        <div className={classNames({
+                            [props.styles.viewingRole]: true,
+                            [props.styles.isGood]: helpers.isRoleGood(props.myRole),
+                            [props.styles.isBad]: !helpers.isRoleGood(props.myRole)
+                        })}
+                        >
+                            {`Role: ${props.myRole}`}
+                        </div>
+                        {generateSecretInfo(props.myRole)}
+                    </Fade>
+                </div>
+            ) }
 
-            {props.currentGame.status !== constants.gameStatuses.Finished && (
+            {props.currentGame.status !== constants.gameStatuses.Finished
+            && props.currentGame.status !== constants.gameStatuses.GuessingMerlin && (
                 <div className={props.styles.currentLeaderWrapper}>
                     {`The current leader is ${helpers.mapUserIdToName(props.users, props.currentGame.leader)}`}
                 </div>
@@ -148,6 +172,37 @@ const GameStarted = props => {
                 </Fade>
             </div>
             <CurrentGameStatus />
+
+            {props.currentGame.status === constants.gameStatuses.GuessingMerlin && props.currentGame
+                .playerToGuessMerlin === props.auth.uid && (
+                <div className={props.styles.guessingMerlinWrapper}>
+                    <Fade
+                        includeCheckbox
+                        label="Guess Merlin"
+                        checked={guessingMerlin}
+                        onChange={toggleGuessingMerlin}
+                    >
+
+                        <Radio
+                            onChange={setMerlinGuess}
+                            value={merlinGuess}
+                            options={props.currentGame.playerRoles
+                                .filter(r => constants.avalonRoles[r.role].isGood)
+                                .map(r => ({
+                                    text: helpers.mapUserIdToName(props.users, r.player),
+                                    value: r.player
+                                }))}
+                        />
+
+                        <div className={props.styles.submitMerlinGuessWrapper}>
+                            <StyledButton
+                                text="Confirm Guess"
+                                onClick={makeMerlinGuess}
+                            />
+                        </div>
+                    </Fade>
+                </div>
+            )}
 
             <div className={props.styles.playerOrder}>
                 {props.currentGame.currentPlayers.map((player, index) => (
@@ -238,6 +293,18 @@ const GameStarted = props => {
                 </div>
             ) }
 
+            {props.currentGame.status === constants.gameStatuses.Finished && (
+                <div className={props.styles.leaveGameButton}>
+                    <StyledButton text="Leave Game" color="secondary" onClick={() => props.leaveGameRequest(props.currentGameId)} />
+                </div>
+            )}
+
+            {props.currentGame.status === constants.gameStatuses.Finished
+            && props.currentGame.host === props.auth.uid && (
+                <div className={props.styles.destroyGameButton}>
+                    <StyledButton text="Destroy Game" color="secondary" onClick={() => props.destroyGameRequest(props.currentGameId)} />
+                </div>
+            )}
 
         </div>
     );
@@ -260,6 +327,7 @@ GameStarted.defaultProps = {
         playersReady: [],
         playerRoles: [],
         status: '',
+        playerToGuessMerlin: '',
         questNominations: [],
         questSuccesses: [],
         questFails: [],
@@ -296,12 +364,16 @@ GameStarted.propTypes = {
             player: PropTypes.string,
             role: PropTypes.string
         })),
+        playerToGuessMerlin: PropTypes.string,
         questFails: PropTypes.arrayOf(PropTypes.string),
         questNominations: PropTypes.arrayOf(PropTypes.string),
         questSuccesses: PropTypes.arrayOf(PropTypes.string),
         questResult: PropTypes.arrayOf(PropTypes.string),
         status: PropTypes.string
     }),
+    destroyGameRequest: PropTypes.func.isRequired,
+    leaveGameRequest: PropTypes.func.isRequired,
+    guessMerlinRequest: PropTypes.func.isRequired,
     nominatePlayerForQuest: PropTypes.func.isRequired,
     currentGameId: PropTypes.string,
     myRole: PropTypes.string,
@@ -310,7 +382,10 @@ GameStarted.propTypes = {
 };
 
 const mapDispatchToProps = {
+    destroyGameRequest,
     confirmNominationsRequest,
+    leaveGameRequest,
+    guessMerlinRequest,
     nominatePlayerForQuest
 };
 

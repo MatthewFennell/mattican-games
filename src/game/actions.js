@@ -21,6 +21,12 @@ export const MAKE_VOTE_ERROR = `${pre}MAKE_VOTE_ERROR`;
 export const MAKE_QUEST_REQUEST = `${pre}MAKE_QUEST_REQUEST`;
 export const MAKE_QUEST_ERROR = `${pre}MAKE_QUEST_ERROR`;
 
+export const GUESS_MERLIN_REQUEST = `${pre}GUESS_MERLIN_REQUEST`;
+export const GUESS_MERLIN_ERROR = `${pre}GUESS_MERLIN_ERROR`;
+
+export const DESTROY_GAME_REQUEST = `${pre}DESTROY_GAME_REQUEST`;
+export const DESTROY_GAME_ERROR = `${pre}DESTROY_GAME_ERROR`;
+
 export const leaveGameRequest = gameId => ({
     type: LEAVE_GAME_REQUEST,
     gameId
@@ -100,6 +106,29 @@ export const makeQuestRequest = (gameId, isSuccess) => ({
 
 export const makeQuestError = (error, header) => ({
     type: MAKE_QUEST_ERROR,
+    error,
+    header
+});
+
+export const guessMerlinRequest = (gameId, merlin) => ({
+    type: GUESS_MERLIN_REQUEST,
+    gameId,
+    merlin
+});
+
+export const guessMerlinError = (error, header) => ({
+    type: GUESS_MERLIN_ERROR,
+    error,
+    header
+});
+
+export const destroyGameRequest = gameId => ({
+    type: DESTROY_GAME_REQUEST,
+    gameId
+});
+
+export const destroyGameError = (error, header) => ({
+    type: DESTROY_GAME_ERROR,
     error,
     header
 });

@@ -7,3 +7,13 @@ export const mapUserIdToName = (users, userId) => fp.flow(fp.get(userId), fp.get
 
 export const isRoleGood = role => Object.values(constants.avalonRoles)
     .some(x => x.name === role && x.isGood);
+
+export const printRoleName = role => {
+    if (role === constants.avalonRoles.RegularGood.name) {
+        return 'Regular Good';
+    }
+    if (role === constants.avalonRoles.RegularBad.name) {
+        return 'Regular Bad';
+    }
+    return role;
+};

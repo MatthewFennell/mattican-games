@@ -185,5 +185,6 @@ module.exports.gameStatuses = {
     Nominating: 'Nominating',
     Voting: 'Voting',
     Questing: 'Questing',
-    Finished: 'Finished'
+    Finished: 'Finished',
+    GuessingMerlin: 'GuessingMerlin'
 };

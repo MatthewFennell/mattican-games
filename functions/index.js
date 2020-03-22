@@ -48,7 +48,9 @@ exports.createAvalonGame = functions
                     playersOnQuest: [],
                     consecutiveRejections: 0,
                     questSuccesses: [],
-                    questFails: []
+                    questFails: [],
+                    playerToGuessMerlin: '',
+                    guessedMerlinSuccessfully: false
                 });
             }
         );
@@ -65,9 +67,26 @@ exports.joinAvalonGame = functions
             if (doc.data().currentPlayers.length === doc.data().numberOfPlayers) {
                 throw new functions.https.HttpsError('invalid-argument', 'That game is full');
             }
+            if (doc.data().hasStarted) {
+                throw new functions.https.HttpsError('invalid-argument', 'That game has already started');
+            }
             return doc.ref.update({
                 currentPlayers: operations.arrayUnion(context.auth.uid)
             });
+        });
+    });
+
+exports.destroyGame = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found');
+            }
+            if (doc.data().host === context.auth.uid) {
+                return doc.ref.delete();
+            }
         });
     });
 
@@ -89,8 +108,13 @@ exports.leaveGame = functions
                     currentPlayers: operations.arrayRemove(context.auth.uid)
                 });
             }
+            if (doc.data().hasStarted) {
+                if (doc.data().status !== constants.gameStatuses.Finished) {
+                    throw new functions.https.HttpsError('invalid-argument', 'That game has not finished yet');
+                }
+            }
             return doc.ref.update({
-                playersReady: doc.data().playersReady.arrayRemove(context.auth.uid),
+                playersReady: operations.arrayRemove(context.auth.uid),
                 currentPlayers: operations.arrayRemove(context.auth.uid)
             });
         });
@@ -317,7 +341,7 @@ exports.goOnQuest = functions
         })
             .then(() => db.collection('games').doc(data.gameId).get().then(doc => {
                 const {
-                    questFails, questSuccesses, numberOfPlayers, round, leader, currentPlayers, questResult
+                    questFails, questSuccesses, numberOfPlayers, round, leader, currentPlayers, questResult, status, playerRoles, playerToGuessMerlin
                 } = doc.data();
 
                 const requiredNumberOfQuesters = constants.avalonRounds[numberOfPlayers][round];
@@ -332,22 +356,71 @@ exports.goOnQuest = functions
 
                     const newQuestResult = [...questResult, questFailed ? -1 : 1];
 
-                    const numFail = newQuestResult.filter(x => x === -1);
-                    const numSuc = newQuestResult.filter(x => x === 1);
+                    const numFail = newQuestResult.filter(x => x === -1).length;
+                    const numSuc = newQuestResult.filter(x => x === 1).length;
 
+                    console.log('new quest result', newQuestResult);
+                    console.log('num fail, num Succ', numFail, ',', numSuc);
+
+                    let nextStatus = status;
+
+                    let randomBadGuyToGuessMerlin = playerToGuessMerlin;
+
+                    if (numFail === 3) {
+                        nextStatus = constants.gameStatuses.Finished;
+                    }
+                    if (numSuc === 3) {
+                        console.log('num succ === 3');
+                        nextStatus = constants.gameStatuses.GuessingMerlin;
+
+                        const badPlayers = playerRoles.filter(r => !constants.avalonRoles[r.role].isGood).map(r => r.player);
+
+                        randomBadGuyToGuessMerlin = badPlayers[Math.floor(Math.random() * badPlayers.length)];
+
+                        console.log('bad players', badPlayers);
+                    }
+                    if (numSuc < 3 && numFail < 3) {
+                        nextStatus = constants.gameStatuses.Nominating;
+                    }
 
                     return doc.ref.update({
                         questResult: newQuestResult,
                         playersOnQuest: [],
                         leader: findNextUser(leader, currentPlayers),
                         round: operations.increment(1),
-                        status: numFail === 3 || numSuc === 3 ? constants.gameStatuses.Finished : constants.gameStatuses.Nominating,
+                        status: nextStatus,
                         questSuccesses: [],
                         questFails: [],
                         previousQuestSuccesses: questSuccesses.length,
-                        previousQuestFailures: questFails.length
+                        previousQuestFailures: questFails.length,
+                        playerToGuessMerlin: randomBadGuyToGuessMerlin
                     });
                 }
                 return Promise.resolve();
             }));
+    });
+
+
+exports.guessMerlin = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+            if (!doc.data().playerToGuessMerlin === context.auth.uid) {
+                throw new functions.https.HttpsError('invalid-argument', 'You aren\'t the one to guess Merlin');
+            }
+            const merlin = doc.data().playerRoles.filter(r => r.role === constants.avalonRoles.Merlin).map(r => r.player);
+
+            console.log('merlin actually is', merlin);
+
+            console.log(`guessed merlin was ${data.merlin}`);
+
+            return doc.ref.update({
+                guessedMerlinCorrectly: merlin === data.merlin,
+                status: constants.gameStatuses.Finished
+            });
+        });
     });

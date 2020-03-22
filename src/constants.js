@@ -77,7 +77,8 @@ export const gameStatuses = {
     Nominating: 'Nominating',
     Voting: 'Voting',
     Questing: 'Questing',
-    Finished: 'Finished'
+    Finished: 'Finished',
+    GuessingMerlin: 'GuessingMerlin'
 };
 
 // round -> num players

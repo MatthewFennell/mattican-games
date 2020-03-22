@@ -7,3 +7,5 @@ export const nominatePlayer = request => functionToCall('nominatePlayer')(reques
 export const confirmNominations = request => functionToCall('confirmNominations')(request);
 export const makeVote = request => functionToCall('makeVote')(request);
 export const goOnQuest = request => functionToCall('goOnQuest')(request);
+export const guessMerlin = request => functionToCall('guessMerlin')(request);
+export const destroyGame = request => functionToCall('destroyGame')(request);

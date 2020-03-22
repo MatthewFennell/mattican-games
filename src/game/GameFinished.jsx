@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
@@ -6,7 +6,8 @@ import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import defaultStyles from './GameFinished.module.scss';
 import * as selectors from './selectors';
-import StyledButton from '../common/StyledButton/StyledButton';
+import * as helpers from './helpers';
+import * as constants from '../constants';
 
 const GameFinished = props => {
     console.log('finished');
@@ -18,9 +19,37 @@ const GameFinished = props => {
     console.log('good won', goodWon);
 
     if (goodWon) {
+        if (props.currentGame.guessedMerlinCorrectly) {
+            return (
+                <div className={props.styles.resultWrapper}>
+                    <div className={props.styles.guessedMerlin}>
+                   The Bad Guys Guessed Merlin Correctly
+                    </div>
+                    <div className={props.styles.allRolesWrapper}>
+                        {props.currentGame.playerRoles.map(r => (
+                            <div>{`${helpers.mapUserIdToName(props.users, r.player)} was ${r.role}`}</div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        if (props.currentGame.status === constants.gameStatuses.GuessingMerlin) {
+            return (
+                <div>
+                    Guessing Merlin
+                </div>
+            );
+        }
+
         return (
             <div className={props.styles.goodGuysWonWrapper}>
                 <div className={props.styles.goodGuysHeader}>The loyal servants of Arthur won</div>
+                <div className={props.styles.allRolesWrapper}>
+                    {props.currentGame.playerRoles.map(r => (
+                        <div>{`${helpers.mapUserIdToName(props.users, r.player)} was ${r.role}`}</div>
+                    ))}
+                </div>
             </div>
         );
     }
@@ -28,6 +57,13 @@ const GameFinished = props => {
     return (
         <div className={props.styles.badGuysWonWrapper}>
             <div className={props.styles.badGuysHeader}>The minions of mordred won</div>
+
+            <div className={props.styles.finalPlayerRoles}>
+                {props.currentGame.playerRoles.map(role => (
+                    <div>{`${helpers.mapUserIdToName(props.users, role.player)} was ${helpers.printRoleName(role.role)}`}</div>
+                ))}
+            </div>
+
         </div>
     );
 };
@@ -40,6 +76,7 @@ GameFinished.defaultProps = {
         currentPlayers: [],
         host: '',
         leader: '',
+        guessedMerlinCorrectly: false,
         mode: '',
         numberOfPlayers: 0,
         roles: [],
@@ -54,9 +91,8 @@ GameFinished.defaultProps = {
         votesFor: [],
         questResult: []
     },
-    currentGameId: '',
     styles: defaultStyles,
-    users: {}
+    users: []
 };
 
 GameFinished.propTypes = {
@@ -68,6 +104,7 @@ GameFinished.propTypes = {
         currentPlayers: PropTypes.arrayOf(PropTypes.string),
         host: PropTypes.string,
         leader: PropTypes.string,
+        guessedMerlinCorrectly: PropTypes.bool,
         mode: PropTypes.string,
         numberOfPlayers: PropTypes.number,
         roles: PropTypes.arrayOf(PropTypes.string),
@@ -85,10 +122,8 @@ GameFinished.propTypes = {
         votesAgainst: PropTypes.arrayOf(PropTypes.string),
         status: PropTypes.string
     }),
-    currentGameId: PropTypes.string,
-    makeVoteRequest: PropTypes.func.isRequired,
-    makeQuestRequest: PropTypes.func.isRequired,
-    styles: PropTypes.objectOf(PropTypes.string)
+    styles: PropTypes.objectOf(PropTypes.string),
+    users: PropTypes.arrayOf(PropTypes.string)
 };
 
 const mapDispatchToProps = {

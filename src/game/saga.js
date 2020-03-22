@@ -80,6 +80,27 @@ export function* goOnQuest(api, action) {
     }
 }
 
+export function* guessMerlin(api, action) {
+    try {
+        yield call(api.guessMerlin, ({
+            gameId: action.gameId,
+            merlin: action.merlin
+        }));
+    } catch (error) {
+        yield put(actions.guessMerlinError(error, 'Guess Merlin Error'));
+    }
+}
+
+export function* destroyGame(api, action) {
+    try {
+        yield call(api.destroyGame, ({
+            gameId: action.gameId
+        }));
+    } catch (error) {
+        yield put(actions.destroyGameError(error, 'Destroy Game Error'));
+    }
+}
+
 export default function* overviewSaga() {
     yield all([
         takeEvery(actions.LEAVE_GAME_REQUEST, leaveGame, gameApi),
@@ -88,6 +109,8 @@ export default function* overviewSaga() {
         takeEvery(actions.NOMINATE_PLAYER_FOR_QUEST_REQUEST, nominatePlayerForQuest, gameApi),
         takeEvery(actions.CONFIRM_NOMINATIONS_REQUEST, confirmNominations, gameApi),
         takeEvery(actions.MAKE_VOTE_REQUEST, makeVote, gameApi),
-        takeEvery(actions.MAKE_QUEST_REQUEST, goOnQuest, gameApi)
+        takeEvery(actions.MAKE_QUEST_REQUEST, goOnQuest, gameApi),
+        takeEvery(actions.GUESS_MERLIN_REQUEST, guessMerlin, gameApi),
+        takeEvery(actions.DESTROY_GAME_REQUEST, destroyGame, gameApi)
     ]);
 }

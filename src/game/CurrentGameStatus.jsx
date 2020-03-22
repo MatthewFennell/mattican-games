@@ -67,6 +67,29 @@ const CurrentGameStatus = props => {
         return <GameFinished />;
     }
 
+    if (props.currentGame.status === constants.gameStatuses.GuessingMerlin) {
+        return (
+            <div className={props.styles.guessingMerlinWrapper}>
+                <div className={props.styles.guessingMessage}>
+                    The bad guys are currently guessing Merlin
+                </div>
+                <div className={props.styles.badGuysWrapper}>
+                    {props.currentGame.playerRoles
+                        .filter(r => !constants.avalonRoles[r.role].isGood)
+                        .map(r => (
+                            <div>
+                                {`${helpers.mapUserIdToName(props.users, r.player)} was ${r.role}`}
+                            </div>
+                        ))}
+                </div>
+                <div className={props.styles.playerWithGuess}>
+                    {`${helpers.mapUserIdToName(props.users, props.currentGame.playerToGuessMerlin)} has the casting guess`}
+                </div>
+
+            </div>
+        );
+    }
+
     if (props.currentGame.status === constants.gameStatuses.Questing) {
         if (!props.currentGame.playersOnQuest.includes(props.auth.uid)) {
             return (
@@ -123,6 +146,7 @@ CurrentGameStatus.defaultProps = {
         roles: [],
         round: 0,
         playersReady: [],
+        playerToGuessMerlin: '',
         playersOnQuest: [],
         playerRoles: [],
         status: '',
@@ -151,6 +175,7 @@ CurrentGameStatus.propTypes = {
         round: PropTypes.number,
         questFails: PropTypes.arrayOf(PropTypes.string),
         questSuccesses: PropTypes.arrayOf(PropTypes.string),
+        playerToGuessMerlin: PropTypes.string,
         playersReady: PropTypes.arrayOf(PropTypes.string),
         playersOnQuest: PropTypes.arrayOf(PropTypes.string),
         playerRoles: PropTypes.arrayOf(PropTypes.shape({
