@@ -303,6 +303,7 @@ exports.makeVote = functions
                                     type: constants.historyTypes.Vote,
                                     leader,
                                     forcedByConsecutiveRejections: false,
+                                    round: doc.data().round,
                                     votesYes: votesFor,
                                     votesNo: votesAgainst,
                                     nominated: questNominations

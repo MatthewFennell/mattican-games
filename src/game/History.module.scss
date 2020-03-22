@@ -26,10 +26,12 @@
 
 .questSucceeds {
     color: $color-green;
+    @include vertical-center-div();
 }
 
 .questFails {
     color: $color-red;
+    @include vertical-center-div();
 }
 
 .realQuestHistory, .realVoteHistory {

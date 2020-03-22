@@ -19,17 +19,12 @@ import {
 import StyledButton from '../common/StyledButton/StyledButton';
 import Radio from '../common/radio/RadioButton';
 import History from './History';
+import Switch from '../common/Switch/Switch';
 
 const GameStarted = props => {
     const [viewingRole, setViewingRole] = useState(false);
-    const toggleViewRoles = useCallback(() => {
-        setViewingRole(!viewingRole);
-    }, [viewingRole, setViewingRole]);
 
     const [viewingBoard, setViewingBoard] = useState(false);
-    const toggleViewingBoard = useCallback(() => {
-        setViewingBoard(!viewingBoard);
-    }, [viewingBoard, setViewingBoard]);
 
     const [guessingMerlin, setGuessingMerlin] = useState(false);
     const toggleGuessingMerlin = useCallback(() => {
@@ -39,10 +34,6 @@ const GameStarted = props => {
     const [merlinGuess, setMerlinGuess] = useState('');
 
     const [showingHistory, setShowingHistory] = useState(false);
-
-    const toggleShowingHistory = useCallback(() => {
-        setShowingHistory(!showingHistory);
-    }, [showingHistory, setShowingHistory]);
 
     const makeMerlinGuess = useCallback(() => {
         if (merlinGuess) {
@@ -268,36 +259,44 @@ const GameStarted = props => {
                 </div>
             ) }
 
-            {props.currentGame.status !== constants.gameStatuses.Finished
-
-            && (
-                <div className={props.styles.viewSecretInfoWrapper}>
-                    <Fade
-                        checked={viewingRole}
-                        label="View secret info"
-                        includeCheckbox
-                        onChange={toggleViewRoles}
-                    >
-                        <div className={classNames({
-                            [props.styles.viewingRole]: true,
-                            [props.styles.isGood]: helpers.isRoleGood(props.myRole),
-                            [props.styles.isBad]: !helpers.isRoleGood(props.myRole)
-                        })}
-                        >
-                            {`Role: ${props.myRole}`}
-                        </div>
-                        {generateSecretInfo(props.myRole)}
-                    </Fade>
+            <div className={props.styles.toggleWrappers}>
+                {props.currentGame.status !== constants.gameStatuses.Finished && (
+                    <div className={props.styles.switchWrapper}>
+                        <div>View Role</div>
+                        <div><Switch onChange={setViewingRole} checked={viewingRole} /></div>
+                    </div>
+                )}
+                <div className={props.styles.switchWrapper}>
+                    <div>View Board</div>
+                    <div><Switch onChange={setViewingBoard} checked={viewingBoard} /></div>
                 </div>
-            ) }
+                <div className={props.styles.switchWrapper}>
+                    <div>View History</div>
+                    <div><Switch onChange={setShowingHistory} checked={showingHistory} /></div>
+                </div>
+            </div>
+
+
+            <div className={props.styles.viewSecretInfoWrapper}>
+                <Fade
+                    checked={viewingRole}
+                >
+                    <div className={classNames({
+                        [props.styles.viewingRole]: true,
+                        [props.styles.isGood]: helpers.isRoleGood(props.myRole),
+                        [props.styles.isBad]: !helpers.isRoleGood(props.myRole)
+                    })}
+                    >
+                        {`Role: ${props.myRole}`}
+                    </div>
+                    {generateSecretInfo(props.myRole)}
+                </Fade>
+            </div>
 
 
             <div className={props.styles.viewingBoardWrapper}>
                 <Fade
                     checked={viewingBoard}
-                    label="View board"
-                    includeCheckbox
-                    onChange={toggleViewingBoard}
                 >
                     <div className={props.styles.avalonBoard}>
                         <div className={props.styles.boardState}>
@@ -345,10 +344,7 @@ const GameStarted = props => {
 
             <div className={props.styles.historyWrapper}>
                 <Fade
-                    includeCheckbox
                     checked={showingHistory}
-                    onChange={toggleShowingHistory}
-                    label="Show Game History"
                 >
                     <History />
                 </Fade>

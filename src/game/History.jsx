@@ -17,7 +17,6 @@ const History = props => (
             return (
                 <div className={props.styles.questHistoryWrapper}>
 
-
                     <div className={props.styles.round}>
                         {`Round ${h.round}`}
                     </div>
@@ -28,7 +27,7 @@ const History = props => (
                         </div>
 
                         <div className={props.styles.questResults}>
-                                Result:
+                            <div>Result</div>
                             {[...Array(h.succeeds)].map(() => <div className={props.styles.questSucceeds}><FiberManualRecordIcon fontSize="small" /></div>)}
                             {[...Array(h.fails)].map(() => <div className={props.styles.questFails}><FiberManualRecordIcon fontSize="small" /></div>)}
 
@@ -41,6 +40,27 @@ const History = props => (
             );
         }
         if (h.type === constants.historyTypes.Vote) {
+            if (h.forcedByConsecutiveRejections) {
+                return (
+                    <div className={props.styles.voteHistoryWrapper}>
+                        <div className={props.styles.round}>
+                            {`Round ${h.round}`}
+                        </div>
+                        <div className={props.styles.realVoteHistory}>
+                            <div>
+                                {`Leader: ${helpers.mapUserIdToName(props.users, h.leader)}`}
+                            </div>
+                            <div>
+                                {`Nominated: ${h.nominated.map(p => helpers.mapUserIdToName(props.users, p)).join(', ')}`}
+                            </div>
+                            <div>
+                                This round had no voting
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
             return (
                 <div className={props.styles.voteHistoryWrapper}>
                     <div className={props.styles.round}>

@@ -111,6 +111,18 @@
     background-color: burlywood;
 }
 
+.switchWrapper {
+    text-align: center;
+}
+
+.toggleWrappers {
+    display: flex;
+    justify-content: space-evenly;
+    background-color: mediumpurple;
+    padding: $spacing-small;
+    margin: $spacing-small;
+}
+
 .specialRoundMessage {
     margin-top: $spacing-tiny;
     text-align: center;
