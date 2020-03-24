@@ -50,7 +50,10 @@ exports.createAvalonGame = functions
                     questSuccesses: [],
                     questFails: [],
                     playerToGuessMerlin: '',
-                    guessedMerlinCorrectly: false
+                    guessedMerlinCorrectly: false,
+                    requestToEndGame: '',
+                    approveLeaveMidgame: [],
+                    rejectLeaveMidgame: []
                 });
             }
         );
@@ -379,24 +382,18 @@ exports.goOnQuest = functions
                 } = doc.data();
 
                 const requiredNumberOfQuesters = constants.avalonRounds[numberOfPlayers][round];
-                console.log('required number of players = ', requiredNumberOfQuesters);
 
                 const numberOfQuesters = questFails.length + questSuccesses.length;
 
                 const playingWithMerlin = playerRoles.some(x => x.role === constants.avalonRoles.Merlin.name);
 
                 if (numberOfQuesters === requiredNumberOfQuesters) {
-                    console.log('quest has been completed');
                     const questFailed = hasQuestFailed(round, numberOfPlayers, questFails.length);
-                    console.log('quest failed = ', questFailed);
 
                     const newQuestResult = [...questResult, questFailed ? -1 : 1];
 
                     const numFail = newQuestResult.filter(x => x === -1).length;
                     const numSuc = newQuestResult.filter(x => x === 1).length;
-
-                    console.log('new quest result', newQuestResult);
-                    console.log('num fail, num Succ', numFail, ',', numSuc);
 
                     let nextStatus = status;
 
@@ -406,14 +403,11 @@ exports.goOnQuest = functions
                         nextStatus = constants.gameStatuses.Finished;
                     }
                     if (numSuc === 3 && playingWithMerlin) {
-                        console.log('num succ === 3');
                         nextStatus = constants.gameStatuses.GuessingMerlin;
 
                         const badPlayers = playerRoles.filter(r => !constants.avalonRoles[r.role].isGood).map(r => r.player);
 
                         randomBadGuyToGuessMerlin = badPlayers[Math.floor(Math.random() * badPlayers.length)];
-
-                        console.log('bad players', badPlayers);
                     }
                     if (numSuc < 3 && numFail < 3) {
                         nextStatus = constants.gameStatuses.Nominating;
@@ -460,6 +454,72 @@ exports.guessMerlin = functions
             return doc.ref.update({
                 guessedMerlinCorrectly: merlin.includes(data.merlin),
                 status: constants.gameStatuses.Finished
+            });
+        });
+    });
+
+exports.leaveMidgame = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            if (doc.data().status === constants.gameStatuses.Finished || !doc.data().hasStarted) {
+                return doc.ref.update({
+                    currentPlayers: operations.arrayRemove(context.auth.uid)
+                });
+            }
+
+            if (doc.data().requestToEndGame) {
+                throw new functions.https.HttpsError('invalid-argument', 'Somebody else is already trying to end the game');
+            }
+
+            return doc.ref.update({
+                requestToEndGame: context.auth.uid,
+                approveLeaveMidgame: operations.arrayUnion(context.auth.uid)
+            });
+        });
+    });
+
+exports.approveLeaveMidgame = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            if (!doc.data().requestToEndGame) {
+                throw new functions.https.HttpsError('invalid-argument', 'Nobody is trying to end the game');
+            }
+
+            if (doc.data().approveLeaveMidgame.includes(context.auth.uid) || doc.data().rejectLeaveMidgame.includes(context.auth.uid)) {
+                throw new functions.https.HttpsError('invalid-argument', 'You have already voted');
+            }
+
+            if (data.isApprove) {
+                if (doc.data().approveLeaveMidgame.length >= 2) {
+                    return doc.ref.delete();
+                }
+                return doc.ref.update({
+                    approveLeaveMidgame: operations.arrayUnion(context.auth.uid)
+                });
+            }
+
+            if (doc.data().rejectLeaveMidgame.length >= 2) {
+                return doc.ref.update({
+                    approveLeaveMidgame: [],
+                    rejectLeaveMidgame: [],
+                    requestToEndGame: ''
+                });
+            }
+
+            return doc.ref.update({
+                rejectLeaveMidgame: operations.arrayUnion(context.auth.uid)
             });
         });
     });

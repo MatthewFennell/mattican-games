@@ -27,6 +27,12 @@ export const GUESS_MERLIN_ERROR = `${pre}GUESS_MERLIN_ERROR`;
 export const DESTROY_GAME_REQUEST = `${pre}DESTROY_GAME_REQUEST`;
 export const DESTROY_GAME_ERROR = `${pre}DESTROY_GAME_ERROR`;
 
+export const LEAVE_MIDGAME_REQUEST = `${pre}LEAVE_MIDGAME_REQUEST`;
+export const LEAVE_MIDGAME_ERROR = `${pre}LEAVE_MIDGAME_ERROR`;
+
+export const APPROVE_LEAVE_MIDGAME_REQUEST = `${pre}APPROVE_LEAVE_MIDGAME_REQUEST`;
+export const APPROVE_LEAVE_MIDGAME_ERROR = `${pre}APPROVE_LEAVE_MIDGAME_ERROR`;
+
 export const leaveGameRequest = gameId => ({
     type: LEAVE_GAME_REQUEST,
     gameId
@@ -129,6 +135,29 @@ export const destroyGameRequest = gameId => ({
 
 export const destroyGameError = (error, header) => ({
     type: DESTROY_GAME_ERROR,
+    error,
+    header
+});
+
+export const leaveMidgameRequest = gameId => ({
+    type: LEAVE_MIDGAME_REQUEST,
+    gameId
+});
+
+export const leaveMidgameError = (error, header) => ({
+    type: LEAVE_MIDGAME_ERROR,
+    error,
+    header
+});
+
+export const approveLeaveMidgameRequest = (gameId, isApprove) => ({
+    type: APPROVE_LEAVE_MIDGAME_REQUEST,
+    gameId,
+    isApprove
+});
+
+export const submitEndgameChoiceError = (error, header) => ({
+    type: APPROVE_LEAVE_MIDGAME_ERROR,
     error,
     header
 });

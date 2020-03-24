@@ -9,3 +9,5 @@ export const makeVote = request => functionToCall('makeVote')(request);
 export const goOnQuest = request => functionToCall('goOnQuest')(request);
 export const guessMerlin = request => functionToCall('guessMerlin')(request);
 export const destroyGame = request => functionToCall('destroyGame')(request);
+export const leaveMidgame = request => functionToCall('leaveMidgame')(request);
+export const approveLeaveMidgame = request => functionToCall('approveLeaveMidgame')(request);

@@ -2,9 +2,13 @@ import React, { useState, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { firestoreConnect } from 'react-redux-firebase';
+import { compose } from 'redux';
 import TopNavbar from './TopNavbar';
 import SideNavbar from './SideNavbar';
 import { signOut } from '../auth/actions';
+import * as selectors from './selectors';
+import { leaveMidgameRequest } from '../game/actions';
 
 const NewNavbar = props => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -22,6 +26,8 @@ const NewNavbar = props => {
         <>
             <TopNavbar
                 auth={props.auth}
+                currentGameId={props.currentGameId}
+                leaveMidgameRequest={props.leaveMidgameRequest}
                 openNavbar={openSidebar}
                 closeNavbar={closeSidebar}
                 redirect={redirect}
@@ -31,7 +37,7 @@ const NewNavbar = props => {
             <SideNavbar
                 currentPath={props.history.location.pathname}
                 isOpen={sidebarOpen}
-                isSignedIn={props.auth.uid}
+                isSignedIn={Boolean(props.auth.uid)}
                 openNavbar={openSidebar}
                 closeNavbar={closeSidebar}
                 redirect={redirect}
@@ -50,12 +56,14 @@ NewNavbar.propTypes = {
         emailVerified: PropTypes.bool,
         photoURL: PropTypes.string
     }),
+    currentGameId: PropTypes.string,
     history: PropTypes.shape({
         push: PropTypes.func.isRequired,
         location: PropTypes.shape({
             pathname: PropTypes.string
         })
     }).isRequired,
+    leaveMidgameRequest: PropTypes.func.isRequired,
     maxGameWeek: PropTypes.number,
     signOut: PropTypes.func.isRequired,
     userPermissions: PropTypes.arrayOf(PropTypes.string)
@@ -63,12 +71,14 @@ NewNavbar.propTypes = {
 
 NewNavbar.defaultProps = {
     auth: {},
+    currentGameId: '',
     maxGameWeek: null,
     userPermissions: []
 };
 
 const mapStateToProps = state => ({
     auth: state.firebase.auth,
+    currentGameId: selectors.getGameId(state),
     maxGameWeek: state.overview.maxGameWeek,
     profile: state.firebase.profile,
     pathname: state.router.location.pathname,
@@ -76,9 +86,18 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+    leaveMidgameRequest,
     signOut
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(NewNavbar));
+export default withRouter(compose(
+    connect(mapStateToProps, mapDispatchToProps),
+    firestoreConnect(() => [
+        {
+            collection: 'games'
+        }
+    ]),
+)(NewNavbar));
+
 
 export { NewNavbar as NewNavbarUnconnected };

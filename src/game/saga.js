@@ -101,6 +101,27 @@ export function* destroyGame(api, action) {
     }
 }
 
+export function* leaveMidgame(api, action) {
+    try {
+        yield call(api.leaveMidgame, ({
+            gameId: action.gameId
+        }));
+    } catch (error) {
+        yield put(actions.leaveMidgameError(error, 'Leave Midgame Error'));
+    }
+}
+
+export function* approveLeaveMidgame(api, action) {
+    try {
+        yield call(api.approveLeaveMidgame, ({
+            gameId: action.gameId,
+            isApprove: action.isApprove
+        }));
+    } catch (error) {
+        yield put(actions.leaveMidgameError(error, 'Leave Midgame Error'));
+    }
+}
+
 export default function* overviewSaga() {
     yield all([
         takeEvery(actions.LEAVE_GAME_REQUEST, leaveGame, gameApi),
@@ -111,6 +132,8 @@ export default function* overviewSaga() {
         takeEvery(actions.MAKE_VOTE_REQUEST, makeVote, gameApi),
         takeEvery(actions.MAKE_QUEST_REQUEST, goOnQuest, gameApi),
         takeEvery(actions.GUESS_MERLIN_REQUEST, guessMerlin, gameApi),
-        takeEvery(actions.DESTROY_GAME_REQUEST, destroyGame, gameApi)
+        takeEvery(actions.DESTROY_GAME_REQUEST, destroyGame, gameApi),
+        takeEvery(actions.LEAVE_MIDGAME_REQUEST, leaveMidgame, gameApi),
+        takeEvery(actions.APPROVE_LEAVE_MIDGAME_REQUEST, approveLeaveMidgame, gameApi)
     ]);
 }

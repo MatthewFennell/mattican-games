@@ -6,6 +6,7 @@ import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import classNames from 'classnames';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import { noop } from 'lodash';
 import defaultStyles from './GameStarted.module.scss';
 import * as selectors from './selectors';
 import Fade from '../common/Fade/Fade';
@@ -14,12 +15,13 @@ import * as constants from '../constants';
 import CurrentGameStatus from './CurrentGameStatus';
 import {
     nominatePlayerForQuest, confirmNominationsRequest, guessMerlinRequest, leaveGameRequest,
-    destroyGameRequest
+    destroyGameRequest, approveLeaveMidgameRequest
 } from './actions';
 import StyledButton from '../common/StyledButton/StyledButton';
 import Radio from '../common/radio/RadioButton';
 import History from './History';
 import Switch from '../common/Switch/Switch';
+import SuccessModal from '../common/modal/SuccessModal';
 
 const GameStarted = props => {
     const [viewingRole, setViewingRole] = useState(false);
@@ -350,6 +352,47 @@ const GameStarted = props => {
                 </Fade>
             </div>
 
+            <SuccessModal
+                backdrop
+                closeModal={noop}
+                error
+                isOpen={Boolean(props.currentGame.requestToEndGame)}
+                headerMessage={`${helpers.mapUserIdToName(props.users, props.currentGame.requestToEndGame)} wants to end the game`}
+            >
+                <div className={props.styles.endGameWrapper}>
+
+                    <div className={props.styles.numVotes}>3 Votes are required</div>
+
+                    <div className={props.styles.endGameVotes}>
+                        {props.currentGame.approveLeaveMidgame.map(id => <div className={props.styles.approval} key={id}><FiberManualRecordIcon fontSize="small" /></div>)}
+                        {props.currentGame.rejectLeaveMidgame.map(id => <div className={props.styles.rejection} key={id}><FiberManualRecordIcon fontSize="small" /></div>)}
+                    </div>
+
+                    <div className={props.styles.endGameButtons}>
+
+                        <StyledButton
+                            text="Approve"
+                            onClick={() => props.approveLeaveMidgameRequest(
+                                props.currentGameId, true
+                            )}
+                            disabled={props.currentGame.approveLeaveMidgame.includes(props.auth.uid)
+                                || props.currentGame.rejectLeaveMidgame.includes(props.auth.uid)}
+                        />
+                        <StyledButton
+                            text="Reject"
+                            color="secondary"
+                            onClick={() => props.approveLeaveMidgameRequest(
+                                props.currentGameId, false
+                            )}
+                            disabled={props.currentGame.approveLeaveMidgame.includes(props.auth.uid)
+                                || props.currentGame.rejectLeaveMidgame.includes(props.auth.uid)}
+                        />
+                    </div>
+
+                </div>
+            </SuccessModal>
+
+
         </div>
     );
 };
@@ -359,6 +402,7 @@ GameStarted.defaultProps = {
         uid: ''
     },
     currentGame: {
+        approveLeaveMidgame: [],
         currentPlayers: [],
         consecutiveRejections: 0,
         host: '',
@@ -377,7 +421,9 @@ GameStarted.defaultProps = {
         questFails: [],
         votesAgainst: [],
         votesFor: [],
-        questResult: []
+        questResult: [],
+        requestToEndGame: '',
+        rejectLeaveMidgame: []
     },
     currentGameId: '',
     myRole: '',
@@ -386,12 +432,12 @@ GameStarted.defaultProps = {
 };
 
 GameStarted.propTypes = {
-
     auth: PropTypes.shape({
         uid: PropTypes.string
     }),
     confirmNominationsRequest: PropTypes.func.isRequired,
     currentGame: PropTypes.shape({
+        approveLeaveMidgame: PropTypes.arrayOf(PropTypes.string),
         consecutiveRejections: PropTypes.number,
         currentPlayers: PropTypes.arrayOf(PropTypes.string),
         host: PropTypes.string,
@@ -404,21 +450,24 @@ GameStarted.propTypes = {
         playersReady: PropTypes.arrayOf(PropTypes.string),
         votesAgainst: PropTypes.arrayOf(PropTypes.string),
         votesFor: PropTypes.arrayOf(PropTypes.string),
+        rejectLeaveMidgame: PropTypes.arrayOf(PropTypes.string),
         playerRoles: PropTypes.arrayOf(PropTypes.shape({
             player: PropTypes.string,
             role: PropTypes.string
         })),
         playerToGuessMerlin: PropTypes.string,
+        requestToEndGame: PropTypes.string,
         questFails: PropTypes.arrayOf(PropTypes.string),
         questNominations: PropTypes.arrayOf(PropTypes.string),
         questSuccesses: PropTypes.arrayOf(PropTypes.string),
-        questResult: PropTypes.arrayOf(PropTypes.string),
+        questResult: PropTypes.arrayOf(PropTypes.number),
         status: PropTypes.string
     }),
     destroyGameRequest: PropTypes.func.isRequired,
     leaveGameRequest: PropTypes.func.isRequired,
     guessMerlinRequest: PropTypes.func.isRequired,
     nominatePlayerForQuest: PropTypes.func.isRequired,
+    approveLeaveMidgameRequest: PropTypes.func.isRequired,
     currentGameId: PropTypes.string,
     myRole: PropTypes.string,
     styles: PropTypes.objectOf(PropTypes.string),
@@ -430,7 +479,8 @@ const mapDispatchToProps = {
     confirmNominationsRequest,
     leaveGameRequest,
     guessMerlinRequest,
-    nominatePlayerForQuest
+    nominatePlayerForQuest,
+    approveLeaveMidgameRequest
 };
 
 const mapStateToProps = (state, props) => ({

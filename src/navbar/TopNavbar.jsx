@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useCallback } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -99,15 +100,35 @@ const TopNavbar = props => {
                     >
 
                         {props.auth.uid ? (
-                            <div>
-                                <MenuItem onClick={() => redirectOnClick(
-                                    constants.URL.PROFILE
-                                )}
-                                >
-                                    My account
-                                </MenuItem>
-                                <MenuItem onClick={props.signOut}>Sign out</MenuItem>
-                            </div>
+                            props.currentGameId ? (
+                                <div>
+                                    <MenuItem
+                                        onClick={() => {
+                                            handleClose();
+                                            props.leaveMidgameRequest(
+                                                props.currentGameId
+                                            );
+                                        }}
+                                    >
+                                    Leave Game
+                                    </MenuItem>
+                                    <MenuItem onClick={props.signOut}>
+                                    Sign out
+                                    </MenuItem>
+                                </div>
+                            ) : (
+                                <div>
+                                    <MenuItem onClick={() => redirectOnClick(
+                                        constants.URL.PROFILE
+                                    )}
+                                    >
+                            My account
+                                    </MenuItem>
+                                    <MenuItem onClick={props.signOut}>
+                            Sign out
+                                    </MenuItem>
+                                </div>
+                            )
                         ) : (
                             <div>
                                 <MenuItem onClick={() => redirectOnClick(constants.URL.SIGN_IN)}>
@@ -136,6 +157,8 @@ const TopNavbar = props => {
 
 TopNavbar.defaultProps = {
     auth: {},
+    currentGameId: null,
+    leaveMidgameRequest: noop,
     redirect: noop,
     signOut: noop,
     styles: defaultStyles,
@@ -147,6 +170,8 @@ TopNavbar.propTypes = {
         uid: PropTypes.string,
         emailVerified: PropTypes.bool
     }),
+    currentGameId: PropTypes.string,
+    leaveMidgameRequest: PropTypes.func,
     redirect: PropTypes.func,
     signOut: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),

@@ -62,35 +62,35 @@
     text-align: center;
 }
 
-@keyframes flickerAnimation {
-    0%   { opacity:1; }
-    50%  { opacity:0; }
-    100% { opacity:1; }
-}
-@-o-keyframes flickerAnimation{
-    0%   { opacity:1; }
-    50%  { opacity:0; }
-    100% { opacity:1; }
-}
-@-moz-keyframes flickerAnimation{
-    0%   { opacity:1; }
-    50%  { opacity:0; }
-    100% { opacity:1; }
-}
-@-webkit-keyframes flickerAnimation{
-    0%   { opacity:1; }
-    50%  { opacity:0; }
-    100% { opacity:1; }
-}
+// @keyframes flickerAnimation {
+//     0%   { opacity:1; }
+//     50%  { opacity:0; }
+//     100% { opacity:1; }
+// }
+// @-o-keyframes flickerAnimation{
+//     0%   { opacity:1; }
+//     50%  { opacity:0; }
+//     100% { opacity:1; }
+// }
+// @-moz-keyframes flickerAnimation{
+//     0%   { opacity:1; }
+//     50%  { opacity:0; }
+//     100% { opacity:1; }
+// }
+// @-webkit-keyframes flickerAnimation{
+//     0%   { opacity:1; }
+//     50%  { opacity:0; }
+//     100% { opacity:1; }
+// }
 
 .votingStage, .questingStage {
     width: $spacing-medium;
     margin-right: $spacing-small;
     right: 0;
-    -webkit-animation: flickerAnimation 4s infinite;
-    -moz-animation: flickerAnimation 4s infinite;
-    -o-animation: flickerAnimation 4s infinite;
-    animation: flickerAnimation 4s infinite;
+    // -webkit-animation: flickerAnimation 4s infinite;
+    // -moz-animation: flickerAnimation 4s infinite;
+    // -o-animation: flickerAnimation 4s infinite;
+    // animation: flickerAnimation 4s infinite;
 }
 
 .successResult {
@@ -113,6 +113,32 @@
 
 .switchWrapper {
     text-align: center;
+}
+
+.endGameButtons {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.numVotes {
+    color: $color-gray;
+    font-weight: bold;
+    text-align: center;
+}
+
+.endGameVotes {
+    display: flex;
+    justify-content: space-evenly;
+    margin-left: 30%;
+    margin-right: 30%;
+}
+
+.approval {
+    color: $color-green;
+}
+
+.rejection {
+    color: $color-red;
 }
 
 .toggleWrappers {
