@@ -66,9 +66,11 @@ const TopNavbar = props => {
             className={props.styles.topNavbar}
         >
             <Toolbar>
-                <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={props.toggleNavbar}>
-                    <MenuIcon />
-                </IconButton>
+                {!props.currentGameId && (
+                    <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={props.toggleNavbar}>
+                        <MenuIcon />
+                    </IconButton>
+                )}
                 <Typography variant="h6" className={classes.title}>
                         The Mattican
                 </Typography>

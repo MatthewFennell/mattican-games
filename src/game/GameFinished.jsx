@@ -11,7 +11,6 @@ import * as constants from '../constants';
 
 const GameFinished = props => {
     const questResults = props.currentGame.questResult;
-
     const goodWon = questResults.filter(x => x === 1).length === 3;
 
     if (goodWon) {

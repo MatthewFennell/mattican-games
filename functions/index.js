@@ -467,7 +467,13 @@ exports.leaveMidgame = functions
                 throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
             }
 
+            console.log('doc', doc.data());
+
             if (doc.data().status === constants.gameStatuses.Finished || !doc.data().hasStarted) {
+                if (doc.data().currentPlayers.length === 1) {
+                    return doc.ref.delete();
+                }
+
                 return doc.ref.update({
                     currentPlayers: operations.arrayRemove(context.auth.uid)
                 });

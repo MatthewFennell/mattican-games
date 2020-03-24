@@ -18,11 +18,9 @@ const History = props => (
         if (h.type === constants.historyTypes.Quest) {
             return (
                 <div className={props.styles.questHistoryWrapper} key={`${h.round}-${h.type}`}>
-
                     <div className={props.styles.round}>
                         {`Round ${h.round}`}
                     </div>
-
                     <div className={props.styles.realQuestHistory}>
                         <div>
                             {`Players on quest: ${h.questers.map(q => helpers.mapUserIdToName(props.users, q)).join(', ')} `}
@@ -32,12 +30,8 @@ const History = props => (
                             <div>Result</div>
                             {[...Array(h.succeeds)].map((a, index) => <div className={props.styles.questSucceeds} key={index}><FiberManualRecordIcon fontSize="small" /></div>)}
                             {[...Array(h.fails)].map((a, index) => <div className={props.styles.questFails} key={index}><FiberManualRecordIcon fontSize="small" /></div>)}
-
                         </div>
-
                     </div>
-
-
                 </div>
             );
         }

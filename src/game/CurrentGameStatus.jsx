@@ -128,7 +128,6 @@ const CurrentGameStatus = props => {
                 {`${helpers.mapUserIdToName(props.users, props.currentGame.leader)} is currently selecting ${
                     constants.avalonRounds[props.currentGame.numberOfPlayers][props.currentGame.round]} players to send on a quest`}
             </div>
-
         </div>
     );
 };

@@ -25,17 +25,14 @@ import SuccessModal from '../common/modal/SuccessModal';
 
 const GameStarted = props => {
     const [viewingRole, setViewingRole] = useState(false);
-
     const [viewingBoard, setViewingBoard] = useState(false);
+    const [merlinGuess, setMerlinGuess] = useState('');
+    const [showingHistory, setShowingHistory] = useState(false);
 
     const [guessingMerlin, setGuessingMerlin] = useState(false);
     const toggleGuessingMerlin = useCallback(() => {
         setGuessingMerlin(!guessingMerlin);
     }, [guessingMerlin, setGuessingMerlin]);
-
-    const [merlinGuess, setMerlinGuess] = useState('');
-
-    const [showingHistory, setShowingHistory] = useState(false);
 
     const makeMerlinGuess = useCallback(() => {
         if (merlinGuess) {
@@ -134,7 +131,6 @@ const GameStarted = props => {
 
     return (
         <div className={props.styles.gameStartedWrapper}>
-
             {props.currentGame.status === constants.gameStatuses.Finished
             || props.currentGame.status === constants.gameStatuses.GuessingMerlin
                 ? <div className={props.styles.gameFinished}>Game finished </div> : (
@@ -149,10 +145,7 @@ const GameStarted = props => {
                     {`The current leader is ${helpers.mapUserIdToName(props.users, props.currentGame.leader)}`}
                 </div>
             )}
-
-
             <CurrentGameStatus />
-
             {props.currentGame.status === constants.gameStatuses.GuessingMerlin && props.currentGame
                 .playerToGuessMerlin === props.auth.uid && (
                 <div className={props.styles.guessingMerlinWrapper}>
@@ -162,7 +155,6 @@ const GameStarted = props => {
                         checked={guessingMerlin}
                         onChange={toggleGuessingMerlin}
                     >
-
                         <Radio
                             onChange={setMerlinGuess}
                             value={merlinGuess}
@@ -173,7 +165,6 @@ const GameStarted = props => {
                                     value: r.player
                                 }))}
                         />
-
                         <div className={props.styles.submitMerlinGuessWrapper}>
                             <StyledButton
                                 text="Confirm Guess"
@@ -278,7 +269,6 @@ const GameStarted = props => {
                 </div>
             </div>
 
-
             <div className={props.styles.viewSecretInfoWrapper}>
                 <Fade
                     checked={viewingRole}
@@ -294,7 +284,6 @@ const GameStarted = props => {
                     {generateSecretInfo(props.myRole)}
                 </Fade>
             </div>
-
 
             <div className={props.styles.viewingBoardWrapper}>
                 <Fade
@@ -325,11 +314,8 @@ const GameStarted = props => {
                             </div>
                         )}
                     </div>
-
-
                 </Fade>
             </div>
-
 
             {props.currentGame.status === constants.gameStatuses.Finished && (
                 <div className={props.styles.leaveGameButton}>
@@ -360,9 +346,7 @@ const GameStarted = props => {
                 headerMessage={`${helpers.mapUserIdToName(props.users, props.currentGame.requestToEndGame)} wants to end the game`}
             >
                 <div className={props.styles.endGameWrapper}>
-
                     <div className={props.styles.numVotes}>3 Votes are required</div>
-
                     <div className={props.styles.endGameVotes}>
                         {props.currentGame.approveLeaveMidgame.map(id => <div className={props.styles.approval} key={id}><FiberManualRecordIcon fontSize="small" /></div>)}
                         {props.currentGame.rejectLeaveMidgame.map(id => <div className={props.styles.rejection} key={id}><FiberManualRecordIcon fontSize="small" /></div>)}
@@ -388,11 +372,8 @@ const GameStarted = props => {
                                 || props.currentGame.rejectLeaveMidgame.includes(props.auth.uid)}
                         />
                     </div>
-
                 </div>
             </SuccessModal>
-
-
         </div>
     );
 };
