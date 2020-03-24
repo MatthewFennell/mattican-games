@@ -15,6 +15,7 @@ import defaultStyles from './App.module.scss';
 import NewNavbar from './navbar/NewNavbar';
 
 import RenderRoutes from './RenderRoutes';
+import Spinner from './common/spinner/Spinner';
 
 const App = props => (
     props.auth && props.auth.isLoaded ? (
@@ -24,13 +25,21 @@ const App = props => (
                 <div className={props.styles.app}>
                     <NewNavbar />
                     <Toolbar />
-                    <Container className={props.styles.appContainer}>
-                        <RenderRoutes
-                            auth={props.auth}
-                            gameId={props.gameId}
-                            pathname={props.pathname}
-                        />
-                    </Container>
+                    {!props.loadingApp
+                        ? (
+                            <Container className={props.styles.appContainer}>
+                                <RenderRoutes
+                                    auth={props.auth}
+                                    gameId={props.gameId}
+                                    pathname={props.pathname}
+                                />
+                            </Container>
+                        ) : (
+                            <div className={props.styles.loadingWrapper}>
+                                <div className={props.styles.loadingMessage}>Loading App</div>
+                                <Spinner color="secondary" />
+                            </div>
+                        )}
                 </div>
             </>
         </ConnectedRouter>
@@ -43,6 +52,7 @@ App.defaultProps = {
     },
     gameId: null,
     history: {},
+    loadingApp: false,
     pathname: '',
     styles: defaultStyles
 };
@@ -54,6 +64,7 @@ App.propTypes = {
     }),
     gameId: PropTypes.string,
     history: PropTypes.shape({}),
+    loadingApp: PropTypes.bool,
     pathname: PropTypes.string,
     styles: PropTypes.objectOf(PropTypes.string)
 };
@@ -61,6 +72,7 @@ App.propTypes = {
 const mapStateToProps = state => ({
     auth: state.firebase.auth,
     gameId: selectors.getMyGames(state),
+    loadingApp: state.auth.loadingApp,
     pathname: state.router.location.pathname
 });
 

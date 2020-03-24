@@ -1,6 +1,7 @@
 @import "../common/Styles.scss";
 
 .questHistoryWrapper {
+    font-weight: bold;
     margin: $spacing-small;
     padding: $spacing-small;
     background-color: darksalmon;
@@ -8,10 +9,21 @@
 }
 
 .voteHistoryWrapper {
+    font-weight: bold;
     margin: $spacing-small;
     padding: $spacing-small;
-    background-color: mediumorchid;
+    background-color: lightskyblue;
     display: flex;
+}
+
+.questSucceed {
+    color: $color-green;
+    @include vertical-center-div();
+}
+
+.questFail {
+    color: $color-red;
+    @include vertical-center-div();
 }
 
 .round{

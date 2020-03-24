@@ -252,13 +252,24 @@ const GameStarted = props => {
                 </div>
             ) }
 
+            {props.currentGame.status === constants.gameStatuses.Finished && (
+                <div className={props.styles.leaveGameButton}>
+                    <StyledButton text="Leave Game" color="secondary" onClick={() => props.leaveGameRequest(props.currentGameId)} />
+                </div>
+            )}
+
+            {props.currentGame.status === constants.gameStatuses.Finished
+            && props.currentGame.host === props.auth.uid && (
+                <div className={props.styles.destroyGameButton}>
+                    <StyledButton text="Destroy Game" color="secondary" onClick={() => props.destroyGameRequest(props.currentGameId)} />
+                </div>
+            )}
+
             <div className={props.styles.toggleWrappers}>
-                {props.currentGame.status !== constants.gameStatuses.Finished && (
-                    <div className={props.styles.switchWrapper}>
-                        <div>View Role</div>
-                        <div><Switch onChange={setViewingRole} checked={viewingRole} /></div>
-                    </div>
-                )}
+                <div className={props.styles.switchWrapper}>
+                    <div>View Role</div>
+                    <div><Switch onChange={setViewingRole} checked={viewingRole} /></div>
+                </div>
                 <div className={props.styles.switchWrapper}>
                     <div>View Board</div>
                     <div><Switch onChange={setViewingBoard} checked={viewingBoard} /></div>
@@ -316,19 +327,6 @@ const GameStarted = props => {
                     </div>
                 </Fade>
             </div>
-
-            {props.currentGame.status === constants.gameStatuses.Finished && (
-                <div className={props.styles.leaveGameButton}>
-                    <StyledButton text="Leave Game" color="secondary" onClick={() => props.leaveGameRequest(props.currentGameId)} />
-                </div>
-            )}
-
-            {props.currentGame.status === constants.gameStatuses.Finished
-            && props.currentGame.host === props.auth.uid && (
-                <div className={props.styles.destroyGameButton}>
-                    <StyledButton text="Destroy Game" color="secondary" onClick={() => props.destroyGameRequest(props.currentGameId)} />
-                </div>
-            )}
 
             <div className={props.styles.historyWrapper}>
                 <Fade

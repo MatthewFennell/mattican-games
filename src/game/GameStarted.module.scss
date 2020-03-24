@@ -35,6 +35,7 @@
     padding: $spacing-small;
     margin: $spacing-small;
     outline: 0px;
+    border: 2px solid lightblue;
 }
 
 .isOnQuest {
@@ -45,12 +46,14 @@
     margin-left: $spacing-small;
     color: $color-red;
     font-weight: bold;
+    width: $spacing-average;
 }
 
 .playerName {
     width: 100%;
     text-align: center;
     margin-left: $spacing-large;
+    margin-right: $spacing-large;
     color: $color-blue;
 }
 

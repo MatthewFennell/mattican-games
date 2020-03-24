@@ -45,7 +45,7 @@ const Profile = props => {
         <div className={props.styles.profileWrapper}>
             <div className={props.styles.profileHeader}>
                 <div className={props.styles.fields}>
-                    <div>{`Display Name: ${props.profile.displayName}`}</div>
+                    <div>{`Display Name: ${props.profile.displayName ? props.profile.displayName : 'Not yet set'}`}</div>
                 </div>
             </div>
             <div className={props.styles.bodyWrapper}>

@@ -22,7 +22,7 @@ const GameFinished = props => {
                     </div>
                     <div className={props.styles.allRolesWrapper}>
                         {props.currentGame.playerRoles.map(r => (
-                            <div>{`${helpers.mapUserIdToName(props.users, r.player)} was ${r.role}`}</div>
+                            <div key={r.player}>{`${helpers.mapUserIdToName(props.users, r.player)} was ${r.role}`}</div>
                         ))}
                     </div>
                 </div>
@@ -55,7 +55,7 @@ const GameFinished = props => {
 
             <div className={props.styles.finalPlayerRoles}>
                 {props.currentGame.playerRoles.map(role => (
-                    <div>{`${helpers.mapUserIdToName(props.users, role.player)} was ${helpers.printRoleName(role.role)}`}</div>
+                    <div key={role.player}>{`${helpers.mapUserIdToName(props.users, role.player)} was ${helpers.printRoleName(role.role)}`}</div>
                 ))}
             </div>
 
@@ -87,7 +87,7 @@ GameFinished.defaultProps = {
         questResult: []
     },
     styles: defaultStyles,
-    users: []
+    users: {}
 };
 
 GameFinished.propTypes = {
@@ -113,12 +113,12 @@ GameFinished.propTypes = {
             role: PropTypes.string
         })),
         votesFor: PropTypes.arrayOf(PropTypes.string),
-        questResult: PropTypes.arrayOf(PropTypes.string),
+        questResult: PropTypes.arrayOf(PropTypes.number),
         votesAgainst: PropTypes.arrayOf(PropTypes.string),
         status: PropTypes.string
     }),
     styles: PropTypes.objectOf(PropTypes.string),
-    users: PropTypes.arrayOf(PropTypes.string)
+    users: PropTypes.objectOf(PropTypes.shape({}))
 };
 
 const mapDispatchToProps = {

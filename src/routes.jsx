@@ -47,15 +47,17 @@ export const signedInLinks = [
         path: () => `${constants.URL.OVERVIEW}`,
         renderPath: `${constants.URL.OVERVIEW}`,
         urlIncludes: constants.URL.OVERVIEW,
-        canToggle: false
+        canToggle: false,
+        showInSideBar: true
     },
     {
         title: 'Game',
         icon: <HomeIcon color="primary" />,
         component: rootComponents.Game,
         addUserId: false,
-        path: props => `${constants.URL.GAME}`,
+        path: () => `${constants.URL.GAME}`,
         renderPath: `${constants.URL.GAME}`,
-        urlIncludes: constants.URL.GAME
+        urlIncludes: constants.URL.GAME,
+        showInSideBar: false
     }
 ];

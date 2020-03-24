@@ -294,6 +294,7 @@ exports.makeVote = functions
 
                 if (votesFor.length + votesAgainst.length === numberOfPlayers) {
                     if (votesFor.length > votesAgainst.length) {
+                        console.log('round', doc.data().round);
                         return doc.ref.update({
                             questNominations: [],
                             status: constants.gameStatuses.Questing,
@@ -341,7 +342,7 @@ const hasQuestFailed = (round, numberOfPlayers, numFail) => {
     if (round === 4 && numberOfPlayers >= 7 && numFail >= 2) {
         return true;
     }
-    if (numFail >= 1) {
+    if (round !== 4 && numFail >= 1) {
         return true;
     }
     return false;
@@ -382,15 +383,18 @@ exports.goOnQuest = functions
                 } = doc.data();
 
                 const requiredNumberOfQuesters = constants.avalonRounds[numberOfPlayers][round];
-
                 const numberOfQuesters = questFails.length + questSuccesses.length;
+                console.log('required number of questers', requiredNumberOfQuesters);
+                console.log('number of questers', numberOfQuesters);
 
                 const playingWithMerlin = playerRoles.some(x => x.role === constants.avalonRoles.Merlin.name);
 
                 if (numberOfQuesters === requiredNumberOfQuesters) {
                     const questFailed = hasQuestFailed(round, numberOfPlayers, questFails.length);
+                    console.log('quest failed', questFailed);
 
                     const newQuestResult = [...questResult, questFailed ? -1 : 1];
+                    console.log('new quest result', newQuestResult);
 
                     const numFail = newQuestResult.filter(x => x === -1).length;
                     const numSuc = newQuestResult.filter(x => x === 1).length;
@@ -466,8 +470,6 @@ exports.leaveMidgame = functions
             if (!doc.exists) {
                 throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
             }
-
-            console.log('doc', doc.data());
 
             if (doc.data().status === constants.gameStatuses.Finished || !doc.data().hasStarted) {
                 if (doc.data().currentPlayers.length === 1) {

@@ -112,8 +112,16 @@ const CurrentGameStatus = props => {
                         || props.currentGame.questFails.includes(props.auth.uid)
                             ? <StyledButton text={`Played ${props.currentGame.questSuccesses.includes(props.auth.uid) ? 'Succeed' : 'Fail'}`} disabled /> : (
                                 <>
-                                    <StyledButton text="Play Succeed" onClick={() => props.makeQuestRequest(props.currentGameId, true)} />
-                                    <StyledButton text="Play Fail" color="secondary" onClick={() => props.makeQuestRequest(props.currentGameId, false)} />
+                                    <StyledButton
+                                        text="Play Succeed"
+                                        onClick={() => props.makeQuestRequest(props.currentGameId, true)}
+                                    />
+                                    <StyledButton
+                                        text="Play Fail"
+                                        color="secondary"
+                                        onClick={() => props.makeQuestRequest(props.currentGameId, false)}
+                                        disabled={constants.avalonRoles[props.myRole].isGood}
+                                    />
                                 </>
                             )}
                     </div>
@@ -155,6 +163,7 @@ CurrentGameStatus.defaultProps = {
         votesFor: []
     },
     currentGameId: '',
+    myRole: '',
     styles: defaultStyles,
     users: {}
 };
@@ -188,6 +197,7 @@ CurrentGameStatus.propTypes = {
     currentGameId: PropTypes.string,
     makeVoteRequest: PropTypes.func.isRequired,
     makeQuestRequest: PropTypes.func.isRequired,
+    myRole: PropTypes.string,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})
 };

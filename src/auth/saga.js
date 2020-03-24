@@ -1,5 +1,5 @@
 import {
-    all, call, takeEvery, put, delay
+    all, call, takeEvery, put, delay, fork
 } from 'redux-saga/effects';
 import firebase from 'firebase';
 import { push } from 'connected-react-router';
@@ -22,9 +22,16 @@ export function* signOut() {
     }
 }
 
+export function* setAppLoading() {
+    yield put(actions.setLoadingApp(true));
+    yield delay(3000);
+    yield put(actions.setLoadingApp(false));
+}
+
 
 export function* loggingIn(api) {
     try {
+        yield fork(setAppLoading);
         const user = yield firebase.auth().currentUser.getIdTokenResult();
         const rolePermissions = yield call(api.getRolePermissions);
         yield put(actions.setPermissionsMappingsAndRoles(rolePermissions));
@@ -36,7 +43,6 @@ export function* loggingIn(api) {
             }
             return null;
         }));
-        yield (delay(2000));
         yield put(actions.setLoadedPermissions(true));
         yield put(push(consts.URL.OVERVIEW));
     } catch (error) {

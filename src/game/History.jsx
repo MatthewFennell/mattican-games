@@ -8,6 +8,8 @@ import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import { noop } from 'lodash';
+import CheckIcon from '@material-ui/icons/Check';
+import CloseIcon from '@material-ui/icons/Close';
 import defaultStyles from './History.module.scss';
 import * as selectors from './selectors';
 import * as helpers from './helpers';
@@ -17,7 +19,7 @@ const History = props => (
     props.history.map(h => {
         if (h.type === constants.historyTypes.Quest) {
             return (
-                <div className={props.styles.questHistoryWrapper} key={`${h.round}-${h.type}`}>
+                <div className={props.styles.questHistoryWrapper} key={`${h.round}-${h.type}-${h.questers.toString()}`}>
                     <div className={props.styles.round}>
                         {`Round ${h.round}`}
                     </div>
@@ -38,7 +40,7 @@ const History = props => (
         if (h.type === constants.historyTypes.Vote) {
             if (h.forcedByConsecutiveRejections) {
                 return (
-                    <div className={props.styles.voteHistoryWrapper} key={`${h.round}-${h.type}`}>
+                    <div className={props.styles.voteHistoryWrapper} key={`${h.round}-${h.type}-${h.leader}`}>
                         <div className={props.styles.round}>
                             {`Round ${h.round}`}
                         </div>
@@ -58,7 +60,7 @@ const History = props => (
             }
 
             return (
-                <div className={props.styles.voteHistoryWrapper} key={`${h.round}-${h.type}`}>
+                <div className={props.styles.voteHistoryWrapper} key={`${h.round}-${h.type}-${h.leader}`}>
                     <div className={props.styles.round}>
                         {`Round ${h.round}`}
                     </div>
@@ -73,7 +75,7 @@ const History = props => (
                         {h.votesNo.length ? (
                             h.votesYes.length ? (
                                 <div>
-                                    {`Votes Yes: ${h.votesYes.map(p => helpers.mapUserIdToName(props.users, p)).join(', ')}`}
+                                    {`Votes Yes (${h.votesYes.length}) - ${h.votesYes.map(p => helpers.mapUserIdToName(props.users, p)).join(', ')}`}
                                 </div>
                             ) : null
                         ) : (
@@ -85,12 +87,23 @@ const History = props => (
                         {h.votesYes.length ? (
                             h.votesNo.length ? (
                                 <div>
-                                    {`Votes No: ${h.votesNo.map(p => helpers.mapUserIdToName(props.users, p)).join(', ')}`}
+                                    {`Votes No (${h.votesNo.length}) - ${h.votesNo.map(p => helpers.mapUserIdToName(props.users, p)).join(', ')}`}
                                 </div>
                             ) : null
                         ) : (
                             <div>
                                 {'Votes No: All players'}
+                            </div>
+                        )}
+                    </div>
+                    <div className={props.styles.round}>
+                        {h.votesYes.length > h.votesNo.length ? (
+                            <div>
+                                <div className={props.styles.questSucceed}><CheckIcon fontSize="large" /></div>
+                            </div>
+                        ) : (
+                            <div>
+                                <div className={props.styles.questFail}><CloseIcon fontSize="large" /></div>
                             </div>
                         )}
                     </div>

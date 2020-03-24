@@ -24,11 +24,18 @@ export const initialState = {
     permissionMappings: {},
     allRoles: [],
 
-    disabledPages: ['only one']
+    disabledPages: ['only one'],
+    loadingApp: false
 };
 
 const authReducer = (state = initialState, action) => {
     switch (action.type) {
+    case actions.SET_LOADING_APP: {
+        return {
+            ...state,
+            loadingApp: action.isLoadingApp
+        };
+    }
     case actions.SIGN_UP_ERROR: {
         return {
             ...state,
