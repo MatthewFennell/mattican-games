@@ -16,11 +16,9 @@ export const CONFIRM_NOMINATIONS_REQUEST = `${pre}CONFIRM_NOMINATIONS_REQUEST`;
 export const CONFIRM_NOMINATIONS_ERROR = `${pre}CONFIRM_NOMINATIONS_ERROR`;
 
 export const MAKE_VOTE_REQUEST = `${pre}MAKE_VOTE_REQUEST`;
-export const CANCEL_VOTE_LOADING = `${pre}CANCEL_VOTE_LOADING`;
 export const MAKE_VOTE_ERROR = `${pre}MAKE_VOTE_ERROR`;
 
 export const MAKE_QUEST_REQUEST = `${pre}MAKE_QUEST_REQUEST`;
-export const CANCEL_QUEST_LOADING = `${pre}CANCEL_QUEST_LOADING`;
 export const MAKE_QUEST_ERROR = `${pre}MAKE_QUEST_ERROR`;
 
 export const GUESS_MERLIN_REQUEST = `${pre}GUESS_MERLIN_REQUEST`;
@@ -100,10 +98,6 @@ export const makeVoteRequest = (gameId, vote) => ({
     vote
 });
 
-export const cancelVoteLoading = () => ({
-    type: CANCEL_VOTE_LOADING
-});
-
 export const makeVoteError = (error, header) => ({
     type: MAKE_VOTE_ERROR,
     error,
@@ -114,10 +108,6 @@ export const makeQuestRequest = (gameId, isSuccess) => ({
     type: MAKE_QUEST_REQUEST,
     gameId,
     isSuccess
-});
-
-export const cancelQuestLoading = () => ({
-    type: CANCEL_QUEST_LOADING
 });
 
 export const makeQuestError = (error, header) => ({

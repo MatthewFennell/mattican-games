@@ -12,7 +12,6 @@ import StyledButton from '../common/StyledButton/StyledButton';
 import Fade from '../common/Fade/Fade';
 import { makeVoteRequest, makeQuestRequest } from './actions';
 import GameFinished from './GameFinished';
-import Spinner from '../common/spinner/Spinner';
 
 const CurrentGameStatus = props => {
     const [makingVote, setMakingVote] = useState(false);
@@ -64,13 +63,6 @@ const CurrentGameStatus = props => {
                                     <StyledButton text="Vote No" color="secondary" onClick={() => placeVote(false)} />
                                 </>
                             )}
-                        {!props.currentGame.votesAgainst.includes(props.auth.uid)
-                        && !props.currentGame.votesFor.includes(props.auth.uid)
-                        && props.haveVoted && (
-                            <div className={props.styles.loadingVote}>
-                                <Spinner />
-                            </div>
-                        )}
                     </div>
                 </Fade>
             </div>
@@ -177,7 +169,6 @@ CurrentGameStatus.defaultProps = {
         votesFor: []
     },
     currentGameId: '',
-    haveVoted: false,
     myRole: '',
     styles: defaultStyles,
     users: {}
@@ -210,7 +201,6 @@ CurrentGameStatus.propTypes = {
         status: PropTypes.string
     }),
     currentGameId: PropTypes.string,
-    haveVoted: PropTypes.bool,
     makeVoteRequest: PropTypes.func.isRequired,
     makeQuestRequest: PropTypes.func.isRequired,
     myRole: PropTypes.string,
@@ -227,7 +217,6 @@ const mapStateToProps = (state, props) => ({
     auth: state.firebase.auth,
     currentGame: selectors.getCurrentGame(state, props),
     currentGameId: selectors.getGameId(props),
-    haveVoted: state.avalon.haveVoted,
     myRole: selectors.getMyRole(state, props),
     users: state.firestore.data.users
 });
