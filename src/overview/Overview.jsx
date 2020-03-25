@@ -12,6 +12,8 @@ import * as selectors from './selectors';
 import ConfirmModal from '../common/modal/ConfirmModal';
 import { mapUserIdToName } from '../game/helpers';
 import Spinner from '../common/spinner/Spinner';
+import ErrorModal from '../common/modal/ErrorModal';
+import { closeGameError } from '../game/actions';
 
 const Overview = props => {
     // ------------------------- AVALON GAME CREATION ------------------------- //
@@ -68,77 +70,86 @@ const Overview = props => {
 
 
     return (
-        <div className={props.styles.overviewWrapper}>
-            <CreateAvalonGame
-                activeAvalonRoles={activeAvalonRoles}
-                createGame={createGame}
-                creatingGame={props.creatingGame}
-                changeNumberOfPlayers={changeNumberOfPlayers}
-                gameMode={gameMode}
-                gameName={gameName}
-                makingGame={makingGame}
-                numberOfPlayers={numberOfPlayers}
-                setGameMode={setGameMode}
-                setGameName={setGameName}
-                setMakingGame={setMakingGame}
-                toggleRole={toggleRole}
-            />
+        <>
+            <div className={props.styles.overviewWrapper}>
+                <CreateAvalonGame
+                    activeAvalonRoles={activeAvalonRoles}
+                    createGame={createGame}
+                    creatingGame={props.creatingGame}
+                    changeNumberOfPlayers={changeNumberOfPlayers}
+                    gameMode={gameMode}
+                    gameName={gameName}
+                    makingGame={makingGame}
+                    numberOfPlayers={numberOfPlayers}
+                    setGameMode={setGameMode}
+                    setGameName={setGameName}
+                    setMakingGame={setMakingGame}
+                    toggleRole={toggleRole}
+                />
 
-            <div className={props.styles.allGamesHeader}>
-                {props.allGames.length ? 'All Games' : 'No Games Exist'}
-            </div>
+                <div className={props.styles.allGamesHeader}>
+                    {props.allGames.length ? 'All Games' : 'No Games Exist'}
+                </div>
 
-            {props.allGames.map(game => (
-                <div
-                    className={props.styles.gameWrapper}
-                    onClick={() => clickOnGameToJoin(game)}
-                    role="button"
-                    tabIndex={0}
-                    key={game.name}
-                >
-                    <div className={props.styles.gameName}>
-                        <div>
-                            {`Name: ${game.name}`}
-                        </div>
-                        <div>
-                            {`Number of players: ${game.currentPlayers.length}/${game.numberOfPlayers}` }
-                        </div>
-                        <div>
-                            {`Game Mode: ${game.mode}` }
-                        </div>
-                        <div>
-                            {`Roles: ${game.roles.reduce((acc, cur) => `${acc}, ${cur}`)}` }
-                        </div>
-                        {game.currentPlayers && !fp.isEmpty(props.users)
+                {props.allGames.map(game => (
+                    <div
+                        className={props.styles.gameWrapper}
+                        onClick={() => clickOnGameToJoin(game)}
+                        role="button"
+                        tabIndex={0}
+                        key={game.name}
+                    >
+                        <div className={props.styles.gameName}>
+                            <div>
+                                {`Name: ${game.name}`}
+                            </div>
+                            <div>
+                                {`Number of players: ${game.currentPlayers.length}/${game.numberOfPlayers}` }
+                            </div>
+                            <div>
+                                {`Game Mode: ${game.mode}` }
+                            </div>
+                            <div>
+                                {`Roles: ${game.roles.reduce((acc, cur) => `${acc}, ${cur}`)}` }
+                            </div>
+                            {game.currentPlayers && !fp.isEmpty(props.users)
                         && (
                             <div>
                                 {`Current players: ${game.currentPlayers.map(x => mapUserIdToName(props.users, x))}`}
                             </div>
                         ) }
-                        {game.hasStarted && (
-                            <div className={props.styles.alreadyStarted}>
+                            {game.hasStarted && (
+                                <div className={props.styles.alreadyStarted}>
                                 Game has already started
-                            </div>
-                        )}
+                                </div>
+                            )}
+                        </div>
                     </div>
-                </div>
-            ))}
+                ))}
 
-            <ConfirmModal
-                cancel={() => setGameToJoin('')}
-                closeModal={() => setGameToJoin('')}
-                submit={joinGame}
-                isOpen={Boolean(gameToJoin)}
-                text="Are you sure you want to join this game?"
+                <ConfirmModal
+                    cancel={() => setGameToJoin('')}
+                    closeModal={() => setGameToJoin('')}
+                    submit={joinGame}
+                    isOpen={Boolean(gameToJoin)}
+                    text="Are you sure you want to join this game?"
+                />
+
+                {props.joiningGame && (
+                    <div className={props.styles.joiningGame}>
+                        <Spinner color="secondary" />
+                    </div>
+                )}
+
+            </div>
+            <ErrorModal
+                closeModal={props.closeGameError}
+                headerMessage={props.errorHeader}
+                isOpen={props.errorMessage.length > 0}
+                errorCode={props.errorCode}
+                errorMessage={props.errorMessage}
             />
-
-            {props.joiningGame && (
-                <div className={props.styles.joiningGame}>
-                    <Spinner color="secondary" />
-                </div>
-            )}
-
-        </div>
+        </>
     );
 };
 
@@ -147,20 +158,28 @@ Overview.defaultProps = {
     creatingGame: false,
     joiningGame: false,
     styles: defaultStyles,
-    users: {}
+    users: {},
+    errorHeader: '',
+    errorMessage: '',
+    errorCode: ''
 };
 
 Overview.propTypes = {
     allGames: PropTypes.arrayOf(PropTypes.shape({})),
+    closeGameError: PropTypes.func.isRequired,
     createGameRequest: PropTypes.func.isRequired,
     creatingGame: PropTypes.bool,
     joiningGame: PropTypes.bool,
     joinGameRequest: PropTypes.func.isRequired,
     styles: PropTypes.objectOf(PropTypes.string),
-    users: PropTypes.objectOf(PropTypes.shape({}))
+    users: PropTypes.objectOf(PropTypes.shape({})),
+    errorHeader: PropTypes.string,
+    errorMessage: PropTypes.string,
+    errorCode: PropTypes.string
 };
 
 const mapDispatchToProps = {
+    closeGameError,
     createGameRequest,
     joinGameRequest
 };
@@ -169,7 +188,10 @@ const mapStateToProps = state => ({
     allGames: selectors.getGames(state),
     creatingGame: state.overview.creatingGame,
     joiningGame: state.overview.joiningGame,
-    users: state.firestore.data.users
+    users: state.firestore.data.users,
+    errorHeader: state.avalon.errorHeader,
+    errorMessage: state.avalon.errorMessage,
+    errorCode: state.avalon.errorCode
 });
 
 export default compose(

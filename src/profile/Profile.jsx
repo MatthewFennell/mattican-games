@@ -60,7 +60,8 @@ const Profile = props => {
                 />
                 <SelectProfilePicture
                     currentPhotoUrl={props.profile.photoUrl}
-                    potentialPictures={_.union(potentialPictures, [props.profile.photoUrl])}
+                    potentialPictures={_.union(potentialPictures, [props.profile.photoUrl])
+                        .filter(x => x !== null)}
                     updateProfilePicture={updateProfilePicture}
                 />
             </div>

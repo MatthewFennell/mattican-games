@@ -4,6 +4,7 @@ import {
 import * as actions from './actions';
 import * as overviewApi from './api';
 import * as constants from '../constants';
+import * as gameActions from '../game/actions';
 
 export function* createGame(api, action) {
     try {
@@ -17,7 +18,7 @@ export function* createGame(api, action) {
             yield put(actions.createGameSuccess());
         }
     } catch (error) {
-        yield put(actions.createGameError(error, 'Create Game Error'));
+        yield put(gameActions.gameError(error, 'Create Game Error'));
     }
 }
 
@@ -32,7 +33,7 @@ export function* joinGame(api, action) {
         yield delay(5000);
         yield put(actions.stopJoinGame());
     } catch (error) {
-        yield put(actions.joinGameError(error, 'Join Game Error'));
+        yield put(gameActions.gameError(error, 'Join Game Error'));
         yield put(actions.stopJoinGame());
     }
 }

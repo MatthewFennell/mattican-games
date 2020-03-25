@@ -10,7 +10,7 @@ export function* leaveGame(api, action) {
             gameId: action.gameId
         }));
     } catch (error) {
-        yield put(actions.leaveGameError(error, 'Leave Game Error'));
+        yield put(actions.gameError(error, 'Leave Game Error'));
     }
 }
 
@@ -21,7 +21,7 @@ export function* readyUp(api, action) {
             isReady: action.isReady
         }));
     } catch (error) {
-        yield put(actions.readyUpError(error, 'Ready Up Error'));
+        yield put(actions.gameError(error, 'Ready Up Error'));
     }
 }
 
@@ -31,7 +31,7 @@ export function* startGame(api, action) {
             gameId: action.gameId
         }));
     } catch (error) {
-        yield put(actions.startGameError(error, 'Ready Up Error'));
+        yield put(actions.gameError(error, 'Ready Up Error'));
     }
 }
 
@@ -43,7 +43,7 @@ export function* nominatePlayerForQuest(api, action) {
             isOnQuest: action.isOnQuest
         }));
     } catch (error) {
-        yield put(actions.nominatePlayerForError(error, 'Nominate Player Error'));
+        yield put(actions.gameError(error, 'Nominate Player Error'));
     }
 }
 
@@ -54,7 +54,7 @@ export function* confirmNominations(api, action) {
             nominations: action.nominations
         }));
     } catch (error) {
-        yield put(actions.confirmNominationsError(error, 'Nominate Player Error'));
+        yield put(actions.gameError(error, 'Nominate Player Error'));
     }
 }
 
@@ -65,7 +65,7 @@ export function* makeVote(api, action) {
             vote: action.vote
         }));
     } catch (error) {
-        yield put(actions.makeVoteError(error, 'Make Vote Error'));
+        yield put(actions.gameError(error, 'Make Vote Error'));
     }
 }
 
@@ -76,7 +76,7 @@ export function* goOnQuest(api, action) {
             isSuccess: action.isSuccess
         }));
     } catch (error) {
-        yield put(actions.makeQuestError(error, 'Go On Quest Error'));
+        yield put(actions.gameError(error, 'Go On Quest Error'));
     }
 }
 
@@ -87,7 +87,7 @@ export function* guessMerlin(api, action) {
             merlin: action.merlin
         }));
     } catch (error) {
-        yield put(actions.guessMerlinError(error, 'Guess Merlin Error'));
+        yield put(actions.gameError(error, 'Guess Merlin Error'));
     }
 }
 
@@ -97,7 +97,7 @@ export function* destroyGame(api, action) {
             gameId: action.gameId
         }));
     } catch (error) {
-        yield put(actions.destroyGameError(error, 'Destroy Game Error'));
+        yield put(actions.gameError(error, 'Destroy Game Error'));
     }
 }
 
@@ -107,7 +107,7 @@ export function* leaveMidgame(api, action) {
             gameId: action.gameId
         }));
     } catch (error) {
-        yield put(actions.leaveMidgameError(error, 'Leave Midgame Error'));
+        yield put(actions.gameError(error, 'Leave Midgame Error'));
     }
 }
 
@@ -118,7 +118,7 @@ export function* approveLeaveMidgame(api, action) {
             isApprove: action.isApprove
         }));
     } catch (error) {
-        yield put(actions.leaveMidgameError(error, 'Leave Midgame Error'));
+        yield put(actions.gameError(error, 'Leave Midgame Error'));
     }
 }
 

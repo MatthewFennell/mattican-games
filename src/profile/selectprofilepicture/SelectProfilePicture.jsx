@@ -18,6 +18,8 @@ const SelectProfilePicture = props => {
         // eslint-disable-next-line
     }, [props.updateProfilePicture, setOwnPhotoUrl, props.currentPhotoUrl]);
 
+    console.log('potential pics', props.potentialPictures);
+
     return (
         <div className={props.styles.selectProfilePictureWrapper}>
             <div className={props.styles.selectAvatar}>
