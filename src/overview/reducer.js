@@ -1,11 +1,24 @@
 import * as actions from './actions';
 
 export const initialState = {
-    creatingGame: false
+    creatingGame: false,
+    joiningGame: false
 };
 
 const overviewReducer = (state = initialState, action) => {
     switch (action.type) {
+    case actions.JOIN_GAME_REQUEST: {
+        return {
+            ...state,
+            joiningGame: true
+        };
+    }
+    case actions.STOP_JOIN_GAME: {
+        return {
+            ...state,
+            joiningGame: false
+        };
+    }
     case actions.CREATE_GAME_REQUEST: {
         return {
             ...state,

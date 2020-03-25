@@ -1,5 +1,5 @@
 import {
-    all, takeEvery, put, call
+    all, takeEvery, put, call, delay
 } from 'redux-saga/effects';
 import * as actions from './actions';
 import * as gameApi from './api';
@@ -64,6 +64,8 @@ export function* makeVote(api, action) {
             gameId: action.gameId,
             vote: action.vote
         }));
+        yield delay(3000);
+        yield put(actions.cancelVoteLoading());
     } catch (error) {
         yield put(actions.makeVoteError(error, 'Make Vote Error'));
     }
@@ -75,6 +77,8 @@ export function* goOnQuest(api, action) {
             gameId: action.gameId,
             isSuccess: action.isSuccess
         }));
+        yield delay(3000);
+        yield put(actions.cancelQuestLoading());
     } catch (error) {
         yield put(actions.makeQuestError(error, 'Go On Quest Error'));
     }

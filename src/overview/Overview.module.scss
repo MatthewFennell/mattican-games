@@ -13,10 +13,9 @@
   margin: $spacing-small;
 }
 
-
-
-
-
+.alreadyStarted {
+  color: $color-black;
+}
 
 .gameWrapper {
   margin: $spacing-small;
@@ -31,6 +30,10 @@
   font-weight: bold;
 
   > div {
-    padding: $spacing-small;
+    padding: $spacing-tiny;
   }
+}
+
+.joiningGame {
+  text-align: center;
 }

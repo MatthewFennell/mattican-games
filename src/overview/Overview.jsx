@@ -3,13 +3,15 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
+import fp from 'lodash/fp';
 import defaultStyles from './Overview.module.scss';
 import * as constants from '../constants';
 import { createGameRequest, joinGameRequest } from './actions';
 import CreateAvalonGame from './CreateAvalonGame';
 import * as selectors from './selectors';
 import ConfirmModal from '../common/modal/ConfirmModal';
-
+import { mapUserIdToName } from '../game/helpers';
+import Spinner from '../common/spinner/Spinner';
 
 const Overview = props => {
     // ------------------------- AVALON GAME CREATION ------------------------- //
@@ -52,8 +54,10 @@ const Overview = props => {
     const [gameModeToJoin, setGameModeToJoin] = useState('');
 
     const clickOnGameToJoin = useCallback(game => {
-        setGameModeToJoin(game.mode);
-        setGameToJoin(game.id);
+        if (!game.hasStarted) {
+            setGameModeToJoin(game.mode);
+            setGameToJoin(game.id);
+        }
     }, [setGameToJoin, setGameModeToJoin]);
 
     const joinGame = useCallback(() => {
@@ -61,6 +65,7 @@ const Overview = props => {
         setGameToJoin('');
         // eslint-disable-next-line
     }, [gameToJoin, setGameToJoin, gameModeToJoin])
+
 
     return (
         <div className={props.styles.overviewWrapper}>
@@ -104,6 +109,17 @@ const Overview = props => {
                         <div>
                             {`Roles: ${game.roles.reduce((acc, cur) => `${acc}, ${cur}`)}` }
                         </div>
+                        {game.currentPlayers && !fp.isEmpty(props.users)
+                        && (
+                            <div>
+                                {`Current players: ${game.currentPlayers.map(x => mapUserIdToName(props.users, x))}`}
+                            </div>
+                        ) }
+                        {game.hasStarted && (
+                            <div className={props.styles.alreadyStarted}>
+                                Game has already started
+                            </div>
+                        )}
                     </div>
                 </div>
             ))}
@@ -116,6 +132,12 @@ const Overview = props => {
                 text="Are you sure you want to join this game?"
             />
 
+            {props.joiningGame && (
+                <div className={props.styles.joiningGame}>
+                    <Spinner color="secondary" />
+                </div>
+            )}
+
         </div>
     );
 };
@@ -123,15 +145,19 @@ const Overview = props => {
 Overview.defaultProps = {
     allGames: [],
     creatingGame: false,
-    styles: defaultStyles
+    joiningGame: false,
+    styles: defaultStyles,
+    users: {}
 };
 
 Overview.propTypes = {
     allGames: PropTypes.arrayOf(PropTypes.shape({})),
     createGameRequest: PropTypes.func.isRequired,
     creatingGame: PropTypes.bool,
+    joiningGame: PropTypes.bool,
     joinGameRequest: PropTypes.func.isRequired,
-    styles: PropTypes.objectOf(PropTypes.string)
+    styles: PropTypes.objectOf(PropTypes.string),
+    users: PropTypes.objectOf(PropTypes.shape({}))
 };
 
 const mapDispatchToProps = {
@@ -141,7 +167,9 @@ const mapDispatchToProps = {
 
 const mapStateToProps = state => ({
     allGames: selectors.getGames(state),
-    creatingGame: state.overview.creatingGame
+    creatingGame: state.overview.creatingGame,
+    joiningGame: state.overview.joiningGame,
+    users: state.firestore.data.users
 });
 
 export default compose(
@@ -149,6 +177,9 @@ export default compose(
     firestoreConnect(() => [
         {
             collection: 'games'
+        },
+        {
+            collection: 'users'
         }
     ]),
 )(Overview);

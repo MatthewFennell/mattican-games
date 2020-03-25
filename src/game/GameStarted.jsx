@@ -32,6 +32,7 @@ const GameStarted = props => {
     const [guessingMerlin, setGuessingMerlin] = useState(false);
     const toggleGuessingMerlin = useCallback(() => {
         setGuessingMerlin(!guessingMerlin);
+        // eslint-disable-next-line
     }, [guessingMerlin, setGuessingMerlin]);
 
     const makeMerlinGuess = useCallback(() => {
@@ -180,6 +181,7 @@ const GameStarted = props => {
                     <div
                         className={classNames({
                             [props.styles.playerWrapper]: true,
+                            [props.styles.isActivePlayer]: player === props.currentGame.leader,
                             [props.styles.isOnQuest]: props.currentGame
                                 .questNominations.includes(player)
                                 || props.currentGame.playersOnQuest.includes(player)
@@ -311,6 +313,12 @@ const GameStarted = props => {
 
                         <div className={props.styles.consecutiveRejections}>
                             {`Consecutive rejections: ${props.currentGame.consecutiveRejections}`}
+                            {props.currentGame.consecutiveRejections === 3
+                && (
+                    <div className={props.styles.noVoting}>
+                    No voting will ococur next round if this is rejected
+                    </div>
+                )}
                             {props.currentGame.consecutiveRejections === 4
                 && (
                     <div className={props.styles.noVoting}>
@@ -318,6 +326,7 @@ const GameStarted = props => {
                     </div>
                 )}
                         </div>
+
 
                         {props.currentGame.numberOfPlayers >= 7 && (
                             <div className={props.styles.specialRoundMessage}>

@@ -20,16 +20,29 @@ const GameNotStarted = props => (
                 Game Lobby
         </div>
 
-        <div className={props.styles.hostWrapper}>
-                Host
-        </div>
-
-        <div className={props.styles.hostValue}>
-            {mapUserIdToName(props.users, props.currentGame.host)}
-            {props.currentGame.host === props.auth.uid && ' (you)'}
-        </div>
 
         <div className={props.styles.currentPlayersWrapper}>
+
+            <div className={props.styles.gameInfo}>
+
+                <div className={props.styles.hostWrapper}>
+                    <div>Host:</div>
+
+                    <div className={props.styles.hostValue}>
+                        <div>{mapUserIdToName(props.users, props.currentGame.host)}</div>
+                        <div>{props.currentGame.host === props.auth.uid && ' (you)'}</div>
+                    </div>
+                </div>
+
+                <div className={props.styles.gameModeText}>
+                    <div>Mode:</div>
+                    <div className={props.styles.gameModeValue}>
+                        {props.currentGame.mode}
+                    </div>
+                </div>
+
+            </div>
+
             <div className={props.styles.currentPlayersMessage}>
                 {`Current players: (${props.currentGame.currentPlayers.length}/${props.currentGame.numberOfPlayers})` }
             </div>
@@ -51,10 +64,6 @@ const GameNotStarted = props => (
                     </div>
                 </div>
             ))}
-
-            <div className={props.styles.gameModeText}>
-                {`Mode: ${props.currentGame.mode}`}
-            </div>
 
             <div className={props.styles.roles}>
                 <div className={props.styles.rolesMessage}>

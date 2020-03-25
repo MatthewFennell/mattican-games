@@ -21,10 +21,20 @@
     background-color: $color-amber;
 }
 
+.guessingMerlinWrapper {
+    padding: $spacing-small;
+    margin: $spacing-small;
+    background-color: blanchedalmond;
+}
+
 .notOnQuestMessage {
     text-align: center;
     color: $color-green;
     font-weight: bold;
+}
+
+.loadingVote {
+    text-align: center;
 }
 
 .guessingMessage {

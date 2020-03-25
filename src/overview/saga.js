@@ -1,5 +1,5 @@
 import {
-    all, takeEvery, put, call
+    all, takeEvery, put, call, delay
 } from 'redux-saga/effects';
 import * as actions from './actions';
 import * as overviewApi from './api';
@@ -29,8 +29,11 @@ export function* joinGame(api, action) {
             }));
             yield put(actions.createGameSuccess());
         }
+        yield delay(5000);
+        yield put(actions.stopJoinGame());
     } catch (error) {
         yield put(actions.joinGameError(error, 'Join Game Error'));
+        yield put(actions.stopJoinGame());
     }
 }
 

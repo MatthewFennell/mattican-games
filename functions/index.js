@@ -477,7 +477,8 @@ exports.leaveMidgame = functions
                 }
 
                 return doc.ref.update({
-                    currentPlayers: operations.arrayRemove(context.auth.uid)
+                    currentPlayers: operations.arrayRemove(context.auth.uid),
+                    host: doc.data().currentPlayers.find(x => x !== context.auth.uid)
                 });
             }
 

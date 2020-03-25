@@ -38,6 +38,11 @@
     border: 2px solid lightblue;
 }
 
+.isActivePlayer {
+    background-color: palegreen;
+    border: 2px solid palegreen;
+}
+
 .isOnQuest {
     border: 2px solid crimson;
 }
@@ -102,6 +107,11 @@
 
 .failResult {
     color: $color-red;
+}
+
+.viewingRole {
+    padding: $spacing-tiny;
+    margin: $spacing-tiny;
 }
 
 .viewingBoardWrapper {

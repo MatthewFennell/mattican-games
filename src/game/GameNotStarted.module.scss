@@ -15,9 +15,34 @@
     margin-top: $spacing-small;
 }
 
+.gameModeText {
+    display: flex;
+}
+
+.gameModeValue {
+    color: $color-black;
+    margin-left: 4px;
+}
+
+.hostWrapper {
+    display: flex;
+    justify-content: space-evenly;
+    > div {
+        @include vertical-center-div();
+    }
+}
+
+.currentPlayersWrapper {
+    margin: $spacing-small;
+    padding: $spacing-small;
+    background-color: khaki;
+}
+
 .hostValue {
     text-align: center;
-    color: $color-dark-blue;
+    color: $color-black;
+    margin-left: $spacing-tiny;
+    display: flex;
 }
 
 .playerName {
@@ -50,6 +75,11 @@
     .notReady {
         color: $color-red;
     }
+}
+
+.gameInfo {
+    display: flex;
+    justify-content: space-evenly;
 }
 
 // @keyframes flickerAnimation {
@@ -95,7 +125,6 @@
 }
 
 .readyUp {
-    margin-top: $spacing-medium;
     text-align: center;
     color: $color-green;
 }
@@ -107,6 +136,7 @@
 
 .leaveGameWrapper {
     margin-top: $spacing-small;
+    margin-bottom: $spacing-small;
     text-align: center;
 }
 
