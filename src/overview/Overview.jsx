@@ -6,7 +6,7 @@ import { compose } from 'redux';
 import fp from 'lodash/fp';
 import defaultStyles from './Overview.module.scss';
 import * as constants from '../constants';
-import { createAvalonGameRequest, joinGameRequest } from './actions';
+import { createAvalonGameRequest, joinGameRequest, createHiterGameRequest } from './actions';
 import CreateGame from './CreateGame';
 import * as selectors from './selectors';
 import ConfirmModal from '../common/modal/ConfirmModal';
@@ -42,6 +42,9 @@ const Overview = props => {
         if (gameMode === constants.gameModes.Avalon) {
             props.createAvalonGameRequest(gameMode, gameName,
                 parseInt(numberOfPlayers, 10), activeAvalonRoles);
+        }
+        if (gameMode === constants.gameModes.Hitler) {
+            props.createHiterGameRequest(gameMode, gameName, parseInt(numberOfPlayers, 10));
         }
         setMakingGame(false);
 
@@ -168,6 +171,7 @@ Overview.propTypes = {
     allGames: PropTypes.arrayOf(PropTypes.shape({})),
     closeGameError: PropTypes.func.isRequired,
     createAvalonGameRequest: PropTypes.func.isRequired,
+    createHiterGameRequest: PropTypes.func.isRequired,
     creatingGame: PropTypes.bool,
     joiningGame: PropTypes.bool,
     joinGameRequest: PropTypes.func.isRequired,
@@ -180,6 +184,7 @@ Overview.propTypes = {
 
 const mapDispatchToProps = {
     closeGameError,
+    createHiterGameRequest,
     createAvalonGameRequest,
     joinGameRequest
 };

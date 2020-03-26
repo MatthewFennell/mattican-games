@@ -29,7 +29,7 @@ const GameFinished = props => {
             );
         }
 
-        if (props.currentGame.status === constants.gameStatuses.GuessingMerlin) {
+        if (props.currentGame.status === constants.avalonGameStatuses.GuessingMerlin) {
             return (
                 <div>
                     Guessing Merlin

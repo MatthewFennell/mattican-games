@@ -6,7 +6,9 @@ export const destroyGame = request => functionToCall('destroyGame')(request);
 export const leaveMidgame = request => functionToCall('leaveMidgame')(request);
 export const approveLeaveMidgame = request => functionToCall('approveLeaveMidgame')(request);
 
-export const startGame = request => functionToCall('avalon-startGame')(request);
+export const startHitlerGame = request => functionToCall('startGame')(request);
+
+export const startAvalonGame = request => functionToCall('avalon-startGame')(request);
 export const nominatePlayer = request => functionToCall('avalon-nominatePlayer')(request);
 export const confirmNominations = request => functionToCall('avalon-confirmNominations')(request);
 export const makeVote = request => functionToCall('avalon-makeVote')(request);

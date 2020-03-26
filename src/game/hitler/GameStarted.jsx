@@ -7,6 +7,7 @@ import { withRouter } from 'react-router-dom';
 import classNames from 'classnames';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import { noop } from 'lodash';
+import fp from 'lodash/fp';
 import defaultStyles from './GameStarted.module.scss';
 import * as selectors from '../selectors';
 import Fade from '../../common/Fade/Fade';
@@ -14,178 +15,97 @@ import * as helpers from '../helpers';
 import * as constants from '../../constants';
 import CurrentGameStatus from './CurrentGameStatus';
 import {
-    nominatePlayerForQuest, confirmNominationsRequest, guessMerlinRequest, leaveGameRequest,
+    nominateChancellorRequest, confirmNominationsRequest, leaveGameRequest,
     destroyGameRequest, approveLeaveMidgameRequest
 } from '../actions';
 import StyledButton from '../../common/StyledButton/StyledButton';
-import Radio from '../../common/radio/RadioButton';
-import History from './History';
 import Switch from '../../common/Switch/Switch';
 import SuccessModal from '../../common/modal/SuccessModal';
 
 const GameStarted = props => {
     const [viewingRole, setViewingRole] = useState(false);
     const [viewingBoard, setViewingBoard] = useState(false);
-    const [merlinGuess, setMerlinGuess] = useState('');
     const [showingHistory, setShowingHistory] = useState(false);
 
-    const [guessingMerlin, setGuessingMerlin] = useState(false);
-    const toggleGuessingMerlin = useCallback(() => {
-        setGuessingMerlin(!guessingMerlin);
-        // eslint-disable-next-line
-    }, [guessingMerlin, setGuessingMerlin]);
-
-    const makeMerlinGuess = useCallback(() => {
-        if (merlinGuess) {
-            props.guessMerlinRequest(props.currentGameId, merlinGuess);
-        }
-        // eslint-disable-next-line
-    }, [merlinGuess, props.currentGame])
-
     const submitNominations = useCallback(() => {
-        props.confirmNominationsRequest(props.currentGameId, props.currentGame.questNominations);
+        props.confirmNominationsRequest(props.currentGameId, props.currentGame.chancellor);
         // eslint-disable-next-line
     }, [props.currentGame])
 
     const generateSecretInfo = role => {
-        if (role === constants.avalonRoles.Merlin.name) {
-            return props.currentGame.playerRoles
-                .filter(r => !constants.avalonRoles[r.role].isGood)
-                .filter(r => r.role !== constants.avalonRoles.Mordred.name)
-                .map(r => (
-                    <div key={r.player}>{`${helpers.mapUserIdToName(props.users, r.player)} is bad`}</div>
-                ));
-        }
-        if (role === constants.avalonRoles.RegularGood.name
-            || role === constants.avalonRoles.Oberon.name) {
-            return <div>Afraid you know nothing</div>;
-        }
-
-        if (role === constants.avalonRoles.RegularBad.name
-            || role === constants.avalonRoles.Mordred.name
-            || role === constants.avalonRoles.Morgana.name) {
-            return props.currentGame.playerRoles.filter(r => !constants.avalonRoles[r.role].isGood)
-                .filter(r => r.role !== constants.avalonRoles.Oberon.name)
-                .filter(r => r.role !== role)
-                .map(r => (
-                    <div key={r.player}>{`${helpers.mapUserIdToName(props.users, r.player)} is bad with you`}</div>
-                ));
-        }
-        if (role === constants.avalonRoles.Percival.name) {
-            if (props.currentGame.roles.includes(constants.avalonRoles.Merlin.name)
-            && props.currentGame.roles.includes(constants.avalonRoles.Morgana.name)) {
-                const potentialPairs = props.currentGame.playerRoles
-                    .filter(r => r.role === constants.avalonRoles.Merlin.name
-                || r.role === constants.avalonRoles.Morgana.name);
-
-                const names = `${helpers.mapUserIdToName(props.users, potentialPairs[0].player)} / ${helpers.mapUserIdToName(props.users, potentialPairs[1].player)}`;
-
-                return <div>{`${names} are Merlin / Morgana`}</div>;
+        if (props.currentGame.numberOfPlayers <= 6) {
+            if (role === constants.hitlerRoles.Fascist) {
+                const hitler = fp.get('player')(props.currentGame.playerRoles.find(x => x.role === constants.hitlerRoles.Hitler));
+                return <div>{`${helpers.mapUserIdToName(props.users, hitler)} is Hitler`}</div>;
             }
-            return props.currentGame.playerRoles
-                .filter(r => r.role === constants.avalonRoles.Merlin.name)
-                .map(r => <div key={r.player}>{`${helpers.mapUserIdToName(props.users, r.player)} is Merlin`}</div>);
+            if (role === constants.hitlerRoles.Hitler) {
+                const fascist = fp.get('player')(props.currentGame.playerRoles.find(x => x.role === constants.hitlerRoles.Fascist));
+                return <div>{`${helpers.mapUserIdToName(props.users, fascist)} is your regular fascist`}</div>;
+            }
         }
-        return null;
+        if (props.currentGame.numberOfPlayers <= 8) {
+            if (role === constants.hitlerRoles.Fascist) {
+                const hitler = fp.get('player')(props.currentGame.playerRoles.find(x => x.role === constants.hitlerRoles.Hitler));
+                const fascist = fp.get('player')(props.currentGame.playerRoles.find(x => x.role === constants.hitlerRoles.Fascist));
+
+                return (
+                    <div>
+                        <div>{`${helpers.mapUserIdToName(props.users, fascist)} is your regular fascist`}</div>
+                        <div>{`${helpers.mapUserIdToName(props.users, hitler)} is Hitler`}</div>
+                    </div>
+                );
+            }
+        }
+        if (role === constants.hitlerRoles.Fascist) {
+            const hitler = fp.get('player')(props.currentGame.playerRoles.find(x => x.role === constants.hitlerRoles.Hitler));
+            const fascists = props.currentGame.playerRoles
+                .filter(x => x.role === constants.hitlerRoles.Fascist
+                    && x.player !== props.auth.uid)
+                .map(x => helpers.mapUserIdToName(props.users, x.player));
+            return (
+                <div>
+                    <div>
+                        {`${fascists[0]} and ${fascists[1]} are your regular fascists`}
+                    </div>
+                    <div>{`${helpers.mapUserIdToName(props.users, hitler)} is Hitler`}</div>
+                </div>
+            );
+        }
+        return <div>Afraid you know nothing</div>;
     };
 
     const nominatePlayer = useCallback(player => {
-        if (props.currentGame.status === constants.avalonGameStatuses.Nominating) {
+        if (props.currentGame.status === constants.hitlerGameStatuses.Nominating) {
             if (props.currentGame.leader === props.auth.uid) {
-                const playerAlreadyOnMission = props.currentGame.questNominations.includes(player);
-                props.nominatePlayerForQuest(props.currentGameId, player, !playerAlreadyOnMission);
+                props.nominateChancellorRequest(props.currentGameId, player);
             }
         }
         // eslint-disable-next-line
     }, [props.currentGame, props.auth.uid]);
 
-    const generateResultIcon = (result, round) => {
-        if (result === 1) {
-            return (
-                <div className={props.styles.successResult}>
-                    <div className={props.styles.missionNum}>
-                        {constants.avalonRounds[props.currentGame.numberOfPlayers][round]}
-                    </div>
-                    <div><FiberManualRecordIcon fontSize="small" /></div>
-                </div>
-            );
-        }
-        if (result === -1) {
-            return (
-                <div className={props.styles.failResult}>
-                    <div className={props.styles.missionNum}>
-                        {constants.avalonRounds[props.currentGame.numberOfPlayers][round]}
-                    </div>
-                    <div><FiberManualRecordIcon fontSize="small" /></div>
-                </div>
-            );
-        }
-        return (
-            <div>
-                <div className={props.styles.missionNum}>
-                    {constants.avalonRounds[props.currentGame.numberOfPlayers][round]}
-                </div>
-                <div><FiberManualRecordIcon fontSize="small" /></div>
-            </div>
-        );
-    };
-
     return (
         <div className={props.styles.gameStartedWrapper}>
-            {props.currentGame.status === constants.avalonGameStatuses.Finished
-            || props.currentGame.status === constants.avalonGameStatuses.GuessingMerlin
+            {props.currentGame.status === constants.hitlerGameStatuses.Finished
                 ? <div className={props.styles.gameFinished}>Game finished </div> : (
                     <div className={props.styles.roundHeader}>
                         {`Round: ${props.currentGame.round}`}
                     </div>
                 )}
 
-            {props.currentGame.status !== constants.avalonGameStatuses.Finished
-            && props.currentGame.status !== constants.avalonGameStatuses.GuessingMerlin && (
+            {props.currentGame.status !== constants.hitlerGameStatuses.Finished
+            && (
                 <div className={props.styles.currentLeaderWrapper}>
                     {`The current leader is ${helpers.mapUserIdToName(props.users, props.currentGame.leader)}`}
                 </div>
             )}
             <CurrentGameStatus />
-            {props.currentGame.status === constants.avalonGameStatuses.GuessingMerlin
-            && props.currentGame
-                .playerToGuessMerlin === props.auth.uid && (
-                <div className={props.styles.guessingMerlinWrapper}>
-                    <Fade
-                        includeCheckbox
-                        label="Guess Merlin"
-                        checked={guessingMerlin}
-                        onChange={toggleGuessingMerlin}
-                    >
-                        <Radio
-                            onChange={setMerlinGuess}
-                            value={merlinGuess}
-                            options={props.currentGame.playerRoles
-                                .filter(r => constants.avalonRoles[r.role].isGood)
-                                .map(r => ({
-                                    text: helpers.mapUserIdToName(props.users, r.player),
-                                    value: r.player
-                                }))}
-                        />
-                        <div className={props.styles.submitMerlinGuessWrapper}>
-                            <StyledButton
-                                text="Confirm Guess"
-                                onClick={makeMerlinGuess}
-                            />
-                        </div>
-                    </Fade>
-                </div>
-            )}
 
             <div className={props.styles.playerOrder}>
                 {props.currentGame.currentPlayers.map((player, index) => (
                     <div
                         className={classNames({
                             [props.styles.playerWrapper]: true,
-                            [props.styles.isActivePlayer]: player === props.currentGame.leader,
-                            [props.styles.isOnQuest]: props.currentGame
-                                .questNominations.includes(player)
-                                || props.currentGame.playersOnQuest.includes(player)
+                            [props.styles.isActivePlayer]: player === props.currentGame.leader
                         })}
                         role="button"
                         tabIndex={0}
@@ -201,7 +121,7 @@ const GameStarted = props => {
                             {helpers.mapUserIdToName(props.users, player)}
                             {props.auth.uid === player && ' (you)'}
                         </div>
-                        {props.currentGame.status === constants.avalonGameStatuses.Voting
+                        {props.currentGame.status === constants.hitlerGameStatuses.Voting
                         && (
                             <div className={classNames({
                                 [props.styles.votingStage]: true,
@@ -219,49 +139,29 @@ const GameStarted = props => {
                             </div>
                         )}
 
-                        {props.currentGame.status === constants.avalonGameStatuses.Questing
-                        && props.currentGame.playersOnQuest.includes(player) && (
-                            <div className={classNames({
-                                [props.styles.questingStage]: true,
-                                [props.styles.haveVoted]: props.currentGame
-                                    .questSuccesses.includes(player)
-                                || props.currentGame
-                                    .questFails.includes(player),
-                                [props.styles.notVoted]: !props.currentGame
-                                    .questSuccesses.includes(player)
-                            && !props.currentGame
-                                .questFails.includes(player)
-                            })}
-                            >
-                                <FiberManualRecordIcon fontSize="small" />
-                            </div>
-                        )}
-
                     </div>
                 ))}
             </div>
 
             {props.currentGame.leader === props.auth.uid
-            && props.currentGame.status === constants.avalonGameStatuses.Nominating
+            && props.currentGame.status === constants.hitlerGameStatuses.Nominating
             && (
                 <div className={props.styles.confirmNominationWrapper}>
                     <StyledButton
                         text="Confirm Nominations"
                         onClick={submitNominations}
-                        disabled={props.currentGame.questNominations.length
-                            < constants.avalonRounds[props
-                                .currentGame.numberOfPlayers][props.currentGame.round]}
+                        disabled={props.currentGame.chancellor}
                     />
                 </div>
             ) }
 
-            {props.currentGame.status === constants.avalonGameStatuses.Finished && (
+            {props.currentGame.status === constants.hitlerGameStatuses.Finished && (
                 <div className={props.styles.leaveGameButton}>
                     <StyledButton text="Leave Game" color="secondary" onClick={() => props.leaveGameRequest(props.currentGameId)} />
                 </div>
             )}
 
-            {props.currentGame.status === constants.avalonGameStatuses.Finished
+            {props.currentGame.status === constants.hitlerGameStatuses.Finished
             && props.currentGame.host === props.auth.uid && (
                 <div className={props.styles.destroyGameButton}>
                     <StyledButton text="Destroy Game" color="secondary" onClick={() => props.destroyGameRequest(props.currentGameId)} />
@@ -289,8 +189,8 @@ const GameStarted = props => {
                 >
                     <div className={classNames({
                         [props.styles.viewingRole]: true,
-                        [props.styles.isGood]: helpers.isRoleGood(props.myRole),
-                        [props.styles.isBad]: !helpers.isRoleGood(props.myRole)
+                        [props.styles.isGood]: props.myRole === constants.hitlerRoles.Liberal,
+                        [props.styles.isBad]: props.myRole !== constants.hitlerRoles.Liberal
                     })}
                     >
                         {`Role: ${props.myRole}`}
@@ -305,46 +205,27 @@ const GameStarted = props => {
                 >
                     <div className={props.styles.avalonBoard}>
                         <div className={props.styles.boardState}>
-                            {generateResultIcon(props.currentGame.questResult[0], 1)}
+                            {/* {generateResultIcon(props.currentGame.questResult[0], 1)}
                             {generateResultIcon(props.currentGame.questResult[1], 2)}
                             {generateResultIcon(props.currentGame.questResult[2], 3)}
                             {generateResultIcon(props.currentGame.questResult[3], 4)}
-                            {generateResultIcon(props.currentGame.questResult[4], 5)}
+                            {generateResultIcon(props.currentGame.questResult[4], 5)} */}
                         </div>
 
                         <div className={props.styles.consecutiveRejections}>
                             {`Consecutive rejections: ${props.currentGame.consecutiveRejections}`}
-                            {props.currentGame.consecutiveRejections === 3
-                && (
-                    <div className={props.styles.noVoting}>
-                    No voting will ococur next round if this is rejected
-                    </div>
-                )}
-                            {props.currentGame.consecutiveRejections === 4
-                && (
-                    <div className={props.styles.noVoting}>
-                    No voting will occur this round
-                    </div>
-                )}
                         </div>
-
-
-                        {props.currentGame.numberOfPlayers >= 7 && (
-                            <div className={props.styles.specialRoundMessage}>
-                The 4th mission requires 2 fails for it to fail
-                            </div>
-                        )}
                     </div>
                 </Fade>
             </div>
 
-            <div className={props.styles.historyWrapper}>
+            {/* <div className={props.styles.historyWrapper}>
                 <Fade
                     checked={showingHistory}
                 >
                     <History />
                 </Fade>
-            </div>
+            </div> */}
 
             <SuccessModal
                 backdrop
@@ -392,6 +273,7 @@ GameStarted.defaultProps = {
     },
     currentGame: {
         approveLeaveMidgame: [],
+        chancellor: '',
         currentPlayers: [],
         consecutiveRejections: 0,
         host: '',
@@ -427,35 +309,25 @@ GameStarted.propTypes = {
     confirmNominationsRequest: PropTypes.func.isRequired,
     currentGame: PropTypes.shape({
         approveLeaveMidgame: PropTypes.arrayOf(PropTypes.string),
+        chancellor: PropTypes.string,
         consecutiveRejections: PropTypes.number,
         currentPlayers: PropTypes.arrayOf(PropTypes.string),
         host: PropTypes.string,
         leader: PropTypes.string,
         mode: PropTypes.string,
         numberOfPlayers: PropTypes.number,
-        roles: PropTypes.arrayOf(PropTypes.string),
         round: PropTypes.number,
-        playersOnQuest: PropTypes.arrayOf(PropTypes.string),
         playersReady: PropTypes.arrayOf(PropTypes.string),
+        playerRoles: PropTypes.string,
         votesAgainst: PropTypes.arrayOf(PropTypes.string),
         votesFor: PropTypes.arrayOf(PropTypes.string),
         rejectLeaveMidgame: PropTypes.arrayOf(PropTypes.string),
-        playerRoles: PropTypes.arrayOf(PropTypes.shape({
-            player: PropTypes.string,
-            role: PropTypes.string
-        })),
-        playerToGuessMerlin: PropTypes.string,
         requestToEndGame: PropTypes.string,
-        questFails: PropTypes.arrayOf(PropTypes.string),
-        questNominations: PropTypes.arrayOf(PropTypes.string),
-        questSuccesses: PropTypes.arrayOf(PropTypes.string),
-        questResult: PropTypes.arrayOf(PropTypes.number),
         status: PropTypes.string
     }),
     destroyGameRequest: PropTypes.func.isRequired,
     leaveGameRequest: PropTypes.func.isRequired,
-    guessMerlinRequest: PropTypes.func.isRequired,
-    nominatePlayerForQuest: PropTypes.func.isRequired,
+    nominateChancellorRequest: PropTypes.func.isRequired,
     approveLeaveMidgameRequest: PropTypes.func.isRequired,
     currentGameId: PropTypes.string,
     myRole: PropTypes.string,
@@ -467,8 +339,7 @@ const mapDispatchToProps = {
     destroyGameRequest,
     confirmNominationsRequest,
     leaveGameRequest,
-    guessMerlinRequest,
-    nominatePlayerForQuest,
+    nominateChancellorRequest,
     approveLeaveMidgameRequest
 };
 

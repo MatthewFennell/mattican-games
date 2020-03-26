@@ -104,7 +104,8 @@ const GameNotStarted = props => (
                             < props.currentGame.numberOfPlayers)
                             || props.currentGame.playersReady.length
                             !== props.currentGame.numberOfPlayers}
-                        onClick={() => props.startGameRequest(props.currentGameId)}
+                        onClick={() => props.startGameRequest(props.currentGameId,
+                            props.currentGame.mode)}
                     />
                 </div>
             )}

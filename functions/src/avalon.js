@@ -22,6 +22,10 @@ exports.createAvalonGame = functions
             throw new functions.https.HttpsError('invalid-argument', 'Must provide a game name');
         }
 
+        if (data.name && data.name.length > 32) {
+            throw new functions.https.HttpsError('invalid-argument', 'Game name too long. Max 32 characters');
+        }
+
         if (!common.validNumberOfPlayers(data.numberOfPlayers, data.mode)) {
             throw new functions.https.HttpsError('invalid-argument', 'Invalid number of players');
         }
@@ -61,34 +65,6 @@ exports.createAvalonGame = functions
         );
     });
 
-
-exports.joinAvalonGame = functions
-    .region(constants.region)
-    .https.onCall((data, context) => {
-        common.isAuthenticated(context);
-        return db.collection('games').doc(data.gameId).get().then(doc => {
-            if (!doc.exists) {
-                throw new functions.https.HttpsError('not-found', 'Game not found');
-            }
-            if (doc.data().currentPlayers.length === doc.data().numberOfPlayers) {
-                throw new functions.https.HttpsError('invalid-argument', 'That game is full');
-            }
-            if (doc.data().hasStarted) {
-                throw new functions.https.HttpsError('invalid-argument', 'That game has already started');
-            }
-
-            return db.collection('users').doc(context.auth.uid).get().then(response => {
-                const { displayName } = response.data();
-                if (!displayName) {
-                    throw new functions.https.HttpsError('invalid-argument', 'Please set a display name before joining');
-                }
-                return doc.ref.update({
-                    currentPlayers: operations.arrayUnion(context.auth.uid)
-                });
-            });
-        });
-    });
-
 exports.startGame = functions
     .region(constants.region)
     .https.onCall((data, context) => {
@@ -106,7 +82,7 @@ exports.startGame = functions
                 throw new functions.https.HttpsError('invalid-argument', 'Not everybody is ready');
             }
 
-            const playerRoles = common.makeRoles(doc.data().roles, doc.data().currentPlayers);
+            const playerRoles = common.makeAvalonRoles(doc.data().roles, doc.data().currentPlayers);
             const playerOrder = fp.shuffle(doc.data().currentPlayers);
             return doc.ref.update({
                 currentPlayers: playerOrder,
@@ -114,7 +90,7 @@ exports.startGame = functions
                 leader: fp.first(playerOrder),
                 playerRoles,
                 round: 1,
-                status: constants.gameStatuses.Nominating
+                status: constants.avalonGameStatuses.Nominating
             });
         });
     });
@@ -131,7 +107,7 @@ exports.nominatePlayer = functions
             if (context.auth.uid !== doc.data().leader) {
                 throw new functions.https.HttpsError('invalid-argument', 'You are not the leader');
             }
-            if (!doc.data().status === constants.gameStatuses.Nominating) {
+            if (!doc.data().status === constants.avalonGameStatuses.Nominating) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not nominating currently');
             }
             if (data.isOnQuest) {
@@ -163,7 +139,7 @@ exports.confirmNominations = functions
             if (context.auth.uid !== doc.data().leader) {
                 throw new functions.https.HttpsError('invalid-argument', 'You are not the leader');
             }
-            if (!doc.data().status === constants.gameStatuses.Nominating) {
+            if (!doc.data().status === constants.avalonGameStatuses.Nominating) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not nominating currently');
             }
 
@@ -177,7 +153,7 @@ exports.confirmNominations = functions
 
             if (consecutiveRejections === 4) {
                 return doc.ref.update({
-                    status: constants.gameStatuses.Questing,
+                    status: constants.avalonGameStatuses.Questing,
                     questNominations: [],
                     votesAgainst: [],
                     votesFor: [],
@@ -197,7 +173,7 @@ exports.confirmNominations = functions
             }
 
             return doc.ref.update({
-                status: constants.gameStatuses.Voting
+                status: constants.avalonGameStatuses.Voting
             });
         });
     });
@@ -210,7 +186,7 @@ exports.makeVote = functions
             if (!doc.exists) {
                 throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
             }
-            if (!doc.data().status === constants.gameStatuses.Voting) {
+            if (!doc.data().status === constants.avalonGameStatuses.Voting) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not voting currently');
             }
 
@@ -239,7 +215,7 @@ exports.makeVote = functions
                     if (votesFor.length > votesAgainst.length) {
                         return doc.ref.update({
                             questNominations: [],
-                            status: constants.gameStatuses.Questing,
+                            status: constants.avalonGameStatuses.Questing,
                             votesAgainst: [],
                             votesFor: [],
                             playersOnQuest: questNominations,
@@ -259,7 +235,7 @@ exports.makeVote = functions
                     }
                     return doc.ref.update({
                         questNominations: [],
-                        status: constants.gameStatuses.Nominating,
+                        status: constants.avalonGameStatuses.Nominating,
                         votesAgainst: [],
                         votesFor: [],
                         playersOnQuest: [],
@@ -289,7 +265,7 @@ exports.goOnQuest = functions
             if (!doc.exists) {
                 throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
             }
-            if (!doc.data().status === constants.gameStatuses.Questing) {
+            if (!doc.data().status === constants.avalonGameStatuses.Questing) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not questing currently');
             }
 
@@ -332,17 +308,17 @@ exports.goOnQuest = functions
                     let randomBadGuyToGuessMerlin = playerToGuessMerlin;
 
                     if (numFail === 3) {
-                        nextStatus = constants.gameStatuses.Finished;
+                        nextStatus = constants.avalonGameStatuses.Finished;
                     }
                     if (numSuc === 3 && playingWithMerlin) {
-                        nextStatus = constants.gameStatuses.GuessingMerlin;
+                        nextStatus = constants.avalonGameStatuses.GuessingMerlin;
 
                         const badPlayers = playerRoles.filter(r => !constants.avalonRoles[r.role].isGood).map(r => r.player);
 
                         randomBadGuyToGuessMerlin = badPlayers[Math.floor(Math.random() * badPlayers.length)];
                     }
                     if (numSuc < 3 && numFail < 3) {
-                        nextStatus = constants.gameStatuses.Nominating;
+                        nextStatus = constants.avalonGameStatuses.Nominating;
                     }
 
                     return doc.ref.update({
@@ -385,7 +361,7 @@ exports.guessMerlin = functions
 
             return doc.ref.update({
                 guessedMerlinCorrectly: merlin.includes(data.merlin),
-                status: constants.gameStatuses.Finished
+                status: constants.avalonGameStatuses.Finished
             });
         });
     });

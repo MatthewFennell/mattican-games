@@ -27,7 +27,7 @@ module.exports.hasPermission = (uid, permission) => admin.auth().getUser(uid).th
     }
 });
 
-module.exports.makeRoles = (roles, players) => {
+module.exports.makeAvalonRoles = (roles, players) => {
     const numPlayers = players.length;
     let allRoles = [];
 
@@ -43,6 +43,31 @@ module.exports.makeRoles = (roles, players) => {
         allRoles.push(constants.avalonRoles.RegularGood.name);
     }
     allRoles = fp.shuffle(allRoles);
+    const roleAssignments = [];
+
+    for (let x = 0; x < players.length; x += 1) {
+        roleAssignments.push({
+            role: allRoles[x],
+            player: players[x]
+        });
+    }
+    return roleAssignments;
+};
+
+module.exports.makeHitlerRoles = players => {
+    const { Fascist, Liberal, Hitler } = constants.hitlerRoles;
+
+
+    const roleMappings = {
+        5: [Hitler, Fascist, Liberal, Liberal, Liberal],
+        6: [Hitler, Fascist, Liberal, Liberal, Liberal, Liberal],
+        7: [Hitler, Fascist, Fascist, Liberal, Liberal, Liberal, Liberal],
+        8: [Hitler, Fascist, Fascist, Liberal, Liberal, Liberal, Liberal, Liberal],
+        9: [Hitler, Fascist, Fascist, Fascist, Liberal, Liberal, Liberal, Liberal, Liberal],
+        10: [Hitler, Fascist, Fascist, Fascist, Liberal, Liberal, Liberal, Liberal, Liberal, Liberal]
+    };
+    const allRoles = fp.shuffle(roleMappings[players.length]);
+
     const roleAssignments = [];
 
     for (let x = 0; x < players.length; x += 1) {

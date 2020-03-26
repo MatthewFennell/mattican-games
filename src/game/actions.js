@@ -10,6 +10,7 @@ export const READY_UP_REQUEST = `${pre}READY_UP_REQUEST`;
 export const START_GAME_REQUEST = `${pre}START_GAME_REQUEST`;
 
 export const NOMINATE_PLAYER_FOR_QUEST_REQUEST = `${pre}NOMINATE_PLAYER_FOR_QUEST_REQUEST`;
+export const NOMINATE_CHANCELLOR_REQUEST = `${pre}NOMINATE_CHANCELLOR_REQUEST`;
 
 export const CONFIRM_NOMINATIONS_REQUEST = `${pre}CONFIRM_NOMINATIONS_REQUEST`;
 
@@ -46,9 +47,10 @@ export const readyUpRequest = (gameId, isReady) => ({
     isReady
 });
 
-export const startGameRequest = gameId => ({
+export const startGameRequest = (gameId, mode) => ({
     type: START_GAME_REQUEST,
-    gameId
+    gameId,
+    mode
 });
 
 export const nominatePlayerForQuest = (gameId, player, isOnQuest) => ({
@@ -56,6 +58,12 @@ export const nominatePlayerForQuest = (gameId, player, isOnQuest) => ({
     gameId,
     player,
     isOnQuest
+});
+
+export const nominateChancellorRequest = (gameId, player) => ({
+    type: NOMINATE_CHANCELLOR_REQUEST,
+    gameId,
+    player
 });
 
 export const confirmNominationsRequest = (gameId, nominations) => ({

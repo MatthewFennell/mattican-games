@@ -36,6 +36,12 @@ export const gameModes = {
     Hitler: 'Hitler'
 };
 
+export const hitlerRoles = {
+    Fascist: 'Fascist',
+    Hitler: 'Hitler',
+    Liberal: 'Liberal'
+};
+
 export const avalonRoles = {
     Merlin: {
         isGood: true,
@@ -74,12 +80,21 @@ export const avalonRoles = {
     }
 };
 
-export const gameStatuses = {
+export const avalonGameStatuses = {
     Nominating: 'Nominating',
     Voting: 'Voting',
     Questing: 'Questing',
     Finished: 'Finished',
     GuessingMerlin: 'GuessingMerlin'
+};
+
+export const hitlerGameStatuses = {
+    ChancellorDecidingCards: 'ChancellorDecidingCards',
+    Finished: 'Finished',
+    Nominating: 'Nominating',
+    PresidentDecidingCards: 'PresidentDecidingCards',
+    PresidentPower: 'PresidentPower',
+    Voting: 'Voting'
 };
 
 // round -> num players

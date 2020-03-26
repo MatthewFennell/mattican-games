@@ -3,20 +3,17 @@ import {
 } from 'redux-saga/effects';
 import * as actions from './actions';
 import * as overviewApi from './api';
-import * as constants from '../constants';
 import * as gameActions from '../game/actions';
 
 export function* createAvalonGame(api, action) {
     try {
-        if (action.mode === constants.gameModes.Avalon) {
-            yield call(api.createAvalonGame, ({
-                mode: action.mode,
-                name: action.gameName,
-                numberOfPlayers: action.numberOfPlayers,
-                roles: action.roles
-            }));
-            yield put(actions.createGameSuccess());
-        }
+        yield call(api.createAvalonGame, ({
+            mode: action.mode,
+            name: action.gameName,
+            numberOfPlayers: action.numberOfPlayers,
+            roles: action.roles
+        }));
+        yield put(actions.createGameSuccess());
     } catch (error) {
         yield put(actions.stopCreateGame());
         yield put(gameActions.gameError(error, 'Create Game Error'));
@@ -25,12 +22,10 @@ export function* createAvalonGame(api, action) {
 
 export function* joinGame(api, action) {
     try {
-        if (action.mode === constants.gameModes.Avalon) {
-            yield call(api.joinAvalonGame, ({
-                gameId: action.gameId
-            }));
-            yield put(actions.createGameSuccess());
-        }
+        yield call(api.joinGame, ({
+            gameId: action.gameId
+        }));
+        yield put(actions.createGameSuccess());
         yield delay(5000);
         yield put(actions.stopJoinGame());
     } catch (error) {
@@ -39,9 +34,24 @@ export function* joinGame(api, action) {
     }
 }
 
+export function* createHitlerGame(api, action) {
+    try {
+        yield call(api.createHitlerGame, ({
+            mode: action.mode,
+            name: action.gameName,
+            numberOfPlayers: action.numberOfPlayers
+        }));
+        yield put(actions.createGameSuccess());
+    } catch (error) {
+        yield put(actions.stopCreateGame());
+        yield put(gameActions.gameError(error, 'Create Game Error'));
+    }
+}
+
 export default function* overviewSaga() {
     yield all([
         takeEvery(actions.CREATE_AVALON_GAME_REQUEST, createAvalonGame, overviewApi),
-        takeEvery(actions.JOIN_GAME_REQUEST, joinGame, overviewApi)
+        takeEvery(actions.JOIN_GAME_REQUEST, joinGame, overviewApi),
+        takeEvery(actions.CREATE_HITLER_GAME_REQUEST, createHitlerGame, overviewApi)
     ]);
 }

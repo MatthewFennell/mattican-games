@@ -59,7 +59,7 @@ exports.leaveGame = functions
                 });
             }
             if (doc.data().hasStarted) {
-                if (doc.data().status !== constants.gameStatuses.Finished) {
+                if (doc.data().status !== constants.avalonGameStatuses.Finished) {
                     throw new functions.https.HttpsError('invalid-argument', 'That game has not finished yet');
                 }
             }
@@ -95,7 +95,7 @@ exports.leaveMidgame = functions
                 throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
             }
 
-            if (doc.data().status === constants.gameStatuses.Finished || !doc.data().hasStarted) {
+            if (doc.data().status === constants.avalonGameStatuses.Finished || !doc.data().hasStarted) {
                 if (doc.data().currentPlayers.length === 1) {
                     return doc.ref.delete();
                 }
@@ -153,6 +153,137 @@ exports.approveLeaveMidgame = functions
 
             return doc.ref.update({
                 rejectLeaveMidgame: operations.arrayUnion(context.auth.uid)
+            });
+        });
+    });
+
+exports.joinGame = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found');
+            }
+            if (doc.data().currentPlayers.length === doc.data().numberOfPlayers) {
+                throw new functions.https.HttpsError('invalid-argument', 'That game is full');
+            }
+            if (doc.data().hasStarted) {
+                throw new functions.https.HttpsError('invalid-argument', 'That game has already started');
+            }
+
+            return db.collection('users').doc(context.auth.uid).get().then(response => {
+                const { displayName } = response.data();
+                if (!displayName) {
+                    throw new functions.https.HttpsError('invalid-argument', 'Please set a display name before joining');
+                }
+                return doc.ref.update({
+                    currentPlayers: operations.arrayUnion(context.auth.uid)
+                });
+            });
+        });
+    });
+
+
+exports.createHitlerGame = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+
+        if (!data.mode) {
+            throw new functions.https.HttpsError('invalid-argument', 'Must provide a game mode');
+        }
+
+        if (!data.name) {
+            throw new functions.https.HttpsError('invalid-argument', 'Must provide a game name');
+        }
+
+        if (data.name && data.name.length > 32) {
+            throw new functions.https.HttpsError('invalid-argument', 'Game name too long. Max 32 characters');
+        }
+
+        if (!common.validNumberOfPlayers(data.numberOfPlayers, data.mode)) {
+            throw new functions.https.HttpsError('invalid-argument', 'Invalid number of players');
+        }
+
+        return db.collection('games').where('name', '==', data.name).get().then(
+            docs => {
+                if (docs.size > 0) {
+                    throw new functions.https.HttpsError('already-exists', 'A game with that name already exists');
+                }
+                return db.collection('games').add({
+                    approveLeaveMidgame: [],
+                    cardDeck: [],
+                    chancellor: '',
+                    chancellorCards: '',
+                    consecutiveRejections: 0,
+                    currentPlayers: [context.auth.uid],
+                    deadPlayers: [],
+                    discardPile: [],
+                    hasStarted: false,
+                    hiddenInfo: [],
+                    history: [],
+                    host: context.auth.uid,
+                    leader: null,
+                    mode: data.mode,
+                    name: data.name,
+                    numberFascistPlayed: 0,
+                    numberLiberalPlayed: 0,
+                    numberOfPlayers: Math.min(data.numberOfPlayers, 10),
+                    playersReady: [],
+                    playerRoles: [],
+                    presidentCards: [],
+                    previouslyInPower: [],
+                    rejectLeaveMidgame: [],
+                    requestToEndGame: '',
+                    round: null,
+                    votesFor: [],
+                    votesAgainst: []
+                });
+            }
+        );
+    });
+
+
+exports.startGame = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            if (doc.data().host !== context.auth.uid) {
+                throw new functions.https.HttpsError('invalid-argument', 'You are not the host');
+            }
+
+            if (doc.data().playersReady.length !== doc.data().numberOfPlayers) {
+                throw new functions.https.HttpsError('invalid-argument', 'Not everybody is ready');
+            }
+
+            const playerOrder = fp.shuffle(doc.data().currentPlayers);
+
+            const deckOfCards = [];
+
+            for (let x = 0; x < 11; x += 1) {
+                deckOfCards.push(1);
+            }
+
+            for (let x = 0; x < 6; x += 1) {
+                deckOfCards.push(-1);
+            }
+
+            const playerRoles = common.makeHitlerRoles(doc.data().currentPlayers);
+
+            return doc.ref.update({
+                cardDeck: fp.shuffle(deckOfCards),
+                currentPlayers: playerOrder,
+                hasStarted: true,
+                leader: fp.first(playerOrder),
+                round: 1,
+                playerRoles,
+                status: constants.hitlerGameStatuses.Nominating
             });
         });
     });

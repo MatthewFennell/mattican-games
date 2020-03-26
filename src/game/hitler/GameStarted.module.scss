@@ -1,0 +1,224 @@
+@import "../../common/Styles.scss";
+
+.gameStartedWrapper {
+    margin-bottom: $spacing-medium;
+}
+
+.roundHeader {
+    text-align: center;
+    font-weight: bold;
+    color: $color-blue;
+    font-size: $font-size-large;
+    margin-top: $spacing-small;
+}
+
+.viewSecretInfoWrapper {
+    text-align: center;
+}
+
+.isGood {
+    font-weight: bold;
+    color: $color-blue;
+}
+
+.isBad {
+    font-weight: bold;
+    color: $color-red;
+}
+
+.currentLeaderWrapper {
+    text-align: center;
+    color: $color-blue;
+    margin-bottom: $spacing-small;
+}
+
+.playerWrapper {
+    text-align: center;
+    display: flex;
+    background-color: lightblue;
+    padding: $spacing-small;
+    margin: $spacing-small;
+    outline: 0px;
+    border: 2px solid lightblue;
+}
+
+.isActivePlayer {
+    background-color: palegreen;
+    border: 2px solid palegreen;
+}
+
+.isOnQuest {
+    border: 2px solid crimson;
+}
+
+.playerNumber {
+    margin-left: $spacing-small;
+    color: $color-red;
+    font-weight: bold;
+    width: $spacing-average;
+}
+
+.playerName {
+    width: 100%;
+    text-align: center;
+    margin-left: $spacing-large;
+    margin-right: $spacing-large;
+    color: $color-blue;
+}
+
+.activePlayer {
+    font-weight: bold;
+}
+
+.confirmNominationWrapper {
+    text-align: center;
+}
+
+// @keyframes flickerAnimation {
+//     0%   { opacity:1; }
+//     50%  { opacity:0; }
+//     100% { opacity:1; }
+// }
+// @-o-keyframes flickerAnimation{
+//     0%   { opacity:1; }
+//     50%  { opacity:0; }
+//     100% { opacity:1; }
+// }
+// @-moz-keyframes flickerAnimation{
+//     0%   { opacity:1; }
+//     50%  { opacity:0; }
+//     100% { opacity:1; }
+// }
+// @-webkit-keyframes flickerAnimation{
+//     0%   { opacity:1; }
+//     50%  { opacity:0; }
+//     100% { opacity:1; }
+// }
+
+.votingStage, .questingStage {
+    width: $spacing-medium;
+    margin-right: $spacing-small;
+    right: 0;
+    // -webkit-animation: flickerAnimation 4s infinite;
+    // -moz-animation: flickerAnimation 4s infinite;
+    // -o-animation: flickerAnimation 4s infinite;
+    // animation: flickerAnimation 4s infinite;
+}
+
+.successResult {
+    color: $color-green;
+}
+
+.failResult {
+    color: $color-red;
+}
+
+.viewingRole {
+    padding: $spacing-tiny;
+    margin: $spacing-tiny;
+}
+
+.viewingBoardWrapper {
+    text-align: center;
+}
+
+.avalonBoard {
+    margin: $spacing-small;
+    padding: $spacing-small;
+    background-color: burlywood;
+}
+
+.switchWrapper {
+    text-align: center;
+}
+
+.endGameButtons {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.numVotes {
+    color: $color-gray;
+    font-weight: bold;
+    text-align: center;
+}
+
+.endGameVotes {
+    display: flex;
+    justify-content: space-evenly;
+    margin-left: 30%;
+    margin-right: 30%;
+}
+
+.approval {
+    color: $color-green;
+}
+
+.rejection {
+    color: $color-red;
+}
+
+.toggleWrappers {
+    display: flex;
+    justify-content: space-evenly;
+    background-color: mediumpurple;
+    padding: $spacing-small;
+    margin: $spacing-small;
+}
+
+.specialRoundMessage {
+    margin-top: $spacing-tiny;
+    text-align: center;
+    color: indigo;
+}
+
+.boardState {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.haveVoted {
+    color: $color-green;
+}
+
+.notVoted {
+    color: $color-red;
+}
+
+.gameFinished {
+    text-align: center;
+    color: $color-blue;
+    font-size: $font-size-huge;
+    margin-top: $spacing-small;
+    font-weight: bold;
+}
+
+.consecutiveRejections {
+    color: $color-blue;
+    text-align: center;
+    font-weight: bold;
+}
+
+.guessingMerlinWrapper {
+    text-align: center;
+    background-color: $color-amber;
+    margin: $spacing-small;
+    padding: $spacing-small;
+}
+
+.submitMerlinGuessWrapper {
+    text-align: center;
+}
+
+.leaveGameButton, .destroyGameButton {
+    text-align: center;
+}
+
+.missionNum {
+    color: $color-dark-blue;
+    font-weight: bold;
+}
+
+.historyWrapper {
+    text-align: center;
+}

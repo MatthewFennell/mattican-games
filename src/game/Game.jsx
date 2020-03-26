@@ -7,6 +7,7 @@ import { withRouter } from 'react-router-dom';
 import * as selectors from './selectors';
 import GameNotStarted from './GameNotStarted';
 import AvalonGameStarted from './avalon/GameStarted';
+import HitlerGameStarted from './hitler/GameStarted';
 import ErrorModal from '../common/modal/ErrorModal';
 import { closeGameError } from './actions';
 import * as constants from '../constants';
@@ -20,6 +21,10 @@ const Game = props => {
         }
         if (props.currentGame.mode === constants.gameModes.Avalon) {
             return <AvalonGameStarted />;
+        }
+
+        if (props.currentGame.mode === constants.gameModes.Hitler) {
+            return <HitlerGameStarted />;
         }
 
         return <div>Unknown game mode</div>;

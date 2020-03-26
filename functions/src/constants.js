@@ -124,6 +124,12 @@ module.exports.avalonRoles = {
     }
 };
 
+module.exports.hitlerRoles = {
+    Fascist: 'Fascist',
+    Hitler: 'Hitler',
+    Liberal: 'Liberal'
+};
+
 const fivePlayerGame = {
     1: 2,
     2: 3,
@@ -181,12 +187,21 @@ module.exports.avalonRounds = {
     10: tenPlayerGame
 };
 
-module.exports.gameStatuses = {
-    Nominating: 'Nominating',
-    Voting: 'Voting',
-    Questing: 'Questing',
+module.exports.avalonGameStatuses = {
     Finished: 'Finished',
-    GuessingMerlin: 'GuessingMerlin'
+    GuessingMerlin: 'GuessingMerlin',
+    Nominating: 'Nominating',
+    Questing: 'Questing',
+    Voting: 'Voting'
+};
+
+module.exports.hitlerGameStatuses = {
+    ChancellorDecidingCards: 'ChancellorDecidingCards',
+    Finished: 'Finished',
+    Nominating: 'Nominating',
+    PresidentDecidingCards: 'PresidentDecidingCards',
+    PresidentPower: 'PresidentPower',
+    Voting: 'Voting'
 };
 
 module.exports.historyTypes = {

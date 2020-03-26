@@ -3,6 +3,7 @@ import {
 } from 'redux-saga/effects';
 import * as actions from './actions';
 import * as gameApi from './api';
+import * as constants from '../constants';
 
 export function* leaveGame(api, action) {
     try {
@@ -27,9 +28,16 @@ export function* readyUp(api, action) {
 
 export function* startGame(api, action) {
     try {
-        yield call(api.startGame, ({
-            gameId: action.gameId
-        }));
+        if (action.mode === constants.gameModes.Avalon) {
+            yield call(api.startAvalonGame, ({
+                gameId: action.gameId
+            }));
+        }
+        if (action.mode === constants.gameModes.Hitler) {
+            yield call(api.startHitlerGame, ({
+                gameId: action.gameId
+            }));
+        }
     } catch (error) {
         yield put(actions.gameError(error, 'Ready Up Error'));
     }
