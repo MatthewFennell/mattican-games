@@ -32,24 +32,30 @@ exports.createAvalonGame = functions
                     throw new functions.https.HttpsError('already-exists', 'A game with that name already exists');
                 }
                 return db.collection('games').add({
+                    approveLeaveMidgame: [],
+                    consecutiveRejections: 0,
+                    currentPlayers: [context.auth.uid],
+                    guessedMerlinCorrectly: false,
+                    hasStarted: false,
+                    history: [],
+                    host: context.auth.uid,
+                    leader: null,
                     mode: data.mode,
                     name: data.name,
                     numberOfPlayers: Math.min(data.numberOfPlayers, 10),
-                    roles: data.roles,
-                    hasStarted: false,
-                    currentPlayers: [context.auth.uid],
-                    host: context.auth.uid,
-                    playersReady: [],
-                    questResult: [],
                     playersOnQuest: [],
-                    consecutiveRejections: 0,
+                    playersReady: [],
+                    playerToGuessMerlin: '',
+                    questNominations: [],
+                    questResult: [],
+                    rejectLeaveMidgame: [],
+                    requestToEndGame: '',
+                    roles: data.roles,
+                    round: null,
                     questSuccesses: [],
                     questFails: [],
-                    playerToGuessMerlin: '',
-                    guessedMerlinCorrectly: false,
-                    requestToEndGame: '',
-                    approveLeaveMidgame: [],
-                    rejectLeaveMidgame: []
+                    votesFor: [],
+                    votesAgainst: []
                 });
             }
         );
@@ -104,14 +110,10 @@ exports.startGame = functions
             const playerOrder = fp.shuffle(doc.data().currentPlayers);
             return doc.ref.update({
                 currentPlayers: playerOrder,
+                hasStarted: true,
+                leader: fp.first(playerOrder),
                 playerRoles,
                 round: 1,
-                leader: fp.first(playerOrder),
-                questNominations: [],
-                votesFor: [],
-                votesAgainst: [],
-                history: [],
-                hasStarted: true,
                 status: constants.gameStatuses.Nominating
             });
         });
