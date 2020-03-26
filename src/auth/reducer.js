@@ -97,7 +97,9 @@ const authReducer = (state = initialState, action) => {
             signUpError: '',
             signUpErrorCode: '',
             signInError: '',
-            signInErrorCode: ''
+            signInErrorCode: '',
+            passwordResetErrorCode: '',
+            passwordResetError: ''
         };
     }
     default:

@@ -13,13 +13,19 @@ const overviewReducer = (state = initialState, action) => {
             joiningGame: true
         };
     }
+    case actions.STOP_CREATE_GAME: {
+        return {
+            ...state,
+            creatingGame: false
+        };
+    }
     case actions.STOP_JOIN_GAME: {
         return {
             ...state,
             joiningGame: false
         };
     }
-    case actions.CREATE_GAME_REQUEST: {
+    case actions.CREATE_AVALON_GAME_REQUEST: {
         return {
             ...state,
             creatingGame: true

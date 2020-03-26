@@ -11,9 +11,9 @@ import { noop } from 'lodash';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 import defaultStyles from './History.module.scss';
-import * as selectors from './selectors';
-import * as helpers from './helpers';
-import * as constants from '../constants';
+import * as selectors from '../selectors';
+import * as helpers from '../helpers';
+import * as constants from '../../constants';
 
 const History = props => (
     props.history.map(h => {

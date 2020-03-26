@@ -8,20 +8,20 @@ import classNames from 'classnames';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import { noop } from 'lodash';
 import defaultStyles from './GameStarted.module.scss';
-import * as selectors from './selectors';
-import Fade from '../common/Fade/Fade';
-import * as helpers from './helpers';
-import * as constants from '../constants';
+import * as selectors from '../selectors';
+import Fade from '../../common/Fade/Fade';
+import * as helpers from '../helpers';
+import * as constants from '../../constants';
 import CurrentGameStatus from './CurrentGameStatus';
 import {
     nominatePlayerForQuest, confirmNominationsRequest, guessMerlinRequest, leaveGameRequest,
     destroyGameRequest, approveLeaveMidgameRequest
-} from './actions';
-import StyledButton from '../common/StyledButton/StyledButton';
-import Radio from '../common/radio/RadioButton';
+} from '../actions';
+import StyledButton from '../../common/StyledButton/StyledButton';
+import Radio from '../../common/radio/RadioButton';
 import History from './History';
-import Switch from '../common/Switch/Switch';
-import SuccessModal from '../common/modal/SuccessModal';
+import Switch from '../../common/Switch/Switch';
+import SuccessModal from '../../common/modal/SuccessModal';
 
 const GameStarted = props => {
     const [viewingRole, setViewingRole] = useState(false);

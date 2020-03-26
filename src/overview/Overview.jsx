@@ -6,8 +6,8 @@ import { compose } from 'redux';
 import fp from 'lodash/fp';
 import defaultStyles from './Overview.module.scss';
 import * as constants from '../constants';
-import { createGameRequest, joinGameRequest } from './actions';
-import CreateAvalonGame from './CreateAvalonGame';
+import { createAvalonGameRequest, joinGameRequest } from './actions';
+import CreateGame from './CreateGame';
 import * as selectors from './selectors';
 import ConfirmModal from '../common/modal/ConfirmModal';
 import { mapUserIdToName } from '../game/helpers';
@@ -39,13 +39,10 @@ const Overview = props => {
     }, [setActiveAvalonRoles, setNumberOfPlayers, activeAvalonRoles]);
 
     const createGame = useCallback(() => {
-        let roles = [];
-
         if (gameMode === constants.gameModes.Avalon) {
-            roles = activeAvalonRoles;
+            props.createAvalonGameRequest(gameMode, gameName,
+                parseInt(numberOfPlayers, 10), activeAvalonRoles);
         }
-
-        props.createGameRequest(gameMode, gameName, parseInt(numberOfPlayers, 10), roles);
         setMakingGame(false);
 
         // eslint-disable-next-line
@@ -72,7 +69,7 @@ const Overview = props => {
     return (
         <>
             <div className={props.styles.overviewWrapper}>
-                <CreateAvalonGame
+                <CreateGame
                     activeAvalonRoles={activeAvalonRoles}
                     createGame={createGame}
                     creatingGame={props.creatingGame}
@@ -109,9 +106,12 @@ const Overview = props => {
                             <div>
                                 {`Game Mode: ${game.mode}` }
                             </div>
-                            <div>
-                                {`Roles: ${game.roles.reduce((acc, cur) => `${acc}, ${cur}`)}` }
-                            </div>
+                            {game.mode === constants.gameModes.Avalon
+                            && (
+                                <div>
+                                    {`Roles: ${game.roles.reduce((acc, cur) => `${acc}, ${cur}`)}` }
+                                </div>
+                            ) }
                             {game.currentPlayers && !fp.isEmpty(props.users)
                         && (
                             <div>
@@ -167,7 +167,7 @@ Overview.defaultProps = {
 Overview.propTypes = {
     allGames: PropTypes.arrayOf(PropTypes.shape({})),
     closeGameError: PropTypes.func.isRequired,
-    createGameRequest: PropTypes.func.isRequired,
+    createAvalonGameRequest: PropTypes.func.isRequired,
     creatingGame: PropTypes.bool,
     joiningGame: PropTypes.bool,
     joinGameRequest: PropTypes.func.isRequired,
@@ -180,7 +180,7 @@ Overview.propTypes = {
 
 const mapDispatchToProps = {
     closeGameError,
-    createGameRequest,
+    createAvalonGameRequest,
     joinGameRequest
 };
 

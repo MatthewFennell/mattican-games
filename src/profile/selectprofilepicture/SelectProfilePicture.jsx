@@ -18,8 +18,6 @@ const SelectProfilePicture = props => {
         // eslint-disable-next-line
     }, [props.updateProfilePicture, setOwnPhotoUrl, props.currentPhotoUrl]);
 
-    console.log('potential pics', props.potentialPictures);
-
     return (
         <div className={props.styles.selectProfilePictureWrapper}>
             <div className={props.styles.selectAvatar}>
@@ -46,7 +44,6 @@ const SelectProfilePicture = props => {
                     </div>
                 ))}
             </div>
-            <hr />
             <div className={props.styles.selectOwnPictureWrapper}>
                 <div className={props.styles.uploadOwnIconMessage}>
                     Upload your own avatar
@@ -69,11 +66,14 @@ const SelectProfilePicture = props => {
                         </div>
                     </div>
                     <div className={props.styles.ownImageExample}>
-                        <img
-                            className={props.styles.exampleImage}
-                            src={ownPhotoUrl}
-                            alt="new"
-                        />
+                        {ownPhotoUrl
+                        && (
+                            <img
+                                className={props.styles.exampleImage}
+                                src={ownPhotoUrl}
+                                alt="new"
+                            />
+                        ) }
                         <div>
                             <StyledButton color="primary" onClick={() => updateImage(ownPhotoUrl)} text="Change my icon" />
                         </div>

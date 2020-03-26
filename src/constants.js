@@ -32,7 +32,8 @@ export const PERMISSIONS = {
 export const successDelay = 3500;
 
 export const gameModes = {
-    Avalon: 'Avalon'
+    Avalon: 'Avalon',
+    Hitler: 'Hitler'
 };
 
 export const avalonRoles = {

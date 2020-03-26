@@ -23,7 +23,9 @@
     flex-wrap: wrap;
     justify-content: space-evenly;
   }
-  .deleteButtonWrapper{
+  .deleteButtonWrapper {
+    @include light-box-shadow();
+    margin: $spacing-medium;
     padding: $spacing-small;
   }
 }
@@ -46,6 +48,12 @@
 
 @media only screen and (max-width: 600px) {
   .profileWrapper{
+    padding-top: $spacing-small;
     width: 100%;
+  }
+  .emailTextWrapper {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
   }
 }

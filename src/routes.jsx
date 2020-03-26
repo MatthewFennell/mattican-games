@@ -27,14 +27,16 @@ export const signedOutLinks = [
         icon: <DoubleArrowIcon color="primary" />,
         component: rootComponents.SignIn,
         path: () => constants.URL.SIGN_IN,
-        urlIncludes: constants.URL.SIGN_IN
+        urlIncludes: constants.URL.SIGN_IN,
+        showInSideBar: true
     },
     {
         title: 'Sign Up',
         icon: <AccountBoxIcon color="primary" />,
         component: rootComponents.SignUp,
         path: () => constants.URL.SIGN_UP,
-        urlIncludes: constants.URL.SIGN_UP
+        urlIncludes: constants.URL.SIGN_UP,
+        showInSideBar: true
     }
 ];
 

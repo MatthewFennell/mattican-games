@@ -193,3 +193,8 @@ module.exports.historyTypes = {
     Vote: 'Vote',
     Quest: 'Quest'
 };
+
+module.exports.gameModes = {
+    Avalon: 'Avalon',
+    Hitler: 'Hitler'
+};

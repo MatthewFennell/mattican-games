@@ -6,9 +6,10 @@ import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import * as selectors from './selectors';
 import GameNotStarted from './GameNotStarted';
-import GameStarted from './GameStarted';
+import AvalonGameStarted from './avalon/GameStarted';
 import ErrorModal from '../common/modal/ErrorModal';
 import { closeGameError } from './actions';
+import * as constants from '../constants';
 
 const Game = props => {
     const generateGameThingToLoad = () => {
@@ -17,7 +18,11 @@ const Game = props => {
                 <GameNotStarted />
             );
         }
-        return <GameStarted />;
+        if (props.currentGame.mode === constants.gameModes.Avalon) {
+            return <AvalonGameStarted />;
+        }
+
+        return <div>Unknown game mode</div>;
     };
 
 
@@ -37,7 +42,8 @@ const Game = props => {
 
 Game.defaultProps = {
     currentGame: {
-        hasStarted: false
+        hasStarted: false,
+        mode: ''
     },
     errorHeader: '',
     errorMessage: '',
@@ -47,7 +53,8 @@ Game.defaultProps = {
 Game.propTypes = {
     closeGameError: PropTypes.func.isRequired,
     currentGame: PropTypes.shape({
-        hasStarted: PropTypes.bool
+        hasStarted: PropTypes.bool,
+        mode: PropTypes.string
     }),
     errorHeader: PropTypes.string,
     errorMessage: PropTypes.string,

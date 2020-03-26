@@ -32,7 +32,7 @@ const Profile = props => {
         setDeleteModalOpen(false);
         setEmail('');
         // eslint-disable-next-line
-    }, [props.deleteAccountRequest]);
+    }, [props.deleteAccountRequest, email, setEmail, setDeleteModalOpen]);
 
     const updateProfilePicture = useCallback(photoUrl => {
         props.updateProfilePictureRequest(photoUrl);

@@ -20,11 +20,8 @@ const GameNotStarted = props => (
                 Game Lobby
         </div>
 
-
         <div className={props.styles.currentPlayersWrapper}>
-
             <div className={props.styles.gameInfo}>
-
                 <div className={props.styles.hostWrapper}>
                     <div>Host:</div>
 
@@ -40,7 +37,6 @@ const GameNotStarted = props => (
                         {props.currentGame.mode}
                     </div>
                 </div>
-
             </div>
 
             <div className={props.styles.currentPlayersMessage}>
@@ -65,25 +61,28 @@ const GameNotStarted = props => (
                 </div>
             ))}
 
-            <div className={props.styles.roles}>
-                <div className={props.styles.rolesMessage}>
+            {props.currentGame.mode === constants.gameModes.Avalon
+            && (
+                <div className={props.styles.roles}>
+                    <div className={props.styles.rolesMessage}>
                         Roles
+                    </div>
+                    {Object.values(constants.avalonRoles)
+                        .filter(role => props.currentGame.roles
+                            .includes(role.name))
+                        .filter(role => role.isGood).filter(role => role.isSpecial)
+                        .map(role => (
+                            <div className={props.styles.goodRole} key={role.name}>{role.name}</div>
+                        ))}
+                    {Object.values(constants.avalonRoles)
+                        .filter(role => props.currentGame.roles
+                            .includes(role.name))
+                        .filter(role => !role.isGood).filter(role => role.isSpecial)
+                        .map(role => (
+                            <div className={props.styles.badRole} key={role.name}>{role.name}</div>
+                        ))}
                 </div>
-                {Object.values(constants.avalonRoles)
-                    .filter(role => props.currentGame.roles
-                        .includes(role.name))
-                    .filter(role => role.isGood).filter(role => role.isSpecial)
-                    .map(role => (
-                        <div className={props.styles.goodRole} key={role.name}>{role.name}</div>
-                    ))}
-                {Object.values(constants.avalonRoles)
-                    .filter(role => props.currentGame.roles
-                        .includes(role.name))
-                    .filter(role => !role.isGood).filter(role => role.isSpecial)
-                    .map(role => (
-                        <div className={props.styles.badRole} key={role.name}>{role.name}</div>
-                    ))}
-            </div>
+            )}
         </div>
 
         <div className={props.styles.readyUp}>

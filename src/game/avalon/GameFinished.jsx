@@ -5,9 +5,9 @@ import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import defaultStyles from './GameFinished.module.scss';
-import * as selectors from './selectors';
-import * as helpers from './helpers';
-import * as constants from '../constants';
+import * as selectors from '../selectors';
+import * as helpers from '../helpers';
+import * as constants from '../../constants';
 
 const GameFinished = props => {
     const questResults = props.currentGame.questResult;

@@ -5,12 +5,12 @@ import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import defaultStyles from './CurrentGameStatus.module.scss';
-import * as selectors from './selectors';
-import * as helpers from './helpers';
-import * as constants from '../constants';
-import StyledButton from '../common/StyledButton/StyledButton';
-import Fade from '../common/Fade/Fade';
-import { makeVoteRequest, makeQuestRequest } from './actions';
+import * as selectors from '../selectors';
+import * as helpers from '../helpers';
+import * as constants from '../../constants';
+import StyledButton from '../../common/StyledButton/StyledButton';
+import Fade from '../../common/Fade/Fade';
+import { makeVoteRequest, makeQuestRequest } from '../actions';
 import GameFinished from './GameFinished';
 
 const CurrentGameStatus = props => {

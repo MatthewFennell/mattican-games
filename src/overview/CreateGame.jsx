@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
-import defaultStyles from './CreateAvalonGame.module.scss';
+import defaultStyles from './CreateGame.module.scss';
 import StyledButton from '../common/StyledButton/StyledButton';
 import SuccessModal from '../common/modal/SuccessModal';
 import Dropdown from '../common/dropdown/Dropdown';
@@ -27,7 +27,7 @@ const shouldBeDisabled = (numberOfPlayers, activeAvalonRoles, role) => {
     return numberOfCurrentBadGuys >= 2;
 };
 
-const Checkbox = props => (
+const CreateGame = props => (
     <>
         <div className={props.styles.createGameWrapper}>
             <StyledButton text="Create Game" onClick={() => props.setMakingGame(true)} />
@@ -117,7 +117,7 @@ const Checkbox = props => (
     </>
 );
 
-Checkbox.defaultProps = {
+CreateGame.defaultProps = {
     activeAvalonRoles: [],
     changeNumberOfPlayers: noop,
     creatingGame: false,
@@ -133,7 +133,7 @@ Checkbox.defaultProps = {
     styles: defaultStyles
 };
 
-Checkbox.propTypes = {
+CreateGame.propTypes = {
     activeAvalonRoles: PropTypes.arrayOf(PropTypes.string),
     changeNumberOfPlayers: PropTypes.func,
     creatingGame: PropTypes.bool,
@@ -152,4 +152,4 @@ Checkbox.propTypes = {
     styles: PropTypes.objectOf(PropTypes.string)
 };
 
-export default Checkbox;
+export default CreateGame;

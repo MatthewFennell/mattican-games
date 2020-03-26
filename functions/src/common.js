@@ -57,3 +57,27 @@ module.exports.makeRoles = (roles, players) => {
 
 module.exports.isIntegerGreaterThanEqualZero = value => Number.isInteger(value) && value >= 0;
 module.exports.isNumber = value => Boolean((Number(value) && value) >= 0 || Number(value) === 0);
+
+module.exports.validNumberOfPlayers = (numPlayers, mode) => {
+    if (mode === constants.gameModes.Avalon || mode === constants.gameModes.Hitler) {
+        return numPlayers >= 5 && numPlayers <= 10;
+    }
+    return false;
+};
+
+module.exports.findNextUser = (leader, users) => {
+    const index = users.findIndex(u => u === leader);
+    const val = users[(index + 1) % users.length];
+    return val;
+};
+
+
+module.exports.hasQuestFailed = (round, numberOfPlayers, numFail) => {
+    if (round === 4 && numberOfPlayers >= 7 && numFail >= 2) {
+        return true;
+    }
+    if (round !== 4 && numFail >= 1) {
+        return true;
+    }
+    return false;
+};
