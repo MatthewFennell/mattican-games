@@ -132,17 +132,6 @@ describe('Auth saga', () => {
             .run();
     });
 
-    it('sign up error', () => {
-        const error = new Error('error');
-        const action = actions.signUp('email', 'password');
-        return expectSaga(sagas.signUp, api, action)
-            .provide([
-                [matchers.call.fn(api.updateDisplayName), throwError(error)]
-            ])
-            .put(actions.signUpError(error))
-            .run();
-    });
-
     it('sign in', () => {
         const action = actions.signIn('email', 'password');
         return expectSaga(sagas.signIn, api, action)
