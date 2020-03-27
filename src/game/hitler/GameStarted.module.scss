@@ -47,8 +47,13 @@
     border: 2px solid palegreen;
 }
 
-.isOnQuest {
+.nominatedChancellor {
     border: 2px solid crimson;
+}
+
+.activeChancellor {
+    background-color: greenyellow;
+    border: 2px solid greenyellow;
 }
 
 .playerNumber {
@@ -56,6 +61,13 @@
     color: $color-red;
     font-weight: bold;
     width: $spacing-average;
+    display: flex;
+}
+
+.currentPresident, .currentChancellor {
+    margin-left: 4px;
+    font-size: $font-size-miniscule;
+    @include vertical-center-div();
 }
 
 .playerName {
@@ -125,7 +137,7 @@
 .avalonBoard {
     margin: $spacing-small;
     padding: $spacing-small;
-    background-color: burlywood;
+    // background-color: burlywood;
 }
 
 .switchWrapper {

@@ -10,7 +10,7 @@ import * as helpers from '../helpers';
 import * as constants from '../../constants';
 import StyledButton from '../../common/StyledButton/StyledButton';
 import Fade from '../../common/Fade/Fade';
-import { makeVoteRequest, makeQuestRequest } from '../actions';
+import { makeAvalonVoteRequest, makeQuestRequest } from '../actions';
 import GameFinished from './GameFinished';
 
 const CurrentGameStatus = props => {
@@ -31,7 +31,7 @@ const CurrentGameStatus = props => {
     }, [setMakingQuest, props.currentGameId]);
 
     const placeVote = useCallback(vote => {
-        props.makeVoteRequest(props.currentGameId, vote);
+        props.makeAvalonVoteRequest(props.currentGameId, vote);
         setMakingVote(false);
         // eslint-disable-next-line
     }, [props.currentGameId, setMakingQuest])
@@ -201,7 +201,7 @@ CurrentGameStatus.propTypes = {
         status: PropTypes.string
     }),
     currentGameId: PropTypes.string,
-    makeVoteRequest: PropTypes.func.isRequired,
+    makeAvalonVoteRequest: PropTypes.func.isRequired,
     makeQuestRequest: PropTypes.func.isRequired,
     myRole: PropTypes.string,
     styles: PropTypes.objectOf(PropTypes.string),
@@ -209,7 +209,7 @@ CurrentGameStatus.propTypes = {
 };
 
 const mapDispatchToProps = {
-    makeVoteRequest,
+    makeAvalonVoteRequest,
     makeQuestRequest
 };
 

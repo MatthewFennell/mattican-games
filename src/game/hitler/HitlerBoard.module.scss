@@ -1,0 +1,41 @@
+@import "../../common/Styles.scss";
+
+.fascistBoard, .liberalBoard {
+    display: flex;
+    margin: $spacing-small;
+
+    > div {
+        flex-grow: 1;
+        // padding: $spacing-small;
+        border-left: 1px solid $color-black;
+    }
+}
+
+.firstCell {
+    border-left: 0px !important;
+}
+
+.fascistBoard {
+    background-color: antiquewhite;
+}
+
+.hitlerZone {
+    background-color: coral;
+}
+
+.liberalBoard {
+    background-color: $color-light-blue;
+}
+
+.liberalPlayed {
+    margin: $spacing-small;
+    padding: $spacing-small;
+    color: $color-dark-blue;
+    background-color: $color-dark-blue;
+}
+
+.liberalNotPlayed {
+    margin: $spacing-small;
+    padding: $spacing-small;
+    color: $color-light-blue;
+}

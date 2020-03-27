@@ -13,8 +13,10 @@ export const NOMINATE_PLAYER_FOR_QUEST_REQUEST = `${pre}NOMINATE_PLAYER_FOR_QUES
 export const NOMINATE_CHANCELLOR_REQUEST = `${pre}NOMINATE_CHANCELLOR_REQUEST`;
 
 export const CONFIRM_NOMINATIONS_REQUEST = `${pre}CONFIRM_NOMINATIONS_REQUEST`;
+export const CONFIRM_CHANCELLOR_REQUEST = `${pre}CONFIRM_CHANCELLOR_REQUEST`;
 
-export const MAKE_VOTE_REQUEST = `${pre}MAKE_VOTE_REQUEST`;
+export const MAKE_AVALON_VOTE_REQUEST = `${pre}MAKE_AVALON_VOTE_REQUEST`;
+export const MAKE_HITLER_VOTE_REQUEST = `${pre}MAKE_HITLER_VOTE_REQUEST`;
 
 export const MAKE_QUEST_REQUEST = `${pre}MAKE_QUEST_REQUEST`;
 
@@ -25,6 +27,9 @@ export const DESTROY_GAME_REQUEST = `${pre}DESTROY_GAME_REQUEST`;
 export const LEAVE_MIDGAME_REQUEST = `${pre}LEAVE_MIDGAME_REQUEST`;
 
 export const APPROVE_LEAVE_MIDGAME_REQUEST = `${pre}APPROVE_LEAVE_MIDGAME_REQUEST`;
+
+export const GIVE_CARDS_TO_CHANCELLOR_REQUEST = `${pre}GIVE_CARDS_TO_CHANCELLOR_REQUEST`;
+export const PLAY_CHANCELLOR_CARD_REQUEST = `${pre}PLAY_CHANCELLOR_CARD_REQUEST`;
 
 export const gameError = (error, header) => ({
     type: GAME_ERROR,
@@ -60,10 +65,15 @@ export const nominatePlayerForQuest = (gameId, player, isOnQuest) => ({
     isOnQuest
 });
 
-export const nominateChancellorRequest = (gameId, player) => ({
+export const nominateChancellorRequest = (gameId, chancellor) => ({
     type: NOMINATE_CHANCELLOR_REQUEST,
     gameId,
-    player
+    chancellor
+});
+
+export const confirmChancellorRequest = gameId => ({
+    type: CONFIRM_CHANCELLOR_REQUEST,
+    gameId
 });
 
 export const confirmNominationsRequest = (gameId, nominations) => ({
@@ -72,8 +82,14 @@ export const confirmNominationsRequest = (gameId, nominations) => ({
     nominations
 });
 
-export const makeVoteRequest = (gameId, vote) => ({
-    type: MAKE_VOTE_REQUEST,
+export const makeAvalonVoteRequest = (gameId, vote) => ({
+    type: MAKE_AVALON_VOTE_REQUEST,
+    gameId,
+    vote
+});
+
+export const makeHitlerVoteRequest = (gameId, vote) => ({
+    type: MAKE_HITLER_VOTE_REQUEST,
     gameId,
     vote
 });
@@ -104,4 +120,16 @@ export const approveLeaveMidgameRequest = (gameId, isApprove) => ({
     type: APPROVE_LEAVE_MIDGAME_REQUEST,
     gameId,
     isApprove
+});
+
+export const giveCardsToChancellorRequest = (gameId, cards) => ({
+    type: GIVE_CARDS_TO_CHANCELLOR_REQUEST,
+    gameId,
+    cards
+});
+
+export const playChancellorCardRequest = (gameId, card) => ({
+    type: PLAY_CHANCELLOR_CARD_REQUEST,
+    gameId,
+    card
 });

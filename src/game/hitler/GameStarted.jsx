@@ -15,20 +15,30 @@ import * as helpers from '../helpers';
 import * as constants from '../../constants';
 import CurrentGameStatus from './CurrentGameStatus';
 import {
-    nominateChancellorRequest, confirmNominationsRequest, leaveGameRequest,
+    nominateChancellorRequest, confirmChancellorRequest, leaveGameRequest,
     destroyGameRequest, approveLeaveMidgameRequest
 } from '../actions';
 import StyledButton from '../../common/StyledButton/StyledButton';
 import Switch from '../../common/Switch/Switch';
 import SuccessModal from '../../common/modal/SuccessModal';
+import HitlerBoard from './HitlerBoard';
 
 const GameStarted = props => {
+    const {
+        ChancellorDecidingCards,
+        Finished,
+        Nominating,
+        PresidentDecidingCards,
+        PresidentPower,
+        Voting
+    } = constants.hitlerGameStatuses;
+
     const [viewingRole, setViewingRole] = useState(false);
     const [viewingBoard, setViewingBoard] = useState(false);
     const [showingHistory, setShowingHistory] = useState(false);
 
     const submitNominations = useCallback(() => {
-        props.confirmNominationsRequest(props.currentGameId, props.currentGame.chancellor);
+        props.confirmChancellorRequest(props.currentGameId);
         // eslint-disable-next-line
     }, [props.currentGame])
 
@@ -75,27 +85,27 @@ const GameStarted = props => {
     };
 
     const nominatePlayer = useCallback(player => {
-        if (props.currentGame.status === constants.hitlerGameStatuses.Nominating) {
-            if (props.currentGame.leader === props.auth.uid) {
+        if (props.currentGame.status === Nominating) {
+            if (props.currentGame.president === props.auth.uid) {
                 props.nominateChancellorRequest(props.currentGameId, player);
             }
         }
         // eslint-disable-next-line
-    }, [props.currentGame, props.auth.uid]);
+    }, [props.currentGame, props.auth.uid]);    
 
     return (
         <div className={props.styles.gameStartedWrapper}>
-            {props.currentGame.status === constants.hitlerGameStatuses.Finished
+            {props.currentGame.status === Finished
                 ? <div className={props.styles.gameFinished}>Game finished </div> : (
                     <div className={props.styles.roundHeader}>
                         {`Round: ${props.currentGame.round}`}
                     </div>
                 )}
 
-            {props.currentGame.status !== constants.hitlerGameStatuses.Finished
+            {props.currentGame.status !== Finished
             && (
                 <div className={props.styles.currentLeaderWrapper}>
-                    {`The current leader is ${helpers.mapUserIdToName(props.users, props.currentGame.leader)}`}
+                    {`The current President is ${helpers.mapUserIdToName(props.users, props.currentGame.president)}`}
                 </div>
             )}
             <CurrentGameStatus />
@@ -105,23 +115,35 @@ const GameStarted = props => {
                     <div
                         className={classNames({
                             [props.styles.playerWrapper]: true,
-                            [props.styles.isActivePlayer]: player === props.currentGame.leader
+                            [props.styles.nominatedChancellor]: props.currentGame
+                                .chancellor === player && props.currentGame.status
+                                === Nominating,
+                            [props.styles.isActivePlayer]: player === props.currentGame.president,
+                            [props.styles.activeChancellor]: (props.currentGame.status === PresidentDecidingCards
+                                || props.currentGame.status === ChancellorDecidingCards)
+                                && props.currentGame.chancellor === player
                         })}
                         role="button"
                         tabIndex={0}
                         onClick={() => nominatePlayer(player)}
                         key={player}
                     >
-                        <div className={props.styles.playerNumber}>{`#${index + 1}`}</div>
+                        <div className={props.styles.playerNumber}>
+                            <div>{`#${index + 1}`}</div>
+                            {props.currentGame.president === player
+                            && <div className={props.styles.currentPresident}>(President)</div>}
+                            {props.currentGame.chancellor === player
+                            && <div className={props.styles.currentChancellor}>(Chancellor)</div>}
+                        </div>
                         <div className={classNames({
                             [props.styles.playerName]: true,
-                            [props.styles.activePlayer]: player === props.currentGame.leader
+                            [props.styles.activePlayer]: player === props.currentGame.president
                         })}
                         >
                             {helpers.mapUserIdToName(props.users, player)}
                             {props.auth.uid === player && ' (you)'}
                         </div>
-                        {props.currentGame.status === constants.hitlerGameStatuses.Voting
+                        {props.currentGame.status === Voting
                         && (
                             <div className={classNames({
                                 [props.styles.votingStage]: true,
@@ -143,25 +165,25 @@ const GameStarted = props => {
                 ))}
             </div>
 
-            {props.currentGame.leader === props.auth.uid
-            && props.currentGame.status === constants.hitlerGameStatuses.Nominating
+            {props.currentGame.president === props.auth.uid
+            && props.currentGame.status === Nominating
             && (
                 <div className={props.styles.confirmNominationWrapper}>
                     <StyledButton
                         text="Confirm Nominations"
                         onClick={submitNominations}
-                        disabled={props.currentGame.chancellor}
+                        disabled={!props.currentGame.chancellor}
                     />
                 </div>
             ) }
 
-            {props.currentGame.status === constants.hitlerGameStatuses.Finished && (
+            {props.currentGame.status === Finished && (
                 <div className={props.styles.leaveGameButton}>
                     <StyledButton text="Leave Game" color="secondary" onClick={() => props.leaveGameRequest(props.currentGameId)} />
                 </div>
             )}
 
-            {props.currentGame.status === constants.hitlerGameStatuses.Finished
+            {props.currentGame.status === Finished
             && props.currentGame.host === props.auth.uid && (
                 <div className={props.styles.destroyGameButton}>
                     <StyledButton text="Destroy Game" color="secondary" onClick={() => props.destroyGameRequest(props.currentGameId)} />
@@ -204,13 +226,7 @@ const GameStarted = props => {
                     checked={viewingBoard}
                 >
                     <div className={props.styles.avalonBoard}>
-                        <div className={props.styles.boardState}>
-                            {/* {generateResultIcon(props.currentGame.questResult[0], 1)}
-                            {generateResultIcon(props.currentGame.questResult[1], 2)}
-                            {generateResultIcon(props.currentGame.questResult[2], 3)}
-                            {generateResultIcon(props.currentGame.questResult[3], 4)}
-                            {generateResultIcon(props.currentGame.questResult[4], 5)} */}
-                        </div>
+                        <HitlerBoard numberOfPlayers={6} numberOfLiberals={5} />
 
                         <div className={props.styles.consecutiveRejections}>
                             {`Consecutive rejections: ${props.currentGame.consecutiveRejections}`}
@@ -277,7 +293,7 @@ GameStarted.defaultProps = {
         currentPlayers: [],
         consecutiveRejections: 0,
         host: '',
-        leader: '',
+        president: '',
         mode: '',
         numberOfPlayers: 0,
         roles: [],
@@ -306,19 +322,22 @@ GameStarted.propTypes = {
     auth: PropTypes.shape({
         uid: PropTypes.string
     }),
-    confirmNominationsRequest: PropTypes.func.isRequired,
+    confirmChancellorRequest: PropTypes.func.isRequired,
     currentGame: PropTypes.shape({
         approveLeaveMidgame: PropTypes.arrayOf(PropTypes.string),
         chancellor: PropTypes.string,
         consecutiveRejections: PropTypes.number,
         currentPlayers: PropTypes.arrayOf(PropTypes.string),
         host: PropTypes.string,
-        leader: PropTypes.string,
+        president: PropTypes.string,
         mode: PropTypes.string,
         numberOfPlayers: PropTypes.number,
         round: PropTypes.number,
         playersReady: PropTypes.arrayOf(PropTypes.string),
-        playerRoles: PropTypes.string,
+        playerRoles: PropTypes.arrayOf(PropTypes.shape({
+            role: PropTypes.string,
+            player: PropTypes.string
+        })),
         votesAgainst: PropTypes.arrayOf(PropTypes.string),
         votesFor: PropTypes.arrayOf(PropTypes.string),
         rejectLeaveMidgame: PropTypes.arrayOf(PropTypes.string),
@@ -337,7 +356,7 @@ GameStarted.propTypes = {
 
 const mapDispatchToProps = {
     destroyGameRequest,
-    confirmNominationsRequest,
+    confirmChancellorRequest,
     leaveGameRequest,
     nominateChancellorRequest,
     approveLeaveMidgameRequest

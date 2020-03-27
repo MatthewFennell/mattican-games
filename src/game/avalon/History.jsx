@@ -173,7 +173,7 @@ History.propTypes = {
     history: PropTypes.arrayOf(PropTypes.shape({
 
     })),
-    makeVoteRequest: PropTypes.func,
+    makeAvalonVoteRequest: PropTypes.func,
     makeQuestRequest: PropTypes.func.isRequired,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})

@@ -130,6 +130,60 @@ export function* approveLeaveMidgame(api, action) {
     }
 }
 
+export function* nominateChancellor(api, action) {
+    try {
+        yield call(api.nominateChancellor, ({
+            gameId: action.gameId,
+            chancellor: action.chancellor
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Nominate Chancellor Error'));
+    }
+}
+
+export function* confirmChancellor(api, action) {
+    try {
+        yield call(api.confirmChancellor, ({
+            gameId: action.gameId
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Confirm Chancellor Error'));
+    }
+}
+
+export function* makeHitlerVote(api, action) {
+    try {
+        yield call(api.makeHitlerVote, ({
+            gameId: action.gameId,
+            vote: action.vote
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Make Vote Error'));
+    }
+}
+
+export function* giveCardsToChancellor(api, action) {
+    try {
+        yield call(api.giveCardsToChancellor, ({
+            gameId: action.gameId,
+            cards: action.cards
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Give cards to chancellor error'));
+    }
+}
+
+export function* playChancellorCard(api, action) {
+    try {
+        yield call(api.playChancellorCard, ({
+            gameId: action.gameId,
+            card: action.card
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Play Chancellor Card error'));
+    }
+}
+
 export default function* overviewSaga() {
     yield all([
         takeEvery(actions.LEAVE_GAME_REQUEST, leaveGame, gameApi),
@@ -137,11 +191,17 @@ export default function* overviewSaga() {
         takeEvery(actions.START_GAME_REQUEST, startGame, gameApi),
         takeEvery(actions.NOMINATE_PLAYER_FOR_QUEST_REQUEST, nominatePlayerForQuest, gameApi),
         takeEvery(actions.CONFIRM_NOMINATIONS_REQUEST, confirmNominations, gameApi),
-        takeEvery(actions.MAKE_VOTE_REQUEST, makeVote, gameApi),
+        takeEvery(actions.MAKE_AVALON_VOTE_REQUEST, makeVote, gameApi),
         takeEvery(actions.MAKE_QUEST_REQUEST, goOnQuest, gameApi),
         takeEvery(actions.GUESS_MERLIN_REQUEST, guessMerlin, gameApi),
         takeEvery(actions.DESTROY_GAME_REQUEST, destroyGame, gameApi),
         takeEvery(actions.LEAVE_MIDGAME_REQUEST, leaveMidgame, gameApi),
-        takeEvery(actions.APPROVE_LEAVE_MIDGAME_REQUEST, approveLeaveMidgame, gameApi)
+        takeEvery(actions.APPROVE_LEAVE_MIDGAME_REQUEST, approveLeaveMidgame, gameApi),
+
+        takeEvery(actions.NOMINATE_CHANCELLOR_REQUEST, nominateChancellor, gameApi),
+        takeEvery(actions.CONFIRM_CHANCELLOR_REQUEST, confirmChancellor, gameApi),
+        takeEvery(actions.MAKE_HITLER_VOTE_REQUEST, makeHitlerVote, gameApi),
+        takeEvery(actions.GIVE_CARDS_TO_CHANCELLOR_REQUEST, giveCardsToChancellor, gameApi),
+        takeEvery(actions.PLAY_CHANCELLOR_CARD_REQUEST, playChancellorCard, gameApi)
     ]);
 }
