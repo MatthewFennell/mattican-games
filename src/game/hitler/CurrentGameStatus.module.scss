@@ -1,10 +1,19 @@
 @import "../../common/Styles.scss";
 
-.currentGameStateWrapper, .nominating, .presidentDeciding, .chancellorDeciding {
+.currentGameStateWrapper, .nominating, .chancellorDeciding, .presidentDeciding {
     text-align: center;
     color: $color-green;
     margin-left: $spacing-medium;
     margin-right: $spacing-medium;
+}
+
+.investigating {
+    text-align: center;
+    color: $color-black;
+    padding: $spacing-small;
+    margin-left: $spacing-small;
+    margin-right: $spacing-small;
+    background-color: $color-amber  ;
 }
 
 .presidentDecidingWrapper {

@@ -29,7 +29,16 @@ export const LEAVE_MIDGAME_REQUEST = `${pre}LEAVE_MIDGAME_REQUEST`;
 export const APPROVE_LEAVE_MIDGAME_REQUEST = `${pre}APPROVE_LEAVE_MIDGAME_REQUEST`;
 
 export const GIVE_CARDS_TO_CHANCELLOR_REQUEST = `${pre}GIVE_CARDS_TO_CHANCELLOR_REQUEST`;
+
 export const PLAY_CHANCELLOR_CARD_REQUEST = `${pre}PLAY_CHANCELLOR_CARD_REQUEST`;
+
+export const SELECT_INVESTIGATE_REQUEST = `${pre}SELECT_INVESTIGATE_REQUEST`;
+
+export const CONFIRM_INVESIGATION_REQUEST = `${pre}CONFIRM_INVESIGATION_REQUEST`;
+
+export const MAKE_TEMPORARY_PRESIDENT_REQUEST = `${pre}MAKE_TEMPORARY_PRESIDENT_REQUEST`;
+
+export const CONFIRM_PRESIDENT_REQUEST = `${pre}CONFIRM_PRESIDENT_REQUEST`;
 
 export const gameError = (error, header) => ({
     type: GAME_ERROR,
@@ -132,4 +141,27 @@ export const playChancellorCardRequest = (gameId, card) => ({
     type: PLAY_CHANCELLOR_CARD_REQUEST,
     gameId,
     card
+});
+
+
+export const selectInvestigateRequest = (gameId, player) => ({
+    type: SELECT_INVESTIGATE_REQUEST,
+    gameId,
+    player
+});
+
+export const confirmInvesigationRequest = gameId => ({
+    type: CONFIRM_INVESIGATION_REQUEST,
+    gameId
+});
+
+export const makeTemporaryPresidentRequest = (gameId, player) => ({
+    type: MAKE_TEMPORARY_PRESIDENT_REQUEST,
+    gameId,
+    player
+});
+
+export const confirmPresidentRequest = gameId => ({
+    type: CONFIRM_PRESIDENT_REQUEST,
+    gameId
 });

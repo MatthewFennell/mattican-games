@@ -184,6 +184,48 @@ export function* playChancellorCard(api, action) {
     }
 }
 
+export function* selectInvestigateRequest(api, action) {
+    try {
+        yield call(api.investigatePlayer, ({
+            gameId: action.gameId,
+            player: action.player
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Investigate Player error'));
+    }
+}
+
+export function* confirmInvestigation(api, action) {
+    try {
+        yield call(api.confirmInvestigation, ({
+            gameId: action.gameId
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Confirm Investigation error'));
+    }
+}
+
+export function* makeTemporaryPresidentRequest(api, action) {
+    try {
+        yield call(api.temporaryPresident, ({
+            gameId: action.gameId,
+            player: action.player
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Make President error'));
+    }
+}
+
+export function* confirmPresident(api, action) {
+    try {
+        yield call(api.confirmPresident, ({
+            gameId: action.gameId
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Confirm President error'));
+    }
+}
+
 export default function* overviewSaga() {
     yield all([
         takeEvery(actions.LEAVE_GAME_REQUEST, leaveGame, gameApi),
@@ -202,6 +244,10 @@ export default function* overviewSaga() {
         takeEvery(actions.CONFIRM_CHANCELLOR_REQUEST, confirmChancellor, gameApi),
         takeEvery(actions.MAKE_HITLER_VOTE_REQUEST, makeHitlerVote, gameApi),
         takeEvery(actions.GIVE_CARDS_TO_CHANCELLOR_REQUEST, giveCardsToChancellor, gameApi),
-        takeEvery(actions.PLAY_CHANCELLOR_CARD_REQUEST, playChancellorCard, gameApi)
+        takeEvery(actions.PLAY_CHANCELLOR_CARD_REQUEST, playChancellorCard, gameApi),
+        takeEvery(actions.SELECT_INVESTIGATE_REQUEST, selectInvestigateRequest, gameApi),
+        takeEvery(actions.CONFIRM_INVESIGATION_REQUEST, confirmInvestigation, gameApi),
+        takeEvery(actions.MAKE_TEMPORARY_PRESIDENT_REQUEST, makeTemporaryPresidentRequest, gameApi),
+        takeEvery(actions.CONFIRM_PRESIDENT_REQUEST, confirmPresident, gameApi)
     ]);
 }

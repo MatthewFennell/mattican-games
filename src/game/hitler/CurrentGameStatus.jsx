@@ -106,6 +106,14 @@ const CurrentGameStatus = props => {
         );
     }
 
+    if (props.currentGame.status === constants.hitlerGameStatuses.TemporaryPresident) {
+        return (
+            <div className={props.styles.nominating}>
+                {`${helpers.mapUserIdToName(props.users, props.currentGame.temporaryPresident)} is currently selecting a chancellor`}
+            </div>
+        );
+    }
+
     if (props.currentGame.status === constants.hitlerGameStatuses.PresidentDecidingCards) {
         if (props.auth.uid !== props.currentGame.president) {
             return (
@@ -223,6 +231,24 @@ const CurrentGameStatus = props => {
         );
     }
 
+    if (props.currentGame.status === constants.hitlerGameStatuses.Investigate) {
+        return (
+            <div className={props.styles.investigating}>
+                {`${helpers.mapUserIdToName(props.users, props.currentGame.president)} 
+                is currently selecting whose identity card to look at`}
+            </div>
+        );
+    }
+
+    if (props.currentGame.status === constants.hitlerGameStatuses.Transfer) {
+        return (
+            <div className={props.styles.investigating}>
+                {`${helpers.mapUserIdToName(props.users, props.currentGame.president)} 
+                is currently selecting who to make a temporary President`}
+            </div>
+        );
+    }
+
     if (props.currentGame.status === constants.avalonGameStatuses.Finished) {
         // return <GameFinished />;
     }
@@ -254,6 +280,7 @@ CurrentGameStatus.defaultProps = {
         playerRoles: [],
         presidentCards: [],
         status: '',
+        temporaryPresident: '',
         votesAgainst: [],
         votesFor: []
     },
@@ -286,7 +313,8 @@ CurrentGameStatus.propTypes = {
         })),
         votesFor: PropTypes.arrayOf(PropTypes.string),
         votesAgainst: PropTypes.arrayOf(PropTypes.string),
-        status: PropTypes.string
+        status: PropTypes.string,
+        temporaryPresident: PropTypes.string
     }),
     currentGameId: PropTypes.string,
     giveCardsToChancellorRequest: PropTypes.func.isRequired,

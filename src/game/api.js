@@ -12,6 +12,10 @@ export const confirmChancellor = request => functionToCall('confirmChancellor')(
 export const makeHitlerVote = request => functionToCall('makeVote')(request);
 export const giveCardsToChancellor = request => functionToCall('giveCardsToChancellor')(request);
 export const playChancellorCard = request => functionToCall('playChancellorCard')(request);
+export const investigatePlayer = request => functionToCall('investigatePlayer')(request);
+export const confirmInvestigation = request => functionToCall('confirmInvestigation')(request);
+export const temporaryPresident = request => functionToCall('temporaryPresident')(request);
+export const confirmPresident = request => functionToCall('confirmTemporaryPresident')(request);
 
 export const startAvalonGame = request => functionToCall('avalon-startGame')(request);
 export const nominatePlayer = request => functionToCall('avalon-nominatePlayer')(request);

@@ -16,7 +16,8 @@ import * as constants from '../../constants';
 import CurrentGameStatus from './CurrentGameStatus';
 import {
     nominateChancellorRequest, confirmChancellorRequest, leaveGameRequest,
-    destroyGameRequest, approveLeaveMidgameRequest
+    destroyGameRequest, approveLeaveMidgameRequest, selectInvestigateRequest,
+    confirmInvesigationRequest, makeTemporaryPresidentRequest, confirmPresidentRequest
 } from '../actions';
 import StyledButton from '../../common/StyledButton/StyledButton';
 import Switch from '../../common/Switch/Switch';
@@ -29,8 +30,10 @@ const GameStarted = props => {
         Finished,
         Nominating,
         PresidentDecidingCards,
-        PresidentPower,
-        Voting
+        Voting,
+        Investigate,
+        Transfer,
+        TemporaryPresident
     } = constants.hitlerGameStatuses;
 
     const [viewingRole, setViewingRole] = useState(false);
@@ -41,6 +44,22 @@ const GameStarted = props => {
         props.confirmChancellorRequest(props.currentGameId);
         // eslint-disable-next-line
     }, [props.currentGame])
+
+    const generateHiddenInfo = () => {
+        const items = props.currentGame.hiddenInfo.filter(x => x.president === props.auth.uid);
+        if (items && items.length) {
+            const info = fp.first(items);
+            if (info.type === Investigate) {
+                const playerSeen = props.currentGame.playerRoles
+                    .find(x => x.player === info.investigated);
+                if (playerSeen.role === constants.hitlerRoles.Liberal) {
+                    return <div>{`You saw ${helpers.mapUserIdToName(props.users, playerSeen.player)} as a liberal`}</div>;
+                }
+                return <div>{`You saw ${helpers.mapUserIdToName(props.users, playerSeen.player)} as a fascist`}</div>;
+            }
+        }
+        return null;
+    };
 
     const generateSecretInfo = role => {
         if (props.currentGame.numberOfPlayers <= 6) {
@@ -90,6 +109,21 @@ const GameStarted = props => {
                 props.nominateChancellorRequest(props.currentGameId, player);
             }
         }
+        if (props.currentGame.status === Investigate) {
+            if (props.currentGame.president === props.auth.uid) {
+                props.selectInvestigateRequest(props.currentGameId, player);
+            }
+        }
+        if (props.currentGame.status === Transfer) {
+            if (props.currentGame.president === props.auth.uid) {
+                props.makeTemporaryPresidentRequest(props.currentGameId, player);
+            }
+        }
+        if (props.currentGame.status === TemporaryPresident) {
+            if (props.currentGame.temporaryPresident === props.auth.uid) {
+                props.nominateChancellorRequest(props.currentGameId, player);
+            }
+        }
         // eslint-disable-next-line
     }, [props.currentGame, props.auth.uid]);    
 
@@ -122,7 +156,13 @@ const GameStarted = props => {
                             [props.styles.activeChancellor]: (props.currentGame.status
                                 === PresidentDecidingCards
                                 || props.currentGame.status === ChancellorDecidingCards)
-                                && props.currentGame.chancellor === player
+                                && props.currentGame.chancellor === player,
+                            [props.styles.potentialInvestigation]: props.currentGame.status
+                            === Investigate
+                            && props.currentGame.playerToInvestigate === player,
+                            [props.styles.potentialTempPres]: props.currentGame.status
+                            === Transfer
+                            && props.currentGame.temporaryPresident === player
                         })}
                         role="button"
                         tabIndex={0}
@@ -132,9 +172,13 @@ const GameStarted = props => {
                         <div className={props.styles.playerNumber}>
                             <div>{`#${index + 1}`}</div>
                             {props.currentGame.president === player
+                            && props.currentGame.status !== TemporaryPresident
                             && <div className={props.styles.currentPresident}>(President)</div>}
                             {props.currentGame.chancellor === player
                             && <div className={props.styles.currentChancellor}>(Chancellor)</div>}
+                            {props.currentGame.temporaryPresident === player
+                            && props.currentGame.status === TemporaryPresident
+                            && <div className={props.styles.currentPresident}>(Pres)</div>}
                         </div>
                         <div className={classNames({
                             [props.styles.playerName]: true,
@@ -166,14 +210,40 @@ const GameStarted = props => {
                 ))}
             </div>
 
-            {props.currentGame.president === props.auth.uid
-            && props.currentGame.status === Nominating
+            {((props.currentGame.president === props.auth.uid
+            && props.currentGame.status === Nominating)
+             || (props.currentGame.temporaryPresident === props.auth.uid
+            && props.currentGame.status === TemporaryPresident))
             && (
                 <div className={props.styles.confirmNominationWrapper}>
                     <StyledButton
                         text="Confirm Nominations"
                         onClick={submitNominations}
                         disabled={!props.currentGame.chancellor}
+                    />
+                </div>
+            ) }
+
+            {props.currentGame.president === props.auth.uid
+            && props.currentGame.status === Transfer
+            && (
+                <div className={props.styles.confirmNominationWrapper}>
+                    <StyledButton
+                        text="Confirm President"
+                        onClick={() => props.confirmPresidentRequest(props.currentGameId)}
+                        disabled={!props.currentGame.temporaryPresident}
+                    />
+                </div>
+            ) }
+
+            {props.currentGame.president === props.auth.uid
+            && props.currentGame.status === Investigate
+            && (
+                <div className={props.styles.confirmNominationWrapper}>
+                    <StyledButton
+                        text="Confirm Investigation"
+                        onClick={() => props.confirmInvesigationRequest(props.currentGameId)}
+                        disabled={!props.currentGame.playerToInvestigate}
                     />
                 </div>
             ) }
@@ -193,7 +263,7 @@ const GameStarted = props => {
 
             <div className={props.styles.toggleWrappers}>
                 <div className={props.styles.switchWrapper}>
-                    <div>View Role</div>
+                    <div>View Info</div>
                     <div><Switch onChange={setViewingRole} checked={viewingRole} /></div>
                 </div>
                 <div className={props.styles.switchWrapper}>
@@ -219,6 +289,7 @@ const GameStarted = props => {
                         {`Role: ${props.myRole}`}
                     </div>
                     {generateSecretInfo(props.myRole)}
+                    {generateHiddenInfo()}
                 </Fade>
             </div>
 
@@ -297,6 +368,7 @@ GameStarted.defaultProps = {
         chancellor: '',
         currentPlayers: [],
         consecutiveRejections: 0,
+        hiddenInfo: [],
         host: '',
         president: '',
         mode: '',
@@ -307,7 +379,9 @@ GameStarted.defaultProps = {
         numberFascistPlayed: 0,
         playersReady: [],
         playerRoles: [],
+        playerToInvestigate: '',
         status: '',
+        temporaryPresident: '',
         votesAgainst: [],
         votesFor: [],
         requestToEndGame: '',
@@ -329,6 +403,10 @@ GameStarted.propTypes = {
         chancellor: PropTypes.string,
         consecutiveRejections: PropTypes.number,
         currentPlayers: PropTypes.arrayOf(PropTypes.string),
+        hiddenInfo: PropTypes.arrayOf(PropTypes.shape({
+            president: PropTypes.string,
+            type: PropTypes.string
+        })),
         host: PropTypes.string,
         president: PropTypes.string,
         mode: PropTypes.string,
@@ -336,6 +414,7 @@ GameStarted.propTypes = {
         numberLiberalPlayed: PropTypes.number,
         numberFascistPlayed: PropTypes.number,
         round: PropTypes.number,
+        playerToInvestigate: PropTypes.string,
         playersReady: PropTypes.arrayOf(PropTypes.string),
         playerRoles: PropTypes.arrayOf(PropTypes.shape({
             role: PropTypes.string,
@@ -345,12 +424,17 @@ GameStarted.propTypes = {
         votesFor: PropTypes.arrayOf(PropTypes.string),
         rejectLeaveMidgame: PropTypes.arrayOf(PropTypes.string),
         requestToEndGame: PropTypes.string,
-        status: PropTypes.string
+        status: PropTypes.string,
+        temporaryPresident: PropTypes.string
     }),
+    confirmInvesigationRequest: PropTypes.func.isRequired,
     destroyGameRequest: PropTypes.func.isRequired,
     leaveGameRequest: PropTypes.func.isRequired,
     nominateChancellorRequest: PropTypes.func.isRequired,
+    makeTemporaryPresidentRequest: PropTypes.func.isRequired,
     approveLeaveMidgameRequest: PropTypes.func.isRequired,
+    confirmPresidentRequest: PropTypes.func.isRequired,
+    selectInvestigateRequest: PropTypes.func.isRequired,
     currentGameId: PropTypes.string,
     myRole: PropTypes.string,
     styles: PropTypes.objectOf(PropTypes.string),
@@ -358,11 +442,15 @@ GameStarted.propTypes = {
 };
 
 const mapDispatchToProps = {
+    confirmInvesigationRequest,
     destroyGameRequest,
     confirmChancellorRequest,
     leaveGameRequest,
     nominateChancellorRequest,
-    approveLeaveMidgameRequest
+    approveLeaveMidgameRequest,
+    selectInvestigateRequest,
+    makeTemporaryPresidentRequest,
+    confirmPresidentRequest
 };
 
 const mapStateToProps = (state, props) => ({

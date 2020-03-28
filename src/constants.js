@@ -93,8 +93,12 @@ export const hitlerGameStatuses = {
     Finished: 'Finished',
     Nominating: 'Nominating',
     PresidentDecidingCards: 'PresidentDecidingCards',
-    PresidentPower: 'PresidentPower',
-    Voting: 'Voting'
+    Investigate: 'Investigate',
+    Kill: 'Kill',
+    Peek: 'Peek',
+    Transfer: 'Transfer',
+    Voting: 'Voting',
+    TemporaryPresident: 'TemporaryPresident'
 };
 
 // round -> num players
