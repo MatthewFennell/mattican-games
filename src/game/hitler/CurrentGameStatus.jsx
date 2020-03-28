@@ -114,6 +114,15 @@ const CurrentGameStatus = props => {
         );
     }
 
+    if (props.currentGame.status === constants.hitlerGameStatuses.Kill) {
+        return (
+            <div className={props.styles.nominating}>
+                {`${helpers.mapUserIdToName(props.users,
+                    props.currentGame.temporaryPresident || props.currentGame.president)} is currently choosing who to kill`}
+            </div>
+        );
+    }
+
     if (props.currentGame.status === constants.hitlerGameStatuses.PresidentDecidingCards) {
         const inPower = props.currentGame.temporaryPresident === props.auth.uid
         || (!props.currentGame.temporaryPresident

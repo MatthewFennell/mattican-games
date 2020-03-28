@@ -18,7 +18,7 @@ import {
     nominateChancellorRequest, confirmChancellorRequest, leaveGameRequest,
     destroyGameRequest, approveLeaveMidgameRequest, selectInvestigateRequest,
     confirmInvesigationRequest, makeTemporaryPresidentRequest, confirmPresidentRequest,
-    gameError
+    gameError, killPlayerRequest, confirmKillPlayerRequest
 } from '../actions';
 import StyledButton from '../../common/StyledButton/StyledButton';
 import Switch from '../../common/Switch/Switch';
@@ -35,7 +35,8 @@ const GameStarted = props => {
         Investigate,
         Transfer,
         TemporaryPresident,
-        Peek
+        Peek,
+        Kill
     } = constants.hitlerGameStatuses;
 
     const [viewingRole, setViewingRole] = useState(false);
@@ -177,6 +178,11 @@ const GameStarted = props => {
                 props.nominateChancellorRequest(props.currentGameId, player);
             }
         }
+        if (props.currentGame.status === Kill) {
+            if (props.currentGame.president === props.auth.uid) {
+                props.killPlayerRequest(props.currentGameId, player);
+            }
+        }
         // eslint-disable-next-line
     }, [props.currentGame, props.auth.uid]);    
 
@@ -223,7 +229,9 @@ const GameStarted = props => {
                             === Transfer
                             && props.currentGame.temporaryPresident === player,
                             [props.styles.oldPres]: props.currentGame.status === TemporaryPresident
-                            && props.currentGame.president === player
+                            && props.currentGame.president === player,
+                            [props.styles.potentialKill]: props.currentGame.status
+                            === Kill && props.currentGame.playerToKill === player
                         })}
                         role="button"
                         tabIndex={0}
@@ -311,6 +319,19 @@ const GameStarted = props => {
                     />
                 </div>
             ) }
+
+            {props.currentGame.president === props.auth.uid
+            && props.currentGame.status === Kill
+            && (
+                <div className={props.styles.confirmNominationWrapper}>
+                    <StyledButton
+                        text="Confirm Kill"
+                        onClick={() => props.confirmKillPlayerRequest(props.currentGameId)}
+                        disabled={!props.currentGame.playerToKill}
+                    />
+                </div>
+            ) }
+
 
             {props.currentGame.status === Finished && (
                 <div className={props.styles.leaveGameButton}>
@@ -448,6 +469,7 @@ GameStarted.defaultProps = {
         status: '',
         temporaryPresident: '',
         previousChancellor: '',
+        playerToKill: '',
         previousPresident: '',
         votesAgainst: [],
         votesFor: [],
@@ -493,6 +515,7 @@ GameStarted.propTypes = {
         rejectLeaveMidgame: PropTypes.arrayOf(PropTypes.string),
         requestToEndGame: PropTypes.string,
         previousChancellor: PropTypes.string,
+        playerToKill: PropTypes.string,
         previousPresident: PropTypes.string,
         status: PropTypes.string,
         temporaryPresident: PropTypes.string
@@ -505,7 +528,9 @@ GameStarted.propTypes = {
     makeTemporaryPresidentRequest: PropTypes.func.isRequired,
     approveLeaveMidgameRequest: PropTypes.func.isRequired,
     confirmPresidentRequest: PropTypes.func.isRequired,
+    confirmKillPlayerRequest: PropTypes.func.isRequired,
     selectInvestigateRequest: PropTypes.func.isRequired,
+    killPlayerRequest: PropTypes.func.isRequired,
     currentGameId: PropTypes.string,
     myRole: PropTypes.string,
     styles: PropTypes.objectOf(PropTypes.string),
@@ -522,7 +547,9 @@ const mapDispatchToProps = {
     approveLeaveMidgameRequest,
     selectInvestigateRequest,
     makeTemporaryPresidentRequest,
-    confirmPresidentRequest
+    confirmPresidentRequest,
+    killPlayerRequest,
+    confirmKillPlayerRequest
 };
 
 const mapStateToProps = (state, props) => ({

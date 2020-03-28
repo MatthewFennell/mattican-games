@@ -40,6 +40,10 @@ export const MAKE_TEMPORARY_PRESIDENT_REQUEST = `${pre}MAKE_TEMPORARY_PRESIDENT_
 
 export const CONFIRM_PRESIDENT_REQUEST = `${pre}CONFIRM_PRESIDENT_REQUEST`;
 
+export const KILL_PLAYER_REQUEST = `${pre}KILL_PLAYER_REQUEST`;
+
+export const CONFIRM_KILL_PLAYER_REQUEST = `${pre}CONFIRM_KILL_PLAYER_REQUEST`;
+
 export const gameError = (error, header) => ({
     type: GAME_ERROR,
     error,
@@ -163,5 +167,16 @@ export const makeTemporaryPresidentRequest = (gameId, player) => ({
 
 export const confirmPresidentRequest = gameId => ({
     type: CONFIRM_PRESIDENT_REQUEST,
+    gameId
+});
+
+export const killPlayerRequest = (gameId, player) => ({
+    type: KILL_PLAYER_REQUEST,
+    gameId,
+    player
+});
+
+export const confirmKillPlayerRequest = gameId => ({
+    type: CONFIRM_KILL_PLAYER_REQUEST,
     gameId
 });

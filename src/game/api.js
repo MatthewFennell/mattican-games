@@ -16,6 +16,8 @@ export const investigatePlayer = request => functionToCall('investigatePlayer')(
 export const confirmInvestigation = request => functionToCall('confirmInvestigation')(request);
 export const temporaryPresident = request => functionToCall('temporaryPresident')(request);
 export const confirmPresident = request => functionToCall('confirmTemporaryPresident')(request);
+export const killPlayer = request => functionToCall('killPlayer')(request);
+export const confirmKillPlayer = request => functionToCall('confirmKillPlayer')(request);
 
 export const startAvalonGame = request => functionToCall('avalon-startGame')(request);
 export const nominatePlayer = request => functionToCall('avalon-nominatePlayer')(request);

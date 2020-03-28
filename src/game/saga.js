@@ -226,6 +226,27 @@ export function* confirmPresident(api, action) {
     }
 }
 
+export function* killPlayer(api, action) {
+    try {
+        yield call(api.killPlayer, ({
+            gameId: action.gameId,
+            player: action.player
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Kill Player error'));
+    }
+}
+
+export function* confirmKillPlayer(api, action) {
+    try {
+        yield call(api.confirmKillPlayer, ({
+            gameId: action.gameId
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Confirm Kill Player error'));
+    }
+}
+
 export default function* overviewSaga() {
     yield all([
         takeEvery(actions.LEAVE_GAME_REQUEST, leaveGame, gameApi),
@@ -248,6 +269,8 @@ export default function* overviewSaga() {
         takeEvery(actions.SELECT_INVESTIGATE_REQUEST, selectInvestigateRequest, gameApi),
         takeEvery(actions.CONFIRM_INVESIGATION_REQUEST, confirmInvestigation, gameApi),
         takeEvery(actions.MAKE_TEMPORARY_PRESIDENT_REQUEST, makeTemporaryPresidentRequest, gameApi),
-        takeEvery(actions.CONFIRM_PRESIDENT_REQUEST, confirmPresident, gameApi)
+        takeEvery(actions.CONFIRM_PRESIDENT_REQUEST, confirmPresident, gameApi),
+        takeEvery(actions.KILL_PLAYER_REQUEST, killPlayer, gameApi),
+        takeEvery(actions.CONFIRM_KILL_PLAYER_REQUEST, confirmKillPlayer, gameApi)
     ]);
 }

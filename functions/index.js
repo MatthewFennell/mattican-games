@@ -222,6 +222,7 @@ exports.createHitlerGame = functions
                     discardPile: [],
                     hasStarted: false,
                     hiddenInfo: [],
+                    hitlerKilled: false,
                     history: [],
                     host: context.auth.uid,
                     mode: data.mode,
@@ -234,6 +235,7 @@ exports.createHitlerGame = functions
                     playerToInvestigate: '',
                     president: null,
                     presidentCards: [],
+                    playerToKill: '',
                     previousChancellor: '',
                     previousPresident: '',
                     rejectLeaveMidgame: [],
@@ -721,6 +723,20 @@ exports.playChancellorCard = functions
                 });
             }
 
+            if (nextMode === constants.hitlerGameStatuses.Kill) {
+                return doc.ref.update({
+                    status: nextMode,
+                    cardDeck: generateNewPackOfCards(cardDeck, newDiscardPile),
+                    discardPile: cardDeck.length < 3 ? [] : newDiscardPile,
+                    numberFascistPlayed: operations.increment(1),
+                    chancellor: '',
+                    presidentCards: [],
+                    chancellorCards: [],
+                    round: operations.increment(1),
+                    temporaryPresident: ''
+                });
+            }
+
             return Promise.resolve();
         });
     });
@@ -839,6 +855,85 @@ exports.confirmTemporaryPresident = functions
                 temporaryPresident: doc.data().temporaryPresident,
                 status: constants.hitlerGameStatuses.TemporaryPresident,
                 chancellor: ''
+            });
+        });
+    });
+
+
+exports.killPlayer = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+            if (context.auth.uid !== doc.data().president) {
+                throw new functions.https.HttpsError('invalid-argument', 'You are not the President');
+            }
+            if (!doc.data().status === constants.hitlerGameStatuses.Kill) {
+                throw new functions.https.HttpsError('invalid-argument', 'We are not killing currently');
+            }
+
+            if (!data.player) {
+                throw new functions.https.HttpsError('invalid-argument', 'No player selected');
+            }
+
+            return doc.ref.update({
+                playerToKill: data.player
+            });
+        });
+    });
+
+exports.confirmKillPlayer = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+            if (context.auth.uid !== doc.data().president) {
+                throw new functions.https.HttpsError('invalid-argument', 'You are not the President');
+            }
+            if (!doc.data().status === constants.hitlerGameStatuses.Kill) {
+                throw new functions.https.HttpsError('invalid-argument', 'We are not killing currently');
+            }
+            if (!doc.data().playerToKill) {
+                throw new functions.https.HttpsError('invalid-argument', 'No player selected');
+            }
+            if (doc.data().deadPlayers.includes(doc.data().playerToKill)) {
+                throw new functions.https.HttpsError('invalid-argument', 'That player is already dead');
+            }
+
+            const {
+                president, currentPlayers, playerRoles, playerToKill
+            } = doc.data();
+
+            const role = fp.get('role')(playerRoles.find(x => x.player === playerToKill));
+            console.log('role of dead player', role);
+
+            if (role === constants.hitlerRoles.Hitler) {
+                return doc.ref.update({
+                    status: constants.hitlerGameStatuses.Finished,
+                    hitlerKilled: true,
+                    president: '',
+                    chancellor: '',
+                    presidentCards: [],
+                    chancellorCards: []
+                });
+            }
+
+            return doc.ref.update({
+                deadPlayers: operations.arrayUnion(playerToKill),
+                playerToKill: '',
+                status: constants.hitlerGameStatuses.Nominating,
+                chancellor: '',
+                presidentCards: [],
+                chancellorCards: [],
+                president: common.findNextUser(president, currentPlayers),
+                round: operations.increment(1),
+                temporaryPresident: ''
             });
         });
     });
