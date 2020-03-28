@@ -119,7 +119,8 @@ const GameStarted = props => {
                                 .chancellor === player && props.currentGame.status
                                 === Nominating,
                             [props.styles.isActivePlayer]: player === props.currentGame.president,
-                            [props.styles.activeChancellor]: (props.currentGame.status === PresidentDecidingCards
+                            [props.styles.activeChancellor]: (props.currentGame.status
+                                === PresidentDecidingCards
                                 || props.currentGame.status === ChancellorDecidingCards)
                                 && props.currentGame.chancellor === player
                         })}
@@ -226,7 +227,11 @@ const GameStarted = props => {
                     checked={viewingBoard}
                 >
                     <div className={props.styles.avalonBoard}>
-                        <HitlerBoard numberOfPlayers={6} numberOfLiberals={5} />
+                        <HitlerBoard
+                            numberOfPlayers={props.currentGame.numberOfPlayers}
+                            numberOfLiberals={props.currentGame.numberLiberalPlayed}
+                            numberOfFascists={props.currentGame.numberFascistPlayed}
+                        />
 
                         <div className={props.styles.consecutiveRejections}>
                             {`Consecutive rejections: ${props.currentGame.consecutiveRejections}`}
@@ -298,17 +303,13 @@ GameStarted.defaultProps = {
         numberOfPlayers: 0,
         roles: [],
         round: 0,
-        playersOnQuest: [],
+        numberLiberalPlayed: 0,
+        numberFascistPlayed: 0,
         playersReady: [],
         playerRoles: [],
         status: '',
-        playerToGuessMerlin: '',
-        questNominations: [],
-        questSuccesses: [],
-        questFails: [],
         votesAgainst: [],
         votesFor: [],
-        questResult: [],
         requestToEndGame: '',
         rejectLeaveMidgame: []
     },
@@ -332,6 +333,8 @@ GameStarted.propTypes = {
         president: PropTypes.string,
         mode: PropTypes.string,
         numberOfPlayers: PropTypes.number,
+        numberLiberalPlayed: PropTypes.number,
+        numberFascistPlayed: PropTypes.number,
         round: PropTypes.number,
         playersReady: PropTypes.arrayOf(PropTypes.string),
         playerRoles: PropTypes.arrayOf(PropTypes.shape({

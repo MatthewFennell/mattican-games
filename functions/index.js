@@ -267,11 +267,11 @@ exports.startGame = functions
             const deckOfCards = [];
 
             for (let x = 0; x < 11; x += 1) {
-                deckOfCards.push(1);
+                deckOfCards.push(-1);
             }
 
             for (let x = 0; x < 6; x += 1) {
-                deckOfCards.push(-1);
+                deckOfCards.push(1);
             }
 
             const playerRoles = common.makeHitlerRoles(doc.data().currentPlayers);
@@ -341,6 +341,17 @@ exports.confirmChancellor = functions
         });
     });
 
+const generateNewPackOfCards = (cardDeck, discardPile) => {
+    if (cardDeck.length >= 3) {
+        console.log('card deck greater than 3', cardDeck);
+        return cardDeck;
+    }
+    const newList = cardDeck.concat(discardPile);
+    console.log('card deck less than 3', cardDeck);
+    console.log('discard pile', discardPile);
+    return fp.shuffle(newList);
+};
+
 
 exports.makeVote = functions
     .region(constants.region)
@@ -374,8 +385,8 @@ exports.makeVote = functions
         })
             .then(() => db.collection('games').doc(data.gameId).get().then(doc => {
                 const {
-                    votesFor, votesAgainst, numberOfPlayers, president, currentPlayers,
-                    cardDeck, deadPlayers
+                    votesFor, votesAgainst, numberOfPlayers, president, currentPlayers, discardPile,
+                    cardDeck, deadPlayers, consecutiveRejections, numberFascistPlayed, numberLiberalPlayed
                 } = doc.data();
 
                 if (votesFor.length + votesAgainst.length === numberOfPlayers - deadPlayers.length) {
@@ -393,7 +404,43 @@ exports.makeVote = functions
                             consecutiveRejections: 0
                         });
                     }
-                    // May need to turn over top card here
+
+
+                    if (consecutiveRejections === 2) {
+                        console.log('have voted no 3 times, turning over the top card');
+
+                        const topCard = fp.first(cardDeck);
+                        const remainingCards = cardDeck.slice(1);
+                        console.log('top card', topCard);
+
+                        const gameFinished = (topCard === 1 && numberLiberalPlayed === 4)
+                        || (topCard === -1 && numberFascistPlayed === 5);
+
+                        if (gameFinished) {
+                            return doc.ref.update({
+                                status: constants.hitlerGameStatuses.Finished,
+                                numberFascistPlayed: topCard === -1 ? operations.increment(1) : numberFascistPlayed,
+                                numberLiberalPlayed: topCard === 1 ? operations.increment(1) : numberLiberalPlayed
+                            });
+                        }
+
+                        return doc.ref.update({
+                            status: constants.hitlerGameStatuses.Nominating,
+                            numberFascistPlayed: topCard === -1 ? operations.increment(1) : numberFascistPlayed,
+                            numberLiberalPlayed: topCard === 1 ? operations.increment(1) : numberLiberalPlayed,
+                            cardDeck: generateNewPackOfCards(remainingCards, discardPile),
+                            discardPile: remainingCards.length < 3 ? [] : discardPile,
+                            previouslyInPower: [],
+                            chancellor: '',
+                            president: common.findNextUser(president, currentPlayers),
+                            consecutiveRejections: 0,
+                            round: operations.increment(1),
+                            votesFor: [],
+                            votesAgainst: []
+                        });
+                    }
+
+
                     return doc.ref.update({
                         chancellor: '',
                         status: constants.hitlerGameStatuses.Nominating,
@@ -432,6 +479,8 @@ exports.giveCardsToChancellor = functions
             const remainingCard = doc.data().presidentCards;
             const chancellorCards = data.cards;
 
+            console.log('chancellor cards', chancellorCards);
+
 
             chancellorCards.forEach(x => {
                 const index = remainingCard.indexOf(x);
@@ -440,27 +489,14 @@ exports.giveCardsToChancellor = functions
                 }
             });
 
-            console.log('remaining card', remainingCard);
-
             return doc.ref.update({
                 chancellorCards: data.cards,
-                discardPile: [...doc.data().discardPile, remainingCard],
+                discardPile: [...doc.data().discardPile, fp.first(remainingCard)],
                 presidentCards: [],
                 status: constants.hitlerGameStatuses.ChancellorDecidingCards
             });
         });
     });
-
-const generateNewPackOfCards = (cardDeck, discardPile) => {
-    if (cardDeck.length >= 3) {
-        console.log('card deck greater than 3', cardDeck);
-        return cardDeck;
-    }
-    const newList = cardDeck.concat(discardPile);
-    console.log('card deck less than 3', cardDeck);
-    console.log('discard pile', discardPile);
-    return fp.shuffle(newList);
-};
 
 
 exports.playChancellorCard = functions
