@@ -51,6 +51,35 @@
     border: 2px solid crimson;
 }
 
+.topThreeCards {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.isLiberal, .isFascist {
+    padding: $spacing-medium;
+    font-weight: bold;
+}
+
+.isLiberal {
+    background-color: $color-dark-blue;
+}
+
+.isFascist {
+    background-color: crimson;
+}
+
+.peekInfo {
+    background-color: lightgreen;
+    padding: $spacing-small;
+    margin: $spacing-small;
+}
+
+.oldPres {
+    border: 2px solid antiquewhite;
+    background-color: antiquewhite;
+}
+
 .activeChancellor {
     background-color: greenyellow;
     border: 2px solid greenyellow;
@@ -66,6 +95,9 @@
     font-weight: bold;
     width: $spacing-average;
     display: flex;
+    > div {
+        @include vertical-center-div();
+    }
 }
 
 .currentPresident, .currentChancellor {

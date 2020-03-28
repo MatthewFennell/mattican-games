@@ -234,7 +234,8 @@ exports.createHitlerGame = functions
                     playerToInvestigate: '',
                     president: null,
                     presidentCards: [],
-                    previouslyInPower: [],
+                    previousChancellor: '',
+                    previousPresident: '',
                     rejectLeaveMidgame: [],
                     requestToEndGame: '',
                     temporaryPresident: '',
@@ -290,6 +291,23 @@ exports.startGame = functions
         });
     });
 
+const canNominatePlayer = (player, currentGame) => {
+    const numberOfDeadPlayers = currentGame.deadPlayers.length;
+    const remainingPlayers = currentGame.numberOfPlayers - numberOfDeadPlayers;
+
+    if (remainingPlayers <= 5) {
+        if (currentGame.previousPresident === player) {
+            return false;
+        }
+        return true;
+    }
+    if (currentGame.previousPresident === player
+            || currentGame.previousChancellor === player) {
+        return false;
+    }
+    return true;
+};
+
 
 exports.nominateChancellor = functions
     .region(constants.region)
@@ -320,6 +338,13 @@ exports.nominateChancellor = functions
             if (data.chancellor === context.auth.uid) {
                 throw new functions.https.HttpsError('invalid-argument', 'Cannot nominate yourself');
             }
+            if (doc.data().deadPlayers.includes(data.chancellor)) {
+                throw new functions.https.HttpsError('invalid-argument', 'Cannot nominate a dead player');
+            }
+            if (!canNominatePlayer(data.chancellor, doc.data())) {
+                throw new functions.https.HttpsError('invalid-argument', 'Cannot nominate a dead player');
+            }
+
             return doc.ref.update({
                 chancellor: data.chancellor
             });
@@ -404,7 +429,8 @@ exports.makeVote = functions
             .then(() => db.collection('games').doc(data.gameId).get().then(doc => {
                 const {
                     votesFor, votesAgainst, numberOfPlayers, president, currentPlayers, discardPile,
-                    cardDeck, deadPlayers, consecutiveRejections, numberFascistPlayed, numberLiberalPlayed
+                    cardDeck, deadPlayers, consecutiveRejections, numberFascistPlayed, numberLiberalPlayed,
+                    chancellor, temporaryPresident
                 } = doc.data();
 
                 if (votesFor.length + votesAgainst.length === numberOfPlayers - deadPlayers.length) {
@@ -413,16 +439,21 @@ exports.makeVote = functions
                         const remainingCards = cardDeck.slice(3);
                         console.log('president cards', presidentCards);
                         console.log('remaining cards', remainingCards);
+
+                        console.log('temporary president', temporaryPresident);
+                        console.log('previous president', president);
+                        console.log('setting previous president to ', (temporaryPresident || president));
                         return doc.ref.update({
                             presidentCards,
                             cardDeck: remainingCards,
                             status: constants.hitlerGameStatuses.PresidentDecidingCards,
                             votesAgainst: [],
                             votesFor: [],
-                            consecutiveRejections: 0
+                            consecutiveRejections: 0,
+                            previousChancellor: chancellor,
+                            previousPresident: temporaryPresident || president
                         });
                     }
-
 
                     if (consecutiveRejections === 2) {
                         console.log('have voted no 3 times, turning over the top card');
@@ -438,7 +469,10 @@ exports.makeVote = functions
                             return doc.ref.update({
                                 status: constants.hitlerGameStatuses.Finished,
                                 numberFascistPlayed: topCard === -1 ? operations.increment(1) : numberFascistPlayed,
-                                numberLiberalPlayed: topCard === 1 ? operations.increment(1) : numberLiberalPlayed
+                                numberLiberalPlayed: topCard === 1 ? operations.increment(1) : numberLiberalPlayed,
+                                previousChancellor: '',
+                                previousPresident: '',
+                                temporaryPresident: ''
                             });
                         }
 
@@ -454,7 +488,10 @@ exports.makeVote = functions
                             consecutiveRejections: 0,
                             round: operations.increment(1),
                             votesFor: [],
-                            votesAgainst: []
+                            votesAgainst: [],
+                            previousChancellor: '',
+                            previousPresident: '',
+                            temporaryPresident: ''
                         });
                     }
 
@@ -465,7 +502,8 @@ exports.makeVote = functions
                         votesAgainst: [],
                         votesFor: [],
                         consecutiveRejections: operations.increment(1),
-                        president: common.findNextUser(president, currentPlayers)
+                        president: common.findNextUser(president, currentPlayers),
+                        temporaryPresident: ''
                     });
                 }
                 return Promise.resolve();
@@ -481,11 +519,12 @@ exports.giveCardsToChancellor = functions
             if (!doc.exists) {
                 throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
             }
-            if (context.auth.uid !== doc.data().president) {
-                throw new functions.https.HttpsError('invalid-argument', 'You are not the President');
-            }
             if (!doc.data().status === constants.hitlerGameStatuses.PresidentDecidingCards) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not deciding cards');
+            }
+            if ((doc.data().temporaryPresident && context.auth.uid !== doc.data().temporaryPresident)
+            && (context.auth.uid !== doc.data().president)) {
+                throw new functions.https.HttpsError('invalid-argument', 'You are not the President');
             }
             if (!doc.data().chancellor) {
                 throw new functions.https.HttpsError('invalid-argument', 'Chancellor has not been set');
@@ -582,7 +621,11 @@ exports.playChancellorCard = functions
                     console.log('5 liberals played!');
                     return doc.ref.update({
                         numberLiberalPlayed: operations.increment(1),
-                        status: constants.hitlerGameStatuses.Finished
+                        status: constants.hitlerGameStatuses.Finished,
+                        chancellor: '',
+                        president: '',
+                        temporaryPresident: '',
+                        temporaryPresident: ''
                     });
                 }
 
@@ -596,8 +639,8 @@ exports.playChancellorCard = functions
                     president: common.findNextUser(president, currentPlayers),
                     numberLiberalPlayed: operations.increment(1),
                     status: constants.hitlerGameStatuses.Nominating,
-                    previouslyInPower: [president, chancellor],
-                    round: operations.increment(1)
+                    round: operations.increment(1),
+                    temporaryPresident: ''
                 });
             }
             console.log('a fascist has been played');
@@ -606,7 +649,9 @@ exports.playChancellorCard = functions
                 console.log('6 fascists played!');
                 return doc.ref.update({
                     numberFascistPlayed: operations.increment(1),
-                    status: constants.hitlerGameStatuses.Finished
+                    status: constants.hitlerGameStatuses.Finished,
+                    chancellor: '',
+                    temporaryPresident: ''
                 });
             }
 
@@ -619,12 +664,14 @@ exports.playChancellorCard = functions
                     previouslyInPower: [president, chancellor],
                     presidentCards: [],
                     chancellorCards: [],
+                    chancellor: '',
                     cardDeck: generateNewPackOfCards(cardDeck, newDiscardPile),
                     discardPile: cardDeck.length < 3 ? [] : newDiscardPile,
                     president: common.findNextUser(president, currentPlayers),
                     numberFascistPlayed: operations.increment(1),
                     status: nextMode,
-                    round: operations.increment(1)
+                    round: operations.increment(1),
+                    temporaryPresident: ''
                 });
             }
             console.log('there is a special power');
@@ -633,9 +680,9 @@ exports.playChancellorCard = functions
                 console.log('investigating');
                 return doc.ref.update({
                     status: nextMode,
-                    previouslyInPower: [president, chancellor],
                     presidentCards: [],
                     chancellorCards: [],
+                    chancellor: '',
                     cardDeck: generateNewPackOfCards(cardDeck, newDiscardPile),
                     discardPile: cardDeck.length < 3 ? [] : newDiscardPile,
                     numberFascistPlayed: operations.increment(1)
@@ -645,7 +692,6 @@ exports.playChancellorCard = functions
             if (nextMode === constants.hitlerGameStatuses.Transfer) {
                 return doc.ref.update({
                     status: nextMode,
-                    previouslyInPower: [president, chancellor],
                     cardDeck: generateNewPackOfCards(cardDeck, newDiscardPile),
                     discardPile: cardDeck.length < 3 ? [] : newDiscardPile,
                     numberFascistPlayed: operations.increment(1),
@@ -653,6 +699,27 @@ exports.playChancellorCard = functions
                 });
             }
 
+            if (nextMode === constants.hitlerGameStatuses.Peek) {
+                const newCardDeck = generateNewPackOfCards(cardDeck, newDiscardPile);
+                const extraSecretInfo = {
+                    president,
+                    cards: newCardDeck.slice(0, 3),
+                    type: constants.hitlerGameStatuses.Peek
+                };
+                return doc.ref.update({
+                    status: constants.hitlerGameStatuses.Nominating,
+                    cardDeck: newCardDeck,
+                    discardPile: cardDeck.length < 3 ? [] : newDiscardPile,
+                    numberFascistPlayed: operations.increment(1),
+                    chancellor: '',
+                    hiddenInfo: operations.arrayUnion(extraSecretInfo),
+                    presidentCards: [],
+                    chancellorCards: [],
+                    round: operations.increment(1),
+                    temporaryPresident: '',
+                    president: common.findNextUser(president, currentPlayers)
+                });
+            }
 
             return Promise.resolve();
         });
@@ -720,7 +787,8 @@ exports.confirmInvestigation = functions
                 chancellorCards: [],
                 president: common.findNextUser(president, currentPlayers),
                 round: operations.increment(1),
-                playerInvestigated: playerToInvestigate
+                playerInvestigated: playerToInvestigate,
+                temporaryPresident: ''
             });
         });
     });

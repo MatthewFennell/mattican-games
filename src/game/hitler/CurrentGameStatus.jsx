@@ -115,7 +115,11 @@ const CurrentGameStatus = props => {
     }
 
     if (props.currentGame.status === constants.hitlerGameStatuses.PresidentDecidingCards) {
-        if (props.auth.uid !== props.currentGame.president) {
+        const inPower = props.currentGame.temporaryPresident === props.auth.uid
+        || (!props.currentGame.temporaryPresident
+            && props.currentGame.president === props.auth.uid);
+
+        if (!inPower) {
             return (
                 <div className={props.styles.presidentDeciding}>
                     {`${helpers.mapUserIdToName(props.users, props.currentGame.president)} 

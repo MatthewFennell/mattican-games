@@ -17,7 +17,8 @@ import CurrentGameStatus from './CurrentGameStatus';
 import {
     nominateChancellorRequest, confirmChancellorRequest, leaveGameRequest,
     destroyGameRequest, approveLeaveMidgameRequest, selectInvestigateRequest,
-    confirmInvesigationRequest, makeTemporaryPresidentRequest, confirmPresidentRequest
+    confirmInvesigationRequest, makeTemporaryPresidentRequest, confirmPresidentRequest,
+    gameError
 } from '../actions';
 import StyledButton from '../../common/StyledButton/StyledButton';
 import Switch from '../../common/Switch/Switch';
@@ -33,7 +34,8 @@ const GameStarted = props => {
         Voting,
         Investigate,
         Transfer,
-        TemporaryPresident
+        TemporaryPresident,
+        Peek
     } = constants.hitlerGameStatuses;
 
     const [viewingRole, setViewingRole] = useState(false);
@@ -56,6 +58,27 @@ const GameStarted = props => {
                     return <div>{`You saw ${helpers.mapUserIdToName(props.users, playerSeen.player)} as a liberal`}</div>;
                 }
                 return <div>{`You saw ${helpers.mapUserIdToName(props.users, playerSeen.player)} as a fascist`}</div>;
+            }
+            if (info.type === Peek) {
+                const { cards } = info;
+                return (
+                    <div className={props.styles.peekInfo}>
+                        <div>The top 3 cards you saw were</div>
+                        <div className={props.styles.topThreeCards}>
+
+                            {cards.map(card => (
+                                <div className={classNames({
+                                    [props.styles.isLiberal]: card === 1,
+                                    [props.styles.isFascist]: card === -1
+                                })}
+                                >
+                                    {card === 1 ? 'L' : 'F'}
+                                </div>
+                            ))}
+
+                        </div>
+                    </div>
+                );
             }
         }
         return null;
@@ -103,10 +126,40 @@ const GameStarted = props => {
         return <div>Afraid you know nothing</div>;
     };
 
+    const canNominatePlayer = player => {
+        console.log('trying to nominate', player);
+        const numberOfDeadPlayers = props.currentGame.deadPlayers.length;
+        const remainingPlayers = props.currentGame.numberOfPlayers - numberOfDeadPlayers;
+
+        if (remainingPlayers <= 5) {
+            if (props.currentGame.previousPresident === player) {
+                return false;
+            }
+            return true;
+        }
+        if (props.currentGame.previousPresident === player
+            || props.currentGame.previousChancellor === player) {
+            return false;
+        }
+        return true;
+    };
+
     const nominatePlayer = useCallback(player => {
         if (props.currentGame.status === Nominating) {
             if (props.currentGame.president === props.auth.uid) {
-                props.nominateChancellorRequest(props.currentGameId, player);
+                if (props.currentGame.deadPlayers.includes(player)) {
+                    props.gameError({
+                        code: 'invalid-nomination',
+                        message: 'Can\'t nominate dead players'
+                    }, 'Nominate error');
+                } else if (!canNominatePlayer(player)) {
+                    props.gameError({
+                        code: 'invalid-nomination',
+                        message: 'That player was previously in power'
+                    }, 'Nominate error');
+                } else {
+                    props.nominateChancellorRequest(props.currentGameId, player);
+                }
             }
         }
         if (props.currentGame.status === Investigate) {
@@ -139,7 +192,7 @@ const GameStarted = props => {
             {props.currentGame.status !== Finished
             && (
                 <div className={props.styles.currentLeaderWrapper}>
-                    {`The current President is ${helpers.mapUserIdToName(props.users, props.currentGame.president)}`}
+                    {`The current President is ${helpers.mapUserIdToName(props.users, props.currentGame.temporaryPresident || props.currentGame.president)}`}
                 </div>
             )}
             <CurrentGameStatus />
@@ -149,10 +202,16 @@ const GameStarted = props => {
                     <div
                         className={classNames({
                             [props.styles.playerWrapper]: true,
-                            [props.styles.nominatedChancellor]: props.currentGame
+                            [props.styles.nominatedChancellor]: (props.currentGame
                                 .chancellor === player && props.currentGame.status
-                                === Nominating,
-                            [props.styles.isActivePlayer]: player === props.currentGame.president,
+                                === Nominating) || (props.currentGame.chancellor === player
+                                    && props.currentGame.status === Voting)
+                                    || (props.currentGame.chancellor === player
+                                        && props.currentGame.status === TemporaryPresident),
+                            [props.styles.isActivePlayer]: (player === props.currentGame.president
+                            && props.currentGame.status !== TemporaryPresident)
+                             || (props.currentGame.status === TemporaryPresident
+                                && player === props.currentGame.temporaryPresident),
                             [props.styles.activeChancellor]: (props.currentGame.status
                                 === PresidentDecidingCards
                                 || props.currentGame.status === ChancellorDecidingCards)
@@ -162,7 +221,9 @@ const GameStarted = props => {
                             && props.currentGame.playerToInvestigate === player,
                             [props.styles.potentialTempPres]: props.currentGame.status
                             === Transfer
-                            && props.currentGame.temporaryPresident === player
+                            && props.currentGame.temporaryPresident === player,
+                            [props.styles.oldPres]: props.currentGame.status === TemporaryPresident
+                            && props.currentGame.president === player
                         })}
                         role="button"
                         tabIndex={0}
@@ -171,13 +232,16 @@ const GameStarted = props => {
                     >
                         <div className={props.styles.playerNumber}>
                             <div>{`#${index + 1}`}</div>
-                            {props.currentGame.president === player
-                            && props.currentGame.status !== TemporaryPresident
+                            {((props.currentGame.president === player
+                            && !props.currentGame.temporaryPresident)
+                            || (props.currentGame.president === player
+                                && props.currentGame.status === Transfer))
                             && <div className={props.styles.currentPresident}>(President)</div>}
                             {props.currentGame.chancellor === player
                             && <div className={props.styles.currentChancellor}>(Chancellor)</div>}
                             {props.currentGame.temporaryPresident === player
-                            && props.currentGame.status === TemporaryPresident
+                            && props.currentGame.temporaryPresident
+                            && props.currentGame.status !== Transfer
                             && <div className={props.styles.currentPresident}>(Pres)</div>}
                         </div>
                         <div className={classNames({
@@ -367,6 +431,7 @@ GameStarted.defaultProps = {
         approveLeaveMidgame: [],
         chancellor: '',
         currentPlayers: [],
+        deadPlayers: [],
         consecutiveRejections: 0,
         hiddenInfo: [],
         host: '',
@@ -382,6 +447,8 @@ GameStarted.defaultProps = {
         playerToInvestigate: '',
         status: '',
         temporaryPresident: '',
+        previousChancellor: '',
+        previousPresident: '',
         votesAgainst: [],
         votesFor: [],
         requestToEndGame: '',
@@ -403,6 +470,7 @@ GameStarted.propTypes = {
         chancellor: PropTypes.string,
         consecutiveRejections: PropTypes.number,
         currentPlayers: PropTypes.arrayOf(PropTypes.string),
+        deadPlayers: PropTypes.arrayOf(PropTypes.string),
         hiddenInfo: PropTypes.arrayOf(PropTypes.shape({
             president: PropTypes.string,
             type: PropTypes.string
@@ -424,11 +492,14 @@ GameStarted.propTypes = {
         votesFor: PropTypes.arrayOf(PropTypes.string),
         rejectLeaveMidgame: PropTypes.arrayOf(PropTypes.string),
         requestToEndGame: PropTypes.string,
+        previousChancellor: PropTypes.string,
+        previousPresident: PropTypes.string,
         status: PropTypes.string,
         temporaryPresident: PropTypes.string
     }),
     confirmInvesigationRequest: PropTypes.func.isRequired,
     destroyGameRequest: PropTypes.func.isRequired,
+    gameError: PropTypes.func.isRequired,
     leaveGameRequest: PropTypes.func.isRequired,
     nominateChancellorRequest: PropTypes.func.isRequired,
     makeTemporaryPresidentRequest: PropTypes.func.isRequired,
@@ -442,6 +513,7 @@ GameStarted.propTypes = {
 };
 
 const mapDispatchToProps = {
+    gameError,
     confirmInvesigationRequest,
     destroyGameRequest,
     confirmChancellorRequest,
