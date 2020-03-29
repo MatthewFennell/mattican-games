@@ -1,13 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { firestoreConnect } from 'react-redux-firebase';
-import { compose } from 'redux';
-import { withRouter } from 'react-router-dom';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import classNames from 'classnames';
 import defaultStyles from './GameNotStarted.module.scss';
-import * as selectors from './selectors';
 import { mapUserIdToName } from './helpers';
 import * as constants from '../constants';
 import StyledButton from '../common/StyledButton/StyledButton';
@@ -186,24 +182,6 @@ const mapDispatchToProps = {
     startGameRequest
 };
 
-const mapStateToProps = (state, props) => ({
-    auth: state.firebase.auth,
-    currentGame: selectors.getCurrentGame(state, props),
-    currentGameId: selectors.getGameId(props),
-    isReady: selectors.getIsReady(state, props),
-    users: state.firestore.data.users
-});
-
-export default withRouter(compose(
-    connect(mapStateToProps, mapDispatchToProps),
-    firestoreConnect(() => [
-        {
-            collection: 'games'
-        },
-        {
-            collection: 'users'
-        }
-    ]),
-)(GameNotStarted));
+export default connect(null, mapDispatchToProps)(GameNotStarted);
 
 export { GameNotStarted as GameNotStartedUnconnected };

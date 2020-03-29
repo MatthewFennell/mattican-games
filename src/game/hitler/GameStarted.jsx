@@ -2,15 +2,11 @@
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { firestoreConnect } from 'react-redux-firebase';
-import { compose } from 'redux';
-import { withRouter } from 'react-router-dom';
 import classNames from 'classnames';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import { noop } from 'lodash';
 import fp from 'lodash/fp';
 import defaultStyles from './GameStarted.module.scss';
-import * as selectors from '../selectors';
 import Fade from '../../common/Fade/Fade';
 import * as helpers from '../helpers';
 import * as constants from '../../constants';
@@ -619,24 +615,6 @@ const mapDispatchToProps = {
     confirmKillPlayerRequest
 };
 
-const mapStateToProps = (state, props) => ({
-    auth: state.firebase.auth,
-    currentGame: selectors.getCurrentGame(state, props),
-    currentGameId: selectors.getGameId(props),
-    myRole: selectors.getMyRole(state, props),
-    users: state.firestore.data.users
-});
-
-export default withRouter(compose(
-    connect(mapStateToProps, mapDispatchToProps),
-    firestoreConnect(() => [
-        {
-            collection: 'games'
-        },
-        {
-            collection: 'users'
-        }
-    ]),
-)(GameStarted));
+export default connect(null, mapDispatchToProps)(GameStarted);
 
 export { GameStarted as GameStartedUnconnected };

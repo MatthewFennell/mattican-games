@@ -13,10 +13,16 @@ import { closeGameError } from './actions';
 import * as constants from '../constants';
 
 const Game = props => {
-    const generateGameThingToLoad = () => {
+    const generateGameThingToLoad = (gameId, isReady, myRole) => {
         if (!props.currentGame.hasStarted) {
             return (
-                <GameNotStarted />
+                <GameNotStarted
+                    auth={props.auth}
+                    currentGame={props.currentGame}
+                    currentGameId={gameId}
+                    isReady={isReady}
+                    users={props.users}
+                />
             );
         }
         if (props.currentGame.mode === constants.gameModes.Avalon) {
@@ -24,7 +30,15 @@ const Game = props => {
         }
 
         if (props.currentGame.mode === constants.gameModes.Hitler) {
-            return <HitlerGameStarted />;
+            return (
+                <HitlerGameStarted
+                    auth={props.auth}
+                    currentGame={props.currentGame}
+                    currentGameId={props.currentGameId}
+                    myRole={myRole}
+                    users={props.users}
+                />
+            );
         }
 
         return <div>Unknown game mode</div>;
@@ -33,7 +47,7 @@ const Game = props => {
 
     return (
         <>
-            {generateGameThingToLoad()}
+            {generateGameThingToLoad(props.currentGameId, props.isReady, props.myRole)}
             <ErrorModal
                 closeModal={props.closeGameError}
                 headerMessage={props.errorHeader}
@@ -46,16 +60,33 @@ const Game = props => {
 };
 
 Game.defaultProps = {
-    currentGame: {
-        hasStarted: false,
-        mode: ''
+    auth: {
+        uid: ''
     },
+    currentGame: {
+        currentPlayers: [],
+        hasStarted: false,
+        host: '',
+        mode: '',
+        numberOfPlayers: 0,
+        roles: [],
+        playersReady: []
+    },
+    currentGameId: '',
     errorHeader: '',
     errorMessage: '',
-    errorCode: ''
+    errorCode: '',
+    isReady: '',
+    myRole: '',
+    users: {}
 };
 
 Game.propTypes = {
+    auth: PropTypes.shape({
+        uid: PropTypes.string
+    }),
+    currentGameId: PropTypes.string,
+    isReady: PropTypes.bool,
     closeGameError: PropTypes.func.isRequired,
     currentGame: PropTypes.shape({
         hasStarted: PropTypes.bool,
@@ -63,7 +94,9 @@ Game.propTypes = {
     }),
     errorHeader: PropTypes.string,
     errorMessage: PropTypes.string,
-    errorCode: PropTypes.string
+    errorCode: PropTypes.string,
+    myRole: PropTypes.string,
+    users: PropTypes.shape({})
 };
 
 const mapDispatchToProps = {
@@ -74,7 +107,13 @@ const mapStateToProps = (state, props) => ({
     currentGame: selectors.getCurrentGame(state, props),
     errorHeader: state.avalon.errorHeader,
     errorMessage: state.avalon.errorMessage,
-    errorCode: state.avalon.errorCode
+    errorCode: state.avalon.errorCode,
+
+    auth: state.firebase.auth,
+    currentGameId: selectors.getGameId(props),
+    isReady: selectors.getIsReady(state, props),
+    users: state.firestore.data.users,
+    myRole: selectors.getMyRole(state, props)
 });
 
 export default withRouter(compose(
@@ -82,6 +121,9 @@ export default withRouter(compose(
     firestoreConnect(() => [
         {
             collection: 'games'
+        },
+        {
+            collection: 'users'
         }
     ]),
 )(Game));
