@@ -215,7 +215,7 @@ exports.createHitlerGame = functions
                     approveLeaveMidgame: [],
                     cardDeck: [],
                     chancellor: '',
-                    chancellorCards: '',
+                    chancellorCards: [],
                     consecutiveRejections: 0,
                     currentPlayers: [context.auth.uid],
                     deadPlayers: [],

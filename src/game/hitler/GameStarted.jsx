@@ -132,7 +132,6 @@ const GameStarted = props => {
     };
 
     const canNominatePlayer = player => {
-        console.log('trying to nominate', player);
         const numberOfDeadPlayers = props.currentGame.deadPlayers.length;
         const remainingPlayers = props.currentGame.numberOfPlayers - numberOfDeadPlayers;
 
@@ -230,7 +229,13 @@ const GameStarted = props => {
                     {`The current President is ${helpers.mapUserIdToName(props.users, props.currentGame.temporaryPresident || props.currentGame.president)}`}
                 </div>
             )}
-            <CurrentGameStatus />
+            <CurrentGameStatus
+                auth={props.auth}
+                currentGame={props.currentGame}
+                currentGameId={props.currentGameId}
+                users={props.users}
+
+            />
 
             <div className={props.styles.playerOrder}>
                 {props.currentGame.currentPlayers.map((player, index) => (
