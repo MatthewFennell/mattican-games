@@ -44,7 +44,6 @@ const Game = props => {
         return <div>Unknown game mode</div>;
     };
 
-
     return (
         <>
             {generateGameThingToLoad(props.currentGameId, props.isReady, props.myRole)}
@@ -96,7 +95,8 @@ Game.propTypes = {
     errorMessage: PropTypes.string,
     errorCode: PropTypes.string,
     myRole: PropTypes.string,
-    users: PropTypes.shape({})
+    users: PropTypes.shape({}),
+    testUsers: PropTypes.shape({})
 };
 
 const mapDispatchToProps = {
@@ -113,7 +113,8 @@ const mapStateToProps = (state, props) => ({
     currentGameId: selectors.getGameId(props),
     isReady: selectors.getIsReady(state, props),
     users: state.firestore.data.users,
-    myRole: selectors.getMyRole(state, props)
+    myRole: selectors.getMyRole(state, props),
+    testUsers: selectors.getUsernameMappings(state, props)
 });
 
 export default withRouter(compose(

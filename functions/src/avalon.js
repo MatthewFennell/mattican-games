@@ -30,39 +30,45 @@ exports.createAvalonGame = functions
             throw new functions.https.HttpsError('invalid-argument', 'Invalid number of players');
         }
 
-        return db.collection('games').where('name', '==', data.name).get().then(
-            docs => {
-                if (docs.size > 0) {
-                    throw new functions.https.HttpsError('already-exists', 'A game with that name already exists');
+        return db.collection('users').doc(context.auth.uid).get().then(response => {
+            const { displayName } = response.data();
+            return db.collection('games').where('name', '==', data.name).get().then(
+                docs => {
+                    if (docs.size > 0) {
+                        throw new functions.https.HttpsError('already-exists', 'A game with that name already exists');
+                    }
+                    return db.collection('games').add({
+                        approveLeaveMidgame: [],
+                        consecutiveRejections: 0,
+                        currentPlayers: [context.auth.uid],
+                        guessedMerlinCorrectly: false,
+                        hasStarted: false,
+                        history: [],
+                        host: context.auth.uid,
+                        leader: null,
+                        mode: data.mode,
+                        name: data.name,
+                        numberOfPlayers: Math.min(data.numberOfPlayers, 10),
+                        playersOnQuest: [],
+                        playersReady: [],
+                        playerToGuessMerlin: '',
+                        questNominations: [],
+                        questResult: [],
+                        rejectLeaveMidgame: [],
+                        requestToEndGame: '',
+                        roles: data.roles,
+                        round: null,
+                        questSuccesses: [],
+                        questFails: [],
+                        votesFor: [],
+                        votesAgainst: [],
+                        usernameMappings: {
+                            [context.auth.uid]: displayName
+                        }
+                    });
                 }
-                return db.collection('games').add({
-                    approveLeaveMidgame: [],
-                    consecutiveRejections: 0,
-                    currentPlayers: [context.auth.uid],
-                    guessedMerlinCorrectly: false,
-                    hasStarted: false,
-                    history: [],
-                    host: context.auth.uid,
-                    leader: null,
-                    mode: data.mode,
-                    name: data.name,
-                    numberOfPlayers: Math.min(data.numberOfPlayers, 10),
-                    playersOnQuest: [],
-                    playersReady: [],
-                    playerToGuessMerlin: '',
-                    questNominations: [],
-                    questResult: [],
-                    rejectLeaveMidgame: [],
-                    requestToEndGame: '',
-                    roles: data.roles,
-                    round: null,
-                    questSuccesses: [],
-                    questFails: [],
-                    votesFor: [],
-                    votesAgainst: []
-                });
-            }
-        );
+            );
+        });
     });
 
 exports.startGame = functions

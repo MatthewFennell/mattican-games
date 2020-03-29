@@ -27,3 +27,8 @@ export const getMyRole = createSelector(
         return fp.get('role')(currentGame.playerRoles.find(x => x.player === myId));
     }
 );
+
+export const getUsernameMappings = createSelector(
+    getCurrentGame,
+    currentGame => fp.get('usernameMappings')(currentGame)
+);

@@ -223,7 +223,6 @@ const History = props => (
     })
 );
 
-
 History.defaultProps = {
     history: [],
     styles: defaultStyles,

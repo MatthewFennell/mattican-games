@@ -178,7 +178,11 @@ exports.joinGame = functions
                     throw new functions.https.HttpsError('invalid-argument', 'Please set a display name before joining');
                 }
                 return doc.ref.update({
-                    currentPlayers: operations.arrayUnion(context.auth.uid)
+                    currentPlayers: operations.arrayUnion(context.auth.uid),
+                    usernameMappings: {
+                        ...doc.data().usernameMappings,
+                        [context.auth.uid]: displayName
+                    }
                 });
             });
         });
@@ -206,51 +210,57 @@ exports.createHitlerGame = functions
             throw new functions.https.HttpsError('invalid-argument', 'Invalid number of players');
         }
 
-        return db.collection('games').where('name', '==', data.name).get().then(
-            docs => {
-                if (docs.size > 0) {
-                    throw new functions.https.HttpsError('already-exists', 'A game with that name already exists');
+        return db.collection('users').doc(context.auth.uid).get().then(userDoc => {
+            const { displayName } = userDoc.data();
+            return db.collection('games').where('name', '==', data.name).get().then(
+                docs => {
+                    if (docs.size > 0) {
+                        throw new functions.https.HttpsError('already-exists', 'A game with that name already exists');
+                    }
+                    return db.collection('games').add({
+                        approveLeaveMidgame: [],
+                        cardDeck: [],
+                        chancellor: '',
+                        chancellorCards: [],
+                        consecutiveRejections: 0,
+                        currentPlayers: [context.auth.uid],
+                        deadPlayers: [],
+                        discardPile: [],
+                        hasStarted: false,
+                        hiddenInfo: [],
+                        hitlerKilled: false,
+                        history: [],
+                        hitlerElected: false,
+                        host: context.auth.uid,
+                        mode: data.mode,
+                        name: data.name,
+                        numberFascistPlayed: 0,
+                        numberLiberalPlayed: 0,
+                        numberOfPlayers: Math.min(data.numberOfPlayers, 10),
+                        playersReady: [],
+                        playerRoles: [],
+                        playerToInvestigate: '',
+                        president: null,
+                        presidentCards: [],
+                        playerToKill: '',
+                        playerInvestigated: '',
+                        requestingVeto: false,
+                        previousChancellor: '',
+                        previousPresident: '',
+                        rejectLeaveMidgame: [],
+                        requestToEndGame: '',
+                        temporaryPresident: '',
+                        round: null,
+                        votesFor: [],
+                        votesAgainst: [],
+                        vetoRejected: false,
+                        usernameMappings: {
+                            [context.auth.uid]: displayName
+                        }
+                    });
                 }
-                return db.collection('games').add({
-                    approveLeaveMidgame: [],
-                    cardDeck: [],
-                    chancellor: '',
-                    chancellorCards: [],
-                    consecutiveRejections: 0,
-                    currentPlayers: [context.auth.uid],
-                    deadPlayers: [],
-                    discardPile: [],
-                    hasStarted: false,
-                    hiddenInfo: [],
-                    hitlerKilled: false,
-                    history: [],
-                    hitlerElected: false,
-                    host: context.auth.uid,
-                    mode: data.mode,
-                    name: data.name,
-                    numberFascistPlayed: 0,
-                    numberLiberalPlayed: 0,
-                    numberOfPlayers: Math.min(data.numberOfPlayers, 10),
-                    playersReady: [],
-                    playerRoles: [],
-                    playerToInvestigate: '',
-                    president: null,
-                    presidentCards: [],
-                    playerToKill: '',
-                    playerInvestigated: '',
-                    requestingVeto: false,
-                    previousChancellor: '',
-                    previousPresident: '',
-                    rejectLeaveMidgame: [],
-                    requestToEndGame: '',
-                    temporaryPresident: '',
-                    round: null,
-                    votesFor: [],
-                    votesAgainst: [],
-                    vetoRejected: false
-                });
-            }
-        );
+            );
+        });
     });
 
 
