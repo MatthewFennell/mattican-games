@@ -10,6 +10,8 @@
 
 .viewSecretInfoWrapper {
     text-align: center;
+    margin: $spacing-small;
+    background-color: darkseagreen;
 }
 
 .isGood {
@@ -120,6 +122,7 @@
 
 .avalonBoard {
     margin: $spacing-small;
+    margin-top: 0px;
     padding: $spacing-small;
     background-color: burlywood;
 }

@@ -442,11 +442,13 @@ exports.makeVote = functions
                             if (role === constants.hitlerRoles.Hitler) {
                                 return doc.ref.update({
                                     hitlerElected: true,
+                                    chancellor,
+                                    president: temporaryPresident || president,
                                     status: constants.hitlerGameStatuses.Finished,
                                     history: [
                                         {
                                             type: constants.historyTypes.Vote,
-                                            president,
+                                            president: temporaryPresident || president,
                                             chancellor,
                                             round: doc.data().round,
                                             votesYes: votesFor,
@@ -468,12 +470,10 @@ exports.makeVote = functions
                             votesAgainst: [],
                             votesFor: [],
                             consecutiveRejections: 0,
-                            // previousChancellor: chancellor,
-                            // previousPresident: temporaryPresident || president,
                             history: [
                                 {
                                     type: constants.historyTypes.Vote,
-                                    president,
+                                    president: temporaryPresident || president,
                                     chancellor,
                                     round: doc.data().round,
                                     votesYes: votesFor,
@@ -495,8 +495,6 @@ exports.makeVote = functions
                                 status: constants.hitlerGameStatuses.Finished,
                                 numberFascistPlayed: topCard === -1 ? operations.increment(1) : numberFascistPlayed,
                                 numberLiberalPlayed: topCard === 1 ? operations.increment(1) : numberLiberalPlayed,
-                                previousChancellor: '',
-                                previousPresident: '',
                                 temporaryPresident: '',
                                 history: [
                                     {
@@ -506,7 +504,7 @@ exports.makeVote = functions
                                     },
                                     {
                                         type: constants.historyTypes.Vote,
-                                        president,
+                                        president: temporaryPresident || president,
                                         chancellor,
                                         round: doc.data().round,
                                         votesYes: votesFor,
@@ -529,8 +527,6 @@ exports.makeVote = functions
                             round: operations.increment(1),
                             votesFor: [],
                             votesAgainst: [],
-                            previousChancellor: '',
-                            previousPresident: '',
                             temporaryPresident: '',
                             history: [
                                 {
@@ -540,7 +536,7 @@ exports.makeVote = functions
                                 },
                                 {
                                     type: constants.historyTypes.Vote,
-                                    president,
+                                    president: temporaryPresident || president,
                                     chancellor,
                                     round: doc.data().round,
                                     votesYes: votesFor,
@@ -549,7 +545,6 @@ exports.makeVote = functions
                             ]
                         });
                     }
-
 
                     return doc.ref.update({
                         chancellor: '',
@@ -562,7 +557,7 @@ exports.makeVote = functions
                         history: [
                             {
                                 type: constants.historyTypes.Vote,
-                                president,
+                                president: temporaryPresident || president,
                                 chancellor,
                                 round: doc.data().round,
                                 votesYes: votesFor,
@@ -931,7 +926,7 @@ exports.confirmInvestigation = functions
             }
 
             const {
-                playerToInvestigate, president, currentPlayers, deadPlayers, history, chancellor
+                playerToInvestigate, president, currentPlayers, deadPlayers, history
             } = doc.data();
 
             const extraSecretInfo = {
@@ -947,7 +942,6 @@ exports.confirmInvestigation = functions
                 presidentCards: [],
                 chancellorCards: [],
                 previousPresident: president,
-                previousChancellor: chancellor,
                 president: common.findNextUserHitler(president, currentPlayers, deadPlayers),
                 round: operations.increment(1),
                 playerInvestigated: playerToInvestigate,
@@ -1010,6 +1004,7 @@ exports.confirmTemporaryPresident = functions
                 temporaryPresident: doc.data().temporaryPresident,
                 status: constants.hitlerGameStatuses.TemporaryPresident,
                 previousPresident: doc.data().president,
+                round: operations.increment(1),
                 history: [
                     {
                         type: constants.historyTypes.TransferPresident,
@@ -1083,7 +1078,7 @@ exports.confirmKillPlayer = functions
 
             const {
                 president, currentPlayers, playerRoles, playerToKill, deadPlayers, temporaryPresident,
-                history, chancellor
+                history
             } = doc.data();
 
             const role = fp.get('role')(playerRoles.find(x => x.player === playerToKill));

@@ -143,14 +143,19 @@ const GameStarted = props => {
             return true;
         }
         if (props.currentGame.previousChancellor === player
-            || props.currentGame.previousChancellor === player) {
+            || props.currentGame.previousPresident === player) {
             return false;
         }
         return true;
     };
 
     const nominatePlayer = useCallback(player => {
-        if (props.currentGame.status === Nominating) {
+        if (player === props.auth.uid) {
+            props.gameError({
+                code: 'invalid-nomination',
+                message: 'You can\'t nominate yourself'
+            }, 'Nominate error');
+        } else if (props.currentGame.status === Nominating) {
             if (props.currentGame.president === props.auth.uid) {
                 if (props.currentGame.deadPlayers.includes(player)) {
                     props.gameError({
@@ -436,10 +441,10 @@ const GameStarted = props => {
                             {`Consecutive rejections: ${props.currentGame.consecutiveRejections}`}
                         </div>
                         <div className={props.styles.consecutiveRejections}>
-                            {props.currentGame.cardDeck.length === 1 ? 'Draw deck: 1 card left' : `Draw deck: ${props.currentGame.cardDeck.length} cards left`}
+                            {props.currentGame.cardDeck.length === 1 ? 'Draw deck: 1 card' : `Draw deck: ${props.currentGame.cardDeck.length} cards left`}
                         </div>
                         <div className={props.styles.consecutiveRejections}>
-                            {props.currentGame.discardPile.length === 1 ? 'Discard deck: 1 card left' : `Discard deck: ${props.currentGame.discardPile.length} cards left`}
+                            {props.currentGame.discardPile.length === 1 ? 'Discard deck: 1 card' : `Discard deck: ${props.currentGame.discardPile.length} cards left`}
                         </div>
                     </div>
                 </Fade>

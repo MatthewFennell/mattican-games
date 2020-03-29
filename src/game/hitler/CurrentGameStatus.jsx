@@ -1,3 +1,5 @@
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable max-len */
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -173,6 +175,7 @@ const CurrentGameStatus = props => {
                                 role="button"
                                 tabIndex={0}
                                 onClick={() => onClickPresidentCard(index)}
+                                key={`Card-${card}-${index}`}
                             >
                                 {card === 1 ? 'Liberal' : 'Fascist'}
                             </div>
@@ -287,6 +290,7 @@ const CurrentGameStatus = props => {
                                     role="button"
                                     tabIndex={0}
                                     onClick={() => onClickChancellorCard(index)}
+                                    key={`card-${card}-${index}`}
                                 >
                                     {card === 1 ? 'Liberal' : 'Fascist'}
                                 </div>
@@ -385,7 +389,9 @@ const CurrentGameStatus = props => {
 
                 <div className={props.styles.allRolesWrapper}>
                     {props.currentGame.playerRoles.map(r => (
-                        <div>{`${helpers.mapUserIdToName(props.users, r.player)} was ${r.role}`}</div>
+                        <div key={`${r.player}-${r.role}`}>
+                            {`${helpers.mapUserIdToName(props.users, r.player)} was ${r.role}`}
+                        </div>
                     ))}
                 </div>
             </div>
@@ -444,7 +450,7 @@ CurrentGameStatus.propTypes = {
         chancellorCards: PropTypes.arrayOf(PropTypes.number),
         currentPlayers: PropTypes.arrayOf(PropTypes.string),
         deadPlayers: PropTypes.arrayOf(PropTypes.string),
-        hitlerElected: PropTypes.string,
+        hitlerElected: PropTypes.bool,
         hitlerKilled: PropTypes.bool,
         host: PropTypes.string,
         president: PropTypes.string,
