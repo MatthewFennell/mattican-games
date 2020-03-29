@@ -45,7 +45,8 @@
     "redux-saga": "^1.0.5",
     "redux-saga-firebase": "^0.15.0",
     "redux-saga-test-plan": "^4.0.0-rc.3",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "reselect": "^4.0.0"
   },
   "scripts": {
     "start": "react-scripts start",

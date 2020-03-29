@@ -13,7 +13,6 @@ import {
     makeHitlerVoteRequest, makeQuestRequest, giveCardsToChancellorRequest,
     playChancellorCardRequest, initiateVetoRequest, replyToVetoRequest
 } from '../actions';
-// import GameFinished from './GameFinished';
 
 const CurrentGameStatus = props => {
     const [makingVote, setMakingVote] = useState(false);
@@ -245,23 +244,18 @@ const CurrentGameStatus = props => {
             );
         }
 
-
         if (props.auth.uid !== props.currentGame.chancellor) {
             return (
                 <div className={props.styles.chancellorDeciding}>
                     {helpers.mapUserIdToName(props.users, props.currentGame.chancellor)
                     + (props.currentGame.requestingVeto
                         ? ' has requested to veto' : ' is currently selecting which card to play')}
-
                     {props.currentGame.vetoRejected && props.currentGame.numberFascistPlayed === 5
                     && (
                         <div>
                             {`${helpers.mapUserIdToName(props.users, props.currentGame.president)} rejected the request to veto`}
                         </div>
                     )}
-
-                    {/* {`${helpers.mapUserIdToName(props.users, props.currentGame.chancellor)}
-                is currently selecting which card to play`} */}
                 </div>
             );
         }
@@ -343,10 +337,6 @@ const CurrentGameStatus = props => {
         );
     }
 
-    if (props.currentGame.status === constants.avalonGameStatuses.Finished) {
-        // return <GameFinished />;
-    }
-
     if (props.currentGame.deadPlayers.includes(props.auth.uid)) {
         return (
             <div className={props.styles.investigating}>
@@ -396,7 +386,7 @@ const CurrentGameStatus = props => {
 
     return (
         <div className={props.styles.currentGameStatus}>
-            unknown
+            Unknown game status. Contact Matt
         </div>
     );
 };

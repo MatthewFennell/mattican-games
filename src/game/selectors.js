@@ -1,4 +1,5 @@
 import fp from 'lodash/fp';
+import { createSelector } from 'reselect';
 
 export const getGameId = props => fp.flow(fp.get('match'), fp.get('params'), fp.get('gameId'))(props);
 export const getMyId = state => state.firebase.auth.uid;
@@ -8,22 +9,21 @@ export const getCurrentGame = (state, props) => {
     return state.firestore.data.games[gameId];
 };
 
-export const getIsReady = (state, props) => {
-    const myId = getMyId(state);
-
-    const currentGame = getCurrentGame(state, props);
-
-    return currentGame
+export const getIsReady = createSelector(
+    getMyId,
+    getCurrentGame,
+    (myId, currentGame) => currentGame
     && currentGame.playersReady
-     && currentGame.playersReady.includes(myId);
-};
+     && currentGame.playersReady.includes(myId)
+);
 
-export const getMyRole = (state, props) => {
-    const myId = getMyId(state);
-    const currentGame = getCurrentGame(state, props);
-    if (!currentGame) {
-        return null;
+export const getMyRole = createSelector(
+    getMyId,
+    getCurrentGame,
+    (myId, currentGame) => {
+        if (!currentGame) {
+            return null;
+        }
+        return fp.get('role')(currentGame.playerRoles.find(x => x.player === myId));
     }
-    const myRole = currentGame.playerRoles.find(x => x.player === myId).role;
-    return myRole;
-};
+);

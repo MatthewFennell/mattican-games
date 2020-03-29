@@ -9,7 +9,7 @@ import StarHalfIcon from '@material-ui/icons/StarHalf';
 import * as helpers from '../helpers';
 import * as constants from '../../constants';
 import defaultStyles from './History.module.scss';
-import Bullet from './testBullet.png';
+import Bullet from './Bullet.png';
 
 const History = props => (
     props.history.map(h => {
@@ -38,7 +38,6 @@ const History = props => (
                                 {'Votes Yes: All players'}
                             </div>
                         )}
-
                         {h.votesYes.length ? (
                             h.votesNo.length ? (
                                 <div>

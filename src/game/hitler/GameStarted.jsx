@@ -22,7 +22,7 @@ import Switch from '../../common/Switch/Switch';
 import SuccessModal from '../../common/modal/SuccessModal';
 import HitlerBoard from './HitlerBoard';
 import Skull from './Skull.png';
-import Bullet from './testBullet.png';
+import Bullet from './Bullet.png';
 import History from './History';
 
 const GameStarted = props => {
@@ -131,6 +131,10 @@ const GameStarted = props => {
         const numberOfDeadPlayers = props.currentGame.deadPlayers.length;
         const remainingPlayers = props.currentGame.numberOfPlayers - numberOfDeadPlayers;
 
+        if (player === props.auth.uid) {
+            return false;
+        }
+
         if (remainingPlayers <= 5) {
             if (props.currentGame.previousChancellor === player) {
                 return false;
@@ -145,12 +149,7 @@ const GameStarted = props => {
     };
 
     const nominatePlayer = useCallback(player => {
-        if (player === props.auth.uid) {
-            props.gameError({
-                code: 'invalid-nomination',
-                message: 'You can\'t nominate yourself'
-            }, 'Nominate error');
-        } else if (props.currentGame.status === Nominating) {
+        if (props.currentGame.status === Nominating) {
             if (props.currentGame.president === props.auth.uid) {
                 if (props.currentGame.deadPlayers.includes(player)) {
                     props.gameError({
@@ -160,7 +159,7 @@ const GameStarted = props => {
                 } else if (!canNominatePlayer(player)) {
                     props.gameError({
                         code: 'invalid-nomination',
-                        message: 'That player was previously in power'
+                        message: 'Invalid nomination target'
                     }, 'Nominate error');
                 } else {
                     props.nominateChancellorRequest(props.currentGameId, player);
@@ -372,7 +371,6 @@ const GameStarted = props => {
                     />
                 </div>
             ) }
-
 
             {props.currentGame.status === Finished && (
                 <div className={props.styles.leaveGameButton}>
