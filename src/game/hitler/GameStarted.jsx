@@ -412,6 +412,12 @@ const GameStarted = props => {
                         <div className={props.styles.consecutiveRejections}>
                             {`Consecutive rejections: ${props.currentGame.consecutiveRejections}`}
                         </div>
+                        <div className={props.styles.consecutiveRejections}>
+                            {props.currentGame.cardDeck.length === 1 ? 'Draw deck: 1 card left' : `Draw deck: ${props.currentGame.cardDeck.length} cards left`}
+                        </div>
+                        <div className={props.styles.consecutiveRejections}>
+                            {props.currentGame.discardPile.length === 1 ? 'Discard deck: 1 card left' : `Discard deck: ${props.currentGame.discardPile.length} cards left`}
+                        </div>
                     </div>
                 </Fade>
             </div>
@@ -470,9 +476,11 @@ GameStarted.defaultProps = {
     },
     currentGame: {
         approveLeaveMidgame: [],
+        cardDeck: [],
         chancellor: '',
         currentPlayers: [],
         deadPlayers: [],
+        discardPile: [],
         consecutiveRejections: 0,
         hiddenInfo: [],
         host: '',
@@ -509,6 +517,8 @@ GameStarted.propTypes = {
     confirmChancellorRequest: PropTypes.func.isRequired,
     currentGame: PropTypes.shape({
         approveLeaveMidgame: PropTypes.arrayOf(PropTypes.string),
+        cardDeck: PropTypes.arrayOf(PropTypes.number),
+        discardPile: PropTypes.arrayOf(PropTypes.number),
         chancellor: PropTypes.string,
         consecutiveRejections: PropTypes.number,
         currentPlayers: PropTypes.arrayOf(PropTypes.string),

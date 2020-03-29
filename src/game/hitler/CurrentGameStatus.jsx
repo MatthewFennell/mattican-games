@@ -97,18 +97,20 @@ const CurrentGameStatus = props => {
             const cardOne = presidentCards[selectedPresidentCards[0]];
             const cardTwo = presidentCards[selectedPresidentCards[1]];
             props.giveCardsToChancellorRequest(props.currentGameId, [cardOne, cardTwo]);
+            setSelectedPresidentCards([]);
         }
         // eslint-disable-next-line
-    }, [props.currentGame, selectedPresidentCards]);
+    }, [props.currentGame, selectedPresidentCards, setSelectedPresidentCards]);
 
     const playChancellorCard = useCallback(() => {
         const { chancellorCards } = props.currentGame;
         if (selectedChancellorCard === 0 || selectedChancellorCard === 1) {
             const card = chancellorCards[selectedChancellorCard];
             props.playChancellorCardRequest(props.currentGameId, card);
+            setSelectedChancellorCard('');
         }
         // eslint-disable-next-line
-    }, [props.currentGame, selectedChancellorCard])
+    }, [props.currentGame, selectedChancellorCard, setSelectedChancellorCard])
 
 
     if (props.currentGame.status === constants.hitlerGameStatuses.Nominating) {
