@@ -1,14 +1,11 @@
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { firestoreConnect } from 'react-redux-firebase';
-import { compose } from 'redux';
-import { withRouter } from 'react-router-dom';
 import classNames from 'classnames';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import { noop } from 'lodash';
+import fp from 'lodash/fp';
 import defaultStyles from './GameStarted.module.scss';
-import * as selectors from '../selectors';
 import Fade from '../../common/Fade/Fade';
 import * as helpers from '../helpers';
 import * as constants from '../../constants';
@@ -146,7 +143,15 @@ const GameStarted = props => {
                     {`The current leader is ${helpers.mapUserIdToName(props.users, props.currentGame.leader)}`}
                 </div>
             )}
-            <CurrentGameStatus />
+
+            <CurrentGameStatus
+                auth={props.auth}
+                currentGame={props.currentGame}
+                currentGameId={props.currentGameId}
+                myRole={props.myRole}
+                users={props.users}
+            />
+
             {props.currentGame.status === constants.avalonGameStatuses.GuessingMerlin
             && props.currentGame
                 .playerToGuessMerlin === props.auth.uid && (
@@ -342,7 +347,14 @@ const GameStarted = props => {
                 <Fade
                     checked={showingHistory}
                 >
-                    <History />
+                    <History
+                        auth={props.auth}
+                        currentGame={props.currentGame}
+                        currentGameId={props.currentGameId}
+                        history={fp.get('history')(props.currentGame)}
+                        myRole={props.myRole}
+                        users={props.users}
+                    />
                 </Fade>
             </div>
 
@@ -472,24 +484,6 @@ const mapDispatchToProps = {
     approveLeaveMidgameRequest
 };
 
-const mapStateToProps = (state, props) => ({
-    auth: state.firebase.auth,
-    currentGame: selectors.getCurrentGame(state, props),
-    currentGameId: selectors.getGameId(props),
-    myRole: selectors.getMyRole(state, props),
-    users: state.firestore.data.users
-});
-
-export default withRouter(compose(
-    connect(mapStateToProps, mapDispatchToProps),
-    firestoreConnect(() => [
-        {
-            collection: 'games'
-        },
-        {
-            collection: 'users'
-        }
-    ]),
-)(GameStarted));
+export default connect(null, mapDispatchToProps)(GameStarted);
 
 export { GameStarted as GameStartedUnconnected };

@@ -1,11 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { firestoreConnect } from 'react-redux-firebase';
-import { compose } from 'redux';
-import { withRouter } from 'react-router-dom';
 import defaultStyles from './GameFinished.module.scss';
-import * as selectors from '../selectors';
 import * as helpers from '../helpers';
 import * as constants from '../../constants';
 
@@ -121,27 +116,6 @@ GameFinished.propTypes = {
     users: PropTypes.objectOf(PropTypes.shape({}))
 };
 
-const mapDispatchToProps = {
-};
-
-const mapStateToProps = (state, props) => ({
-    auth: state.firebase.auth,
-    currentGame: selectors.getCurrentGame(state, props),
-    currentGameId: selectors.getGameId(props),
-    myRole: selectors.getMyRole(state, props),
-    users: state.firestore.data.users
-});
-
-export default withRouter(compose(
-    connect(mapStateToProps, mapDispatchToProps),
-    firestoreConnect(() => [
-        {
-            collection: 'games'
-        },
-        {
-            collection: 'users'
-        }
-    ]),
-)(GameFinished));
+export default GameFinished;
 
 export { GameFinished as GameFinishedUnconnected };

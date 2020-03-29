@@ -1,11 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { firestoreConnect } from 'react-redux-firebase';
-import { compose } from 'redux';
-import { withRouter } from 'react-router-dom';
 import defaultStyles from './CurrentGameStatus.module.scss';
-import * as selectors from '../selectors';
 import * as helpers from '../helpers';
 import * as constants from '../../constants';
 import StyledButton from '../../common/StyledButton/StyledButton';
@@ -70,7 +66,15 @@ const CurrentGameStatus = props => {
     }
 
     if (props.currentGame.status === constants.avalonGameStatuses.Finished) {
-        return <GameFinished />;
+        return (
+            <GameFinished
+                auth={props.auth}
+                currentGame={props.currentGame}
+                currentGameId={props.currentGameId}
+                myRole={props.myRole}
+                users={props.users}
+            />
+        );
     }
 
     if (props.currentGame.status === constants.avalonGameStatuses.GuessingMerlin) {
@@ -213,24 +217,6 @@ const mapDispatchToProps = {
     makeQuestRequest
 };
 
-const mapStateToProps = (state, props) => ({
-    auth: state.firebase.auth,
-    currentGame: selectors.getCurrentGame(state, props),
-    currentGameId: selectors.getGameId(props),
-    myRole: selectors.getMyRole(state, props),
-    users: state.firestore.data.users
-});
-
-export default withRouter(compose(
-    connect(mapStateToProps, mapDispatchToProps),
-    firestoreConnect(() => [
-        {
-            collection: 'games'
-        },
-        {
-            collection: 'users'
-        }
-    ]),
-)(CurrentGameStatus));
+export default connect(null, mapDispatchToProps)(CurrentGameStatus);
 
 export { CurrentGameStatus as CurrentGameStatusUnconnected };

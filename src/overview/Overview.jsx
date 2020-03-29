@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
-import fp from 'lodash/fp';
 import defaultStyles from './Overview.module.scss';
 import * as constants from '../constants';
 import { createAvalonGameRequest, joinGameRequest, createHiterGameRequest } from './actions';
@@ -68,7 +67,6 @@ const Overview = props => {
         // eslint-disable-next-line
     }, [gameToJoin, setGameToJoin, gameModeToJoin])
 
-
     return (
         <>
             <div className={props.styles.overviewWrapper}>
@@ -112,13 +110,13 @@ const Overview = props => {
                             {game.mode === constants.gameModes.Avalon
                             && (
                                 <div>
-                                    {`Roles: ${game.roles.reduce((acc, cur) => `${acc}, ${cur}`)}` }
+                                    {`Roles: ${game.roles.reduce((acc, cur) => `${acc}, ${cur}`, '')}` }
                                 </div>
                             ) }
-                            {game.currentPlayers && !fp.isEmpty(props.users)
+                            {game.currentPlayers
                         && (
                             <div>
-                                {`Current players: ${game.currentPlayers.map(x => mapUserIdToName(props.users, x))}`}
+                                {`Current players: ${game.currentPlayers.map(x => mapUserIdToName(game.usernameMappings, x))}`}
                             </div>
                         ) }
                             {game.hasStarted && (
@@ -161,7 +159,6 @@ Overview.defaultProps = {
     creatingGame: false,
     joiningGame: false,
     styles: defaultStyles,
-    users: {},
     errorHeader: '',
     errorMessage: '',
     errorCode: ''
@@ -176,7 +173,6 @@ Overview.propTypes = {
     joiningGame: PropTypes.bool,
     joinGameRequest: PropTypes.func.isRequired,
     styles: PropTypes.objectOf(PropTypes.string),
-    users: PropTypes.objectOf(PropTypes.shape({})),
     errorHeader: PropTypes.string,
     errorMessage: PropTypes.string,
     errorCode: PropTypes.string
@@ -193,7 +189,6 @@ const mapStateToProps = state => ({
     allGames: selectors.getGames(state),
     creatingGame: state.overview.creatingGame,
     joiningGame: state.overview.joiningGame,
-    users: state.firestore.data.users,
     errorHeader: state.avalon.errorHeader,
     errorMessage: state.avalon.errorMessage,
     errorCode: state.avalon.errorCode
@@ -204,9 +199,6 @@ export default compose(
     firestoreConnect(() => [
         {
             collection: 'games'
-        },
-        {
-            collection: 'users'
         }
     ]),
 )(Overview);

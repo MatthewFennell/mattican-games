@@ -2,16 +2,11 @@
 /* eslint-disable no-nested-ternary */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { firestoreConnect } from 'react-redux-firebase';
-import { compose } from 'redux';
-import { withRouter } from 'react-router-dom';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import { noop } from 'lodash';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 import defaultStyles from './History.module.scss';
-import * as selectors from '../selectors';
 import * as helpers from '../helpers';
 import * as constants from '../../constants';
 
@@ -179,28 +174,6 @@ History.propTypes = {
     users: PropTypes.shape({})
 };
 
-const mapDispatchToProps = {
-};
-
-const mapStateToProps = (state, props) => ({
-    auth: state.firebase.auth,
-    currentGame: selectors.getCurrentGame(state, props),
-    currentGameId: selectors.getGameId(props),
-    history: selectors.getCurrentGame(state, props).history,
-    myRole: selectors.getMyRole(state, props),
-    users: state.firestore.data.users
-});
-
-export default withRouter(compose(
-    connect(mapStateToProps, mapDispatchToProps),
-    firestoreConnect(() => [
-        {
-            collection: 'games'
-        },
-        {
-            collection: 'users'
-        }
-    ]),
-)(History));
+export default History;
 
 export { History as HistoryUnconnected };

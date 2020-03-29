@@ -18,6 +18,7 @@ admin.initializeApp(functions.config().firebase);
 const db = admin.firestore();
 
 exports.auth = require('./src/auth');
+exports.avalon = require('./src/avalon');
 exports.profile = require('./src/profile');
 
 const operations = admin.firestore.FieldValue;

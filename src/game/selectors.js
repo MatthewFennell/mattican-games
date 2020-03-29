@@ -21,7 +21,7 @@ export const getMyRole = createSelector(
     getMyId,
     getCurrentGame,
     (myId, currentGame) => {
-        if (!currentGame) {
+        if (!currentGame || !currentGame.playerRoles) {
             return null;
         }
         return fp.get('role')(currentGame.playerRoles.find(x => x.player === myId));

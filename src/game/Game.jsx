@@ -13,6 +13,7 @@ import { closeGameError } from './actions';
 import * as constants from '../constants';
 
 const Game = props => {
+    console.log('renders');
     const generateGameThingToLoad = (gameId, isReady, myRole) => {
         if (!props.currentGame.hasStarted) {
             return (
@@ -26,7 +27,15 @@ const Game = props => {
             );
         }
         if (props.currentGame.mode === constants.gameModes.Avalon) {
-            return <AvalonGameStarted />;
+            return (
+                <AvalonGameStarted
+                    auth={props.auth}
+                    currentGame={props.currentGame}
+                    currentGameId={props.currentGameId}
+                    myRole={props.myRole}
+                    users={props.users}
+                />
+            );
         }
 
         if (props.currentGame.mode === constants.gameModes.Hitler) {
@@ -95,8 +104,7 @@ Game.propTypes = {
     errorMessage: PropTypes.string,
     errorCode: PropTypes.string,
     myRole: PropTypes.string,
-    users: PropTypes.shape({}),
-    testUsers: PropTypes.shape({})
+    users: PropTypes.shape({})
 };
 
 const mapDispatchToProps = {
@@ -112,9 +120,8 @@ const mapStateToProps = (state, props) => ({
     auth: state.firebase.auth,
     currentGameId: selectors.getGameId(props),
     isReady: selectors.getIsReady(state, props),
-    users: state.firestore.data.users,
     myRole: selectors.getMyRole(state, props),
-    testUsers: selectors.getUsernameMappings(state, props)
+    users: selectors.getUsernameMappings(state, props)
 });
 
 export default withRouter(compose(
@@ -122,9 +129,6 @@ export default withRouter(compose(
     firestoreConnect(() => [
         {
             collection: 'games'
-        },
-        {
-            collection: 'users'
         }
     ]),
 )(Game));
