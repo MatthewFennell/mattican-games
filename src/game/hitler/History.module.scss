@@ -1,0 +1,158 @@
+@import "../../common/Styles.scss";
+
+.questHistoryWrapper {
+    font-weight: bold;
+    margin: $spacing-small;
+    padding: $spacing-small;
+    background-color: darksalmon;
+    display: flex;
+}
+
+.voteHistoryWrapper {
+    font-weight: bold;
+    margin: $spacing-small;
+    padding: $spacing-small;
+    background-color: lightskyblue;
+    display: flex;
+}
+
+.chancellorPlayCardWrapper {
+    font-weight: bold;
+    margin: $spacing-small;
+    padding: $spacing-small;
+    background-color: aquamarine;
+    display: flex;
+}
+
+.investigateWrapper {
+    font-weight: bold;
+    margin: $spacing-small;
+    padding: $spacing-small;
+    background-color: goldenrod;
+    display: flex;
+}
+
+.vetoWrapper {
+    font-weight: bold;
+    margin: $spacing-small;
+    padding: $spacing-small;
+    background-color: cadetblue;
+    display: flex;
+}
+
+.killPlayerWrapper {
+    font-weight: bold;
+    margin: $spacing-small;
+    padding: $spacing-small;
+    background-color: aquamarine;
+    display: flex;
+    position: relative;
+    background-color: chocolate;
+}
+
+.topCardFlippedWrapper {
+    font-weight: bold;
+    margin: $spacing-small;
+    padding: $spacing-small;
+    display: flex;
+    background-color: bisque;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.tempBullet {
+    height: $spacing-average;
+    width: $spacing-average;
+    position: absolute;
+    right: 0;
+    margin-right: 15px;
+}
+
+.checkTopThree {
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.investigateCard {
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+    @include vertical-center-div();
+    height: 100%;
+}
+
+.whoKilledWho {
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+    @include vertical-center-div();
+    height: 100%;
+}
+
+.vetoOption {
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+    @include vertical-center-div();
+}
+
+.whichCardFlipped {
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+    @include vertical-center-div();
+    height: 100%;
+}
+
+.questSucceed {
+    color: $color-green;
+    @include vertical-center-div();
+}
+
+.liberalPlayed {
+    width: $spacing-average;
+    height: $spacing-medium;
+    background-color: $color-dark-blue;
+    margin-right: $spacing-small;
+}
+
+.fascistPlayed {
+    width: $spacing-average;
+    height: $spacing-medium;
+    background-color: crimson;
+    margin-right: $spacing-small
+}
+
+.questFail {
+    color: $color-red;
+    @include vertical-center-div();
+}
+
+.round{
+    @include vertical-center-div();
+}
+
+.questResults{
+    display: flex;
+    justify-content: center;
+    @include vertical-center-div();
+}
+
+.questSucceeds {
+    color: $color-green;
+    @include vertical-center-div();
+}
+
+.questFails {
+    color: $color-red;
+    @include vertical-center-div();
+}
+
+.realQuestHistory, .realVoteHistory {
+    width: 100%;
+    margin-left: $spacing-small;
+    margin-right: $spacing-small;
+}

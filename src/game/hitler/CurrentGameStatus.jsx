@@ -355,6 +355,43 @@ const CurrentGameStatus = props => {
         );
     }
 
+    if (props.currentGame.status === constants.hitlerGameStatuses.Finished) {
+        return (
+            <div className={props.styles.gameEnded}>
+
+                {props.currentGame.hitlerKilled && (
+                    <div className={props.styles.goodGuysWon}>
+                        The good guys won by killing Hitler
+                    </div>
+                )}
+
+                {props.currentGame.numberFascistPlayed === 6 && (
+                    <div className={props.styles.badGuysWon}>
+                        The bad guys won by playing 6 fascist cards
+                    </div>
+                )}
+
+                {props.currentGame.numberLiberalPlayed === 5 && (
+                    <div className={props.styles.goodGuysWon}>
+                        The good guys won by playing 5 liberal cards
+                    </div>
+                )}
+
+                {props.currentGame.hitlerElected && (
+                    <div className={props.styles.badGuysWon}>
+                        The fascists won by Hitler becoming chancellor
+                    </div>
+                )}
+
+                <div className={props.styles.allRolesWrapper}>
+                    {props.currentGame.playerRoles.map(r => (
+                        <div>{`${helpers.mapUserIdToName(props.users, r.player)} was ${r.role}`}</div>
+                    ))}
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className={props.styles.currentGameStatus}>
             unknown
@@ -371,11 +408,14 @@ CurrentGameStatus.defaultProps = {
         chancellorCards: [],
         currentPlayers: [],
         deadPlayers: [],
+        hitlerElected: false,
+        hitlerKilled: false,
         host: '',
         president: '',
         mode: '',
         numberOfPlayers: 0,
         numberFascistPlayed: 0,
+        numberLiberalPlayed: 0,
         roles: [],
         round: 0,
         playersReady: [],
@@ -404,10 +444,13 @@ CurrentGameStatus.propTypes = {
         chancellorCards: PropTypes.arrayOf(PropTypes.number),
         currentPlayers: PropTypes.arrayOf(PropTypes.string),
         deadPlayers: PropTypes.arrayOf(PropTypes.string),
+        hitlerElected: PropTypes.string,
+        hitlerKilled: PropTypes.bool,
         host: PropTypes.string,
         president: PropTypes.string,
         mode: PropTypes.string,
-        numberFascistPlayed: PropTypes.string,
+        numberFascistPlayed: PropTypes.number,
+        numberLiberalPlayed: PropTypes.number,
         numberOfPlayers: PropTypes.number,
         roles: PropTypes.arrayOf(PropTypes.string),
         round: PropTypes.number,

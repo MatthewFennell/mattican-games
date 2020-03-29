@@ -161,5 +161,12 @@ export const avalonRounds = {
 
 export const historyTypes = {
     Vote: 'Vote',
-    Quest: 'Quest'
+    Quest: 'Quest',
+    TopCardFlipped: 'TopCardFlipped',
+    PlayChancellorCard: 'PlayChancellorCard',
+    Investigate: 'Investigate',
+    TransferPresident: 'TransferPresident',
+    Veto: 'Veto',
+    Peek: 'Peek',
+    Kill: 'Kill'
 };

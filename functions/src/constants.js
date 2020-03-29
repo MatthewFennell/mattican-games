@@ -210,7 +210,14 @@ module.exports.hitlerGameStatuses = {
 
 module.exports.historyTypes = {
     Vote: 'Vote',
-    Quest: 'Quest'
+    Quest: 'Quest',
+    TopCardFlipped: 'TopCardFlipped',
+    PlayChancellorCard: 'PlayChancellorCard',
+    Investigate: 'Investigate',
+    TransferPresident: 'TransferPresident',
+    Kill: 'Kill',
+    Veto: 'Veto',
+    Peek: 'Peek'
 };
 
 module.exports.gameModes = {

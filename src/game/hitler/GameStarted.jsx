@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -26,6 +27,7 @@ import SuccessModal from '../../common/modal/SuccessModal';
 import HitlerBoard from './HitlerBoard';
 import Skull from './Skull.png';
 import Bullet from './testBullet.png';
+import History from './History';
 
 const GameStarted = props => {
     const {
@@ -135,12 +137,12 @@ const GameStarted = props => {
         const remainingPlayers = props.currentGame.numberOfPlayers - numberOfDeadPlayers;
 
         if (remainingPlayers <= 5) {
-            if (props.currentGame.previousPresident === player) {
+            if (props.currentGame.previousChancellor === player) {
                 return false;
             }
             return true;
         }
-        if (props.currentGame.previousPresident === player
+        if (props.currentGame.previousChancellor === player
             || props.currentGame.previousChancellor === player) {
             return false;
         }
@@ -167,7 +169,19 @@ const GameStarted = props => {
         }
         if (props.currentGame.status === Investigate) {
             if (props.currentGame.president === props.auth.uid) {
-                props.selectInvestigateRequest(props.currentGameId, player);
+                if (props.currentGame.playerInvestigated === player) {
+                    props.gameError({
+                        code: 'already-investigated',
+                        message: 'That player has already been investigated. Not allowed twice'
+                    }, 'Investigation error');
+                } else if (player === props.auth.uid) {
+                    props.gameError({
+                        code: 'already-investigated',
+                        message: 'You cannot investigate yourself'
+                    }, 'Investigation error');
+                } else {
+                    props.selectInvestigateRequest(props.currentGameId, player);
+                }
             }
         }
         if (props.currentGame.status === Transfer) {
@@ -181,7 +195,8 @@ const GameStarted = props => {
             }
         }
         if (props.currentGame.status === Kill) {
-            if (props.currentGame.president === props.auth.uid) {
+            if ((!props.currentGame.temporaryPresident && props.currentGame.president === props.auth.uid)
+            || (props.currentGame.temporaryPresident === props.auth.uid)) {
                 if (props.currentGame.deadPlayers.includes(player)) {
                     props.gameError({
                         code: 'bullying',
@@ -291,7 +306,7 @@ const GameStarted = props => {
                         )}
 
                         {props.currentGame.deadPlayers.includes(player) && (
-                            <img src={Skull} className={props.styles.skullImage} alt="Bullet" />
+                            <img src={Skull} className={props.styles.skullImage} alt="Skull" />
                         )}
 
                         {props.currentGame.playerToKill === player && (
@@ -340,8 +355,8 @@ const GameStarted = props => {
                 </div>
             ) }
 
-            {props.currentGame.president === props.auth.uid
-            && props.currentGame.status === Kill
+            {((props.currentGame.president === props.auth.uid
+            && props.currentGame.status === Kill && !props.currentGame.temporaryPresident) || (props.currentGame.temporaryPresident === props.auth.uid))
             && (
                 <div className={props.styles.confirmNominationWrapper}>
                     <StyledButton
@@ -408,6 +423,14 @@ const GameStarted = props => {
                             numberOfLiberals={props.currentGame.numberLiberalPlayed}
                             numberOfFascists={props.currentGame.numberFascistPlayed}
                         />
+                        <div className={props.styles.consecutiveRejections}>
+                            {`Previous president: ${helpers.mapUserIdToName(props.users,
+                                props.currentGame.previousPresident)}`}
+                        </div>
+                        <div className={props.styles.consecutiveRejections}>
+                            {`Previous chancellor: ${helpers.mapUserIdToName(props.users,
+                                props.currentGame.previousChancellor)}`}
+                        </div>
 
                         <div className={props.styles.consecutiveRejections}>
                             {`Consecutive rejections: ${props.currentGame.consecutiveRejections}`}
@@ -422,13 +445,13 @@ const GameStarted = props => {
                 </Fade>
             </div>
 
-            {/* <div className={props.styles.historyWrapper}>
+            <div className={props.styles.historyWrapper}>
                 <Fade
                     checked={showingHistory}
                 >
-                    <History />
+                    <History users={props.users} history={props.currentGame.history} />
                 </Fade>
-            </div> */}
+            </div>
 
             <SuccessModal
                 backdrop
@@ -483,6 +506,7 @@ GameStarted.defaultProps = {
         discardPile: [],
         consecutiveRejections: 0,
         hiddenInfo: [],
+        history: [],
         host: '',
         president: '',
         mode: '',
@@ -499,6 +523,7 @@ GameStarted.defaultProps = {
         previousChancellor: '',
         playerToKill: '',
         previousPresident: '',
+        playerInvestigated: '',
         votesAgainst: [],
         votesFor: [],
         requestToEndGame: '',
@@ -530,6 +555,7 @@ GameStarted.propTypes = {
         host: PropTypes.string,
         president: PropTypes.string,
         mode: PropTypes.string,
+        history: PropTypes.arrayOf(PropTypes.shape({})),
         numberOfPlayers: PropTypes.number,
         numberLiberalPlayed: PropTypes.number,
         numberFascistPlayed: PropTypes.number,
@@ -547,6 +573,7 @@ GameStarted.propTypes = {
         previousChancellor: PropTypes.string,
         playerToKill: PropTypes.string,
         previousPresident: PropTypes.string,
+        playerInvestigated: PropTypes.string,
         status: PropTypes.string,
         temporaryPresident: PropTypes.string
     }),

@@ -98,3 +98,25 @@
     color: $color-blue;
     font-weight: bold;
 }
+
+
+.allRolesWrapper {
+    text-align: center;
+    color: $color-green;
+    font-weight: bold;
+    margin: $spacing-small;
+    padding: $spacing-small;
+    background-color: moccasin;
+}
+
+.goodGuysWon {
+    text-align: center;
+    font-weight: bold;
+    color: $color-blue;
+}
+
+.badGuysWon {
+    text-align: center;
+    font-weight: bold;
+    color: $color-red;
+}
