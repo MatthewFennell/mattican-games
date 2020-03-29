@@ -112,7 +112,7 @@ const TopNavbar = props => {
                                             );
                                         }}
                                     >
-                                    Leave Game
+                                    End Game
                                     </MenuItem>
                                     <MenuItem onClick={props.signOut}>
                                     Sign out

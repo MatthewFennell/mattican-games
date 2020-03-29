@@ -247,6 +247,27 @@ export function* confirmKillPlayer(api, action) {
     }
 }
 
+export function* initiateVeto(api, action) {
+    try {
+        yield call(api.initiateVeto, ({
+            gameId: action.gameId
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Request Veto error'));
+    }
+}
+
+export function* replyToVeto(api, action) {
+    try {
+        yield call(api.replyToVeto, ({
+            gameId: action.gameId,
+            isApprove: action.isApprove
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Reply to Veto error'));
+    }
+}
+
 export default function* overviewSaga() {
     yield all([
         takeEvery(actions.LEAVE_GAME_REQUEST, leaveGame, gameApi),
@@ -271,6 +292,8 @@ export default function* overviewSaga() {
         takeEvery(actions.MAKE_TEMPORARY_PRESIDENT_REQUEST, makeTemporaryPresidentRequest, gameApi),
         takeEvery(actions.CONFIRM_PRESIDENT_REQUEST, confirmPresident, gameApi),
         takeEvery(actions.KILL_PLAYER_REQUEST, killPlayer, gameApi),
-        takeEvery(actions.CONFIRM_KILL_PLAYER_REQUEST, confirmKillPlayer, gameApi)
+        takeEvery(actions.CONFIRM_KILL_PLAYER_REQUEST, confirmKillPlayer, gameApi),
+        takeEvery(actions.INITIATE_VETO_REQUEST, initiateVeto, gameApi),
+        takeEvery(actions.REPLY_TO_VETO_REQUEST, replyToVeto, gameApi)
     ]);
 }

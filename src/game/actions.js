@@ -44,6 +44,10 @@ export const KILL_PLAYER_REQUEST = `${pre}KILL_PLAYER_REQUEST`;
 
 export const CONFIRM_KILL_PLAYER_REQUEST = `${pre}CONFIRM_KILL_PLAYER_REQUEST`;
 
+export const INITIATE_VETO_REQUEST = `${pre}INITIATE_VETO_REQUEST`;
+
+export const REPLY_TO_VETO_REQUEST = `${pre}REPLY_TO_VETO_REQUEST`;
+
 export const gameError = (error, header) => ({
     type: GAME_ERROR,
     error,
@@ -179,4 +183,15 @@ export const killPlayerRequest = (gameId, player) => ({
 export const confirmKillPlayerRequest = gameId => ({
     type: CONFIRM_KILL_PLAYER_REQUEST,
     gameId
+});
+
+export const initiateVetoRequest = gameId => ({
+    type: INITIATE_VETO_REQUEST,
+    gameId
+});
+
+export const replyToVetoRequest = (gameId, isApprove) => ({
+    type: REPLY_TO_VETO_REQUEST,
+    gameId,
+    isApprove
 });

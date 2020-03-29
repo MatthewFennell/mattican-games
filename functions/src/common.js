@@ -96,6 +96,20 @@ module.exports.findNextUser = (leader, users) => {
     return val;
 };
 
+module.exports.findNextUserHitler = (leader, users, deadPlayers) => {
+    const index = users.findIndex(u => u === leader);
+    let jump = 1;
+    let val = users[(index + jump) % users.length];
+
+    while (deadPlayers.includes(val)) {
+        console.log('dead player found (', `${val})`);
+        jump += 1;
+        val = users[(index + jump) % users.length];
+        console.log('new player', val);
+        console.log('');
+    }
+    return val;
+};
 
 module.exports.hasQuestFailed = (round, numberOfPlayers, numFail) => {
     if (round === 4 && numberOfPlayers >= 7 && numFail >= 2) {

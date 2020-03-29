@@ -26,6 +26,31 @@
     color: $color-red;
 }
 
+.deadPlayer {
+
+    > div {
+        color: $color-gray;
+        font-weight: bold;
+        text-decoration: line-through;
+    }
+}
+
+.skullImage {
+    height: $spacing-average;
+    width: $spacing-medium;
+    position: absolute;
+    right: 0;
+    margin-right: 15px;
+}
+
+.tempBullet {
+    height: $spacing-average;
+    width: $spacing-average;
+    position: absolute;
+    right: 0;
+    margin-right: 15px;
+}
+
 .currentLeaderWrapper {
     text-align: center;
     color: $color-blue;
@@ -40,6 +65,7 @@
     margin: $spacing-small;
     outline: 0px;
     border: 2px solid lightblue;
+    position: relative;
 }
 
 .isActivePlayer {
@@ -54,6 +80,8 @@
 .topThreeCards {
     display: flex;
     justify-content: space-evenly;
+    color: ghostwhite;
+    font-size: $font-size-huge;
 }
 
 .isLiberal, .isFascist {

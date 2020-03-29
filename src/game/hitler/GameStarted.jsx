@@ -24,6 +24,8 @@ import StyledButton from '../../common/StyledButton/StyledButton';
 import Switch from '../../common/Switch/Switch';
 import SuccessModal from '../../common/modal/SuccessModal';
 import HitlerBoard from './HitlerBoard';
+import Skull from './Skull.png';
+import Bullet from './testBullet.png';
 
 const GameStarted = props => {
     const {
@@ -180,11 +182,18 @@ const GameStarted = props => {
         }
         if (props.currentGame.status === Kill) {
             if (props.currentGame.president === props.auth.uid) {
-                props.killPlayerRequest(props.currentGameId, player);
+                if (props.currentGame.deadPlayers.includes(player)) {
+                    props.gameError({
+                        code: 'bullying',
+                        message: 'That player is already dead'
+                    }, 'Nominate error');
+                } else {
+                    props.killPlayerRequest(props.currentGameId, player);
+                }
             }
         }
         // eslint-disable-next-line
-    }, [props.currentGame, props.auth.uid]);    
+    }, [props.currentGame, props.auth.uid]);   
 
     return (
         <div className={props.styles.gameStartedWrapper}>
@@ -231,7 +240,9 @@ const GameStarted = props => {
                             [props.styles.oldPres]: props.currentGame.status === TemporaryPresident
                             && props.currentGame.president === player,
                             [props.styles.potentialKill]: props.currentGame.status
-                            === Kill && props.currentGame.playerToKill === player
+                            === Kill && props.currentGame.playerToKill === player,
+                            [props.styles.deadPlayer]: props.currentGame
+                                .deadPlayers.includes(player)
                         })}
                         role="button"
                         tabIndex={0}
@@ -260,7 +271,8 @@ const GameStarted = props => {
                             {helpers.mapUserIdToName(props.users, player)}
                             {props.auth.uid === player && ' (you)'}
                         </div>
-                        {props.currentGame.status === Voting
+                        {props.currentGame.status === Voting && !props.currentGame.deadPlayers
+                            .includes(player)
                         && (
                             <div className={classNames({
                                 [props.styles.votingStage]: true,
@@ -278,6 +290,14 @@ const GameStarted = props => {
                             </div>
                         )}
 
+                        {props.currentGame.deadPlayers.includes(player) && (
+                            <img src={Skull} className={props.styles.skullImage} alt="Bullet" />
+                        )}
+
+                        {props.currentGame.playerToKill === player && (
+                            <img src={Bullet} className={props.styles.tempBullet} alt="Bullet" />
+                        )}
+
                     </div>
                 ))}
             </div>
@@ -289,7 +309,7 @@ const GameStarted = props => {
             && (
                 <div className={props.styles.confirmNominationWrapper}>
                     <StyledButton
-                        text="Confirm Nominations"
+                        text="Confirm Nomination"
                         onClick={submitNominations}
                         disabled={!props.currentGame.chancellor}
                     />

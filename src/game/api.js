@@ -18,6 +18,8 @@ export const temporaryPresident = request => functionToCall('temporaryPresident'
 export const confirmPresident = request => functionToCall('confirmTemporaryPresident')(request);
 export const killPlayer = request => functionToCall('killPlayer')(request);
 export const confirmKillPlayer = request => functionToCall('confirmKillPlayer')(request);
+export const initiateVeto = request => functionToCall('initiateVeto')(request);
+export const replyToVeto = request => functionToCall('replyToVeto')(request);
 
 export const startAvalonGame = request => functionToCall('avalon-startGame')(request);
 export const nominatePlayer = request => functionToCall('avalon-nominatePlayer')(request);

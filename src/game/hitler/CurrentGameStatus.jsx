@@ -12,7 +12,8 @@ import * as constants from '../../constants';
 import StyledButton from '../../common/StyledButton/StyledButton';
 import Fade from '../../common/Fade/Fade';
 import {
-    makeHitlerVoteRequest, makeQuestRequest, giveCardsToChancellorRequest, playChancellorCardRequest
+    makeHitlerVoteRequest, makeQuestRequest, giveCardsToChancellorRequest,
+    playChancellorCardRequest, initiateVetoRequest, replyToVetoRequest
 } from '../actions';
 // import GameFinished from './GameFinished';
 
@@ -37,6 +38,18 @@ const CurrentGameStatus = props => {
     const toggleChancellorSelectingCards = useCallback(() => {
         setSelectingChancellorCard(!selectingChancellorCard);
     }, [selectingChancellorCard, setSelectingChancellorCard]);
+
+
+    const [selectingVeto, setSelectingVeto] = useState(false);
+    const [replyingToVeto, setReplyingToVeto] = useState(false);
+
+    const toggleSelectingVeto = useCallback(() => {
+        setSelectingVeto(!selectingVeto);
+    }, [selectingVeto, setSelectingVeto]);
+
+    const toggleReplyingToVeto = useCallback(() => {
+        setReplyingToVeto(!replyingToVeto);
+    }, [replyingToVeto, setReplyingToVeto]);
 
     const onClickChancellorCard = useCallback(card => {
         if (selectedChancellorCard === card) {
@@ -101,7 +114,8 @@ const CurrentGameStatus = props => {
     if (props.currentGame.status === constants.hitlerGameStatuses.Nominating) {
         return (
             <div className={props.styles.nominating}>
-                {`${helpers.mapUserIdToName(props.users, props.currentGame.president)} is currently selecting a chancellor`}
+                {`${helpers.mapUserIdToName(props.users,
+                    props.currentGame.temporaryPresident || props.currentGame.president)} is currently selecting a chancellor`}
             </div>
         );
     }
@@ -131,7 +145,7 @@ const CurrentGameStatus = props => {
         if (!inPower) {
             return (
                 <div className={props.styles.presidentDeciding}>
-                    {`${helpers.mapUserIdToName(props.users, props.currentGame.president)} 
+                    {`${helpers.mapUserIdToName(props.users, props.currentGame.temporaryPresident || props.currentGame.president)} 
                 is currently selecting 2 cards to give to ${helpers.mapUserIdToName(props.users, props.currentGame.chancellor)}`}
                 </div>
             );
@@ -174,7 +188,8 @@ const CurrentGameStatus = props => {
         );
     }
 
-    if (props.currentGame.status === constants.hitlerGameStatuses.Voting) {
+    if (props.currentGame.status === constants.hitlerGameStatuses.Voting
+        && !props.currentGame.deadPlayers.includes(props.auth.uid)) {
         return (
             <div className={props.styles.votingWrapper}>
                 <Fade
@@ -199,48 +214,112 @@ const CurrentGameStatus = props => {
     }
 
     if (props.currentGame.status === constants.hitlerGameStatuses.ChancellorDecidingCards) {
+        if ((props.auth.uid === props.currentGame.president && props.currentGame.numberFascistPlayed === 5)
+            && (props.currentGame.requestingVeto || props.currentGame.vetoRejected)) {
+            return (
+                <div className={props.styles.presidentDecidingWrapper}>
+
+                    <Fade
+                        checked={replyingToVeto}
+                        onChange={toggleReplyingToVeto}
+                        includeCheckbox
+                        label="Reply to Veto "
+                    >
+                        {props.currentGame.vetoRejected && <div>You have rejected this</div>}
+                        <div className={props.styles.confirmChancellorCards}>
+                            <StyledButton
+                                onClick={() => props.replyToVetoRequest(props.currentGameId, true)}
+                                text="Approve Veto"
+                                disabled={props.currentGame.vetoRejected}
+                            />
+                            <StyledButton
+                                onClick={() => props.replyToVetoRequest(props.currentGameId, false)}
+                                text="Reject Veto"
+                                color="secondary"
+                                disabled={props.currentGame.vetoRejected}
+                            />
+                        </div>
+                    </Fade>
+                </div>
+            );
+        }
+
+
         if (props.auth.uid !== props.currentGame.chancellor) {
             return (
                 <div className={props.styles.chancellorDeciding}>
-                    {`${helpers.mapUserIdToName(props.users, props.currentGame.chancellor)} 
-                is currently selecting which card to play`}
+                    {helpers.mapUserIdToName(props.users, props.currentGame.chancellor)
+                    + (props.currentGame.requestingVeto
+                        ? ' has requested to veto' : ' is currently selecting which card to play')}
+
+                    {props.currentGame.vetoRejected && props.currentGame.numberFascistPlayed === 5
+                    && (
+                        <div>
+                            {`${helpers.mapUserIdToName(props.users, props.currentGame.president)} rejected the request to veto`}
+                        </div>
+                    )}
+
+                    {/* {`${helpers.mapUserIdToName(props.users, props.currentGame.chancellor)}
+                is currently selecting which card to play`} */}
                 </div>
             );
         }
         const { chancellorCards } = props.currentGame;
         return (
-            <div className={props.styles.presidentDecidingWrapper}>
-                <Fade
-                    checked={selectingChancellorCard}
-                    onChange={toggleChancellorSelectingCards}
-                    includeCheckbox
-                    label="Select cards"
-                >
-                    <div className={props.styles.allPresidentCards}>
-                        {chancellorCards.map((card, index) => (
-                            <div
-                                className={classNames({
-                                    [props.styles.fascistCard]: card === -1,
-                                    [props.styles.liberalCard]: card === 1,
-                                    [props.styles.selected]: selectedChancellorCard === index
-                                })}
-                                role="button"
-                                tabIndex={0}
-                                onClick={() => onClickChancellorCard(index)}
-                            >
-                                {card === 1 ? 'Liberal' : 'Fascist'}
+            <>
+                <div className={props.styles.presidentDecidingWrapper}>
+                    <Fade
+                        checked={selectingChancellorCard}
+                        onChange={toggleChancellorSelectingCards}
+                        includeCheckbox
+                        label="Select cards"
+                    >
+                        <div className={props.styles.allPresidentCards}>
+                            {chancellorCards.map((card, index) => (
+                                <div
+                                    className={classNames({
+                                        [props.styles.fascistCard]: card === -1,
+                                        [props.styles.liberalCard]: card === 1,
+                                        [props.styles.selected]: selectedChancellorCard === index
+                                    })}
+                                    role="button"
+                                    tabIndex={0}
+                                    onClick={() => onClickChancellorCard(index)}
+                                >
+                                    {card === 1 ? 'Liberal' : 'Fascist'}
+                                </div>
+                            ))}
+                        </div>
+                        <div className={props.styles.confirmChancellorCards}>
+                            <StyledButton
+                                onClick={playChancellorCard}
+                                disabled={selectedChancellorCard !== 0
+                                    && selectedChancellorCard !== 1}
+                                text="Confirm card"
+                            />
+                        </div>
+                    </Fade>
+                </div>
+                {props.currentGame.numberFascistPlayed === 5
+                && !props.currentGame.vetoRejected && (
+                    <div className={props.styles.presidentDecidingWrapper}>
+                        <Fade
+                            checked={selectingVeto}
+                            onChange={toggleSelectingVeto}
+                            includeCheckbox
+                            label="Veto Power"
+                        >
+                            <div className={props.styles.confirmChancellorCards}>
+                                <StyledButton
+                                    onClick={() => props.initiateVetoRequest(props.currentGameId)}
+                                    text="Request Veto"
+                                    disabled={props.currentGame.requestingVeto}
+                                />
                             </div>
-                        ))}
+                        </Fade>
                     </div>
-                    <div className={props.styles.confirmChancellorCards}>
-                        <StyledButton
-                            onClick={playChancellorCard}
-                            disabled={selectedChancellorCard !== 0 && selectedChancellorCard !== 1}
-                            text="Confirm card"
-                        />
-                    </div>
-                </Fade>
-            </div>
+                )}
+            </>
         );
     }
 
@@ -266,6 +345,14 @@ const CurrentGameStatus = props => {
         // return <GameFinished />;
     }
 
+    if (props.currentGame.deadPlayers.includes(props.auth.uid)) {
+        return (
+            <div className={props.styles.investigating}>
+                You are dead
+            </div>
+        );
+    }
+
     return (
         <div className={props.styles.currentGameStatus}>
             unknown
@@ -281,10 +368,12 @@ CurrentGameStatus.defaultProps = {
         chancellor: '',
         chancellorCards: [],
         currentPlayers: [],
+        deadPlayers: [],
         host: '',
         president: '',
         mode: '',
         numberOfPlayers: 0,
+        numberFascistPlayed: 0,
         roles: [],
         round: 0,
         playersReady: [],
@@ -293,9 +382,11 @@ CurrentGameStatus.defaultProps = {
         playerRoles: [],
         presidentCards: [],
         status: '',
+        requestingVeto: false,
         temporaryPresident: '',
         votesAgainst: [],
-        votesFor: []
+        votesFor: [],
+        vetoRejected: false
     },
     currentGameId: '',
     styles: defaultStyles,
@@ -310,12 +401,15 @@ CurrentGameStatus.propTypes = {
         chancellor: PropTypes.string,
         chancellorCards: PropTypes.arrayOf(PropTypes.number),
         currentPlayers: PropTypes.arrayOf(PropTypes.string),
+        deadPlayers: PropTypes.arrayOf(PropTypes.string),
         host: PropTypes.string,
         president: PropTypes.string,
         mode: PropTypes.string,
+        numberFascistPlayed: PropTypes.string,
         numberOfPlayers: PropTypes.number,
         roles: PropTypes.arrayOf(PropTypes.string),
         round: PropTypes.number,
+        requestingVeto: PropTypes.bool,
         playerToGuessMerlin: PropTypes.string,
         presidentCards: PropTypes.arrayOf(PropTypes.number),
         playersReady: PropTypes.arrayOf(PropTypes.string),
@@ -327,21 +421,26 @@ CurrentGameStatus.propTypes = {
         votesFor: PropTypes.arrayOf(PropTypes.string),
         votesAgainst: PropTypes.arrayOf(PropTypes.string),
         status: PropTypes.string,
-        temporaryPresident: PropTypes.string
+        temporaryPresident: PropTypes.string,
+        vetoRejected: PropTypes.bool
     }),
     currentGameId: PropTypes.string,
     giveCardsToChancellorRequest: PropTypes.func.isRequired,
+    initiateVetoRequest: PropTypes.func.isRequired,
     makeHitlerVoteRequest: PropTypes.func.isRequired,
+    replyToVetoRequest: PropTypes.func.isRequired,
     playChancellorCardRequest: PropTypes.func.isRequired,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})
 };
 
 const mapDispatchToProps = {
+    initiateVetoRequest,
     giveCardsToChancellorRequest,
     makeHitlerVoteRequest,
     makeQuestRequest,
-    playChancellorCardRequest
+    playChancellorCardRequest,
+    replyToVetoRequest
 };
 
 const mapStateToProps = (state, props) => ({
