@@ -9,7 +9,7 @@ import StarHalfIcon from '@material-ui/icons/StarHalf';
 import * as helpers from '../helpers';
 import * as constants from '../../constants';
 import defaultStyles from './History.module.scss';
-import Bullet from './Bullet.png';
+import Bullet from './bullet.png';
 
 const History = props => (
     props.history.map(h => {

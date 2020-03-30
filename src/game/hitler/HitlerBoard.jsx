@@ -4,7 +4,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import Looks3Icon from '@material-ui/icons/Looks3';
 import StarHalfIcon from '@material-ui/icons/StarHalf';
 import defaultStyles from './HitlerBoard.module.scss';
-import Bullet from './Bullet.png';
+import Bullet from './bullet.png';
 
 const HitlerBoard = props => {
     const renderLiberalCell = (cell, numberOfLiberals) => {

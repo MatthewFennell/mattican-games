@@ -25,7 +25,7 @@ import Switch from '../../common/Switch/Switch';
 import SuccessModal from '../../common/modal/SuccessModal';
 import HitlerBoard from './HitlerBoard';
 import Skull from './Skull.png';
-import Bullet from './Bullet.png';
+import Bullet from './bullet.png';
 import History from './History';
 
 const playerIsBad = (player, roles) => {
