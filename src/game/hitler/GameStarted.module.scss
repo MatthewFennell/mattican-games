@@ -115,8 +115,20 @@
     border: 2px solid greenyellow;
 }
 
+.temporarySearch {
+    position: absolute;
+    right: 0;
+    margin-right: 15px;
+    @include vertical-center-div();
+}
+
 .potentialInvestigation, .potentialTempPres {
     border: 2px solid midnightblue;
+}
+
+.fascistRevealed {
+    border: 2px solid crimson;
+    border-style: dashed;
 }
 
 .playerNumber {

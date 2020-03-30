@@ -21,12 +21,8 @@ const History = props => (
                     </div>
                     <div className={props.styles.realVoteHistory}>
                         <div>
-                            {`President: ${helpers.mapUserIdToName(props.users, h.president)}`}
+                            {`${helpers.mapUserIdToName(props.users, h.president)} elected ${helpers.mapUserIdToName(props.users, h.chancellor)}`}
                         </div>
-                        <div>
-                            {`Chancellor: ${helpers.mapUserIdToName(props.users, h.chancellor)}`}
-                        </div>
-
                         {h.votesNo.length ? (
                             h.votesYes.length ? (
                                 <div>
@@ -104,7 +100,7 @@ const History = props => (
                     </div>
                     <div className={props.styles.round}>
                         <div>
-                            <div className={props.styles.questSucceed}><Looks3Icon fontSize="large" /></div>
+                            <div className={props.styles.peekTopThree}><Looks3Icon fontSize="large" /></div>
                         </div>
                     </div>
                 </div>
@@ -193,7 +189,7 @@ const History = props => (
                     </div>
                     <div className={props.styles.realVoteHistory}>
                         <div className={props.styles.investigateCard}>
-                            {`${helpers.mapUserIdToName(props.users, h.president)} has looked at the card of ${helpers.mapUserIdToName(props.users, h.investigated)}`}
+                            {`${helpers.mapUserIdToName(props.users, h.president)} looked at ${helpers.mapUserIdToName(props.users, h.investigated)}'s identity card`}
                         </div>
                     </div>
                     <div className={props.styles.round}>

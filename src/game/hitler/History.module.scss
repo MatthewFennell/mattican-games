@@ -112,6 +112,11 @@
     @include vertical-center-div();
 }
 
+.peekTopThree {
+    color: $color-black;
+    @include vertical-center-div();
+}
+
 .liberalPlayed {
     width: $spacing-average;
     height: $spacing-medium;

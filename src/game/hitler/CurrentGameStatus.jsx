@@ -109,6 +109,12 @@ const CurrentGameStatus = props => {
         // eslint-disable-next-line
     }, [props.currentGame, selectedChancellorCard, setSelectedChancellorCard])
 
+    const makeVetoRequest = useCallback(() => {
+        props.initiateVetoRequest(props.currentGameId);
+        setSelectingVeto(false);
+        // eslint-disable-next-line
+    }, [setSelectingVeto, props.currentGameId])
+
 
     if (props.currentGame.status === constants.hitlerGameStatuses.Nominating) {
         return (
@@ -192,6 +198,10 @@ const CurrentGameStatus = props => {
         && !props.currentGame.deadPlayers.includes(props.auth.uid)) {
         return (
             <div className={props.styles.votingWrapper}>
+                <div>
+                    {`${helpers.mapUserIdToName(props.users, props.currentGame.president)} is electing ${
+                        helpers.mapUserIdToName(props.users, props.currentGame.chancellor)}` }
+                </div>
                 <Fade
                     checked={makingVote}
                     onChange={toggleMakingVote}
@@ -307,7 +317,7 @@ const CurrentGameStatus = props => {
                         >
                             <div className={props.styles.confirmChancellorCards}>
                                 <StyledButton
-                                    onClick={() => props.initiateVetoRequest(props.currentGameId)}
+                                    onClick={makeVetoRequest}
                                     text="Request Veto"
                                     disabled={props.currentGame.requestingVeto}
                                 />

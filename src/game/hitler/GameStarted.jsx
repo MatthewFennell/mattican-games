@@ -1,11 +1,14 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable max-len */
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import StarHalfIcon from '@material-ui/icons/StarHalf';
 import { noop } from 'lodash';
 import fp from 'lodash/fp';
+import SearchIcon from '@material-ui/icons/Search';
 import defaultStyles from './GameStarted.module.scss';
 import Fade from '../../common/Fade/Fade';
 import * as helpers from '../helpers';
@@ -24,6 +27,11 @@ import HitlerBoard from './HitlerBoard';
 import Skull from './Skull.png';
 import Bullet from './Bullet.png';
 import History from './History';
+
+const playerIsBad = (player, roles) => {
+    const role = fp.get('role')(roles.find(x => x.player === player));
+    return role !== constants.hitlerRoles.Liberal;
+};
 
 const GameStarted = props => {
     const {
@@ -67,11 +75,13 @@ const GameStarted = props => {
                         <div>The top 3 cards you saw were</div>
                         <div className={props.styles.topThreeCards}>
 
-                            {cards.map(card => (
-                                <div className={classNames({
-                                    [props.styles.isLiberal]: card === 1,
-                                    [props.styles.isFascist]: card === -1
-                                })}
+                            {cards.map((card, index) => (
+                                <div
+                                    className={classNames({
+                                        [props.styles.isLiberal]: card === 1,
+                                        [props.styles.isFascist]: card === -1
+                                    })}
+                                    key={`card-${card}-${index}`}
                                 >
                                     {card === 1 ? 'L' : 'F'}
                                 </div>
@@ -185,7 +195,14 @@ const GameStarted = props => {
         }
         if (props.currentGame.status === Transfer) {
             if (props.currentGame.president === props.auth.uid) {
-                props.makeTemporaryPresidentRequest(props.currentGameId, player);
+                if (player === props.auth.uid) {
+                    props.gameError({
+                        code: 'invalid-target',
+                        message: 'You cannot nominate yourself'
+                    }, 'Transfer Presidency error');
+                } else {
+                    props.makeTemporaryPresidentRequest(props.currentGameId, player);
+                }
             }
         }
         if (props.currentGame.status === TemporaryPresident) {
@@ -200,7 +217,12 @@ const GameStarted = props => {
                     props.gameError({
                         code: 'bullying',
                         message: 'That player is already dead'
-                    }, 'Nominate error');
+                    }, 'Killing error');
+                } else if (player === props.auth.uid) {
+                    props.gameError({
+                        code: 'no-suicidal-thoughts',
+                        message: 'You can\'t kill yourself'
+                    }, 'Killing error');
                 } else {
                     props.killPlayerRequest(props.currentGameId, player);
                 }
@@ -262,7 +284,9 @@ const GameStarted = props => {
                             [props.styles.potentialKill]: props.currentGame.status
                             === Kill && props.currentGame.playerToKill === player,
                             [props.styles.deadPlayer]: props.currentGame
-                                .deadPlayers.includes(player)
+                                .deadPlayers.includes(player),
+                            [props.styles.fascistRevealed]: props.currentGame.status === constants.hitlerGameStatuses.Finished
+                            && playerIsBad(player, props.currentGame.playerRoles)
                         })}
                         role="button"
                         tabIndex={0}
@@ -316,6 +340,20 @@ const GameStarted = props => {
 
                         {props.currentGame.playerToKill === player && (
                             <img src={Bullet} className={props.styles.tempBullet} alt="Bullet" />
+                        )}
+
+                        {props.currentGame.playerToInvestigate === player && (
+                            <div className={props.styles.temporarySearch}>
+                                <SearchIcon />
+                            </div>
+                        )}
+
+                        {props.currentGame.status
+                            === Transfer
+                            && props.currentGame.temporaryPresident === player && (
+                            <div className={props.styles.temporarySearch}>
+                                <StarHalfIcon />
+                            </div>
                         )}
 
                     </div>
@@ -440,10 +478,10 @@ const GameStarted = props => {
                             {`Consecutive rejections: ${props.currentGame.consecutiveRejections}`}
                         </div>
                         <div className={props.styles.consecutiveRejections}>
-                            {props.currentGame.cardDeck.length === 1 ? 'Draw deck: 1 card' : `Draw deck: ${props.currentGame.cardDeck.length} cards left`}
+                            {props.currentGame.cardDeck.length === 1 ? 'Draw deck: 1 card' : `Draw deck: ${props.currentGame.cardDeck.length} cards`}
                         </div>
                         <div className={props.styles.consecutiveRejections}>
-                            {props.currentGame.discardPile.length === 1 ? 'Discard deck: 1 card' : `Discard deck: ${props.currentGame.discardPile.length} cards left`}
+                            {props.currentGame.discardPile.length === 1 ? 'Discard deck: 1 card' : `Discard deck: ${props.currentGame.discardPile.length} cards`}
                         </div>
                     </div>
                 </Fade>

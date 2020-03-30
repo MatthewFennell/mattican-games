@@ -480,7 +480,6 @@ exports.makeVote = functions
                             status: constants.hitlerGameStatuses.PresidentDecidingCards,
                             votesAgainst: [],
                             votesFor: [],
-                            consecutiveRejections: 0,
                             history: [
                                 {
                                     type: constants.historyTypes.Vote,
@@ -684,6 +683,7 @@ exports.playChancellorCard = functions
                         temporaryPresident: '',
                         previousPresident: temporaryPresident || president,
                         vetoRejected: false,
+                        consecutiveRejections: 0,
                         history: [
                             {
                                 type: constants.historyTypes.PlayChancellorCard,
@@ -704,6 +704,7 @@ exports.playChancellorCard = functions
                     discardPile: cardDeck.length < 3 ? [] : newDiscardPile,
                     chancellorCards: [],
                     presidentCards: [],
+                    consecutiveRejections: 0,
                     president: common.findNextUserHitler(president, currentPlayers, deadPlayers),
                     previousPresident: temporaryPresident || president,
                     numberLiberalPlayed: operations.increment(1),
@@ -728,6 +729,7 @@ exports.playChancellorCard = functions
                     numberFascistPlayed: operations.increment(1),
                     status: constants.hitlerGameStatuses.Finished,
                     chancellor: '',
+                    consecutiveRejections: 0,
                     previousChancellor: chancellor,
                     temporaryPresident: '',
                     vetoRejected: false,
@@ -752,6 +754,7 @@ exports.playChancellorCard = functions
                     presidentCards: [],
                     chancellorCards: [],
                     chancellor: '',
+                    consecutiveRejections: 0,
                     previousChancellor: chancellor,
                     cardDeck: generateNewPackOfCards(cardDeck, newDiscardPile),
                     discardPile: cardDeck.length < 3 ? [] : newDiscardPile,
@@ -780,6 +783,7 @@ exports.playChancellorCard = functions
                     presidentCards: [],
                     chancellorCards: [],
                     chancellor: '',
+                    consecutiveRejections: 0,
                     previousChancellor: chancellor,
                     cardDeck: generateNewPackOfCards(cardDeck, newDiscardPile),
                     discardPile: cardDeck.length < 3 ? [] : newDiscardPile,
@@ -804,6 +808,7 @@ exports.playChancellorCard = functions
                     discardPile: cardDeck.length < 3 ? [] : newDiscardPile,
                     numberFascistPlayed: operations.increment(1),
                     chancellor: '',
+                    consecutiveRejections: 0,
                     previousChancellor: chancellor,
                     vetoRejected: false,
                     history: [
@@ -832,6 +837,7 @@ exports.playChancellorCard = functions
                     numberFascistPlayed: operations.increment(1),
                     previousPresident: temporaryPresident || president,
                     chancellor: '',
+                    consecutiveRejections: 0,
                     previousChancellor: chancellor,
                     hiddenInfo: operations.arrayUnion(extraSecretInfo),
                     presidentCards: [],
@@ -866,6 +872,7 @@ exports.playChancellorCard = functions
                     chancellor: '',
                     previousChancellor: chancellor,
                     presidentCards: [],
+                    consecutiveRejections: 0,
                     chancellorCards: [],
                     vetoRejected: false,
                     history: [
@@ -982,6 +989,9 @@ exports.temporaryPresident = functions
             }
             if (!doc.data().status === constants.hitlerGameStatuses.Transfer) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not selecting that currently');
+            }
+            if (context.auth.uid === data.player) {
+                throw new functions.https.HttpsError('invalid-argument', 'Cannot select yourself');
             }
             if (!data.player) {
                 throw new functions.https.HttpsError('invalid-argument', 'No player selected');
@@ -1186,7 +1196,7 @@ exports.replyToVeto = functions
 
             const {
                 cardDeck, consecutiveRejections, numberFascistPlayed, numberLiberalPlayed, discardPile,
-                president, currentPlayers, deadPlayers, presidentCards, chancellor, history
+                president, currentPlayers, deadPlayers, chancellor, history, chancellorCards
             } = doc.data();
 
             if (!data.isApprove) {
@@ -1206,8 +1216,7 @@ exports.replyToVeto = functions
             }
 
             if (consecutiveRejections === 2) {
-                const firstDiscardPile = discardPile.concat(presidentCards);
-
+                const firstDiscardPile = discardPile.concat(chancellorCards);
 
                 const nextCardDeck = generateNewPackOfCards(cardDeck, firstDiscardPile);
                 const nextDiscardDeck = cardDeck.length < 3 ? [] : firstDiscardPile;
@@ -1226,6 +1235,8 @@ exports.replyToVeto = functions
                         numberLiberalPlayed: topCard === 1 ? operations.increment(1) : numberLiberalPlayed,
                         previousChancellor: '',
                         previousPresident: '',
+                        chancellorCards: [],
+                        presidentCards: [],
                         temporaryPresident: '',
                         requestingVeto: false,
                         vetoRejected: false,
@@ -1279,12 +1290,18 @@ exports.replyToVeto = functions
                 });
             }
 
-            const nextDiscardDeck = discardPile.concat(presidentCards);
+            const nextDiscardDeck = discardPile.concat(chancellorCards);
+            console.log('not consecutive rejections =3');
+            console.log('next discard', nextDiscardDeck);
+            console.log('chancellor cards', chancellorCards);
 
             return doc.ref.update({
                 cardDeck: generateNewPackOfCards(cardDeck, nextDiscardDeck),
+                discardPile: cardDeck < 3 ? [] : nextDiscardDeck,
                 chancellor: '',
                 status: constants.hitlerGameStatuses.Nominating,
+                chancellorCards: [],
+                presidentCards: [],
                 votesAgainst: [],
                 votesFor: [],
                 consecutiveRejections: operations.increment(1),
