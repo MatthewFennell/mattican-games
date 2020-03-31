@@ -48,6 +48,8 @@ export const INITIATE_VETO_REQUEST = `${pre}INITIATE_VETO_REQUEST`;
 
 export const REPLY_TO_VETO_REQUEST = `${pre}REPLY_TO_VETO_REQUEST`;
 
+export const CLOSE_LOOK_AT_TOP_THREE = `${pre}CLOSE_LOOK_AT_TOP_THREE`;
+
 export const gameError = (error, header) => ({
     type: GAME_ERROR,
     error,
@@ -194,4 +196,9 @@ export const replyToVetoRequest = (gameId, isApprove) => ({
     type: REPLY_TO_VETO_REQUEST,
     gameId,
     isApprove
+});
+
+export const closeLookAtTopThree = gameId => ({
+    type: CLOSE_LOOK_AT_TOP_THREE,
+    gameId
 });

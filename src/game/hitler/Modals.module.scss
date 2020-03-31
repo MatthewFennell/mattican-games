@@ -1,0 +1,56 @@
+@import "../../common/Styles.scss";
+
+.numVotes {
+    color: $color-gray;
+    font-weight: bold;
+    text-align: center;
+}
+
+.endGameVotes {
+    display: flex;
+    justify-content: space-evenly;
+    margin-left: 30%;
+    margin-right: 30%;
+}
+
+.approval {
+    color: $color-green;
+}
+
+.rejection {
+    color: $color-red;
+}
+
+.endGameButtons {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.threeCardsWrapper {
+    display: flex;
+    justify-content: space-evenly; 
+    
+    > div {
+        width: 30%;
+        text-align: center;
+        @include vertical-center-div();
+    }
+}
+
+.liberal {
+    margin: $spacing-small;
+    padding: $spacing-small;
+    color: $color-white;
+    background-color: $color-dark-blue;
+    font-weight: bold;
+    height: $spacing-huge;
+}
+
+.fascist {
+    margin: $spacing-small;
+    padding: $spacing-small;
+    color: $color-white;
+    background-color: $color-red;
+    font-weight: bold;
+    height: $spacing-huge;
+}

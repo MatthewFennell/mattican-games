@@ -268,6 +268,16 @@ export function* replyToVeto(api, action) {
     }
 }
 
+export function* closeTopThree(api, action) {
+    try {
+        yield call(api.closeTopThree, ({
+            gameId: action.gameId
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Close Top three error'));
+    }
+}
+
 export default function* overviewSaga() {
     yield all([
         takeEvery(actions.LEAVE_GAME_REQUEST, leaveGame, gameApi),
@@ -294,6 +304,7 @@ export default function* overviewSaga() {
         takeEvery(actions.KILL_PLAYER_REQUEST, killPlayer, gameApi),
         takeEvery(actions.CONFIRM_KILL_PLAYER_REQUEST, confirmKillPlayer, gameApi),
         takeEvery(actions.INITIATE_VETO_REQUEST, initiateVeto, gameApi),
-        takeEvery(actions.REPLY_TO_VETO_REQUEST, replyToVeto, gameApi)
+        takeEvery(actions.REPLY_TO_VETO_REQUEST, replyToVeto, gameApi),
+        takeEvery(actions.CLOSE_LOOK_AT_TOP_THREE, closeTopThree, gameApi)
     ]);
 }

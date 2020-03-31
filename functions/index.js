@@ -245,6 +245,10 @@ exports.createHitlerGame = functions
                         presidentCards: [],
                         playerToKill: '',
                         playerInvestigated: '',
+                        peakingAtTopThree: {
+                            player: '',
+                            cards: []
+                        },
                         requestingVeto: false,
                         previousChancellor: '',
                         previousPresident: '',
@@ -841,6 +845,10 @@ exports.playChancellorCard = functions
                     previousChancellor: chancellor,
                     hiddenInfo: operations.arrayUnion(extraSecretInfo),
                     presidentCards: [],
+                    peakingAtTopThree: {
+                        player: president,
+                        cards: newCardDeck.slice(0, 3)
+                    },
                     chancellorCards: [],
                     round: operations.increment(1),
                     vetoRejected: false,
@@ -1318,6 +1326,23 @@ exports.replyToVeto = functions
                         round: doc.data().round
                     }, ...history
                 ]
+            });
+        });
+    });
+
+exports.closeTopThree = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+            return doc.ref.update({
+                peakingAtTopThree: {
+                    player: '',
+                    cards: []
+                }
             });
         });
     });

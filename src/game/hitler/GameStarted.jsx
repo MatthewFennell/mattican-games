@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import StarHalfIcon from '@material-ui/icons/StarHalf';
-import { noop } from 'lodash';
 import fp from 'lodash/fp';
 import SearchIcon from '@material-ui/icons/Search';
 import defaultStyles from './GameStarted.module.scss';
@@ -18,15 +17,15 @@ import {
     nominateChancellorRequest, confirmChancellorRequest, leaveGameRequest,
     destroyGameRequest, approveLeaveMidgameRequest, selectInvestigateRequest,
     confirmInvesigationRequest, makeTemporaryPresidentRequest, confirmPresidentRequest,
-    gameError, killPlayerRequest, confirmKillPlayerRequest
+    gameError, killPlayerRequest, confirmKillPlayerRequest, closeLookAtTopThree
 } from '../actions';
 import StyledButton from '../../common/StyledButton/StyledButton';
 import Switch from '../../common/Switch/Switch';
-import SuccessModal from '../../common/modal/SuccessModal';
 import HitlerBoard from './HitlerBoard';
 import Skull from './Skull.png';
 import Bullet from './bullet.png';
 import History from './History';
+import Modals from './Modals';
 
 const playerIsBad = (player, roles) => {
     const role = fp.get('role')(roles.find(x => x.player === player));
@@ -232,90 +231,91 @@ const GameStarted = props => {
     }, [props.currentGame, props.auth.uid]);   
 
     return (
-        <div className={props.styles.gameStartedWrapper}>
-            {props.currentGame.status === Finished
-                ? <div className={props.styles.gameFinished}>Game finished </div> : (
-                    <div className={props.styles.roundHeader}>
-                        {`Round: ${props.currentGame.round}`}
-                    </div>
-                )}
+        <>
+            <div className={props.styles.gameStartedWrapper}>
+                {props.currentGame.status === Finished
+                    ? <div className={props.styles.gameFinished}>Game finished </div> : (
+                        <div className={props.styles.roundHeader}>
+                            {`Round: ${props.currentGame.round}`}
+                        </div>
+                    )}
 
-            {/* {props.currentGame.status !== Finished
+                {/* {props.currentGame.status !== Finished
             && (
                 <div className={props.styles.currentLeaderWrapper}>
                     {`The current President is ${helpers.mapUserIdToName(props.users, props.currentGame.temporaryPresident || props.currentGame.president)}`}
                 </div>
             )} */}
-            <CurrentGameStatus
-                auth={props.auth}
-                currentGame={props.currentGame}
-                currentGameId={props.currentGameId}
-                users={props.users}
+                <CurrentGameStatus
+                    auth={props.auth}
+                    currentGame={props.currentGame}
+                    currentGameId={props.currentGameId}
+                    users={props.users}
 
-            />
+                />
 
-            <div className={props.styles.playerOrder}>
-                {props.currentGame.currentPlayers.map((player, index) => (
-                    <div
-                        className={classNames({
-                            [props.styles.playerWrapper]: true,
-                            [props.styles.nominatedChancellor]: (props.currentGame
-                                .chancellor === player && props.currentGame.status
+                <div className={props.styles.playerOrder}>
+                    {props.currentGame.currentPlayers.map((player, index) => (
+                        <div
+                            className={classNames({
+                                [props.styles.playerWrapper]: true,
+                                [props.styles.nominatedChancellor]: (props.currentGame
+                                    .chancellor === player && props.currentGame.status
                                 === Nominating) || (props.currentGame.chancellor === player
                                     && props.currentGame.status === Voting)
                                     || (props.currentGame.chancellor === player
                                         && props.currentGame.status === TemporaryPresident),
-                            [props.styles.isActivePlayer]: (player === props.currentGame.president
+                                [props.styles.isActivePlayer]: (player === props.currentGame.president
                             && props.currentGame.status !== TemporaryPresident)
                              || (props.currentGame.status === TemporaryPresident
                                 && player === props.currentGame.temporaryPresident),
-                            [props.styles.activeChancellor]: (props.currentGame.status
+                                [props.styles.activeChancellor]: (props.currentGame.status
                                 === PresidentDecidingCards
                                 || props.currentGame.status === ChancellorDecidingCards)
                                 && props.currentGame.chancellor === player,
-                            [props.styles.potentialInvestigation]: props.currentGame.status
+                                [props.styles.potentialInvestigation]: props.currentGame.status
                             === Investigate
                             && props.currentGame.playerToInvestigate === player,
-                            [props.styles.potentialTempPres]: props.currentGame.status
+                                [props.styles.potentialTempPres]: props.currentGame.status
                             === Transfer
                             && props.currentGame.temporaryPresident === player,
-                            [props.styles.potentialKill]: props.currentGame.status
+                                [props.styles.potentialKill]: props.currentGame.status
                             === Kill && props.currentGame.playerToKill === player,
-                            [props.styles.deadPlayer]: props.currentGame
-                                .deadPlayers.includes(player),
-                            [props.styles.fascistRevealed]: props.currentGame.status === constants.hitlerGameStatuses.Finished
+                                [props.styles.deadPlayer]: props.currentGame
+                                    .deadPlayers.includes(player),
+                                [props.styles.fascistRevealed]: props.currentGame.status === constants.hitlerGameStatuses.Finished
                             && playerIsBad(player, props.currentGame.playerRoles)
-                        })}
-                        role="button"
-                        tabIndex={0}
-                        onClick={() => nominatePlayer(player)}
-                        key={player}
-                    >
-                        <div className={props.styles.playerNumber}>
-                            <div>{`#${index + 1}`}</div>
-                            {((props.currentGame.president === player
+                            })}
+                            role="button"
+                            tabIndex={0}
+                            onClick={() => nominatePlayer(player)}
+                            key={player}
+                        >
+                            <div className={props.styles.playerNumber}>
+                                <div>{`#${index + 1}`}</div>
+                                {((props.currentGame.president === player
                             && !props.currentGame.temporaryPresident)
                             || (props.currentGame.president === player
                                 && props.currentGame.status === Transfer))
                             && <div className={props.styles.currentPresident}>(President)</div>}
-                            {props.currentGame.chancellor === player
+                                {props.currentGame.chancellor === player
                             && <div className={props.styles.currentChancellor}>(Chancellor)</div>}
-                            {props.currentGame.temporaryPresident === player
+                                {props.currentGame.temporaryPresident === player
                             && props.currentGame.temporaryPresident
                             && props.currentGame.status !== Transfer
                             && <div className={props.styles.currentPresident}>(Pres)</div>}
-                        </div>
-                        <div className={classNames({
-                            [props.styles.playerName]: true,
-                            [props.styles.activePlayer]: (player === props.currentGame.president && !props.currentGame.temporaryPresident)
+                            </div>
+                            <div className={classNames({
+                                [props.styles.playerName]: true,
+                                [props.styles.activePlayer]: (player === props.currentGame.president && !props.currentGame.temporaryPresident)
                              || (props.currentGame.temporaryPresident === player)
-                        })}
-                        >
-                            {helpers.mapUserIdToName(props.users, player)}
-                            {props.auth.uid === player && ' (you)'}
-                        </div>
-                        {props.currentGame.status === Voting && !props.currentGame.deadPlayers
-                            .includes(player)
+                            })}
+                            >
+                                {helpers.mapUserIdToName(props.users, player)}
+                                {props.auth.uid === player && ' (you)'}
+                            </div>
+                            {props.currentGame.status === Voting && !props.currentGame.deadPlayers
+                                .includes(player)
                         && (
                             <div className={classNames({
                                 [props.styles.votingStage]: true,
@@ -333,33 +333,33 @@ const GameStarted = props => {
                             </div>
                         )}
 
-                        {props.currentGame.deadPlayers.includes(player) && (
-                            <img src={Skull} className={props.styles.skullImage} alt="Skull" />
-                        )}
+                            {props.currentGame.deadPlayers.includes(player) && (
+                                <img src={Skull} className={props.styles.skullImage} alt="Skull" />
+                            )}
 
-                        {props.currentGame.playerToKill === player && (
-                            <img src={Bullet} className={props.styles.tempBullet} alt="Bullet" />
-                        )}
+                            {props.currentGame.playerToKill === player && (
+                                <img src={Bullet} className={props.styles.tempBullet} alt="Bullet" />
+                            )}
 
-                        {props.currentGame.playerToInvestigate === player && (
-                            <div className={props.styles.temporarySearch}>
-                                <SearchIcon />
-                            </div>
-                        )}
+                            {props.currentGame.playerToInvestigate === player && (
+                                <div className={props.styles.temporarySearch}>
+                                    <SearchIcon />
+                                </div>
+                            )}
 
-                        {props.currentGame.status
+                            {props.currentGame.status
                             === Transfer
                             && props.currentGame.temporaryPresident === player && (
-                            <div className={props.styles.temporarySearch}>
-                                <StarHalfIcon />
-                            </div>
-                        )}
+                                <div className={props.styles.temporarySearch}>
+                                    <StarHalfIcon />
+                                </div>
+                            )}
 
-                    </div>
-                ))}
-            </div>
+                        </div>
+                    ))}
+                </div>
 
-            {((props.currentGame.president === props.auth.uid
+                {((props.currentGame.president === props.auth.uid
             && props.currentGame.status === Nominating)
              || (props.currentGame.temporaryPresident === props.auth.uid
             && props.currentGame.status === TemporaryPresident))
@@ -373,7 +373,7 @@ const GameStarted = props => {
                 </div>
             ) }
 
-            {props.currentGame.president === props.auth.uid
+                {props.currentGame.president === props.auth.uid
             && props.currentGame.status === Transfer
             && (
                 <div className={props.styles.confirmNominationWrapper}>
@@ -385,7 +385,7 @@ const GameStarted = props => {
                 </div>
             ) }
 
-            {props.currentGame.president === props.auth.uid
+                {props.currentGame.president === props.auth.uid
             && props.currentGame.status === Investigate
             && (
                 <div className={props.styles.confirmNominationWrapper}>
@@ -397,7 +397,7 @@ const GameStarted = props => {
                 </div>
             ) }
 
-            {((props.currentGame.president === props.auth.uid
+                {((props.currentGame.president === props.auth.uid
             && props.currentGame.status === Kill && !props.currentGame.temporaryPresident) || (props.currentGame.temporaryPresident === props.auth.uid))
             && (
                 <div className={props.styles.confirmNominationWrapper}>
@@ -409,132 +409,108 @@ const GameStarted = props => {
                 </div>
             ) }
 
-            {props.currentGame.status === Finished && (
-                <div className={props.styles.leaveGameButton}>
-                    <StyledButton text="Leave Game" color="secondary" onClick={() => props.leaveGameRequest(props.currentGameId)} />
-                </div>
-            )}
-
-            {props.currentGame.status === Finished
-            && props.currentGame.host === props.auth.uid && (
-                <div className={props.styles.destroyGameButton}>
-                    <StyledButton text="Destroy Game" color="secondary" onClick={() => props.destroyGameRequest(props.currentGameId)} />
-                </div>
-            )}
-
-            <div className={props.styles.toggleWrappers}>
-                <div className={props.styles.switchWrapper}>
-                    <div>View Info</div>
-                    <div><Switch onChange={setViewingRole} checked={viewingRole} /></div>
-                </div>
-                <div className={props.styles.switchWrapper}>
-                    <div>View Board</div>
-                    <div><Switch onChange={setViewingBoard} checked={viewingBoard} /></div>
-                </div>
-                <div className={props.styles.switchWrapper}>
-                    <div>View History</div>
-                    <div><Switch onChange={setShowingHistory} checked={showingHistory} /></div>
-                </div>
-            </div>
-
-
-            <Fade
-                checked={viewingRole}
-            >
-                <div className={props.styles.viewSecretInfoWrapper}>
-                    <div className={classNames({
-                        [props.styles.isGood]: props.myRole === constants.hitlerRoles.Liberal,
-                        [props.styles.isBad]: props.myRole !== constants.hitlerRoles.Liberal
-                    })}
-                    >
-                        {`Role: ${props.myRole}`}
+                {props.currentGame.status === Finished && (
+                    <div className={props.styles.leaveGameButton}>
+                        <StyledButton text="Leave Game" color="secondary" onClick={() => props.leaveGameRequest(props.currentGameId)} />
                     </div>
-                    {generateSecretInfo(props.myRole)}
-                    {generateHiddenInfo()}
-                </div>
-            </Fade>
+                )}
 
-
-            <div className={props.styles.viewingBoardWrapper}>
-                <Fade
-                    checked={viewingBoard}
-                >
-                    <div className={props.styles.avalonBoard}>
-                        <HitlerBoard
-                            numberOfPlayers={props.currentGame.numberOfPlayers}
-                            numberOfLiberals={props.currentGame.numberLiberalPlayed}
-                            numberOfFascists={props.currentGame.numberFascistPlayed}
-                        />
-                        {props.currentGame.previousPresident && (
-                            <div className={props.styles.consecutiveRejections}>
-                                {`Previous president: ${helpers.mapUserIdToName(props.users,
-                                    props.currentGame.previousPresident)}`}
-                            </div>
-                        )}
-                        {props.currentGame.previousChancellor && (
-                            <div className={props.styles.consecutiveRejections}>
-                                {`Previous chancellor: ${helpers.mapUserIdToName(props.users,
-                                    props.currentGame.previousChancellor)}`}
-                            </div>
-                        )}
-                        <div className={props.styles.consecutiveRejections}>
-                            {`Consecutive rejections: ${props.currentGame.consecutiveRejections}`}
-                        </div>
-                        <div className={props.styles.consecutiveRejections}>
-                            {props.currentGame.cardDeck.length === 1 ? 'Draw deck: 1 card' : `Draw deck: ${props.currentGame.cardDeck.length} cards`}
-                        </div>
-                        <div className={props.styles.consecutiveRejections}>
-                            {props.currentGame.discardPile.length === 1 ? 'Discard deck: 1 card' : `Discard deck: ${props.currentGame.discardPile.length} cards`}
-                        </div>
-                    </div>
-                </Fade>
-            </div>
-
-            <div className={props.styles.historyWrapper}>
-                <Fade
-                    checked={showingHistory}
-                >
-                    <History users={props.users} history={props.currentGame.history} />
-                </Fade>
-            </div>
-
-            <SuccessModal
-                backdrop
-                closeModal={noop}
-                error
-                isOpen={Boolean(props.currentGame.requestToEndGame)}
-                headerMessage={`${helpers.mapUserIdToName(props.users, props.currentGame.requestToEndGame)} wants to end the game`}
-            >
-                <div className={props.styles.endGameWrapper}>
-                    <div className={props.styles.numVotes}>3 Votes are required</div>
-                    <div className={props.styles.endGameVotes}>
-                        {props.currentGame.approveLeaveMidgame.map(id => <div className={props.styles.approval} key={id}><FiberManualRecordIcon fontSize="small" /></div>)}
-                        {props.currentGame.rejectLeaveMidgame.map(id => <div className={props.styles.rejection} key={id}><FiberManualRecordIcon fontSize="small" /></div>)}
-                    </div>
-
-                    <div className={props.styles.endGameButtons}>
-
+                {props.currentGame.status === Finished && props.currentGame.host === props.auth.uid && (
+                    <div className={props.styles.destroyGameButton}>
                         <StyledButton
-                            text="Approve"
-                            onClick={() => props.approveLeaveMidgameRequest(
-                                props.currentGameId, true
-                            )}
-                            disabled={props.currentGame.approveLeaveMidgame.includes(props.auth.uid)
-                                || props.currentGame.rejectLeaveMidgame.includes(props.auth.uid)}
-                        />
-                        <StyledButton
-                            text="Reject"
+                            text="Destroy Game"
                             color="secondary"
-                            onClick={() => props.approveLeaveMidgameRequest(
-                                props.currentGameId, false
-                            )}
-                            disabled={props.currentGame.approveLeaveMidgame.includes(props.auth.uid)
-                                || props.currentGame.rejectLeaveMidgame.includes(props.auth.uid)}
+                            onClick={() => props.destroyGameRequest(props.currentGameId)}
                         />
                     </div>
+                )}
+
+                <div className={props.styles.toggleWrappers}>
+                    <div className={props.styles.switchWrapper}>
+                        <div>View Info</div>
+                        <div><Switch onChange={setViewingRole} checked={viewingRole} /></div>
+                    </div>
+                    <div className={props.styles.switchWrapper}>
+                        <div>View Board</div>
+                        <div><Switch onChange={setViewingBoard} checked={viewingBoard} /></div>
+                    </div>
+                    <div className={props.styles.switchWrapper}>
+                        <div>View History</div>
+                        <div><Switch onChange={setShowingHistory} checked={showingHistory} /></div>
+                    </div>
                 </div>
-            </SuccessModal>
-        </div>
+
+
+                <Fade
+                    checked={viewingRole}
+                >
+                    <div className={props.styles.viewSecretInfoWrapper}>
+                        <div className={classNames({
+                            [props.styles.isGood]: props.myRole === constants.hitlerRoles.Liberal,
+                            [props.styles.isBad]: props.myRole !== constants.hitlerRoles.Liberal
+                        })}
+                        >
+                            {`Role: ${props.myRole}`}
+                        </div>
+                        {generateSecretInfo(props.myRole)}
+                        {generateHiddenInfo()}
+                    </div>
+                </Fade>
+
+
+                <div className={props.styles.viewingBoardWrapper}>
+                    <Fade
+                        checked={viewingBoard}
+                    >
+                        <div className={props.styles.avalonBoard}>
+                            <HitlerBoard
+                                numberOfPlayers={props.currentGame.numberOfPlayers}
+                                numberOfLiberals={props.currentGame.numberLiberalPlayed}
+                                numberOfFascists={props.currentGame.numberFascistPlayed}
+                            />
+                            {props.currentGame.previousPresident && (
+                                <div className={props.styles.consecutiveRejections}>
+                                    {`Previous president: ${helpers.mapUserIdToName(props.users,
+                                        props.currentGame.previousPresident)}`}
+                                </div>
+                            )}
+                            {props.currentGame.previousChancellor && (
+                                <div className={props.styles.consecutiveRejections}>
+                                    {`Previous chancellor: ${helpers.mapUserIdToName(props.users,
+                                        props.currentGame.previousChancellor)}`}
+                                </div>
+                            )}
+                            <div className={props.styles.consecutiveRejections}>
+                                {`Consecutive rejections: ${props.currentGame.consecutiveRejections}`}
+                            </div>
+                            <div className={props.styles.consecutiveRejections}>
+                                {props.currentGame.cardDeck.length === 1 ? 'Draw deck: 1 card' : `Draw deck: ${props.currentGame.cardDeck.length} cards`}
+                            </div>
+                            <div className={props.styles.consecutiveRejections}>
+                                {props.currentGame.discardPile.length === 1 ? 'Discard deck: 1 card' : `Discard deck: ${props.currentGame.discardPile.length} cards`}
+                            </div>
+                        </div>
+                    </Fade>
+                </div>
+
+                <div className={props.styles.historyWrapper}>
+                    <Fade
+                        checked={showingHistory}
+                    >
+                        <History users={props.users} history={props.currentGame.history} />
+                    </Fade>
+                </div>
+            </div>
+            <Modals
+                approveLeaveMidgameRequest={props.approveLeaveMidgameRequest}
+                auth={props.auth}
+                closeLookAtTopThree={props.closeLookAtTopThree}
+                currentGame={props.currentGame}
+                currentGameId={props.currentGameId}
+                haveClosedPeekModal={props.haveClosedPeekModal}
+                users={props.users}
+            />
+        </>
     );
 };
 
@@ -566,6 +542,10 @@ GameStarted.defaultProps = {
         status: '',
         temporaryPresident: '',
         previousChancellor: '',
+        peakingAtTopThree: {
+            player: '',
+            cards: []
+        },
         playerToKill: '',
         previousPresident: '',
         playerInvestigated: '',
@@ -575,6 +555,7 @@ GameStarted.defaultProps = {
         rejectLeaveMidgame: []
     },
     currentGameId: '',
+    haveClosedPeekModal: false,
     myRole: '',
     styles: defaultStyles,
     users: {}
@@ -611,6 +592,10 @@ GameStarted.propTypes = {
             role: PropTypes.string,
             player: PropTypes.string
         })),
+        peakingAtTopThree: PropTypes.shape({
+            player: PropTypes.string,
+            cards: PropTypes.arrayOf(PropTypes.number)
+        }),
         votesAgainst: PropTypes.arrayOf(PropTypes.string),
         votesFor: PropTypes.arrayOf(PropTypes.string),
         rejectLeaveMidgame: PropTypes.arrayOf(PropTypes.string),
@@ -625,8 +610,10 @@ GameStarted.propTypes = {
     confirmInvesigationRequest: PropTypes.func.isRequired,
     destroyGameRequest: PropTypes.func.isRequired,
     gameError: PropTypes.func.isRequired,
+    haveClosedPeekModal: PropTypes.bool,
     leaveGameRequest: PropTypes.func.isRequired,
     nominateChancellorRequest: PropTypes.func.isRequired,
+    closeLookAtTopThree: PropTypes.func.isRequired,
     makeTemporaryPresidentRequest: PropTypes.func.isRequired,
     approveLeaveMidgameRequest: PropTypes.func.isRequired,
     confirmPresidentRequest: PropTypes.func.isRequired,
@@ -651,9 +638,14 @@ const mapDispatchToProps = {
     makeTemporaryPresidentRequest,
     confirmPresidentRequest,
     killPlayerRequest,
-    confirmKillPlayerRequest
+    confirmKillPlayerRequest,
+    closeLookAtTopThree
 };
 
-export default connect(null, mapDispatchToProps)(GameStarted);
+const mapStateToProps = state => ({
+    haveClosedPeekModal: state.avalon.haveClosedPeekModal
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(GameStarted);
 
 export { GameStarted as GameStartedUnconnected };

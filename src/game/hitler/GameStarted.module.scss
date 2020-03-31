@@ -218,32 +218,6 @@
     text-align: center;
 }
 
-.endGameButtons {
-    display: flex;
-    justify-content: space-evenly;
-}
-
-.numVotes {
-    color: $color-gray;
-    font-weight: bold;
-    text-align: center;
-}
-
-.endGameVotes {
-    display: flex;
-    justify-content: space-evenly;
-    margin-left: 30%;
-    margin-right: 30%;
-}
-
-.approval {
-    color: $color-green;
-}
-
-.rejection {
-    color: $color-red;
-}
-
 .toggleWrappers {
     display: flex;
     justify-content: space-evenly;

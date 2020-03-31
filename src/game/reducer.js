@@ -3,7 +3,9 @@ import * as actions from './actions';
 export const initialState = {
     errorCode: '',
     errorMessage: '',
-    errorHeader: ''
+    errorHeader: '',
+
+    haveClosedPeekModal: false
 };
 
 const overviewReducer = (state = initialState, action) => {
@@ -22,6 +24,12 @@ const overviewReducer = (state = initialState, action) => {
             errorMessage: '',
             errorCode: '',
             errorHeader: ''
+        };
+    }
+    case actions.CLOSE_LOOK_AT_TOP_THREE: {
+        return {
+            ...state,
+            haveClosedPeekModal: true
         };
     }
     default:

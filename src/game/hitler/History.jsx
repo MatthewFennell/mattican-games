@@ -89,7 +89,7 @@ const History = props => (
         }
         if (h.type === constants.historyTypes.Peek) {
             return (
-                <div className={props.styles.chancellorPlayCardWrapper} key={`${h.round}-${h.type}-${h.president}`}>
+                <div className={props.styles.investigateWrapper} key={`${h.round}-${h.type}-${h.president}`}>
                     <div className={props.styles.round}>
                         {`Round ${h.round}`}
                     </div>
