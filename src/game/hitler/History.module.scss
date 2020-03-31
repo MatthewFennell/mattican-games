@@ -6,6 +6,7 @@
     padding: $spacing-small;
     background-color: darksalmon;
     display: flex;
+    border-radius: $spacing-small;
 }
 
 .voteHistoryWrapper {
@@ -14,6 +15,7 @@
     padding: $spacing-small;
     background-color: lightskyblue;
     display: flex;
+    border-radius: $spacing-small;
 }
 
 .chancellorPlayCardWrapper {
@@ -22,6 +24,7 @@
     padding: $spacing-small;
     background-color: aquamarine;
     display: flex;
+    border-radius: $spacing-small;
 }
 
 .investigateWrapper {
@@ -30,6 +33,8 @@
     padding: $spacing-small;
     background-color: goldenrod;
     display: flex;
+    border-radius: $spacing-small;
+    border-radius: $spacing-small;
 }
 
 .vetoWrapper {
@@ -38,16 +43,18 @@
     padding: $spacing-small;
     background-color: cadetblue;
     display: flex;
+    border-radius: $spacing-small;
 }
 
 .killPlayerWrapper {
     font-weight: bold;
     margin: $spacing-small;
     padding: $spacing-small;
-    background-color: aquamarine;
+    background-color: goldenrod;
     display: flex;
     position: relative;
     background-color: chocolate;
+    border-radius: $spacing-small;
 }
 
 .topCardFlippedWrapper {
@@ -56,6 +63,7 @@
     padding: $spacing-small;
     display: flex;
     background-color: bisque;
+    border-radius: $spacing-small;
 }
 
 .hidden {

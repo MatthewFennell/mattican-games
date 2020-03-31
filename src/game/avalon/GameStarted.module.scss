@@ -12,6 +12,16 @@
     text-align: center;
     margin: $spacing-small;
     background-color: darkseagreen;
+    border-radius: $spacing-small;
+    padding: $spacing-small;
+    font-weight: bold;
+    margin-bottom: 0px;
+}
+
+.currentPresident {
+    margin-left: 4px;
+    font-size: $font-size-miniscule;
+    @include vertical-center-div();
 }
 
 .isGood {
@@ -28,6 +38,7 @@
     text-align: center;
     color: $color-blue;
     margin-bottom: $spacing-small;
+    font-weight: bold;;
 }
 
 .playerWrapper {
@@ -38,6 +49,8 @@
     margin: $spacing-small;
     outline: 0px;
     border: 2px solid lightblue;
+    position: relative;
+    border-radius: $spacing-small;
 }
 
 .isActivePlayer {
@@ -49,11 +62,22 @@
     border: 2px solid crimson;
 }
 
+// .playerNumber {
+//     margin-left: $spacing-small;
+//     color: $color-red;
+//     font-weight: bold;
+//     width: $spacing-average;
+// }
+
 .playerNumber {
     margin-left: $spacing-small;
     color: $color-red;
     font-weight: bold;
     width: $spacing-average;
+    display: flex;
+    > div {
+        @include vertical-center-div();
+    }
 }
 
 .playerName {
@@ -111,20 +135,17 @@
     color: $color-red;
 }
 
-.viewingRole {
-    padding: $spacing-tiny;
-    margin: $spacing-tiny;
-}
-
 .viewingBoardWrapper {
     text-align: center;
 }
 
 .avalonBoard {
     margin: $spacing-small;
-    margin-top: 0px;
     padding: $spacing-small;
     background-color: burlywood;
+    font-weight: bold;
+    border-radius: $spacing-average;
+    margin-bottom: 0px;
 }
 
 .switchWrapper {
@@ -163,6 +184,8 @@
     background-color: mediumpurple;
     padding: $spacing-small;
     margin: $spacing-small;
+    border-radius: $spacing-average;
+    margin-bottom: 0px;
 }
 
 .specialRoundMessage {
@@ -220,4 +243,5 @@
 
 .historyWrapper {
     text-align: center;
+    margin-bottom: $spacing-medium;
 }

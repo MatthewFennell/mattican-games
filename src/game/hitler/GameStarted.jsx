@@ -240,12 +240,12 @@ const GameStarted = props => {
                     </div>
                 )}
 
-            {props.currentGame.status !== Finished
+            {/* {props.currentGame.status !== Finished
             && (
                 <div className={props.styles.currentLeaderWrapper}>
                     {`The current President is ${helpers.mapUserIdToName(props.users, props.currentGame.temporaryPresident || props.currentGame.president)}`}
                 </div>
-            )}
+            )} */}
             <CurrentGameStatus
                 auth={props.auth}
                 currentGame={props.currentGame}
@@ -279,8 +279,6 @@ const GameStarted = props => {
                             [props.styles.potentialTempPres]: props.currentGame.status
                             === Transfer
                             && props.currentGame.temporaryPresident === player,
-                            [props.styles.oldPres]: props.currentGame.status === TemporaryPresident
-                            && props.currentGame.president === player,
                             [props.styles.potentialKill]: props.currentGame.status
                             === Kill && props.currentGame.playerToKill === player,
                             [props.styles.deadPlayer]: props.currentGame
@@ -309,7 +307,8 @@ const GameStarted = props => {
                         </div>
                         <div className={classNames({
                             [props.styles.playerName]: true,
-                            [props.styles.activePlayer]: player === props.currentGame.president
+                            [props.styles.activePlayer]: (player === props.currentGame.president && !props.currentGame.temporaryPresident)
+                             || (props.currentGame.temporaryPresident === player)
                         })}
                         >
                             {helpers.mapUserIdToName(props.users, player)}
@@ -438,12 +437,12 @@ const GameStarted = props => {
                 </div>
             </div>
 
-            <div className={props.styles.viewSecretInfoWrapper}>
-                <Fade
-                    checked={viewingRole}
-                >
+
+            <Fade
+                checked={viewingRole}
+            >
+                <div className={props.styles.viewSecretInfoWrapper}>
                     <div className={classNames({
-                        [props.styles.viewingRole]: true,
                         [props.styles.isGood]: props.myRole === constants.hitlerRoles.Liberal,
                         [props.styles.isBad]: props.myRole !== constants.hitlerRoles.Liberal
                     })}
@@ -452,8 +451,9 @@ const GameStarted = props => {
                     </div>
                     {generateSecretInfo(props.myRole)}
                     {generateHiddenInfo()}
-                </Fade>
-            </div>
+                </div>
+            </Fade>
+
 
             <div className={props.styles.viewingBoardWrapper}>
                 <Fade
@@ -465,15 +465,18 @@ const GameStarted = props => {
                             numberOfLiberals={props.currentGame.numberLiberalPlayed}
                             numberOfFascists={props.currentGame.numberFascistPlayed}
                         />
-                        <div className={props.styles.consecutiveRejections}>
-                            {`Previous president: ${helpers.mapUserIdToName(props.users,
-                                props.currentGame.previousPresident)}`}
-                        </div>
-                        <div className={props.styles.consecutiveRejections}>
-                            {`Previous chancellor: ${helpers.mapUserIdToName(props.users,
-                                props.currentGame.previousChancellor)}`}
-                        </div>
-
+                        {props.currentGame.previousPresident && (
+                            <div className={props.styles.consecutiveRejections}>
+                                {`Previous president: ${helpers.mapUserIdToName(props.users,
+                                    props.currentGame.previousPresident)}`}
+                            </div>
+                        )}
+                        {props.currentGame.previousChancellor && (
+                            <div className={props.styles.consecutiveRejections}>
+                                {`Previous chancellor: ${helpers.mapUserIdToName(props.users,
+                                    props.currentGame.previousChancellor)}`}
+                            </div>
+                        )}
                         <div className={props.styles.consecutiveRejections}>
                             {`Consecutive rejections: ${props.currentGame.consecutiveRejections}`}
                         </div>

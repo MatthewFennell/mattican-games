@@ -87,7 +87,7 @@ const CurrentGameStatus = props => {
                     {props.currentGame.playerRoles
                         .filter(r => !constants.avalonRoles[r.role].isGood)
                         .map(r => (
-                            <div>
+                            <div key={r.player}>
                                 {`${helpers.mapUserIdToName(props.users, r.player)} was ${r.role}`}
                             </div>
                         ))}

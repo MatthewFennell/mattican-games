@@ -6,6 +6,7 @@
     padding: $spacing-small;
     background-color: darksalmon;
     display: flex;
+    border-radius: $spacing-small;
 }
 
 .voteHistoryWrapper {
@@ -14,6 +15,7 @@
     padding: $spacing-small;
     background-color: lightskyblue;
     display: flex;
+    border-radius: $spacing-small;
 }
 
 .questSucceed {

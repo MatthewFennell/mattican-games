@@ -16,10 +16,12 @@
     text-align: center;
     margin: $spacing-small;
     background-color: darkseagreen;
+    border-radius: $spacing-small;
+    padding: $spacing-small;
+    font-weight: bold;
 }
 
 .isGood {
-    font-weight: bold;
     color: $color-blue;
 }
 
@@ -57,6 +59,7 @@
     text-align: center;
     color: $color-blue;
     margin-bottom: $spacing-small;
+    font-weight: bold;
 }
 
 .playerWrapper {
@@ -68,6 +71,7 @@
     outline: 0px;
     border: 2px solid lightblue;
     position: relative;
+    border-radius: $spacing-small;
 }
 
 .isActivePlayer {
@@ -103,11 +107,6 @@
     background-color: lightgreen;
     padding: $spacing-small;
     margin: $spacing-small;
-}
-
-.oldPres {
-    border: 2px solid antiquewhite;
-    background-color: antiquewhite;
 }
 
 .activeChancellor {
@@ -154,6 +153,7 @@
     margin-left: $spacing-large;
     margin-right: $spacing-large;
     color: $color-blue;
+    @include vertical-center-div();
 }
 
 .activePlayer {
@@ -203,11 +203,6 @@
     color: $color-red;
 }
 
-.viewingRole {
-    padding: $spacing-tiny;
-    margin: $spacing-tiny;
-}
-
 .viewingBoardWrapper {
     text-align: center;
 }
@@ -216,6 +211,7 @@
     margin: $spacing-small;
     padding: $spacing-small;
     background-color: lawngreen;
+    border-radius: $spacing-average;
 }
 
 .switchWrapper {
@@ -254,6 +250,7 @@
     background-color: mediumpurple;
     padding: $spacing-small;
     margin: $spacing-small;
+    border-radius: $spacing-average;
 }
 
 .specialRoundMessage {
@@ -284,7 +281,7 @@
 }
 
 .consecutiveRejections {
-    color: $color-blue;
+    color: $color-black;
     text-align: center;
     font-weight: bold;
 }

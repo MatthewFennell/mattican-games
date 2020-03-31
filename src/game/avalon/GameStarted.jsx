@@ -197,7 +197,11 @@ const GameStarted = props => {
                         onClick={() => nominatePlayer(player)}
                         key={player}
                     >
-                        <div className={props.styles.playerNumber}>{`#${index + 1}`}</div>
+                        <div className={props.styles.playerNumber}>
+                            <div>{`#${index + 1}`}</div>
+                            {props.currentGame.leader === player
+                        && <div className={props.styles.currentPresident}>(Leader)</div>}
+                        </div>
                         <div className={classNames({
                             [props.styles.playerName]: true,
                             [props.styles.activePlayer]: player === props.currentGame.leader
@@ -288,10 +292,11 @@ const GameStarted = props => {
                 </div>
             </div>
 
-            <div className={props.styles.viewSecretInfoWrapper}>
-                <Fade
-                    checked={viewingRole}
-                >
+
+            <Fade
+                checked={viewingRole}
+            >
+                <div className={props.styles.viewSecretInfoWrapper}>
                     <div className={classNames({
                         [props.styles.viewingRole]: true,
                         [props.styles.isGood]: helpers.isRoleGood(props.myRole),
@@ -301,8 +306,8 @@ const GameStarted = props => {
                         {`Role: ${props.myRole}`}
                     </div>
                     {generateSecretInfo(props.myRole)}
-                </Fade>
-            </div>
+                </div>
+            </Fade>
 
             <div className={props.styles.viewingBoardWrapper}>
                 <Fade

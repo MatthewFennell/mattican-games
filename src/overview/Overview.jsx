@@ -115,13 +115,14 @@ const Overview = props => {
                             ) }
                             {game.currentPlayers
                         && (
-                            <div>
+                            <div className={props.styles.gameCurrentPlayers}>
                                 {`Current players: ${game.currentPlayers.map(x => mapUserIdToName(game.usernameMappings, x))}`}
                             </div>
                         ) }
                             {game.hasStarted && (
                                 <div className={props.styles.alreadyStarted}>
-                                Game has already started
+                                    {game.status === constants.hitlerGameStatuses.Finished
+                                        ? 'Game has finished' : 'Game has already started'}
                                 </div>
                             )}
                         </div>

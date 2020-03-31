@@ -95,9 +95,10 @@ const CurrentGameStatus = props => {
             const cardTwo = presidentCards[selectedPresidentCards[1]];
             props.giveCardsToChancellorRequest(props.currentGameId, [cardOne, cardTwo]);
             setSelectedPresidentCards([]);
+            setSelectingPresidentCards(false);
         }
         // eslint-disable-next-line
-    }, [props.currentGame, selectedPresidentCards, setSelectedPresidentCards]);
+    }, [props.currentGame, selectedPresidentCards, setSelectedPresidentCards, setSelectingPresidentCards]);
 
     const playChancellorCard = useCallback(() => {
         const { chancellorCards } = props.currentGame;
@@ -105,9 +106,10 @@ const CurrentGameStatus = props => {
             const card = chancellorCards[selectedChancellorCard];
             props.playChancellorCardRequest(props.currentGameId, card);
             setSelectedChancellorCard('');
+            setSelectingChancellorCard(false);
         }
         // eslint-disable-next-line
-    }, [props.currentGame, selectedChancellorCard, setSelectedChancellorCard])
+    }, [props.currentGame, selectedChancellorCard, setSelectedChancellorCard, setSelectingChancellorCard])
 
     const makeVetoRequest = useCallback(() => {
         props.initiateVetoRequest(props.currentGameId);
