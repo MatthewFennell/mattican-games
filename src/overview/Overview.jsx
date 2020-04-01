@@ -107,7 +107,7 @@ const Overview = props => {
                             <div>
                                 {`Game Mode: ${game.mode}` }
                             </div>
-                            {game.mode === constants.gameModes.Avalon
+                            {game.mode === constants.gameModes.Avalon && game && game.roles
                             && (
                                 <div>
                                     {`Roles: ${game.roles.reduce((acc, cur) => `${acc}, ${cur}`, '')}` }
