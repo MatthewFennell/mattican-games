@@ -84,3 +84,5 @@ export default compose(
         }
     ]),
 )(App);
+
+// Multiple occurences in history

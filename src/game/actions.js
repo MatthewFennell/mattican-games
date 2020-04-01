@@ -50,6 +50,10 @@ export const REPLY_TO_VETO_REQUEST = `${pre}REPLY_TO_VETO_REQUEST`;
 
 export const CLOSE_LOOK_AT_TOP_THREE = `${pre}CLOSE_LOOK_AT_TOP_THREE`;
 
+export const EDIT_HITLER_GAME_REQUEST = `${pre}EDIT_HITLER_GAME_REQUEST`;
+
+export const EDIT_AVALON_GAME_REQUEST = `${pre}EDIT_AVALON_GAME_REQUEST`;
+
 export const gameError = (error, header) => ({
     type: GAME_ERROR,
     error,
@@ -201,4 +205,17 @@ export const replyToVetoRequest = (gameId, isApprove) => ({
 export const closeLookAtTopThree = gameId => ({
     type: CLOSE_LOOK_AT_TOP_THREE,
     gameId
+});
+
+export const editHitlerGameRequest = (gameId, numberOfPlayers) => ({
+    type: EDIT_HITLER_GAME_REQUEST,
+    gameId,
+    numberOfPlayers
+});
+
+export const editAvalonGameRequest = (gameId, numberOfPlayers, roles) => ({
+    type: EDIT_AVALON_GAME_REQUEST,
+    gameId,
+    numberOfPlayers,
+    roles
 });

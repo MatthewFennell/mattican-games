@@ -108,7 +108,8 @@ const GameStarted = props => {
         if (props.currentGame.numberOfPlayers <= 8) {
             if (role === constants.hitlerRoles.Fascist) {
                 const hitler = fp.get('player')(props.currentGame.playerRoles.find(x => x.role === constants.hitlerRoles.Hitler));
-                const fascist = fp.get('player')(props.currentGame.playerRoles.find(x => x.role === constants.hitlerRoles.Fascist));
+                const fascist = fp.get('player')(props.currentGame.playerRoles
+                    .find(x => x.role === constants.hitlerRoles.Fascist && x.player !== props.auth.uid));
 
                 return (
                     <div>

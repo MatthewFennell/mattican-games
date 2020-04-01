@@ -38,6 +38,17 @@
     background-color: khaki;
 }
 
+.editGame {
+    margin: $spacing-small;
+    padding: $spacing-small;
+    background-color: khaki;
+}
+
+.readyUp {
+    display: flex;
+    justify-content: space-evenly;
+}
+
 .hostValue {
     text-align: center;
     color: $color-black;
@@ -80,6 +91,16 @@
 .gameInfo {
     display: flex;
     justify-content: space-evenly;
+}
+
+.editNumberOfPlayers {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.confirmEditButton {
+    text-align: center;
 }
 
 // @keyframes flickerAnimation {
@@ -150,3 +171,34 @@
     height: 40px;
     width: 40px;
 }
+
+.startAndLeave {
+    display: flex;
+    justify-content: space-evenly;
+    text-align: center;
+}
+
+.goodGuyRoles, .badGuyRoles {
+    display: flex;
+    justify-content: space-evenly;
+  }
+  
+  .roleWrapper {
+    text-align: center;
+  }
+  
+  .avalonRolesMessage {
+    color: $color-green;
+    text-align: center;
+    padding: $spacing-small;
+  }
+  
+  .avalonGoodRoleName {
+    color: $color-blue;
+    font-weight: bold;
+  }
+  
+  .avalonBadRoleName {
+    color: $color-red;
+    font-weight: bold;
+  }

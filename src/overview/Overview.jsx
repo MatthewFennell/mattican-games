@@ -101,9 +101,11 @@ const Overview = props => {
                             <div>
                                 {`Name: ${game.name}`}
                             </div>
-                            <div>
-                                {`Number of players: ${game.currentPlayers.length}/${game.numberOfPlayers}` }
-                            </div>
+                            {game.currentPlayers && (
+                                <div>
+                                    {`Number of players: ${game.currentPlayers.length}/${game.numberOfPlayers}` }
+                                </div>
+                            )}
                             <div>
                                 {`Game Mode: ${game.mode}` }
                             </div>

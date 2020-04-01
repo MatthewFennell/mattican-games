@@ -349,14 +349,6 @@ const CurrentGameStatus = props => {
         );
     }
 
-    if (props.currentGame.deadPlayers.includes(props.auth.uid)) {
-        return (
-            <div className={props.styles.investigating}>
-                You are dead
-            </div>
-        );
-    }
-
     if (props.currentGame.status === constants.hitlerGameStatuses.Finished) {
         return (
             <div className={props.styles.gameEnded}>
@@ -392,6 +384,14 @@ const CurrentGameStatus = props => {
                         </div>
                     ))}
                 </div>
+            </div>
+        );
+    }
+
+    if (props.currentGame.deadPlayers.includes(props.auth.uid)) {
+        return (
+            <div className={props.styles.investigating}>
+                You are dead
             </div>
         );
     }

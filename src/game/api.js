@@ -21,6 +21,8 @@ export const confirmKillPlayer = request => functionToCall('confirmKillPlayer')(
 export const initiateVeto = request => functionToCall('initiateVeto')(request);
 export const replyToVeto = request => functionToCall('replyToVeto')(request);
 export const closeTopThree = request => functionToCall('closeTopThree')(request);
+export const editGameHitler = request => functionToCall('editGameHitler')(request);
+export const editGameAvalon = request => functionToCall('editGameAvalon')(request);
 
 export const startAvalonGame = request => functionToCall('avalon-startGame')(request);
 export const nominatePlayer = request => functionToCall('avalon-nominatePlayer')(request);

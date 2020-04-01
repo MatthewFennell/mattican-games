@@ -7,7 +7,7 @@ export const getMyGames = state => {
         return null;
     }
 
-    const game = Object.keys(allGames).find(key => allGames[key].currentPlayers
+    const game = Object.keys(allGames).find(key => allGames[key] && allGames[key].currentPlayers
         && allGames[key].currentPlayers.includes(myId));
 
     return game || null;

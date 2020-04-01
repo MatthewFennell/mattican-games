@@ -11,7 +11,7 @@ import Switch from '../common/Switch/Switch';
 import * as constants from '../constants';
 import Spinner from '../common/spinner/Spinner';
 
-const shouldBeDisabled = (numberOfPlayers, activeAvalonRoles, role) => {
+export const shouldBeDisabled = (numberOfPlayers, activeAvalonRoles, role) => {
     if (numberOfPlayers > 6) {
         return false;
     }

@@ -278,6 +278,30 @@ export function* closeTopThree(api, action) {
     }
 }
 
+export function* editGameHitler(api, action) {
+    try {
+        yield call(api.editGameHitler, ({
+            gameId: action.gameId,
+            numberOfPlayers: action.numberOfPlayers
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Edit Game error'));
+    }
+}
+
+export function* editGameAvalon(api, action) {
+    try {
+        yield call(api.editGameAvalon, ({
+            gameId: action.gameId,
+            numberOfPlayers: action.numberOfPlayers,
+            roles: action.roles
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Edit Game error'));
+    }
+}
+
+
 export default function* overviewSaga() {
     yield all([
         takeEvery(actions.LEAVE_GAME_REQUEST, leaveGame, gameApi),
@@ -305,6 +329,8 @@ export default function* overviewSaga() {
         takeEvery(actions.CONFIRM_KILL_PLAYER_REQUEST, confirmKillPlayer, gameApi),
         takeEvery(actions.INITIATE_VETO_REQUEST, initiateVeto, gameApi),
         takeEvery(actions.REPLY_TO_VETO_REQUEST, replyToVeto, gameApi),
-        takeEvery(actions.CLOSE_LOOK_AT_TOP_THREE, closeTopThree, gameApi)
+        takeEvery(actions.CLOSE_LOOK_AT_TOP_THREE, closeTopThree, gameApi),
+        takeEvery(actions.EDIT_HITLER_GAME_REQUEST, editGameHitler, gameApi),
+        takeEvery(actions.EDIT_AVALON_GAME_REQUEST, editGameAvalon, gameApi)
     ]);
 }

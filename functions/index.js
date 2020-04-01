@@ -1346,3 +1346,59 @@ exports.closeTopThree = functions
             });
         });
     });
+
+exports.editGameHitler = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+            if (data.numberOfPlayers < 5) {
+                throw new functions.https.HttpsError('invalid-argument', 'Can\'t have less than 5 players');
+            }
+            if (doc.data().currentPlayers.length > data.numberOfPlayers) {
+                throw new functions.https.HttpsError('invalid-argument', 'You already have too many players for that');
+            }
+            return doc.ref.update({
+                numberOfPlayers: data.numberOfPlayers
+            });
+        });
+    });
+
+
+const validAvalonRoles = (numberOfPlayers, roles) => {
+    console.log('roles', roles);
+    console.log('num players', numberOfPlayers);
+    const numberBad = roles.filter(role => !constants.avalonRoles[role].isGood).length;
+    if (numberBad > 2 && numberOfPlayers <= 6) {
+        return false;
+    }
+    return true;
+};
+
+exports.editGameAvalon = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+            if (data.numberOfPlayers < 5) {
+                throw new functions.https.HttpsError('invalid-argument', 'Can\'t have less than 5 players');
+            }
+            if (doc.data().currentPlayers.length > data.numberOfPlayers) {
+                throw new functions.https.HttpsError('invalid-argument', 'You already have too many players for that');
+            }
+            if (!validAvalonRoles(data.numberOfPlayers, data.roles)) {
+                throw new functions.https.HttpsError('invalid-argument', 'Invalid roles');
+            }
+
+            return doc.ref.update({
+                numberOfPlayers: data.numberOfPlayers,
+                roles: data.roles
+            });
+        });
+    });
