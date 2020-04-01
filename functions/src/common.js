@@ -102,11 +102,8 @@ module.exports.findNextUserHitler = (leader, users, deadPlayers) => {
     let val = users[(index + jump) % users.length];
 
     while (deadPlayers.includes(val)) {
-        console.log('dead player found (', `${val})`);
         jump += 1;
         val = users[(index + jump) % users.length];
-        console.log('new player', val);
-        console.log('');
     }
     return val;
 };
