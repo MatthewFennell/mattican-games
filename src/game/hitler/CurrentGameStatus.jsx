@@ -15,14 +15,8 @@ import {
 } from '../actions';
 
 const CurrentGameStatus = props => {
-    const [makingVote, setMakingVote] = useState(false);
-    const toggleMakingVote = useCallback(() => {
-        setMakingVote(!makingVote);
-    }, [makingVote, setMakingVote]);
-
     const placeVote = useCallback(vote => {
         props.makeHitlerVoteRequest(props.currentGameId, vote);
-        setMakingVote(false);
         // eslint-disable-next-line
     }, [props.currentGameId])
 
@@ -204,23 +198,16 @@ const CurrentGameStatus = props => {
                     {`${helpers.mapUserIdToName(props.users, props.currentGame.president)} is electing ${
                         helpers.mapUserIdToName(props.users, props.currentGame.chancellor)}` }
                 </div>
-                <Fade
-                    checked={makingVote}
-                    onChange={toggleMakingVote}
-                    includeCheckbox
-                    label="Cast Vote"
-                >
-                    <div className={props.styles.votingButtons}>
-                        {props.currentGame.votesAgainst.includes(props.auth.uid)
+                <div className={props.styles.votingButtons}>
+                    {props.currentGame.votesAgainst.includes(props.auth.uid)
                         || props.currentGame.votesFor.includes(props.auth.uid)
-                            ? <StyledButton text={`Voted ${props.currentGame.votesFor.includes(props.auth.uid) ? 'Yes' : 'No'}`} disabled /> : (
-                                <>
-                                    <StyledButton text="Vote Yes" onClick={() => placeVote(true)} />
-                                    <StyledButton text="Vote No" color="secondary" onClick={() => placeVote(false)} />
-                                </>
-                            )}
-                    </div>
-                </Fade>
+                        ? <StyledButton text={`Voted ${props.currentGame.votesFor.includes(props.auth.uid) ? 'Yes' : 'No'}`} disabled /> : (
+                            <>
+                                <StyledButton text="Vote Yes" onClick={() => placeVote(true)} />
+                                <StyledButton text="Vote No" color="secondary" onClick={() => placeVote(false)} />
+                            </>
+                        )}
+                </div>
             </div>
         );
     }

@@ -10,11 +10,6 @@ import { makeAvalonVoteRequest, makeQuestRequest } from '../actions';
 import GameFinished from './GameFinished';
 
 const CurrentGameStatus = props => {
-    const [makingVote, setMakingVote] = useState(false);
-    const toggleMakingVote = useCallback(() => {
-        setMakingVote(!makingVote);
-    }, [makingVote, setMakingVote]);
-
     const [makingQuest, setMakingQuest] = useState(false);
     const toggleMakingQuest = useCallback(() => {
         setMakingQuest(!makingQuest);
@@ -28,7 +23,6 @@ const CurrentGameStatus = props => {
 
     const placeVote = useCallback(vote => {
         props.makeAvalonVoteRequest(props.currentGameId, vote);
-        setMakingVote(false);
         // eslint-disable-next-line
     }, [props.currentGameId, setMakingQuest])
 
@@ -44,23 +38,16 @@ const CurrentGameStatus = props => {
     if (props.currentGame.status === constants.avalonGameStatuses.Voting) {
         return (
             <div className={props.styles.votingWrapper}>
-                <Fade
-                    checked={makingVote}
-                    onChange={toggleMakingVote}
-                    includeCheckbox
-                    label="Cast Vote"
-                >
-                    <div className={props.styles.votingButtons}>
-                        {props.currentGame.votesAgainst.includes(props.auth.uid)
+                <div className={props.styles.votingButtons}>
+                    {props.currentGame.votesAgainst.includes(props.auth.uid)
                         || props.currentGame.votesFor.includes(props.auth.uid)
-                            ? <StyledButton text={`Voted ${props.currentGame.votesFor.includes(props.auth.uid) ? 'Yes' : 'No'}`} disabled /> : (
-                                <>
-                                    <StyledButton text="Vote Yes" onClick={() => placeVote(true)} />
-                                    <StyledButton text="Vote No" color="secondary" onClick={() => placeVote(false)} />
-                                </>
-                            )}
-                    </div>
-                </Fade>
+                        ? <StyledButton text={`Voted ${props.currentGame.votesFor.includes(props.auth.uid) ? 'Yes' : 'No'}`} disabled /> : (
+                            <>
+                                <StyledButton text="Vote Yes" onClick={() => placeVote(true)} />
+                                <StyledButton text="Vote No" color="secondary" onClick={() => placeVote(false)} />
+                            </>
+                        )}
+                </div>
             </div>
         );
     }
