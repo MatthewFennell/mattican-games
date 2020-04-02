@@ -9,7 +9,7 @@ import TextInput from '../../common/TextInput/TextInput';
 import * as textInputConstants from '../../common/TextInput/constants';
 
 const SelectProfilePicture = props => {
-    const [ownPhotoUrl, setOwnPhotoUrl] = useState(props.currentPhotoUrl);
+    const [ownPhotoUrl, setOwnPhotoUrl] = useState(props.currentPhotoUrl || '');
 
     const updateImage = useCallback(photoUrl => {
         if (photoUrl !== props.currentPhotoUrl) {

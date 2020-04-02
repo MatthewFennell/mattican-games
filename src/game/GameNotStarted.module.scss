@@ -176,6 +176,9 @@
     display: flex;
     justify-content: space-evenly;
     text-align: center;
+    padding: $spacing-small;
+    margin: $spacing-small;
+    background-color: cadetblue;
 }
 
 .goodGuyRoles, .badGuyRoles {

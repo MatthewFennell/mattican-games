@@ -970,8 +970,7 @@ exports.confirmInvestigation = functions
                 type: constants.hitlerGameStatuses.Investigate
             };
 
-            const roleOfInvestigated = fp.get('role')(playerRoles.find(x => x.player === playerToInvestigate));
-
+            const playerInvestigated = playerRoles.find(x => x.player === playerToInvestigate);
 
             return doc.ref.update({
                 playerToInvestigate: '',
@@ -980,11 +979,13 @@ exports.confirmInvestigation = functions
                 presidentCards: [],
                 firstInvestigation: numberFascistPlayed === 1 ? {
                     player: context.auth.uid,
-                    role: roleOfInvestigated
+                    role: fp.get('role')(playerInvestigated),
+                    investigated: fp.get('player')(playerInvestigated)
                 } : firstInvestigation,
                 secondInvestigation: numberFascistPlayed === 2 ? {
                     player: context.auth.uid,
-                    role: roleOfInvestigated
+                    role: fp.get('role')(playerInvestigated),
+                    investigated: fp.get('player')(playerInvestigated)
                 } : secondInvestigation,
                 chancellorCards: [],
                 previousPresident: president,
@@ -1414,6 +1415,29 @@ exports.editGameAvalon = functions
             return doc.ref.update({
                 numberOfPlayers: data.numberOfPlayers,
                 roles: data.roles
+            });
+        });
+    });
+
+exports.closeInvestigation = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+            return doc.ref.update({
+                firstInvestigation: data.isFirst ? {
+                    player: '',
+                    role: '',
+                    investigated: ''
+                } : doc.data().firstInvestigation,
+                secondInvestigation: data.isFirst ? doc.data().secondInvestigation : {
+                    player: '',
+                    role: '',
+                    investigated: ''
+                }
             });
         });
     });

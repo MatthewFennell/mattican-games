@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -8,6 +9,7 @@ import * as helpers from '../helpers';
 import defaultStyles from './Modals.module.scss';
 import SuccessModal from '../../common/modal/SuccessModal';
 import StyledButton from '../../common/StyledButton/StyledButton';
+import * as constants from '../../constants';
 
 const Modals = props => (
     <>
@@ -64,7 +66,7 @@ const Modals = props => (
 
         <SuccessModal
             backdrop
-            closeModal={() => props.closeLookAtTopThree(props.currentGameId)}
+            closeModal={() => props.closeLookAtTopThreeRequest(props.currentGameId)}
             error
             isOpen={props.currentGame.peakingAtTopThree.player
                 === props.auth.uid && !props.haveClosedPeekModal}
@@ -78,11 +80,65 @@ const Modals = props => (
                             [props.styles.liberal]: card === 1,
                             [props.styles.fascist]: card === -1
                         })}
-                        index={`card-${index}`}
+                        key={`card-${index}`}
                     >
                         {card === 1 ? 'L' : 'F'}
                     </div>
                 ))}
+            </div>
+        </SuccessModal>
+        <SuccessModal
+            backdrop
+            closeModal={() => props.closeLookAtInvestigationRequest(props.currentGameId, true)}
+            error
+            isOpen={props.currentGame.firstInvestigation.player
+                === props.auth.uid && !props.haveClosedFirstInvestigation}
+            headerMessage={`Identity of ${helpers.mapUserIdToName(props.users, props.currentGame.firstInvestigation.investigated)}`}
+        >
+            <div className={props.styles.showInvestigatedCardWrapper}>
+                <div>
+                    {`You looked at ${helpers.mapUserIdToName(props.users, props.currentGame.firstInvestigation.investigated)}s card`}
+                </div>
+                <div>
+                    {`They are ${props.currentGame.firstInvestigation.role === constants.hitlerRoles.Liberal ? 'Liberal' : 'Fascist'}`}
+                </div>
+                <div
+                    className={classNames({
+                        [props.styles.liberal]: props.currentGame.firstInvestigation.role
+                        === constants.hitlerRoles.Liberal,
+                        [props.styles.fascist]: props.currentGame.firstInvestigation.role
+                        !== constants.hitlerRoles.Liberal
+                    })}
+                >
+                    {props.currentGame.firstInvestigation.role === constants.hitlerRoles.Liberal ? 'L' : 'F'}
+                </div>
+            </div>
+        </SuccessModal>
+        <SuccessModal
+            backdrop
+            closeModal={() => props.closeLookAtInvestigationRequest(props.currentGameId, false)}
+            error
+            isOpen={props.currentGame.secondInvestigation.player
+                === props.auth.uid && !props.haveClosedSecondInvestigation}
+            headerMessage={`Identity of ${helpers.mapUserIdToName(props.users, props.currentGame.secondInvestigation.investigated)}`}
+        >
+            <div className={props.styles.showInvestigatedCardWrapper}>
+                <div>
+                    {`You looked at ${helpers.mapUserIdToName(props.users, props.currentGame.secondInvestigation.investigated)}s card`}
+                </div>
+                <div>
+                    {`They are ${props.currentGame.secondInvestigation.role === constants.hitlerRoles.Liberal ? 'Liberal' : 'Fascist'}`}
+                </div>
+                <div
+                    className={classNames({
+                        [props.styles.liberal]: props.currentGame.secondInvestigation.role
+                        === constants.hitlerRoles.Liberal,
+                        [props.styles.fascist]: props.currentGame.secondInvestigation.role
+                        !== constants.hitlerRoles.Liberal
+                    })}
+                >
+                    {props.currentGame.secondInvestigation.role === constants.hitlerRoles.Liberal ? 'L' : 'F'}
+                </div>
             </div>
         </SuccessModal>
     </>
@@ -93,9 +149,20 @@ Modals.defaultProps = {
         uid: ''
     },
     approveLeaveMidgameRequest: noop,
-    closeLookAtTopThree: noop,
+    closeLookAtTopThreeRequest: noop,
+    closeLookAtInvestigationRequest: noop,
     currentGame: {
         approveLeaveMidgame: [],
+        firstInvestigation: {
+            player: '',
+            role: '',
+            investigated: ''
+        },
+        secondInvestigation: {
+            player: '',
+            role: '',
+            investigated: ''
+        },
         rejectLeaveMidgame: [],
         peakingAtTopThree: {
             player: '',
@@ -105,6 +172,8 @@ Modals.defaultProps = {
     },
     currentGameId: '',
     haveClosedPeekModal: false,
+    haveClosedFirstInvestigation: false,
+    haveClosedSecondInvestigation: false,
     styles: defaultStyles,
     users: {}
 };
@@ -114,9 +183,20 @@ Modals.propTypes = {
         uid: PropTypes.string
     }),
     approveLeaveMidgameRequest: PropTypes.func,
-    closeLookAtTopThree: PropTypes.func,
+    closeLookAtTopThreeRequest: PropTypes.func,
+    closeLookAtInvestigationRequest: PropTypes.func,
     currentGame: PropTypes.shape({
         approveLeaveMidgame: PropTypes.arrayOf(PropTypes.string),
+        firstInvestigation: PropTypes.shape({
+            player: PropTypes.string,
+            role: PropTypes.string,
+            investigated: PropTypes.string
+        }),
+        secondInvestigation: PropTypes.shape({
+            player: PropTypes.string,
+            role: PropTypes.string,
+            investigated: PropTypes.string
+        }),
         rejectLeaveMidgame: PropTypes.arrayOf(PropTypes.string),
         peakingAtTopThree: PropTypes.shape({
             player: PropTypes.string,
@@ -126,6 +206,8 @@ Modals.propTypes = {
     }),
     currentGameId: PropTypes.string,
     haveClosedPeekModal: PropTypes.bool,
+    haveClosedFirstInvestigation: PropTypes.bool,
+    haveClosedSecondInvestigation: PropTypes.bool,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})
 };

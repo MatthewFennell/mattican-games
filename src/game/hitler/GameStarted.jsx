@@ -17,7 +17,8 @@ import {
     nominateChancellorRequest, confirmChancellorRequest, leaveGameRequest,
     destroyGameRequest, approveLeaveMidgameRequest, selectInvestigateRequest,
     confirmInvesigationRequest, makeTemporaryPresidentRequest, confirmPresidentRequest,
-    gameError, killPlayerRequest, confirmKillPlayerRequest, closeLookAtTopThree
+    gameError, killPlayerRequest, confirmKillPlayerRequest, closeLookAtTopThreeRequest,
+    closeLookAtInvestigationRequest
 } from '../actions';
 import StyledButton from '../../common/StyledButton/StyledButton';
 import Switch from '../../common/Switch/Switch';
@@ -505,10 +506,13 @@ const GameStarted = props => {
             <Modals
                 approveLeaveMidgameRequest={props.approveLeaveMidgameRequest}
                 auth={props.auth}
-                closeLookAtTopThree={props.closeLookAtTopThree}
+                closeLookAtTopThreeRequest={props.closeLookAtTopThreeRequest}
+                closeLookAtInvestigationRequest={props.closeLookAtInvestigationRequest}
                 currentGame={props.currentGame}
                 currentGameId={props.currentGameId}
                 haveClosedPeekModal={props.haveClosedPeekModal}
+                haveClosedFirstInvestigation={props.haveClosedFirstInvestigation}
+                haveClosedSecondInvestigation={props.haveClosedSecondInvestigation}
                 users={props.users}
             />
         </>
@@ -557,6 +561,8 @@ GameStarted.defaultProps = {
     },
     currentGameId: '',
     haveClosedPeekModal: false,
+    haveClosedFirstInvestigation: false,
+    haveClosedSecondInvestigation: false,
     myRole: '',
     styles: defaultStyles,
     users: {}
@@ -609,12 +615,15 @@ GameStarted.propTypes = {
         temporaryPresident: PropTypes.string
     }),
     confirmInvesigationRequest: PropTypes.func.isRequired,
+    closeLookAtInvestigationRequest: PropTypes.func.isRequired,
     destroyGameRequest: PropTypes.func.isRequired,
     gameError: PropTypes.func.isRequired,
     haveClosedPeekModal: PropTypes.bool,
+    haveClosedFirstInvestigation: PropTypes.bool,
+    haveClosedSecondInvestigation: PropTypes.bool,
     leaveGameRequest: PropTypes.func.isRequired,
     nominateChancellorRequest: PropTypes.func.isRequired,
-    closeLookAtTopThree: PropTypes.func.isRequired,
+    closeLookAtTopThreeRequest: PropTypes.func.isRequired,
     makeTemporaryPresidentRequest: PropTypes.func.isRequired,
     approveLeaveMidgameRequest: PropTypes.func.isRequired,
     confirmPresidentRequest: PropTypes.func.isRequired,
@@ -640,11 +649,14 @@ const mapDispatchToProps = {
     confirmPresidentRequest,
     killPlayerRequest,
     confirmKillPlayerRequest,
-    closeLookAtTopThree
+    closeLookAtTopThreeRequest,
+    closeLookAtInvestigationRequest
 };
 
 const mapStateToProps = state => ({
-    haveClosedPeekModal: state.avalon.haveClosedPeekModal
+    haveClosedPeekModal: state.avalon.haveClosedPeekModal,
+    haveClosedFirstInvestigation: state.avalon.haveClosedFirstInvestigation,
+    haveClosedSecondInvestigation: state.avalon.haveClosedSecondInvestigation
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GameStarted);

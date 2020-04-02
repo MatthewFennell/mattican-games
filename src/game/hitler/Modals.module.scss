@@ -54,3 +54,17 @@
     font-weight: bold;
     height: $spacing-huge;
 }
+
+.showInvestigatedCardWrapper {
+    text-align: center;
+    font-weight: bold;
+    color: $color-green;
+
+    .fascist, .liberal {
+        width: 50%;
+        margin-left: auto;
+        margin-right: auto;
+        height: $spacing-gigantic;
+        @include vertical-center-div();
+    }
+}

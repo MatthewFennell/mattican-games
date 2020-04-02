@@ -48,7 +48,9 @@ export const INITIATE_VETO_REQUEST = `${pre}INITIATE_VETO_REQUEST`;
 
 export const REPLY_TO_VETO_REQUEST = `${pre}REPLY_TO_VETO_REQUEST`;
 
-export const CLOSE_LOOK_AT_TOP_THREE = `${pre}CLOSE_LOOK_AT_TOP_THREE`;
+export const CLOSE_LOOK_AT_TOP_THREE_REQUEST = `${pre}CLOSE_LOOK_AT_TOP_THREE_REQUEST`;
+
+export const CLOSE_LOOK_AT_INVESTIGATION_REQUEST = `${pre}CLOSE_LOOK_AT_INVESTIGATION_REQUEST`;
 
 export const EDIT_HITLER_GAME_REQUEST = `${pre}EDIT_HITLER_GAME_REQUEST`;
 
@@ -202,9 +204,15 @@ export const replyToVetoRequest = (gameId, isApprove) => ({
     isApprove
 });
 
-export const closeLookAtTopThree = gameId => ({
-    type: CLOSE_LOOK_AT_TOP_THREE,
+export const closeLookAtTopThreeRequest = gameId => ({
+    type: CLOSE_LOOK_AT_TOP_THREE_REQUEST,
     gameId
+});
+
+export const closeLookAtInvestigationRequest = (gameId, isFirst) => ({
+    type: CLOSE_LOOK_AT_INVESTIGATION_REQUEST,
+    gameId,
+    isFirst
 });
 
 export const editHitlerGameRequest = (gameId, numberOfPlayers) => ({

@@ -301,6 +301,17 @@ export function* editGameAvalon(api, action) {
     }
 }
 
+export function* closeLookAtInvestigation(api, action) {
+    try {
+        yield call(api.closeInvestigation, ({
+            gameId: action.gameId,
+            isFirst: action.isFirst
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Close Investigation error'));
+    }
+}
+
 
 export default function* overviewSaga() {
     yield all([
@@ -329,8 +340,9 @@ export default function* overviewSaga() {
         takeEvery(actions.CONFIRM_KILL_PLAYER_REQUEST, confirmKillPlayer, gameApi),
         takeEvery(actions.INITIATE_VETO_REQUEST, initiateVeto, gameApi),
         takeEvery(actions.REPLY_TO_VETO_REQUEST, replyToVeto, gameApi),
-        takeEvery(actions.CLOSE_LOOK_AT_TOP_THREE, closeTopThree, gameApi),
+        takeEvery(actions.CLOSE_LOOK_AT_TOP_THREE_REQUEST, closeTopThree, gameApi),
         takeEvery(actions.EDIT_HITLER_GAME_REQUEST, editGameHitler, gameApi),
-        takeEvery(actions.EDIT_AVALON_GAME_REQUEST, editGameAvalon, gameApi)
+        takeEvery(actions.EDIT_AVALON_GAME_REQUEST, editGameAvalon, gameApi),
+        takeEvery(actions.CLOSE_LOOK_AT_INVESTIGATION_REQUEST, closeLookAtInvestigation, gameApi)
     ]);
 }

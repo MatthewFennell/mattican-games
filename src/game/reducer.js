@@ -5,7 +5,9 @@ export const initialState = {
     errorMessage: '',
     errorHeader: '',
 
-    haveClosedPeekModal: false
+    haveClosedPeekModal: false,
+    haveClosedFirstInvestigation: false,
+    haveSecondFirstInvestigation: false
 };
 
 const overviewReducer = (state = initialState, action) => {
@@ -26,10 +28,17 @@ const overviewReducer = (state = initialState, action) => {
             errorHeader: ''
         };
     }
-    case actions.CLOSE_LOOK_AT_TOP_THREE: {
+    case actions.CLOSE_LOOK_AT_TOP_THREE_REQUEST: {
         return {
             ...state,
             haveClosedPeekModal: true
+        };
+    }
+    case actions.CLOSE_LOOK_AT_INVESTIGATION_REQUEST: {
+        return {
+            ...state,
+            haveClosedFirstInvestigation: action.isFirst,
+            haveSecondFirstInvestigation: !action.isFirst
         };
     }
     default:
