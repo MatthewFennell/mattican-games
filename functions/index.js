@@ -1441,3 +1441,28 @@ exports.closeInvestigation = functions
             });
         });
     });
+
+
+exports.editDisplayName = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+            if (!data.displayName) {
+                throw new functions.https.HttpsError('invalid-argument', 'Must provide a valid display name');
+            }
+            if (data.displayName.length > 12) {
+                throw new functions.https.HttpsError('invalid-argument', 'Too long. Max length of 12');
+            }
+
+            const batch = db.batch();
+            const userRef = db.collection('users').doc(context.auth.uid);
+            batch.update(userRef, { displayName: data.displayName });
+            const newMappings = fp.set(context.auth.uid, data.displayName)(doc.data().usernameMappings);
+            batch.update(doc.ref, { usernameMappings: newMappings });
+            batch.commit();
+        });
+    });

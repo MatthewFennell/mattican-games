@@ -219,31 +219,32 @@ const GameNotStarted = props => {
                 </Fade>
             </div>
 
-            {props.currentGame.host === props.auth.uid
+
+            <div className={props.styles.startAndLeave}>
+                {props.currentGame.host === props.auth.uid
             && (
-                <div className={props.styles.startAndLeave}>
-                    <div
-                        className={props.styles.startGameWrapper}
-                    >
-                        <StyledButton
-                            text="Start Game"
-                            disabled={(props.currentGame.currentPlayers.length
+                <div
+                    className={props.styles.startGameWrapper}
+                >
+                    <StyledButton
+                        text="Start Game"
+                        disabled={(props.currentGame.currentPlayers.length
                             < props.currentGame.numberOfPlayers)
                             || props.currentGame.playersReady.length
                             !== props.currentGame.numberOfPlayers}
-                            onClick={() => props.startGameRequest(props.currentGameId,
-                                props.currentGame.mode)}
-                        />
-                    </div>
-                    <div className={props.styles.leaveGameWrapper}>
-                        <StyledButton
-                            text="Leave Game"
-                            color="secondary"
-                            onClick={() => props.leaveGameRequest(props.currentGameId)}
-                        />
-                    </div>
+                        onClick={() => props.startGameRequest(props.currentGameId,
+                            props.currentGame.mode)}
+                    />
                 </div>
             )}
+                <div className={props.styles.leaveGameWrapper}>
+                    <StyledButton
+                        text="Leave Game"
+                        color="secondary"
+                        onClick={() => props.leaveGameRequest(props.currentGameId)}
+                    />
+                </div>
+            </div>
 
             {props.currentGame.playersReady.length === props.currentGame.numberOfPlayers
             && props.currentGame.host !== props.auth.uid && (

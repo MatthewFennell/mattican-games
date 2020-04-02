@@ -24,6 +24,7 @@ export const closeTopThree = request => functionToCall('closeTopThree')(request)
 export const editGameHitler = request => functionToCall('editGameHitler')(request);
 export const editGameAvalon = request => functionToCall('editGameAvalon')(request);
 export const closeInvestigation = request => functionToCall('closeInvestigation')(request);
+export const editDisplayName = request => functionToCall('editDisplayName')(request);
 
 export const startAvalonGame = request => functionToCall('avalon-startGame')(request);
 export const nominatePlayer = request => functionToCall('avalon-nominatePlayer')(request);

@@ -8,7 +8,7 @@ import TopNavbar from './TopNavbar';
 import SideNavbar from './SideNavbar';
 import { signOut } from '../auth/actions';
 import * as selectors from './selectors';
-import { leaveMidgameRequest } from '../game/actions';
+import { leaveMidgameRequest, editDisplayName } from '../game/actions';
 
 const NewNavbar = props => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -27,6 +27,7 @@ const NewNavbar = props => {
             <TopNavbar
                 auth={props.auth}
                 currentGameId={props.currentGameId}
+                editDisplayName={props.editDisplayName}
                 leaveMidgameRequest={props.leaveMidgameRequest}
                 openNavbar={openSidebar}
                 closeNavbar={closeSidebar}
@@ -63,6 +64,7 @@ NewNavbar.propTypes = {
             pathname: PropTypes.string
         })
     }).isRequired,
+    editDisplayName: PropTypes.func.isRequired,
     leaveMidgameRequest: PropTypes.func.isRequired,
     maxGameWeek: PropTypes.number,
     signOut: PropTypes.func.isRequired,
@@ -87,7 +89,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
     leaveMidgameRequest,
-    signOut
+    signOut,
+    editDisplayName
 };
 
 export default withRouter(compose(

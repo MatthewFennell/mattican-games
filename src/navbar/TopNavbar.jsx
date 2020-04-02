@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -13,6 +13,9 @@ import PropTypes from 'prop-types';
 import { noop } from 'lodash';
 import * as constants from '../constants';
 import defaultStyles from './TopNavbar.module.scss';
+import SuccessModal from '../common/modal/SuccessModal';
+import TextInput from '../common/TextInput/TextInput';
+import StyledButton from '../common/StyledButton/StyledButton';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -55,6 +58,16 @@ const TopNavbar = props => {
         setAnchorEl(null);
     };
 
+    const [displayName, setDisplayName] = useState('');
+    const [editingDisplayName, setEditingDisplayName] = useState(false);
+
+    const editName = useCallback(() => {
+        setEditingDisplayName(false);
+        props.editDisplayName(props.currentGameId, displayName);
+        setDisplayName('');
+        // eslint-disable-next-line
+    }, [setEditingDisplayName, props.currentGameId, displayName, setDisplayName]);
+
     const redirectOnClick = useCallback(val => {
         setAnchorEl(null);
         props.redirect(val);
@@ -62,104 +75,132 @@ const TopNavbar = props => {
     }, [props.redirect, setAnchorEl, anchorEl]);
 
     return (
-        <AppBar
-            className={props.styles.topNavbar}
-        >
-            <Toolbar>
-                {!props.currentGameId && (
-                    <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={props.toggleNavbar}>
-                        <MenuIcon />
-                    </IconButton>
-                )}
-                <Typography variant="h6" className={classes.title}>
+        <>
+            <AppBar
+                className={props.styles.topNavbar}
+            >
+                <Toolbar>
+                    {!props.currentGameId && (
+                        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={props.toggleNavbar}>
+                            <MenuIcon />
+                        </IconButton>
+                    )}
+                    <Typography variant="h6" className={classes.title}>
                         The Mattican
-                </Typography>
-                <div>
-                    <IconButton
-                        aria-label="account of current user"
-                        aria-controls="menu-appbar"
-                        aria-haspopup="true"
-                        onClick={handleMenu}
-                        color="inherit"
-                        className={classes.userProfile}
-                    >
-                        <AccountCircle />
-                    </IconButton>
-                    <Menu
-                        id="menu-appbar"
-                        anchorEl={anchorEl}
-                        anchorOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right'
-                        }}
-                        keepMounted
-                        transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right'
-                        }}
-                        open={open}
-                        onClose={handleClose}
-                    >
+                    </Typography>
+                    <div>
+                        <IconButton
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={handleMenu}
+                            color="inherit"
+                            className={classes.userProfile}
+                        >
+                            <AccountCircle />
+                        </IconButton>
+                        <Menu
+                            id="menu-appbar"
+                            anchorEl={anchorEl}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right'
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right'
+                            }}
+                            open={open}
+                            onClose={handleClose}
+                        >
 
-                        {props.auth.uid ? (
-                            props.currentGameId ? (
-                                <div>
-                                    <MenuItem
-                                        onClick={() => {
-                                            handleClose();
-                                            props.leaveMidgameRequest(
-                                                props.currentGameId
-                                            );
-                                        }}
-                                    >
-                                    End Game
-                                    </MenuItem>
-                                    <MenuItem onClick={props.signOut}>
-                                    Sign out
-                                    </MenuItem>
-                                </div>
+                            {props.auth.uid ? (
+                                props.currentGameId ? (
+                                    <div>
+                                        <MenuItem
+                                            onClick={() => {
+                                                handleClose();
+                                                setEditingDisplayName(true);
+                                            }}
+                                        >
+                                            Edit Display Name
+                                        </MenuItem>
+                                        <MenuItem
+                                            onClick={() => {
+                                                handleClose();
+                                                props.leaveMidgameRequest(
+                                                    props.currentGameId
+                                                );
+                                            }}
+                                        >
+                                            End Game
+                                        </MenuItem>
+                                        <MenuItem onClick={props.signOut}>
+                                            Sign out
+                                        </MenuItem>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <MenuItem onClick={() => redirectOnClick(
+                                            constants.URL.PROFILE
+                                        )}
+                                        >
+                                            My account
+                                        </MenuItem>
+                                        <MenuItem onClick={props.signOut}>
+                                            Sign out
+                                        </MenuItem>
+                                    </div>
+                                )
                             ) : (
                                 <div>
+                                    <MenuItem
+                                        onClick={() => redirectOnClick(constants.URL.SIGN_IN)}
+                                    >
+                                    Sign in
+                                    </MenuItem>
                                     <MenuItem onClick={() => redirectOnClick(
-                                        constants.URL.PROFILE
+                                        constants.URL.SIGN_UP
                                     )}
                                     >
-                            My account
+                                    Sign up
                                     </MenuItem>
-                                    <MenuItem onClick={props.signOut}>
-                            Sign out
+                                    <MenuItem onClick={() => redirectOnClick(
+                                        constants.URL.RESET_PASSWORD
+                                    )}
+                                    >
+                                    Forgot password?
                                     </MenuItem>
                                 </div>
-                            )
-                        ) : (
-                            <div>
-                                <MenuItem onClick={() => redirectOnClick(constants.URL.SIGN_IN)}>
-                                    Sign in
-                                </MenuItem>
-                                <MenuItem onClick={() => redirectOnClick(
-                                    constants.URL.SIGN_UP
-                                )}
-                                >
-                                    Sign up
-                                </MenuItem>
-                                <MenuItem onClick={() => redirectOnClick(
-                                    constants.URL.RESET_PASSWORD
-                                )}
-                                >
-                                    Forgot password?
-                                </MenuItem>
-                            </div>
-                        )}
-                    </Menu>
+                            )}
+                        </Menu>
+                    </div>
+                </Toolbar>
+            </AppBar>
+            <SuccessModal
+                isOpen={editingDisplayName}
+                closeModal={() => setEditingDisplayName(false)}
+                headerMessage="Edit Display Name"
+            >
+                <div className={props.styles.editDisplayName}>
+                    <TextInput value={displayName} onChange={setDisplayName} label="Enter new name" />
                 </div>
-            </Toolbar>
-        </AppBar>
+                <div className={props.styles.confirmDisplayButton}>
+                    <StyledButton
+                        text="Confirm display name"
+                        onClick={editName}
+                    />
+                </div>
+            </SuccessModal>
+        </>
     );
 };
 
 TopNavbar.defaultProps = {
     auth: {},
     currentGameId: null,
+    editDisplayName: noop,
     leaveMidgameRequest: noop,
     redirect: noop,
     signOut: noop,
@@ -173,6 +214,7 @@ TopNavbar.propTypes = {
         emailVerified: PropTypes.bool
     }),
     currentGameId: PropTypes.string,
+    editDisplayName: PropTypes.func,
     leaveMidgameRequest: PropTypes.func,
     redirect: PropTypes.func,
     signOut: PropTypes.func,

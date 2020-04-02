@@ -56,6 +56,8 @@ export const EDIT_HITLER_GAME_REQUEST = `${pre}EDIT_HITLER_GAME_REQUEST`;
 
 export const EDIT_AVALON_GAME_REQUEST = `${pre}EDIT_AVALON_GAME_REQUEST`;
 
+export const EDIT_DISPLAY_NAME = `${pre}EDIT_DISPLAY_NAME`;
+
 export const gameError = (error, header) => ({
     type: GAME_ERROR,
     error,
@@ -226,4 +228,10 @@ export const editAvalonGameRequest = (gameId, numberOfPlayers, roles) => ({
     gameId,
     numberOfPlayers,
     roles
+});
+
+export const editDisplayName = (gameId, displayName) => ({
+    type: EDIT_DISPLAY_NAME,
+    gameId,
+    displayName
 });

@@ -312,6 +312,17 @@ export function* closeLookAtInvestigation(api, action) {
     }
 }
 
+export function* editDisplayName(api, action) {
+    try {
+        yield call(api.editDisplayName, ({
+            gameId: action.gameId,
+            displayName: action.displayName
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Edit Display Name error'));
+    }
+}
+
 
 export default function* overviewSaga() {
     yield all([
@@ -343,6 +354,8 @@ export default function* overviewSaga() {
         takeEvery(actions.CLOSE_LOOK_AT_TOP_THREE_REQUEST, closeTopThree, gameApi),
         takeEvery(actions.EDIT_HITLER_GAME_REQUEST, editGameHitler, gameApi),
         takeEvery(actions.EDIT_AVALON_GAME_REQUEST, editGameAvalon, gameApi),
-        takeEvery(actions.CLOSE_LOOK_AT_INVESTIGATION_REQUEST, closeLookAtInvestigation, gameApi)
+        takeEvery(actions.CLOSE_LOOK_AT_INVESTIGATION_REQUEST, closeLookAtInvestigation, gameApi),
+
+        takeEvery(actions.EDIT_DISPLAY_NAME, editDisplayName, gameApi)
     ]);
 }
