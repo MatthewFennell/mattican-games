@@ -41,8 +41,8 @@ const GameNotStarted = props => {
         }
     }, [setEditedAvalonRoles, editedAvalonRoles]);
 
-    const differenceInRoles = (roles, rolesTwo) => roles.some(x => !rolesTwo.includes(x))
-    || rolesTwo.some(x => !roles.includes(x));
+    const differenceInRoles = (roles, rolesTwo) => (roles && roles.some(x => !rolesTwo.includes(x)))
+    || (rolesTwo && rolesTwo.some(x => !roles.includes(x)));
 
     const editGame = useCallback(() => {
         if (props.currentGame.mode === constants.gameModes.Hitler) {

@@ -227,6 +227,14 @@ exports.createHitlerGame = functions
                         currentPlayers: [context.auth.uid],
                         deadPlayers: [],
                         discardPile: [],
+                        firstInvestigation: {
+                            player: '',
+                            role: ''
+                        },
+                        secondInvestigation: {
+                            player: '',
+                            role: ''
+                        },
                         hasStarted: false,
                         hiddenInfo: [],
                         hitlerKilled: false,
@@ -952,7 +960,8 @@ exports.confirmInvestigation = functions
             }
 
             const {
-                playerToInvestigate, president, currentPlayers, deadPlayers, history
+                playerToInvestigate, president, currentPlayers, deadPlayers, history, numberFascistPlayed,
+                firstInvestigation, secondInvestigation, playerRoles
             } = doc.data();
 
             const extraSecretInfo = {
@@ -961,11 +970,22 @@ exports.confirmInvestigation = functions
                 type: constants.hitlerGameStatuses.Investigate
             };
 
+            const roleOfInvestigated = fp.get('role')(playerRoles.find(x => x.player === playerToInvestigate));
+
+
             return doc.ref.update({
                 playerToInvestigate: '',
                 status: constants.hitlerGameStatuses.Nominating,
                 hiddenInfo: operations.arrayUnion(extraSecretInfo),
                 presidentCards: [],
+                firstInvestigation: numberFascistPlayed === 1 ? {
+                    player: context.auth.uid,
+                    role: roleOfInvestigated
+                } : firstInvestigation,
+                secondInvestigation: numberFascistPlayed === 2 ? {
+                    player: context.auth.uid,
+                    role: roleOfInvestigated
+                } : secondInvestigation,
                 chancellorCards: [],
                 previousPresident: president,
                 president: common.findNextUserHitler(president, currentPlayers, deadPlayers),
@@ -1299,9 +1319,6 @@ exports.replyToVeto = functions
             }
 
             const nextDiscardDeck = discardPile.concat(chancellorCards);
-            console.log('not consecutive rejections =3');
-            console.log('next discard', nextDiscardDeck);
-            console.log('chancellor cards', chancellorCards);
 
             return doc.ref.update({
                 cardDeck: generateNewPackOfCards(cardDeck, nextDiscardDeck),
@@ -1369,8 +1386,6 @@ exports.editGameHitler = functions
 
 
 const validAvalonRoles = (numberOfPlayers, roles) => {
-    console.log('roles', roles);
-    console.log('num players', numberOfPlayers);
     const numberBad = roles.filter(role => !constants.avalonRoles[role].isGood).length;
     if (numberBad > 2 && numberOfPlayers <= 6) {
         return false;
