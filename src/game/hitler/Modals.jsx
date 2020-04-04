@@ -97,7 +97,7 @@ const Modals = props => (
         >
             <div className={props.styles.showInvestigatedCardWrapper}>
                 <div>
-                    {`You looked at ${helpers.mapUserIdToName(props.users, props.currentGame.firstInvestigation.investigated)}s card`}
+                    {`You looked at ${helpers.mapUserIdToName(props.users, props.currentGame.firstInvestigation.investigated)}'s card`}
                 </div>
                 <div>
                     {`They are ${props.currentGame.firstInvestigation.role === constants.hitlerRoles.Liberal ? 'Liberal' : 'Fascist'}`}
@@ -124,7 +124,7 @@ const Modals = props => (
         >
             <div className={props.styles.showInvestigatedCardWrapper}>
                 <div>
-                    {`You looked at ${helpers.mapUserIdToName(props.users, props.currentGame.secondInvestigation.investigated)}s card`}
+                    {`You looked at ${helpers.mapUserIdToName(props.users, props.currentGame.secondInvestigation.investigated)}'s card`}
                 </div>
                 <div>
                     {`They are ${props.currentGame.secondInvestigation.role === constants.hitlerRoles.Liberal ? 'Liberal' : 'Fascist'}`}

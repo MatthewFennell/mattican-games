@@ -15,7 +15,7 @@ const AdminRoute = ({
         <Route
             {...rest}
             render={props => (auth.uid && auth.emailVerified
-                && userPermissions.includes(permissionRequired)
+                && userPermissions && userPermissions.includes(permissionRequired)
                 ? <Component {...props} /> : <Redirect to={constants.URL.OVERVIEW} />)}
         />
     );

@@ -678,8 +678,13 @@ exports.playChancellorCard = functions
 
             const {
                 numberLiberalPlayed, president, currentPlayers, chancellorCards, discardPile, cardDeck,
-                chancellor, numberFascistPlayed, numberOfPlayers, deadPlayers, history, temporaryPresident
+                chancellor, numberFascistPlayed, numberOfPlayers, deadPlayers, history, temporaryPresident,
+                previousChancellor
             } = doc.data();
+
+            if (context.auth.uid === previousChancellor) {
+                throw new functions.https.HttpsError('invalid-argument', 'You have already played your card');
+            }
 
             const cardNotPlayed = chancellorCards[0] === data.card ? chancellorCards[1] : chancellorCards[0];
             const newDiscardPile = [...discardPile, cardNotPlayed];
@@ -1050,12 +1055,14 @@ exports.confirmTemporaryPresident = functions
                 throw new functions.https.HttpsError('invalid-argument', 'No player selected');
             }
 
+            const alreadyAdded = doc.data().history.some(x => x.type === constants.historyTypes.TransferPresident);
+
             return doc.ref.update({
                 temporaryPresident: doc.data().temporaryPresident,
                 status: constants.hitlerGameStatuses.TemporaryPresident,
                 previousPresident: doc.data().president,
                 round: operations.increment(1),
-                history: [
+                history: alreadyAdded ? doc.data().history : [
                     {
                         type: constants.historyTypes.TransferPresident,
                         president: doc.data().president,
@@ -1379,6 +1386,9 @@ exports.editGameHitler = functions
             if (doc.data().currentPlayers.length > data.numberOfPlayers) {
                 throw new functions.https.HttpsError('invalid-argument', 'You already have too many players for that');
             }
+            if (!common.isNumber(data.numberOfPlayers)) {
+                throw new functions.https.HttpsError('invalid-argument', 'Must be a number');
+            }
             return doc.ref.update({
                 numberOfPlayers: data.numberOfPlayers
             });
@@ -1410,6 +1420,9 @@ exports.editGameAvalon = functions
             }
             if (!validAvalonRoles(data.numberOfPlayers, data.roles)) {
                 throw new functions.https.HttpsError('invalid-argument', 'Invalid roles');
+            }
+            if (!common.isNumber(data.numberOfPlayers)) {
+                throw new functions.https.HttpsError('invalid-argument', 'Must be a number');
             }
 
             return doc.ref.update({

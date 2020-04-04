@@ -52,7 +52,7 @@ const GameNotStarted = props => {
                     message: 'You already have too many players for that'
                 }, 'Edit Game error');
             } else {
-                props.editHitlerGameRequest(props.currentGameId, numberOfPlayers);
+                props.editHitlerGameRequest(props.currentGameId, parseInt(numberOfPlayers, 10));
             }
         }
         if (props.currentGame.mode === constants.gameModes.Avalon) {

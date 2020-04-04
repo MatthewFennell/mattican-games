@@ -15,7 +15,7 @@ const History = props => (
     props.history.map(h => {
         if (h.type === constants.historyTypes.Vote) {
             return (
-                <div className={props.styles.voteHistoryWrapper} key={`${h.round}-${h.type}-${h.president}`}>
+                <div className={props.styles.voteHistoryWrapper} key={`${h.round}-${h.type}-${h.president}-${h.chancellor}`}>
                     <div className={props.styles.round}>
                         {`Round ${h.round}`}
                     </div>

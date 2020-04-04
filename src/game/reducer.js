@@ -7,7 +7,7 @@ export const initialState = {
 
     haveClosedPeekModal: false,
     haveClosedFirstInvestigation: false,
-    haveSecondFirstInvestigation: false
+    haveClosedSecondInvestigation: false
 };
 
 const overviewReducer = (state = initialState, action) => {
@@ -38,7 +38,7 @@ const overviewReducer = (state = initialState, action) => {
         return {
             ...state,
             haveClosedFirstInvestigation: action.isFirst,
-            haveSecondFirstInvestigation: !action.isFirst
+            haveClosedSecondInvestigation: !action.isFirst
         };
     }
     default:
