@@ -101,6 +101,34 @@ exports.startGame = functions
         });
     });
 
+exports.editGameAvalon = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+            if (data.numberOfPlayers < 5) {
+                throw new functions.https.HttpsError('invalid-argument', 'Can\'t have less than 5 players');
+            }
+            if (doc.data().currentPlayers.length > data.numberOfPlayers) {
+                throw new functions.https.HttpsError('invalid-argument', 'You already have too many players for that');
+            }
+            if (!common.validAvalonRoles(data.numberOfPlayers, data.roles)) {
+                throw new functions.https.HttpsError('invalid-argument', 'Invalid roles');
+            }
+            if (!common.isNumber(data.numberOfPlayers)) {
+                throw new functions.https.HttpsError('invalid-argument', 'Must be a number');
+            }
+
+            return doc.ref.update({
+                numberOfPlayers: data.numberOfPlayers,
+                roles: data.roles
+            });
+        });
+    });
+
 
 exports.nominatePlayer = functions
     .region(constants.region)

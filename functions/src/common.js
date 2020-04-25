@@ -90,10 +90,60 @@ module.exports.validNumberOfPlayers = (numPlayers, mode) => {
     return false;
 };
 
+// ------------------------------------------------------------------------------------------------- //
+// Avalon helpers
+
 module.exports.findNextUser = (leader, users) => {
     const index = users.findIndex(u => u === leader);
     const val = users[(index + 1) % users.length];
     return val;
+};
+
+module.exports.hasQuestFailed = (round, numberOfPlayers, numFail) => {
+    if (round === 4 && numberOfPlayers >= 7 && numFail >= 2) {
+        return true;
+    }
+    if (round !== 4 && numFail >= 1) {
+        return true;
+    }
+    return false;
+};
+
+module.exports.validAvalonRoles = (numberOfPlayers, roles) => {
+    const numberBad = roles.filter(role => !constants.avalonRoles[role].isGood).length;
+    if (numberBad > 2 && numberOfPlayers <= 6) {
+        return false;
+    }
+    return true;
+};
+
+
+// ------------------------------------------------------------------------------------------------- //
+// Hitler helpers
+
+module.exports.canNominatePlayer = (player, currentGame) => {
+    const numberOfDeadPlayers = currentGame.deadPlayers.length;
+    const remainingPlayers = currentGame.numberOfPlayers - numberOfDeadPlayers;
+
+    if (remainingPlayers <= 5) {
+        if (currentGame.previousChancellor === player) {
+            return false;
+        }
+        return true;
+    }
+    if (currentGame.previousPresident === player
+            || currentGame.previousChancellor === player) {
+        return false;
+    }
+    return true;
+};
+
+module.exports.generateNewPackOfCards = (cardDeck, discardPile) => {
+    if (cardDeck.length >= 3) {
+        return cardDeck;
+    }
+    const newList = cardDeck.concat(discardPile);
+    return fp.shuffle(newList);
 };
 
 module.exports.findNextUserHitler = (leader, users, deadPlayers) => {
@@ -108,12 +158,24 @@ module.exports.findNextUserHitler = (leader, users, deadPlayers) => {
     return val;
 };
 
-module.exports.hasQuestFailed = (round, numberOfPlayers, numFail) => {
-    if (round === 4 && numberOfPlayers >= 7 && numFail >= 2) {
-        return true;
+module.exports.nextGameStatus = (numberOfPlayers, fascistNum) => {
+    if (fascistNum === 4 || fascistNum === 5) {
+        return constants.hitlerGameStatuses.Kill;
     }
-    if (round !== 4 && numFail >= 1) {
-        return true;
+    if (fascistNum === 3 && numberOfPlayers <= 6) {
+        return constants.hitlerGameStatuses.Peek;
     }
-    return false;
+    if (numberOfPlayers <= 6) {
+        return constants.hitlerGameStatuses.Nominating;
+    }
+    if (fascistNum === 3) {
+        return constants.hitlerGameStatuses.Transfer;
+    }
+    if (fascistNum === 2) {
+        return constants.hitlerGameStatuses.Investigate;
+    }
+    if (fascistNum === 1 && numberOfPlayers >= 9) {
+        return constants.hitlerGameStatuses.Investigate;
+    }
+    return constants.hitlerGameStatuses.Nominating;
 };
