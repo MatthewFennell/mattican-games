@@ -9,6 +9,8 @@ export const STOP_JOIN_GAME = `${pre}STOP_JOIN_GAME`;
 
 export const CREATE_HITLER_GAME_REQUEST = `${pre}CREATE_HITLER_GAME_REQUEST`;
 
+export const CREATE_WHO_IN_HAT_GAME_REQUEST = `${pre}CREATE_WHO_IN_HAT_GAME_REQUEST`;
+
 export const createAvalonGameRequest = (mode, gameName, numberOfPlayers, roles) => ({
     type: CREATE_AVALON_GAME_REQUEST,
     mode,
@@ -40,4 +42,11 @@ export const joinGameRequest = (gameId, mode) => ({
 
 export const stopJoinGame = () => ({
     type: STOP_JOIN_GAME
+});
+
+export const createWhoInHatGameRequest = (gameName, skippingRule, isCustomNames) => ({
+    type: CREATE_WHO_IN_HAT_GAME_REQUEST,
+    gameName,
+    skippingRule,
+    isCustomNames
 });

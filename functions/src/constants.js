@@ -208,6 +208,12 @@ module.exports.hitlerGameStatuses = {
     TemporaryPresident: 'TemporaryPresident'
 };
 
+
+module.exports.whoInHatGameStatuses = {
+    MakingTeams: 'MakingTeams',
+    PrepareToGuess: 'PrepareToGuess'
+};
+
 module.exports.historyTypes = {
     Vote: 'Vote',
     Quest: 'Quest',
@@ -223,4 +229,29 @@ module.exports.historyTypes = {
 module.exports.gameModes = {
     Avalon: 'Avalon',
     Hitler: 'Hitler'
+};
+
+module.exports.initialTeams = [
+    {
+        name: 'Collywobble Clowns',
+        members: [],
+        score: 0
+    },
+    {
+        name: 'Electric Boogaloo',
+        members: [],
+        score: 0
+    }
+];
+
+module.exports.whoInHatSkipping = {
+    Unlimited: 'Unlimited',
+    OneSkip: 'One Skip',
+    NoSkipping: 'No Skipping'
+};
+
+module.exports.gameModes = {
+    Avalon: 'Avalon',
+    Hitler: 'Hitler',
+    WhosInTheHat: 'Who\'s in the Hat?'
 };

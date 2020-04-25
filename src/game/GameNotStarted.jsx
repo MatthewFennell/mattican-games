@@ -4,21 +4,40 @@ import { connect } from 'react-redux';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import classNames from 'classnames';
 import defaultStyles from './GameNotStarted.module.scss';
-import { mapUserIdToName } from './helpers';
+import { mapUserIdToName, gameHasSetNumberOfPlayers } from './helpers';
 import * as constants from '../constants';
 import StyledButton from '../common/StyledButton/StyledButton';
 import {
     leaveGameRequest, readyUpRequest, startGameRequest,
-    editHitlerGameRequest, gameError, editAvalonGameRequest
+    editHitlerGameRequest, gameError, editAvalonGameRequest, editWhoInHateGameRequest
 } from './actions';
 import Switch from '../common/Switch/Switch';
 import Fade from '../common/Fade/Fade';
 import TextInput from '../common/TextInput/TextInput';
 import { shouldBeDisabled } from '../overview/CreateGame';
+import Dropdown from '../common/dropdown/Dropdown';
+
+const canStartGame = game => {
+    if (game.mode === constants.gameModes.Hitler || game.mode === constants.gameModes.Avalon) {
+        return (game.currentPlayers.length === game.numberOfPlayers)
+            && game.playersReady.length === game.numberOfPlayers;
+    }
+    if (game.mode === constants.gameModes.WhosInTheHat) {
+        return game.currentPlayers.length === game.playersReady.length;
+    }
+    return false;
+};
 
 const GameNotStarted = props => {
     const [editingGame, setEditingGame] = useState(false);
     const [numberOfPlayers, setNumberOfPlayers] = useState(props.currentGame.numberOfPlayers || '');
+
+    const [editedIsCustonNames, setIsEditedCustomNames] = useState(props.currentGame.isCustomNames);
+    const [editedSkippingRule, setEditedSkippingRule] = useState(props.currentGame.skippingRule);
+
+    const toggleEditedCustomNames = useCallback(() => {
+        setIsEditedCustomNames(!editedIsCustonNames);
+    }, [setIsEditedCustomNames, editedIsCustonNames]);
 
     const toggleEditingGame = useCallback(() => {
         setEditingGame(!editingGame);
@@ -58,8 +77,12 @@ const GameNotStarted = props => {
         if (props.currentGame.mode === constants.gameModes.Avalon) {
             props.editAvalonGameRequest(props.currentGameId, numberOfPlayers, editedAvalonRoles);
         }
+        if (props.currentGame.mode === constants.gameModes.WhosInTheHat) {
+            props.editWhoInHateGameRequest(props.currentGameId,
+                editedSkippingRule, editedIsCustonNames);
+        }
         // eslint-disable-next-line
-    }, [props.currentGame, numberOfPlayers, editedAvalonRoles])
+    }, [props.currentGame, numberOfPlayers, editedAvalonRoles, editedSkippingRule, editedIsCustonNames])
 
     return (
         <div className={props.styles.gameNotStartedWrapper}>
@@ -87,7 +110,8 @@ const GameNotStarted = props => {
                 </div>
 
                 <div className={props.styles.currentPlayersMessage}>
-                    {`Current players: (${props.currentGame.currentPlayers.length}/${props.currentGame.numberOfPlayers})` }
+                    {props.currentGame.numberOfPlayers ? `Current players: (${props.currentGame.currentPlayers.length}/${props.currentGame.numberOfPlayers})`
+                        : `Current players: ${props.currentGame.currentPlayers.length}`}
                 </div>
 
                 {props.currentGame.currentPlayers.map(player => (
@@ -158,14 +182,17 @@ const GameNotStarted = props => {
                 >
 
                     <div className={props.styles.editGameWrapper}>
-                        <div className={props.styles.editNumberOfPlayers}>
-                            <TextInput
-                                label="Number of players"
-                                type="number"
-                                value={numberOfPlayers}
-                                onChange={val => editNumberOfPlayers(val)}
-                            />
-                        </div>
+                        {gameHasSetNumberOfPlayers(props.currentGame.mode)
+                        && (
+                            <div className={props.styles.editNumberOfPlayers}>
+                                <TextInput
+                                    label="Number of players"
+                                    type="number"
+                                    value={numberOfPlayers}
+                                    onChange={val => editNumberOfPlayers(val)}
+                                />
+                            </div>
+                        ) }
                     </div>
 
                     {props.currentGame.mode === constants.gameModes.Avalon && (
@@ -207,11 +234,43 @@ const GameNotStarted = props => {
                         </div>
                     )}
 
+                    {props.currentGame.mode === constants.gameModes.WhosInTheHat
+                    && (
+                        <div className={props.styles.editWhoInGame}>
+                            <div className={props.styles.skippingRules}>
+                                <div>
+                                    <Dropdown
+                                        options={Object.keys(constants.whoInHatSkipping)
+                                            .map(mode => ({
+                                                id: mode,
+                                                value: mode,
+                                                text: constants.whoInHatSkipping[mode]
+                                            }))}
+                                        value={editedSkippingRule}
+                                        onChange={setEditedSkippingRule}
+                                        title="Skipping"
+                                    />
+                                </div>
+                                <div>
+                                    <div>
+                            Custom Names
+                                    </div>
+                                    <Switch
+                                        checked={editedIsCustonNames}
+                                        onChange={toggleEditedCustomNames}
+                                        color="primary"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     <div className={props.styles.confirmEditButton}>
                         <StyledButton
                             disabled={(props.currentGame.numberOfPlayers === numberOfPlayers
                                 || numberOfPlayers < 5)
-                                && !differenceInRoles(editedAvalonRoles, props.currentGame.roles)}
+                                && !differenceInRoles(editedAvalonRoles, props.currentGame.roles)
+                                && props.currentGame.mode !== constants.gameModes.WhosInTheHat}
                             text="Confirm"
                             onClick={editGame}
                         />
@@ -228,10 +287,7 @@ const GameNotStarted = props => {
                 >
                     <StyledButton
                         text="Start Game"
-                        disabled={(props.currentGame.currentPlayers.length
-                            < props.currentGame.numberOfPlayers)
-                            || props.currentGame.playersReady.length
-                            !== props.currentGame.numberOfPlayers}
+                        disabled={!canStartGame(props.currentGame)}
                         onClick={() => props.startGameRequest(props.currentGameId,
                             props.currentGame.mode)}
                     />
@@ -266,6 +322,22 @@ const GameNotStarted = props => {
                 Waiting for players to join the lobby
                 </div>
             )}
+
+            {!props.currentGame.numberOfPlayers
+            && props.currentGame.playersReady.length < props.currentGame.currentPlayers.length && (
+                <div className={props.styles.waitingForPlayersToReady}>
+                Waiting for players to ready up
+                </div>
+            )}
+
+            {!props.currentGame.numberOfPlayers
+            && props.currentGame.playersReady.length === props.currentGame.currentPlayers.length
+            && props.currentGame.host !== props.auth.uid && (
+                <div className={props.styles.waitingForHost}>
+                    {`Waiting for ${mapUserIdToName(props.users,
+                        props.currentGame.host)} to start the game`}
+                </div>
+            )}
         </div>
     );
 };
@@ -277,9 +349,11 @@ GameNotStarted.defaultProps = {
     currentGame: {
         currentPlayers: [],
         host: '',
+        isCustomNames: false,
         mode: '',
         numberOfPlayers: 0,
         roles: [],
+        skippingRule: '',
         playersReady: []
     },
     currentGameId: '',
@@ -295,9 +369,11 @@ GameNotStarted.propTypes = {
     currentGame: PropTypes.shape({
         currentPlayers: PropTypes.arrayOf(PropTypes.string),
         host: PropTypes.string,
+        isCustomNames: PropTypes.bool,
         mode: PropTypes.string,
         numberOfPlayers: PropTypes.number,
         roles: PropTypes.arrayOf(PropTypes.string),
+        skippingRule: PropTypes.string,
         playersReady: PropTypes.arrayOf(PropTypes.string)
     }),
     currentGameId: PropTypes.string,
@@ -308,6 +384,7 @@ GameNotStarted.propTypes = {
     gameError: PropTypes.func.isRequired,
     startGameRequest: PropTypes.func.isRequired,
     editAvalonGameRequest: PropTypes.func.isRequired,
+    editWhoInHateGameRequest: PropTypes.func.isRequired,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})
 };
@@ -317,8 +394,9 @@ const mapDispatchToProps = {
     readyUpRequest,
     startGameRequest,
     gameError,
+    editAvalonGameRequest,
     editHitlerGameRequest,
-    editAvalonGameRequest
+    editWhoInHateGameRequest
 };
 
 export default connect(null, mapDispatchToProps)(GameNotStarted);

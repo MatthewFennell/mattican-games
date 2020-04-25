@@ -38,6 +38,11 @@ export function* startGame(api, action) {
                 gameId: action.gameId
             }));
         }
+        if (action.mode === constants.gameModes.WhosInTheHat) {
+            yield call(api.startWhoInHatGame, ({
+                gameId: action.gameId
+            }));
+        }
     } catch (error) {
         yield put(actions.gameError(error, 'Ready Up Error'));
     }
@@ -301,6 +306,18 @@ export function* editGameAvalon(api, action) {
     }
 }
 
+export function* editGameWhoInHat(api, action) {
+    try {
+        yield call(api.editGameWhoInHat, ({
+            gameId: action.gameId,
+            skippingRule: action.skippingRule,
+            isCustomNames: action.roles
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Edit Game error'));
+    }
+}
+
 export function* closeLookAtInvestigation(api, action) {
     try {
         yield call(api.closeInvestigation, ({
@@ -323,6 +340,48 @@ export function* editDisplayName(api, action) {
     }
 }
 
+export function* addTeam(api, action) {
+    try {
+        yield call(api.addTeam, ({
+            gameId: action.gameId,
+            teamName: action.teamName
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Add Team error'));
+    }
+}
+
+export function* joinTeam(api, action) {
+    try {
+        yield call(api.joinTeam, ({
+            gameId: action.gameId,
+            teamName: action.teamName
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Join Team error'));
+    }
+}
+
+export function* addWord(api, action) {
+    try {
+        yield call(api.addWord, ({
+            gameId: action.gameId,
+            word: action.word
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Add Word error'));
+    }
+}
+
+export function* startWhoInHat(api, action) {
+    try {
+        yield call(api.startWhoInHat, ({
+            gameId: action.gameId
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Start Game error'));
+    }
+}
 
 export default function* overviewSaga() {
     yield all([
@@ -354,8 +413,14 @@ export default function* overviewSaga() {
         takeEvery(actions.CLOSE_LOOK_AT_TOP_THREE_REQUEST, closeTopThree, gameApi),
         takeEvery(actions.EDIT_HITLER_GAME_REQUEST, editGameHitler, gameApi),
         takeEvery(actions.EDIT_AVALON_GAME_REQUEST, editGameAvalon, gameApi),
+        takeEvery(actions.EDIT_WHO_IN_HAT_GAME_REQUEST, editGameWhoInHat, gameApi),
         takeEvery(actions.CLOSE_LOOK_AT_INVESTIGATION_REQUEST, closeLookAtInvestigation, gameApi),
 
-        takeEvery(actions.EDIT_DISPLAY_NAME, editDisplayName, gameApi)
+        takeEvery(actions.EDIT_DISPLAY_NAME, editDisplayName, gameApi),
+
+        takeEvery(actions.ADD_TEAM_REQUEST, addTeam, gameApi),
+        takeEvery(actions.JOIN_TEAM_REQUEST, joinTeam, gameApi),
+        takeEvery(actions.ADD_WORD_REQUEST, addWord, gameApi),
+        takeEvery(actions.START_WHO_IN_HAT_GAME_REQUEST, startWhoInHat, gameApi)
     ]);
 }
