@@ -362,6 +362,17 @@ export function* joinTeam(api, action) {
     }
 }
 
+export function* addWord(api, action) {
+    try {
+        yield call(api.addWord, ({
+            gameId: action.gameId,
+            word: action.word
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Add Word error'));
+    }
+}
+
 export default function* overviewSaga() {
     yield all([
         takeEvery(actions.LEAVE_GAME_REQUEST, leaveGame, gameApi),
@@ -398,6 +409,7 @@ export default function* overviewSaga() {
         takeEvery(actions.EDIT_DISPLAY_NAME, editDisplayName, gameApi),
 
         takeEvery(actions.ADD_TEAM_REQUEST, addTeam, gameApi),
-        takeEvery(actions.JOIN_TEAM_REQUEST, joinTeam, gameApi)
+        takeEvery(actions.JOIN_TEAM_REQUEST, joinTeam, gameApi),
+        takeEvery(actions.ADD_WORD_REQUEST, addWord, gameApi)
     ]);
 }

@@ -2,6 +2,7 @@
 
 .makingTeamsHeader{
     margin-top: $spacing-small;
+    margin-bottom: $spacing-small;
     text-align: center;
     font-weight: bold;
     color: $color-gray;
@@ -45,14 +46,23 @@
 
 .createTeamWrapper {
     text-align: center;
-    margin-bottom: $spacing-large;
+    margin-bottom: $spacing-small;
+    display: flex;
+    justify-content: center;
 }
 
-.addNewTeamWrapper {
+.addNewTeamWrapper, .addNewWordWrapper {
     text-align: center;
 }
 
 .confirmButtons {
     display: flex;
     justify-content: center;
+}
+
+.numberOfWordsAdded {
+    text-align: center;
+    font-weight: bold;
+    font-size: $font-size-medium;
+    color: crimson;
 }

@@ -18,6 +18,14 @@ const MakingTeams = props => {
     const [addingTeam, setAddingTeam] = useState(false);
     const [teamName, setTeamName] = useState('');
 
+    const [addingWord, setAddingWord] = useState(false);
+    const [word, setWord] = useState('');
+
+    const closeAddingWord = useCallback(() => {
+        setAddingWord(false);
+        setWord('');
+    }, [setAddingWord, setWord]);
+
     const closeAddingTeams = useCallback(() => {
         setAddingTeam(false);
         setTeamName('');
@@ -30,6 +38,13 @@ const MakingTeams = props => {
         // eslint-disable-next-line
     }, [teamName, props.currentGameId, setAddingTeam, setTeamName, props.addTeamRequest]);
 
+    const confirmAddWord = useCallback(() => {
+        props.addWordRequest(props.currentGameId, word);
+        setAddingWord(false);
+        setWord('');
+        // eslint-disable-next-line
+    }, [word, props.currentGameId, setAddingWord, setWord, props.addWordRequest]);
+
     const joinTeam = useCallback(teamNameToJoin => {
         props.joinTeamRequest(props.currentGameId, teamNameToJoin);
         // eslint-disable-next-line
@@ -39,6 +54,27 @@ const MakingTeams = props => {
     return (
         <div className={props.styles.makingTeamsWrapper}>
             <div className={props.styles.makingTeamsHeader}>Teams are currently being selected</div>
+            <div className={props.styles.createTeamWrapper}>
+                <div>
+                    <StyledButton
+                        onClick={() => setAddingTeam(true)}
+                        text="Add team"
+                    />
+                </div>
+                {props.currentGame.isCustomNames && (
+                    <div>
+                        <StyledButton
+                            onClick={() => setAddingWord(true)}
+                            text="Add word"
+                        />
+                    </div>
+                ) }
+            </div>
+            {props.currentGame.isCustomNames && (
+                <div className={props.styles.numberOfWordsAdded}>
+                    {`Number of words added: ${props.currentGame.customWords.length}`}
+                </div>
+            )}
             <div className={props.styles.playersNotInTeams}>
                 <div className={props.styles.playersNotInTeamsHeader}>
                     Players not in teams
@@ -72,12 +108,31 @@ const MakingTeams = props => {
                 </div>
             ))}
 
-            <div className={props.styles.createTeamWrapper}>
-                <StyledButton
-                    onClick={() => setAddingTeam(true)}
-                    text="Add team"
-                />
-            </div>
+            <SuccessModal
+                backdrop
+                closeModal={closeAddingWord}
+                error
+                isOpen={addingWord}
+                headerMessage="Enter a word to guess"
+            >
+                <div className={props.styles.addNewWordWrapper}>
+                    <TextInput onChange={setWord} value={word} label="Choose word" />
+
+                    <div className={props.styles.confirmButtons}>
+                        <StyledButton
+                            text="Confirm"
+                            onClick={confirmAddWord}
+                        />
+
+                        <StyledButton
+                            color="secondary"
+                            onClick={closeAddingWord}
+                            text="Cancel"
+                        />
+                    </div>
+                </div>
+            </SuccessModal>
+
             <SuccessModal
                 backdrop
                 closeModal={closeAddingTeams}
@@ -86,7 +141,7 @@ const MakingTeams = props => {
                 headerMessage="Enter a team name"
             >
                 <div className={props.styles.addNewTeamWrapper}>
-                    <TextInput onChange={setTeamName} value={teamName} label="Select team name" />
+                    <TextInput onChange={setTeamName} value={teamName} label="Choose team name" />
 
                     <div className={props.styles.confirmButtons}>
                         <StyledButton
@@ -99,9 +154,7 @@ const MakingTeams = props => {
                             onClick={closeAddingTeams}
                             text="Cancel"
                         />
-
                     </div>
-
                 </div>
             </SuccessModal>
         </div>
@@ -110,7 +163,10 @@ const MakingTeams = props => {
 
 MakingTeams.defaultProps = {
     addTeamRequest: noop,
+    addWordRequest: noop,
     currentGame: {
+        customWords: [],
+        isCustomNames: false,
         teams: []
     },
     currentGameId: '',
@@ -121,7 +177,10 @@ MakingTeams.defaultProps = {
 
 MakingTeams.propTypes = {
     addTeamRequest: PropTypes.func,
+    addWordRequest: PropTypes.func,
     currentGame: PropTypes.shape({
+        customWords: PropTypes.arrayOf(PropTypes.string),
+        isCustomNames: PropTypes.bool,
         teams: PropTypes.arrayOf(PropTypes.shape({
             members: PropTypes.arrayOf(PropTypes.string),
             name: PropTypes.string,

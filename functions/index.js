@@ -296,7 +296,8 @@ exports.startWhoInHatGame = functions
             return doc.ref.update({
                 hasStarted: true,
                 round: 1,
-                status: constants.whoInHatGameStatuses.MakingTeams
+                status: constants.whoInHatGameStatuses.MakingTeams,
+                customWords: []
             });
         });
     });
@@ -362,6 +363,27 @@ exports.joinTeam = functions
                     ...team,
                     members: team.members.filter(x => x !== context.auth.uid)
                 }))
+            });
+        });
+    });
+
+
+exports.addWord = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            if (!data.word) {
+                throw new functions.https.HttpsError('invalid-argument', 'Invalid word');
+            }
+
+            return doc.ref.update({
+                customWords: doc.data().customWords.some(x => x.toLowerCase() === data.word.toLowerCase())
+                    ? doc.data().customWords : operations.arrayUnion(data.word)
             });
         });
     });

@@ -4,13 +4,14 @@ import { connect } from 'react-redux';
 import defaultStyles from './GameStarted.module.scss';
 import * as constants from '../../constants';
 import MakingTeams from './MakingTeams';
-import { addTeamRequest, joinTeamRequest } from '../actions';
+import { addTeamRequest, joinTeamRequest, addWordRequest } from '../actions';
 
 const GameStarted = props => {
     if (props.currentGame.status === constants.whoInHatGameStatuses.MakingTeams) {
         return (
             <MakingTeams
                 addTeamRequest={props.addTeamRequest}
+                addWordRequest={props.addWordRequest}
                 currentGame={props.currentGame}
                 currentGameId={props.currentGameId}
                 joinTeamRequest={props.joinTeamRequest}
@@ -40,6 +41,7 @@ GameStarted.defaultProps = {
 
 GameStarted.propTypes = {
     addTeamRequest: PropTypes.func.isRequired,
+    addWordRequest: PropTypes.func.isRequired,
     auth: PropTypes.shape({
         uid: PropTypes.string
     }),
@@ -54,6 +56,7 @@ GameStarted.propTypes = {
 
 const mapDispatchToProps = {
     addTeamRequest,
+    addWordRequest,
     joinTeamRequest
 };
 

@@ -37,3 +37,4 @@ export const editGameWhoInHat = request => functionToCall('editGameWhoInHat')(re
 export const startWhoInHatGame = request => functionToCall('startWhoInHatGame')(request);
 export const addTeam = request => functionToCall('addTeam')(request);
 export const joinTeam = request => functionToCall('joinTeam')(request);
+export const addWord = request => functionToCall('addWord')(request);
