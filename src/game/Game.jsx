@@ -8,6 +8,7 @@ import * as selectors from './selectors';
 import GameNotStarted from './GameNotStarted';
 import AvalonGameStarted from './avalon/GameStarted';
 import HitlerGameStarted from './hitler/GameStarted';
+import WhoInHatGameStarted from './whoInHat/GameStarted';
 import ErrorModal from '../common/modal/ErrorModal';
 import { closeGameError } from './actions';
 import * as constants from '../constants';
@@ -44,6 +45,17 @@ const Game = props => {
                     currentGame={props.currentGame}
                     currentGameId={props.currentGameId}
                     myRole={myRole}
+                    users={props.users}
+                />
+            );
+        }
+
+        if (props.currentGame.mode === constants.gameModes.WhosInTheHat) {
+            return (
+                <WhoInHatGameStarted
+                    auth={props.auth}
+                    currentGame={props.currentGame}
+                    currentGameId={props.currentGameId}
                     users={props.users}
                 />
             );

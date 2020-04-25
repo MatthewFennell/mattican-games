@@ -10,6 +10,7 @@ import Fade from '../common/Fade/Fade';
 import Switch from '../common/Switch/Switch';
 import * as constants from '../constants';
 import Spinner from '../common/spinner/Spinner';
+import { gameHasSetNumberOfPlayers } from '../game/helpers';
 
 export const shouldBeDisabled = (numberOfPlayers, activeAvalonRoles, role) => {
     if (numberOfPlayers > 6) {
@@ -49,17 +50,47 @@ const CreateGame = props => (
                     title="Choose a game"
                 />
             </div>
-            <TextInput
-                onChange={props.changeNumberOfPlayers}
-                value={props.numberOfPlayers}
-                type="number"
-                label="Number of players (5-10)"
-            />
+            {gameHasSetNumberOfPlayers(props.gameMode)
+            && (
+                <TextInput
+                    onChange={props.changeNumberOfPlayers}
+                    value={props.numberOfPlayers}
+                    type="number"
+                    label="Number of players (5-10)"
+                />
+            )}
             <TextInput
                 onChange={props.setGameName}
                 value={props.gameName}
                 label="Game Name"
             />
+
+            <Fade checked={props.gameMode === constants.gameModes.WhosInTheHat} label="WhosInHat">
+                <div className={props.styles.skippingRules}>
+                    <div>
+                        <Dropdown
+                            options={Object.keys(constants.whoInHatSkipping).map(mode => ({
+                                id: mode,
+                                value: mode,
+                                text: constants.whoInHatSkipping[mode]
+                            }))}
+                            value={props.skippingRule}
+                            onChange={props.setSkippingRule}
+                            title="Skipping"
+                        />
+                    </div>
+                    <div>
+                        <div>
+                            Custom Names
+                        </div>
+                        <Switch
+                            checked={props.isCustomNames}
+                            onChange={props.toggleCustomNames}
+                            color="primary"
+                        />
+                    </div>
+                </div>
+            </Fade>
 
             <Fade checked={props.gameMode === constants.gameModes.Avalon} label="Test">
                 <div>
@@ -124,11 +155,15 @@ CreateGame.defaultProps = {
     createGame: noop,
     gameMode: '',
     gameName: '',
+    isCustomNames: false,
     numberOfPlayers: 0,
     makingGame: false,
     setGameMode: noop,
     setGameName: noop,
     setMakingGame: noop,
+    setSkippingRule: noop,
+    skippingRule: '',
+    toggleCustomNames: noop,
     toggleRole: noop,
     styles: defaultStyles
 };
@@ -140,6 +175,7 @@ CreateGame.propTypes = {
     createGame: PropTypes.func,
     gameMode: PropTypes.string,
     gameName: PropTypes.string,
+    isCustomNames: PropTypes.bool,
     numberOfPlayers: PropTypes.oneOfType([
         PropTypes.number,
         PropTypes.string
@@ -148,6 +184,9 @@ CreateGame.propTypes = {
     setGameMode: PropTypes.func,
     setGameName: PropTypes.func,
     setMakingGame: PropTypes.func,
+    setSkippingRule: PropTypes.func,
+    skippingRule: PropTypes.string,
+    toggleCustomNames: PropTypes.func,
     toggleRole: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string)
 };

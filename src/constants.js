@@ -33,7 +33,8 @@ export const successDelay = 3500;
 
 export const gameModes = {
     Avalon: 'Avalon',
-    Hitler: 'Hitler'
+    Hitler: 'Hitler',
+    WhosInTheHat: 'Who\'s in the Hat?'
 };
 
 export const hitlerRoles = {
@@ -99,6 +100,10 @@ export const hitlerGameStatuses = {
     Transfer: 'Transfer',
     Voting: 'Voting',
     TemporaryPresident: 'TemporaryPresident'
+};
+
+export const whoInHatGameStatuses = {
+    MakingTeams: 'MakingTeams'
 };
 
 // round -> num players
@@ -169,4 +174,11 @@ export const historyTypes = {
     Veto: 'Veto',
     Peek: 'Peek',
     Kill: 'Kill'
+};
+
+
+export const whoInHatSkipping = {
+    Unlimited: 'Unlimited',
+    OneSkip: 'One Skip',
+    NoSkipping: 'No Skipping'
 };

@@ -17,3 +17,10 @@ export const printRoleName = role => {
     }
     return role;
 };
+
+export const gameHasSetNumberOfPlayers = gameMode => {
+    if (gameMode === constants.gameModes.WhosInTheHat) {
+        return false;
+    }
+    return true;
+};

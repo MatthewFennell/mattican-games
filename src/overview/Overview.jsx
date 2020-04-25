@@ -5,7 +5,10 @@ import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
 import defaultStyles from './Overview.module.scss';
 import * as constants from '../constants';
-import { createAvalonGameRequest, joinGameRequest, createHiterGameRequest } from './actions';
+import {
+    createAvalonGameRequest, joinGameRequest, createHiterGameRequest,
+    createWhoInHatGameRequest
+} from './actions';
 import CreateGame from './CreateGame';
 import * as selectors from './selectors';
 import ConfirmModal from '../common/modal/ConfirmModal';
@@ -21,6 +24,9 @@ const Overview = props => {
     const [numberOfPlayers, setNumberOfPlayers] = useState(5);
     const [gameName, setGameName] = useState('');
     const [activeAvalonRoles, setActiveAvalonRoles] = useState([]);
+
+    const [skippingRule, setSkippingRule] = useState(constants.whoInHatSkipping.Unlimited);
+    const [isCustomNames, setCustomNames] = useState(false);
 
     const toggleRole = useCallback(role => {
         if (activeAvalonRoles.includes(role)) {
@@ -45,6 +51,9 @@ const Overview = props => {
         if (gameMode === constants.gameModes.Hitler) {
             props.createHiterGameRequest(gameMode, gameName, parseInt(numberOfPlayers, 10));
         }
+        if (gameMode === constants.gameModes.WhosInTheHat) {
+            props.createWhoInHatGameRequest(gameName, skippingRule, isCustomNames);
+        }
         setMakingGame(false);
 
         // eslint-disable-next-line
@@ -66,6 +75,11 @@ const Overview = props => {
         setGameToJoin('');
         // eslint-disable-next-line
     }, [gameToJoin, setGameToJoin, gameModeToJoin])
+    // ------------------------------------------------------------------------ //
+
+    const toggleCustomNames = useCallback(() => {
+        setCustomNames(!isCustomNames);
+    }, [isCustomNames, setCustomNames]);
 
     return (
         <>
@@ -77,11 +91,15 @@ const Overview = props => {
                     changeNumberOfPlayers={changeNumberOfPlayers}
                     gameMode={gameMode}
                     gameName={gameName}
+                    isCustomNames={isCustomNames}
                     makingGame={makingGame}
                     numberOfPlayers={numberOfPlayers}
                     setGameMode={setGameMode}
                     setGameName={setGameName}
                     setMakingGame={setMakingGame}
+                    setSkippingRule={setSkippingRule}
+                    skippingRule={skippingRule}
+                    toggleCustomNames={toggleCustomNames}
                     toggleRole={toggleRole}
                 />
 
@@ -172,6 +190,7 @@ Overview.propTypes = {
     closeGameError: PropTypes.func.isRequired,
     createAvalonGameRequest: PropTypes.func.isRequired,
     createHiterGameRequest: PropTypes.func.isRequired,
+    createWhoInHatGameRequest: PropTypes.func.isRequired,
     creatingGame: PropTypes.bool,
     joiningGame: PropTypes.bool,
     joinGameRequest: PropTypes.func.isRequired,
@@ -185,6 +204,7 @@ const mapDispatchToProps = {
     closeGameError,
     createHiterGameRequest,
     createAvalonGameRequest,
+    createWhoInHatGameRequest,
     joinGameRequest
 };
 

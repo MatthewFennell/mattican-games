@@ -32,3 +32,8 @@ export const confirmNominations = request => functionToCall('avalon-confirmNomin
 export const makeVote = request => functionToCall('avalon-makeVote')(request);
 export const goOnQuest = request => functionToCall('avalon-goOnQuest')(request);
 export const guessMerlin = request => functionToCall('avalon-guessMerlin')(request);
+
+export const editGameWhoInHat = request => functionToCall('editGameWhoInHat')(request);
+export const startWhoInHatGame = request => functionToCall('startWhoInHatGame')(request);
+export const addTeam = request => functionToCall('addTeam')(request);
+export const joinTeam = request => functionToCall('joinTeam')(request);

@@ -212,3 +212,156 @@ exports.editDisplayName = functions
             batch.commit();
         });
     });
+
+
+exports.createWhoInHatGame = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+
+        if (!data.name) {
+            throw new functions.https.HttpsError('invalid-argument', 'Must provide a game name');
+        }
+
+        if (!data.skippingRule || !constants.whoInHatSkipping[data.skippingRule]) {
+            throw new functions.https.HttpsError('invalid-argument', 'Must provide a valid skipping rule');
+        }
+
+        if (data.name && data.name.length > 32) {
+            throw new functions.https.HttpsError('invalid-argument', 'Game name too long. Max 32 characters');
+        }
+
+        return db.collection('users').doc(context.auth.uid).get().then(response => {
+            const { displayName } = response.data();
+            return db.collection('games').where('name', '==', data.name).get().then(
+                docs => {
+                    if (docs.size > 0) {
+                        throw new functions.https.HttpsError('already-exists', 'A game with that name already exists');
+                    }
+                    return db.collection('games').add({
+                        currentPlayers: [context.auth.uid],
+                        hasStarted: false,
+                        host: context.auth.uid,
+                        isCustomNames: Boolean(data.isCustomNames),
+                        mode: constants.gameModes.WhosInTheHat,
+                        name: data.name,
+                        playersReady: [],
+                        round: null,
+                        skippingRule: data.skippingRule,
+                        teams: constants.initialTeams,
+                        usernameMappings: {
+                            [context.auth.uid]: displayName
+                        }
+                    });
+                }
+            );
+        });
+    });
+
+exports.editGameWhoInHat = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+            if (!data.skippingRule || !constants.whoInHatSkipping[data.skippingRule]) {
+                throw new functions.https.HttpsError('invalid-argument', 'Must provide a valid skipping rule');
+            }
+            return doc.ref.update({
+                isCustomNames: Boolean(data.isCustomNames),
+                skippingRule: data.skippingRule
+            });
+        });
+    });
+
+exports.startWhoInHatGame = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            if (doc.data().host !== context.auth.uid) {
+                throw new functions.https.HttpsError('invalid-argument', 'You are not the host');
+            }
+
+            if (doc.data().playersReady.length !== doc.data().currentPlayers.length) {
+                throw new functions.https.HttpsError('invalid-argument', 'Not everybody is ready');
+            }
+
+            return doc.ref.update({
+                hasStarted: true,
+                round: 1,
+                status: constants.whoInHatGameStatuses.MakingTeams
+            });
+        });
+    });
+
+exports.addTeam = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            if (!data.teamName) {
+                throw new functions.https.HttpsError('invalid-argument', 'Must provide a valid team name');
+            }
+
+            if (data.teamName.length > 20) {
+                throw new functions.https.HttpsError('invalid-argument', 'Game name too long. Max 20 characters');
+            }
+
+            const currentTeamNames = doc.data().teams.map(team => team.name);
+
+            if (currentTeamNames.includes(data.teamName)) {
+                throw new functions.https.HttpsError('invalid-argument', 'There is already a team with that name');
+            }
+
+            return doc.ref.update({
+                teams: operations.arrayUnion({
+                    name: data.teamName,
+                    members: [],
+                    score: 0
+                })
+            });
+        });
+    });
+
+
+exports.joinTeam = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            if (!data.teamName) {
+                throw new functions.https.HttpsError('invalid-argument', 'Invalid team name');
+            }
+
+            const currentTeamNames = doc.data().teams.map(team => team.name);
+
+            if (!currentTeamNames.includes(data.teamName)) {
+                throw new functions.https.HttpsError('invalid-argument', 'There is no team with that name');
+            }
+
+            return doc.ref.update({
+                teams: doc.data().teams.map(team => (team.name === data.teamName ? {
+                    ...team,
+                    members: lodash.union([...team.members, context.auth.uid])
+                } : {
+                    ...team,
+                    members: team.members.filter(x => x !== context.auth.uid)
+                }))
+            });
+        });
+    });

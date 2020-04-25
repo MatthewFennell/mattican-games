@@ -56,7 +56,13 @@ export const EDIT_HITLER_GAME_REQUEST = `${pre}EDIT_HITLER_GAME_REQUEST`;
 
 export const EDIT_AVALON_GAME_REQUEST = `${pre}EDIT_AVALON_GAME_REQUEST`;
 
+export const EDIT_WHO_IN_HAT_GAME_REQUEST = `${pre}EDIT_WHO_IN_HAT_GAME_REQUEST`;
+
 export const EDIT_DISPLAY_NAME = `${pre}EDIT_DISPLAY_NAME`;
+
+export const ADD_TEAM_REQUEST = `${pre}ADD_TEAM_REQUEST`;
+
+export const JOIN_TEAM_REQUEST = `${pre}JOIN_TEAM_REQUEST`;
 
 export const gameError = (error, header) => ({
     type: GAME_ERROR,
@@ -230,8 +236,28 @@ export const editAvalonGameRequest = (gameId, numberOfPlayers, roles) => ({
     roles
 });
 
+export const editWhoInHateGameRequest = (gameId, skippingRule, isCustomNames) => ({
+    type: EDIT_WHO_IN_HAT_GAME_REQUEST,
+    gameId,
+    skippingRule,
+    isCustomNames
+});
+
 export const editDisplayName = (gameId, displayName) => ({
     type: EDIT_DISPLAY_NAME,
     gameId,
     displayName
+});
+
+export const addTeamRequest = (gameId, teamName) => ({
+    type: ADD_TEAM_REQUEST,
+    gameId,
+    teamName
+});
+
+
+export const joinTeamRequest = (gameId, teamName) => ({
+    type: JOIN_TEAM_REQUEST,
+    gameId,
+    teamName
 });
