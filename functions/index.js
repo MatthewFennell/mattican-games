@@ -239,6 +239,8 @@ exports.createWhoInHatGame = functions
                         throw new functions.https.HttpsError('already-exists', 'A game with that name already exists');
                     }
                     return db.collection('games').add({
+                        activeTeam: '',
+                        activePlayer: '',
                         currentPlayers: [context.auth.uid],
                         hasStarted: false,
                         host: context.auth.uid,
@@ -329,7 +331,8 @@ exports.addTeam = functions
                 teams: operations.arrayUnion({
                     name: data.teamName,
                     members: [],
-                    score: 0
+                    score: 0,
+                    previousExplainer: null
                 })
             });
         });
@@ -384,6 +387,35 @@ exports.addWord = functions
             return doc.ref.update({
                 customWords: doc.data().customWords.some(x => x.toLowerCase() === data.word.toLowerCase())
                     ? doc.data().customWords : operations.arrayUnion(data.word)
+            });
+        });
+    });
+
+exports.startWhoInHat = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            const { customWords, teams } = doc.data();
+
+            const remainingTeams = fp.shuffle(teams.filter(team => team.members.length > 0));
+
+            const firstTeamName = fp.first(remainingTeams).name;
+            const firstExplainer = fp.first(fp.first(remainingTeams).members);
+
+            console.log('first explainer', firstExplainer);
+            console.log('first team name', firstTeamName);
+
+            return doc.ref.update({
+                activeTeam: firstTeamName,
+                activePlayer: firstExplainer,
+                customWords: fp.shuffle(customWords),
+                teams: remainingTeams
+                // status: constants.whoInHatGameStatuses.PrepareToGuess
             });
         });
     });

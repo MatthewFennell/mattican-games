@@ -101,12 +101,21 @@ const MakingTeams = props => {
                         {team.name}
                     </div>
                     {team.members.map(member => (
-                        <div>
+                        <div key={member}>
                             {helpers.mapUserIdToName(props.users, member)}
                         </div>
                     ))}
                 </div>
             ))}
+
+            {props.currentGame.host === props.auth.uid && (
+                <div className={props.styles.startGame}>
+                    <StyledButton
+                        onClick={() => props.startWhoInHatGameRequest(props.currentGameId)}
+                        text="Start Game"
+                    />
+                </div>
+            )}
 
             <SuccessModal
                 backdrop
@@ -162,15 +171,20 @@ const MakingTeams = props => {
 };
 
 MakingTeams.defaultProps = {
+    auth: {
+        uid: ''
+    },
     addTeamRequest: noop,
     addWordRequest: noop,
     currentGame: {
         customWords: [],
+        host: '',
         isCustomNames: false,
         teams: []
     },
     currentGameId: '',
     joinTeamRequest: noop,
+    startWhoInHatGameRequest: noop,
     styles: defaultStyles,
     users: {}
 };
@@ -178,8 +192,12 @@ MakingTeams.defaultProps = {
 MakingTeams.propTypes = {
     addTeamRequest: PropTypes.func,
     addWordRequest: PropTypes.func,
+    auth: PropTypes.shape({
+        uid: PropTypes.string
+    }),
     currentGame: PropTypes.shape({
         customWords: PropTypes.arrayOf(PropTypes.string),
+        host: PropTypes.string,
         isCustomNames: PropTypes.bool,
         teams: PropTypes.arrayOf(PropTypes.shape({
             members: PropTypes.arrayOf(PropTypes.string),
@@ -189,6 +207,7 @@ MakingTeams.propTypes = {
     }),
     currentGameId: PropTypes.string,
     joinTeamRequest: PropTypes.func,
+    startWhoInHatGameRequest: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})
 };

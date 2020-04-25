@@ -38,3 +38,4 @@ export const startWhoInHatGame = request => functionToCall('startWhoInHatGame')(
 export const addTeam = request => functionToCall('addTeam')(request);
 export const joinTeam = request => functionToCall('joinTeam')(request);
 export const addWord = request => functionToCall('addWord')(request);
+export const startWhoInHat = request => functionToCall('startWhoInHat')(request);

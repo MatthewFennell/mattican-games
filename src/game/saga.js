@@ -373,6 +373,16 @@ export function* addWord(api, action) {
     }
 }
 
+export function* startWhoInHat(api, action) {
+    try {
+        yield call(api.startWhoInHat, ({
+            gameId: action.gameId
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Start Game error'));
+    }
+}
+
 export default function* overviewSaga() {
     yield all([
         takeEvery(actions.LEAVE_GAME_REQUEST, leaveGame, gameApi),
@@ -410,6 +420,7 @@ export default function* overviewSaga() {
 
         takeEvery(actions.ADD_TEAM_REQUEST, addTeam, gameApi),
         takeEvery(actions.JOIN_TEAM_REQUEST, joinTeam, gameApi),
-        takeEvery(actions.ADD_WORD_REQUEST, addWord, gameApi)
+        takeEvery(actions.ADD_WORD_REQUEST, addWord, gameApi),
+        takeEvery(actions.START_WHO_IN_HAT_GAME_REQUEST, startWhoInHat, gameApi)
     ]);
 }

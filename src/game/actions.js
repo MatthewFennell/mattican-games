@@ -66,6 +66,8 @@ export const JOIN_TEAM_REQUEST = `${pre}JOIN_TEAM_REQUEST`;
 
 export const ADD_WORD_REQUEST = `${pre}ADD_WORD_REQUEST`;
 
+export const START_WHO_IN_HAT_GAME_REQUEST = `${pre}START_WHO_IN_HAT_GAME_REQUEST`;
+
 export const gameError = (error, header) => ({
     type: GAME_ERROR,
     error,
@@ -268,4 +270,9 @@ export const addWordRequest = (gameId, word) => ({
     type: ADD_WORD_REQUEST,
     gameId,
     word
+});
+
+export const startWhoInHatGameRequest = gameId => ({
+    type: START_WHO_IN_HAT_GAME_REQUEST,
+    gameId
 });
