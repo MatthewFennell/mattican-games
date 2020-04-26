@@ -89,6 +89,27 @@ const CreateGame = props => (
                             color="primary"
                         />
                     </div>
+
+                </div>
+                {!props.isCustomNames
+                && (
+                    <div className={props.styles.scoreCap}>
+                        <TextInput
+                            type="number"
+                            value={props.scoreCap}
+                            onChange={props.setScoreCap}
+                            label="Score cap"
+                        />
+                    </div>
+                )}
+
+                <div className={props.styles.timePerRound}>
+                    <TextInput
+                        type="number"
+                        value={props.timePerRound}
+                        onChange={props.setTimePerRound}
+                        label="Time to guess (seconds)"
+                    />
                 </div>
             </Fade>
 
@@ -158,11 +179,15 @@ CreateGame.defaultProps = {
     isCustomNames: false,
     numberOfPlayers: 0,
     makingGame: false,
+    scoreCap: 0,
     setGameMode: noop,
     setGameName: noop,
     setMakingGame: noop,
+    setScoreCap: noop,
     setSkippingRule: noop,
+    setTimePerRound: noop,
     skippingRule: '',
+    timePerRound: 0,
     toggleCustomNames: noop,
     toggleRole: noop,
     styles: defaultStyles
@@ -181,11 +206,15 @@ CreateGame.propTypes = {
         PropTypes.string
     ]),
     makingGame: PropTypes.bool,
+    scoreCap: PropTypes.number,
     setGameMode: PropTypes.func,
     setGameName: PropTypes.func,
     setMakingGame: PropTypes.func,
+    setScoreCap: PropTypes.func,
     setSkippingRule: PropTypes.func,
+    setTimePerRound: PropTypes.func,
     skippingRule: PropTypes.string,
+    timePerRound: PropTypes.number,
     toggleCustomNames: PropTypes.func,
     toggleRole: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string)

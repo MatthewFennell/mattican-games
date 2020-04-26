@@ -1,0 +1,58 @@
+@import "../../common/Styles.scss";
+
+.guessingHeader {
+    text-align: center;
+    font-weight: bold;
+    font-size: $font-size-medium;
+    color: $color-blue;
+    margin-top: $spacing-large;
+    margin-left: 15%;
+    margin-right: 15%;
+}
+
+.remainingTime {
+    margin-top: $spacing-medium;
+    text-align: center;
+    color: crimson;
+    font-size: 60px;
+    font-weight: bold;
+}
+
+.wordToDescribe {
+    text-align: center;
+    margin: $spacing-medium;
+    margin-top: $spacing-small;
+    padding: $spacing-medium;
+    border: 2px solid black;
+    font-size: $font-size-large;
+}
+
+.buttonOptions {
+    display: flex;
+    justify-content: center;
+}
+
+.gotWord {
+    text-align: center;
+}
+
+.skippedWord {
+    text-align: center;
+    margin: $spacing-large;
+    padding: $spacing-small;
+    border: 2px solid $color-blue;
+    font-size: $font-size-medium;
+}
+
+.swapBackMessage {
+    color: $color-gray;
+    font-size: $font-size-small;
+    color: $color-green;
+    font-weight: bold;
+}
+
+.viewTeamsWrapper {
+    margin-top: $spacing-small;
+    text-align: center;
+    color: crimson;
+}

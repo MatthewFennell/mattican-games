@@ -44,9 +44,12 @@ export const stopJoinGame = () => ({
     type: STOP_JOIN_GAME
 });
 
-export const createWhoInHatGameRequest = (gameName, skippingRule, isCustomNames) => ({
+export const createWhoInHatGameRequest = (gameName, skippingRule,
+    isCustomNames, scoreCap, timePerRound) => ({
     type: CREATE_WHO_IN_HAT_GAME_REQUEST,
     gameName,
     skippingRule,
-    isCustomNames
+    isCustomNames,
+    scoreCap,
+    timePerRound
 });

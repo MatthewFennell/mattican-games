@@ -311,7 +311,9 @@ export function* editGameWhoInHat(api, action) {
         yield call(api.editGameWhoInHat, ({
             gameId: action.gameId,
             skippingRule: action.skippingRule,
-            isCustomNames: action.roles
+            isCustomNames: action.roles,
+            scoreCap: action.scoreCap,
+            timePerRound: action.timePerRound
         }));
     } catch (error) {
         yield put(actions.gameError(error, 'Edit Game error'));
@@ -383,6 +385,81 @@ export function* startWhoInHat(api, action) {
     }
 }
 
+export function* startWhoInHatRound(api, action) {
+    try {
+        yield call(api.startWhoInHatRound, ({
+            gameId: action.gameId
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Start Round error'));
+    }
+}
+
+export function* gotWord(api, action) {
+    try {
+        yield call(api.gotWord, ({
+            gameId: action.gameId,
+            word: action.word
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Got Word error'));
+    }
+}
+
+export function* skipWord(api, action) {
+    try {
+        yield call(api.skipWord, ({
+            gameId: action.gameId,
+            word: action.word
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Skip Word error'));
+    }
+}
+
+export function* trashWord(api, action) {
+    try {
+        yield call(api.trashWord, ({
+            gameId: action.gameId,
+            word: action.word
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Trash Word error'));
+    }
+}
+
+export function* loadSummary(api, action) {
+    try {
+        yield call(api.loadSummary, ({
+            gameId: action.gameId
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Load Summary error'));
+    }
+}
+
+export function* confirmWord(api, action) {
+    try {
+        yield call(api.confirmWord, ({
+            gameId: action.gameId,
+            word: action.word,
+            isConfirmed: action.isConfirmed
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Confirm Word error'));
+    }
+}
+
+export function* confirmScore(api, action) {
+    try {
+        yield call(api.confirmScore, ({
+            gameId: action.gameId
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Confirm Score error'));
+    }
+}
+
 export default function* overviewSaga() {
     yield all([
         takeEvery(actions.LEAVE_GAME_REQUEST, leaveGame, gameApi),
@@ -421,6 +498,13 @@ export default function* overviewSaga() {
         takeEvery(actions.ADD_TEAM_REQUEST, addTeam, gameApi),
         takeEvery(actions.JOIN_TEAM_REQUEST, joinTeam, gameApi),
         takeEvery(actions.ADD_WORD_REQUEST, addWord, gameApi),
-        takeEvery(actions.START_WHO_IN_HAT_GAME_REQUEST, startWhoInHat, gameApi)
+        takeEvery(actions.START_WHO_IN_HAT_GAME_REQUEST, startWhoInHat, gameApi),
+        takeEvery(actions.START_WHO_IN_HAT_ROUND_REQUEST, startWhoInHatRound, gameApi),
+        takeEvery(actions.GOT_WHO_IN_HAT_WORD_REQUEST, gotWord, gameApi),
+        takeEvery(actions.SKIP_WORD_WHO_IN_HAT_REQUEST, skipWord, gameApi),
+        takeEvery(actions.TRASH_WORD_WHO_IN_HAT_REQUEST, trashWord, gameApi),
+        takeEvery(actions.LOAD_SCORE_SUMMARY_REQUEST, loadSummary, gameApi),
+        takeEvery(actions.SET_WORD_CONFIRMED_REQUEST, confirmWord, gameApi),
+        takeEvery(actions.CONFIRM_SCORE_REQUEST, confirmScore, gameApi)
     ]);
 }

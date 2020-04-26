@@ -27,6 +27,8 @@ const Overview = props => {
 
     const [skippingRule, setSkippingRule] = useState(constants.whoInHatSkipping.Unlimited);
     const [isCustomNames, setCustomNames] = useState(false);
+    const [scoreCap, setScoreCap] = useState(20);
+    const [timePerRound, setTimePerRound] = useState(60);
 
     const toggleRole = useCallback(role => {
         if (activeAvalonRoles.includes(role)) {
@@ -52,12 +54,14 @@ const Overview = props => {
             props.createHiterGameRequest(gameMode, gameName, parseInt(numberOfPlayers, 10));
         }
         if (gameMode === constants.gameModes.WhosInTheHat) {
-            props.createWhoInHatGameRequest(gameName, skippingRule, isCustomNames);
+            props.createWhoInHatGameRequest(gameName, skippingRule,
+                isCustomNames, scoreCap, timePerRound);
         }
         setMakingGame(false);
 
         // eslint-disable-next-line
-    }, [activeAvalonRoles, gameName, gameMode, numberOfPlayers]);
+    }, [activeAvalonRoles, gameName, gameMode, numberOfPlayers, isCustomNames, skippingRule,
+        scoreCap, timePerRound]);
     // ------------------------------------------------------------------------ //
 
     const [gameToJoin, setGameToJoin] = useState('');
@@ -94,11 +98,15 @@ const Overview = props => {
                     isCustomNames={isCustomNames}
                     makingGame={makingGame}
                     numberOfPlayers={numberOfPlayers}
+                    scoreCap={scoreCap}
                     setGameMode={setGameMode}
                     setGameName={setGameName}
                     setMakingGame={setMakingGame}
+                    setScoreCap={setScoreCap}
                     setSkippingRule={setSkippingRule}
+                    setTimePerRound={setTimePerRound}
                     skippingRule={skippingRule}
+                    timePerRound={Number(timePerRound)}
                     toggleCustomNames={toggleCustomNames}
                     toggleRole={toggleRole}
                 />

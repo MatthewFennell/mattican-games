@@ -1,0 +1,26 @@
+@import "../../common/Styles.scss";
+
+.prepareToGuessHeader {
+    color: $color-blue;
+    font-weight: bold;
+    text-align: center;
+    margin-top: $spacing-large;
+}
+
+.waitingToStart {
+    color: $color-blue;
+    font-weight: bold;
+    text-align: center;
+}
+
+.viewTeamsWrapper {
+    margin-top: $spacing-small;
+    text-align: center;
+    color: crimson;
+}
+
+.startRoundButton {
+    margin-top: $spacing-medium;
+    margin-bottom: $spacing-medium;
+    text-align: center;
+}

@@ -53,7 +53,9 @@ export function* createWhoInHatGame(api, action) {
         yield call(api.createWhoInHatGame, ({
             name: action.gameName,
             skippingRule: action.skippingRule,
-            isCustomNames: action.isCustomNames
+            isCustomNames: action.isCustomNames,
+            scoreCap: action.scoreCap,
+            timePerRound: action.timePerRound
         }));
         yield put(actions.createGameSuccess());
     } catch (error) {
