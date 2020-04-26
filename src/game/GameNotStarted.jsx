@@ -34,6 +34,8 @@ const GameNotStarted = props => {
 
     const [editedIsCustonNames, setIsEditedCustomNames] = useState(props.currentGame.isCustomNames);
     const [editedSkippingRule, setEditedSkippingRule] = useState(props.currentGame.skippingRule);
+    const [scoreCap, setScoreCap] = useState(props.currentGame.scoreCap || 20);
+    const [timePerRound, setTimePerRound] = useState(props.currentGame.timePerRound || 60);
 
     const toggleEditedCustomNames = useCallback(() => {
         setIsEditedCustomNames(!editedIsCustonNames);
@@ -79,10 +81,10 @@ const GameNotStarted = props => {
         }
         if (props.currentGame.mode === constants.gameModes.WhosInTheHat) {
             props.editWhoInHateGameRequest(props.currentGameId,
-                editedSkippingRule, editedIsCustonNames);
+                editedSkippingRule, editedIsCustonNames, scoreCap, timePerRound);
         }
         // eslint-disable-next-line
-    }, [props.currentGame, numberOfPlayers, editedAvalonRoles, editedSkippingRule, editedIsCustonNames])
+    }, [props.currentGame, numberOfPlayers, editedAvalonRoles, editedSkippingRule, editedIsCustonNames, scoreCap, timePerRound])
 
     return (
         <div className={props.styles.gameNotStartedWrapper}>
@@ -262,6 +264,24 @@ const GameNotStarted = props => {
                                     />
                                 </div>
                             </div>
+                            {editedIsCustonNames && (
+                                <div className={props.styles.scoreCap}>
+                                    <TextInput
+                                        type="number"
+                                        value={scoreCap}
+                                        onChange={setScoreCap}
+                                        label="Score cap"
+                                    />
+                                </div>
+                            )}
+                            <div className={props.styles.timePerRound}>
+                                <TextInput
+                                    type="number"
+                                    value={timePerRound}
+                                    onChange={setTimePerRound}
+                                    label="Time to guess (seconds)"
+                                />
+                            </div>
                         </div>
                     )}
 
@@ -353,7 +373,9 @@ GameNotStarted.defaultProps = {
         mode: '',
         numberOfPlayers: 0,
         roles: [],
+        scoreCap: 0,
         skippingRule: '',
+        timePerRound: 0,
         playersReady: []
     },
     currentGameId: '',
@@ -373,7 +395,9 @@ GameNotStarted.propTypes = {
         mode: PropTypes.string,
         numberOfPlayers: PropTypes.number,
         roles: PropTypes.arrayOf(PropTypes.string),
+        scoreCap: PropTypes.number,
         skippingRule: PropTypes.string,
+        timePerRound: PropTypes.number,
         playersReady: PropTypes.arrayOf(PropTypes.string)
     }),
     currentGameId: PropTypes.string,

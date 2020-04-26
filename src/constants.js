@@ -103,7 +103,10 @@ export const hitlerGameStatuses = {
 };
 
 export const whoInHatGameStatuses = {
-    MakingTeams: 'MakingTeams'
+    MakingTeams: 'MakingTeams',
+    PrepareToGuess: 'PrepareToGuess',
+    Guessing: 'Guessing',
+    RoundSummary: 'RoundSummary'
 };
 
 // round -> num players

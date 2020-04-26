@@ -1,12 +1,12 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import { noop } from 'lodash';
 import defaultStyles from './MakingTeams.module.scss';
 import * as helpers from '../helpers';
 import StyledButton from '../../common/StyledButton/StyledButton';
 import TextInput from '../../common/TextInput/TextInput';
 import SuccessModal from '../../common/modal/SuccessModal';
+import TeamsAndScore from './TeamsAndScore';
 
 const playerExistsInTeam = (game, playerId) => game.teams
     .some(team => team.members.includes(playerId));
@@ -50,7 +50,6 @@ const MakingTeams = props => {
         // eslint-disable-next-line
     }, [props.joinTeamRequest])
 
-    console.log('current game', props.currentGame);
     return (
         <div className={props.styles.makingTeamsWrapper}>
             <div className={props.styles.makingTeamsHeader}>Teams are currently being selected</div>
@@ -72,7 +71,7 @@ const MakingTeams = props => {
             </div>
             {props.currentGame.isCustomNames && (
                 <div className={props.styles.numberOfWordsAdded}>
-                    {`Number of words added: ${props.currentGame.customWords.length}`}
+                    {`Number of words added: ${props.currentGame.words.length}`}
                 </div>
             )}
             <div className={props.styles.playersNotInTeams}>
@@ -86,27 +85,13 @@ const MakingTeams = props => {
                 ))}
 
             </div>
-            {props.currentGame.teams.map((team, index) => (
-                <div
-                    className={classNames({
-                        [props.styles.teamWrapper]: true,
-                        [props.styles[`team-${index % 5}`]]: true
-                    })}
-                    tabIndex={0}
-                    role="button"
-                    onClick={() => joinTeam(team.name)}
-                    key={team.name}
-                >
-                    <div className={props.styles.teamName}>
-                        {team.name}
-                    </div>
-                    {team.members.map(member => (
-                        <div key={member}>
-                            {helpers.mapUserIdToName(props.users, member)}
-                        </div>
-                    ))}
-                </div>
-            ))}
+
+            <TeamsAndScore
+                auth={props.auth}
+                currentGame={props.currentGame}
+                onTeamClick={joinTeam}
+                users={props.users}
+            />
 
             {props.currentGame.host === props.auth.uid && (
                 <div className={props.styles.startGame}>
@@ -177,7 +162,7 @@ MakingTeams.defaultProps = {
     addTeamRequest: noop,
     addWordRequest: noop,
     currentGame: {
-        customWords: [],
+        words: [],
         host: '',
         isCustomNames: false,
         teams: []
@@ -196,7 +181,7 @@ MakingTeams.propTypes = {
         uid: PropTypes.string
     }),
     currentGame: PropTypes.shape({
-        customWords: PropTypes.arrayOf(PropTypes.string),
+        words: PropTypes.arrayOf(PropTypes.string),
         host: PropTypes.string,
         isCustomNames: PropTypes.bool,
         teams: PropTypes.arrayOf(PropTypes.shape({

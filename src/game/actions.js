@@ -68,6 +68,20 @@ export const ADD_WORD_REQUEST = `${pre}ADD_WORD_REQUEST`;
 
 export const START_WHO_IN_HAT_GAME_REQUEST = `${pre}START_WHO_IN_HAT_GAME_REQUEST`;
 
+export const START_WHO_IN_HAT_ROUND_REQUEST = `${pre}START_WHO_IN_HAT_ROUND_REQUEST`;
+
+export const GOT_WHO_IN_HAT_WORD_REQUEST = `${pre}GOT_WHO_IN_HAT_WORD_REQUEST`;
+
+export const SKIP_WORD_WHO_IN_HAT_REQUEST = `${pre}SKIP_WORD_WHO_IN_HAT_REQUEST`;
+
+export const TRASH_WORD_WHO_IN_HAT_REQUEST = `${pre}TRASH_WORD_WHO_IN_HAT_REQUEST`;
+
+export const LOAD_SCORE_SUMMARY_REQUEST = `${pre}LOAD_SCORE_SUMMARY_REQUEST`;
+
+export const SET_WORD_CONFIRMED_REQUEST = `${pre}SET_WORD_CONFIRMED_REQUEST`;
+
+export const CONFIRM_SCORE_REQUEST = `${pre}CONFIRM_SCORE_REQUEST`;
+
 export const gameError = (error, header) => ({
     type: GAME_ERROR,
     error,
@@ -240,11 +254,14 @@ export const editAvalonGameRequest = (gameId, numberOfPlayers, roles) => ({
     roles
 });
 
-export const editWhoInHateGameRequest = (gameId, skippingRule, isCustomNames) => ({
+export const editWhoInHateGameRequest = (gameId, skippingRule,
+    isCustomNames, scoreCap, timePerRound) => ({
     type: EDIT_WHO_IN_HAT_GAME_REQUEST,
     gameId,
     skippingRule,
-    isCustomNames
+    isCustomNames,
+    scoreCap,
+    timePerRound
 });
 
 export const editDisplayName = (gameId, displayName) => ({
@@ -274,5 +291,45 @@ export const addWordRequest = (gameId, word) => ({
 
 export const startWhoInHatGameRequest = gameId => ({
     type: START_WHO_IN_HAT_GAME_REQUEST,
+    gameId
+});
+
+export const startWhoInHatRoundRequest = gameId => ({
+    type: START_WHO_IN_HAT_ROUND_REQUEST,
+    gameId
+});
+
+export const gotWhoInHatWordRequest = (gameId, word) => ({
+    type: GOT_WHO_IN_HAT_WORD_REQUEST,
+    gameId,
+    word
+});
+
+export const skipWordRequest = (gameId, word) => ({
+    type: SKIP_WORD_WHO_IN_HAT_REQUEST,
+    gameId,
+    word
+});
+
+export const trashWordRequest = (gameId, word) => ({
+    type: TRASH_WORD_WHO_IN_HAT_REQUEST,
+    gameId,
+    word
+});
+
+export const loadScoreSummaryRequest = gameId => ({
+    type: LOAD_SCORE_SUMMARY_REQUEST,
+    gameId
+});
+
+export const setWordConfirmedRequest = (gameId, word, isConfirmed) => ({
+    type: SET_WORD_CONFIRMED_REQUEST,
+    gameId,
+    word,
+    isConfirmed
+});
+
+export const confirmScoreRequest = gameId => ({
+    type: CONFIRM_SCORE_REQUEST,
     gameId
 });

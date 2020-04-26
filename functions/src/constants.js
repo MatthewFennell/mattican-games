@@ -211,7 +211,9 @@ module.exports.hitlerGameStatuses = {
 
 module.exports.whoInHatGameStatuses = {
     MakingTeams: 'MakingTeams',
-    PrepareToGuess: 'PrepareToGuess'
+    PrepareToGuess: 'PrepareToGuess',
+    Guessing: 'Guessing',
+    RoundSummary: 'RoundSummary'
 };
 
 module.exports.historyTypes = {
