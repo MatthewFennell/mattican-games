@@ -564,6 +564,7 @@ exports.loadSummary = functions
             const { wordsGuessed, trashedWords, skippedWords } = doc.data();
 
             return doc.ref.update({
+                currentWordIndex: 0,
                 status: constants.whoInHatGameStatuses.RoundSummary,
                 confirmedWords: wordsGuessed,
                 confirmedTrashed: trashedWords,
@@ -612,7 +613,7 @@ exports.confirmScore = functions
             }
 
             const {
-                activeTeam, teams, confirmedWords, words, isCustomNames, scoreCap
+                activeTeam, teams, confirmedWords, words, isCustomNames, scoreCap, skippedWords, trashedWords
             } = doc.data();
 
             const nextTeam = findNextTeam(activeTeam, teams);
@@ -620,37 +621,52 @@ exports.confirmScore = functions
 
             const newScore = teams.find(team => team.name === activeTeam).score + confirmedWords.length;
 
-            const gameFinished = !isCustomNames && newScore >= scoreCap;
+            const scoreCapReached = !isCustomNames && newScore >= scoreCap;
+
+            const newWords = words.filter(x => !confirmedWords.includes(x) && !skippedWords.includes(x) && !trashedWords.includes(x));
+
+            let nextGameStatus = constants.whoInHatGameStatuses.PrepareToGuess;
+            let winningTeam = null;
+
+            const newTeamScores = teams.map(team => {
+                if (team.name === nextTeam.name) {
+                    return {
+                        ...team,
+                        previousExplainer: nextExplainer,
+                        score: team.name === activeTeam ? team.score + confirmedWords.length : team.score
+                    };
+                }
+                if (team.name === activeTeam) {
+                    return {
+                        ...team,
+                        score: team.score + confirmedWords.length
+                    };
+                }
+                return team;
+            });
+
+            if (scoreCapReached) {
+                nextGameStatus = constants.whoInHatGameStatuses.ScoreCapReached;
+                winningTeam = activeTeam;
+            } else if (newWords.length === 0) {
+                nextGameStatus = constants.whoInHatGameStatuses.NoCardsLeft;
+                winningTeam = fp.get('name')(newTeamScores.reduce((acc, cur) => (acc.score > cur.score ? acc : cur)));
+            }
 
             return doc.ref.update({
-                activeTeam: gameFinished ? null : nextTeam.name,
-                activeExplainer: gameFinished ? null : nextExplainer,
-                status: gameFinished ? constants.whoInHatGameStatuses.ScoreCapReached
-                    : constants.whoInHatGameStatuses.PrepareToGuess,
+                activeTeam: nextGameStatus === constants.whoInHatGameStatuses.PrepareToGuess ? nextTeam.name : null, // If PrepareToGuess, game has not finished
+                activeExplainer: nextGameStatus === constants.whoInHatGameStatuses.PrepareToGuess ? nextExplainer : null, // If PrepareToGuess, game has not finished,
+                status: nextGameStatus,
                 confirmedWords: [],
                 confirmedTrashed: [],
                 confirmedSkipped: [],
-                trashWord: [],
+                currentWordIndex: 0,
+                trashedWords: [],
                 skippedWords: [],
-                teams: teams.map(team => {
-                    if (team.name === nextTeam.name) {
-                        return {
-                            ...team,
-                            previousExplainer: nextExplainer,
-                            score: team.name === activeTeam ? team.score + confirmedWords.length : team.score
-                        };
-                    }
-                    if (team.name === activeTeam) {
-                        return {
-                            ...team,
-                            score: team.score + confirmedWords.length
-                        };
-                    }
-                    return team;
-                }),
-                winningTeam: gameFinished ? activeTeam : null,
+                teams: newTeamScores,
+                winningTeam: nextGameStatus !== constants.whoInHatGameStatuses.PrepareToGuess ? winningTeam : null, // If not PrepareToGuess, game has finished
                 wordsGuessed: [],
-                words: fp.shuffle(words)
+                words: fp.shuffle(newWords)
             });
         });
     });

@@ -6,7 +6,7 @@ import * as helpers from '../helpers';
 import TeamsAndScore from './TeamsAndScore';
 import Fade from '../../common/Fade/Fade';
 import StyledButton from '../../common/StyledButton/StyledButton';
-
+import { remainingCards } from './Guessing';
 
 const PrepareToGuess = props => {
     const [viewingTeams, setViewingTeams] = useState(false);
@@ -18,6 +18,9 @@ const PrepareToGuess = props => {
         <div className={props.styles.prepareToGuessWrapper}>
             <div className={props.styles.prepareToGuessHeader}>
                 {`The next team to go is ${props.currentGame.activeTeam}`}
+            </div>
+            <div className={props.styles.remainingWords}>
+                {`There are ${remainingCards(props.currentGame)} cards remaining in the pool`}
             </div>
             {props.auth.uid !== props.currentGame.activeExplainer
         && (
