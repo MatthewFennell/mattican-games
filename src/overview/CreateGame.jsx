@@ -206,7 +206,10 @@ CreateGame.propTypes = {
         PropTypes.string
     ]),
     makingGame: PropTypes.bool,
-    scoreCap: PropTypes.number,
+    scoreCap: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+    ]),
     setGameMode: PropTypes.func,
     setGameName: PropTypes.func,
     setMakingGame: PropTypes.func,
@@ -214,7 +217,10 @@ CreateGame.propTypes = {
     setSkippingRule: PropTypes.func,
     setTimePerRound: PropTypes.func,
     skippingRule: PropTypes.string,
-    timePerRound: PropTypes.number,
+    timePerRound: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+    ]),
     toggleCustomNames: PropTypes.func,
     toggleRole: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string)

@@ -106,7 +106,7 @@ const Overview = props => {
                     setSkippingRule={setSkippingRule}
                     setTimePerRound={setTimePerRound}
                     skippingRule={skippingRule}
-                    timePerRound={Number(timePerRound)}
+                    timePerRound={timePerRound}
                     toggleCustomNames={toggleCustomNames}
                     toggleRole={toggleRole}
                 />

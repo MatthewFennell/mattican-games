@@ -247,6 +247,7 @@ exports.createWhoInHatGame = functions
                         activeTeam: '',
                         activeExplainer: '',
                         currentPlayers: [context.auth.uid],
+                        currentWordIndex: 0,
                         hasStarted: false,
                         host: context.auth.uid,
                         isCustomNames: Boolean(data.isCustomNames),
@@ -317,7 +318,7 @@ exports.startWhoInHatGame = functions
                 hasStarted: true,
                 round: 1,
                 status: constants.whoInHatGameStatuses.MakingTeams,
-                words: isCustomNames ? [] : ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o']
+                words: isCustomNames ? [] : ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'y', 'z']
             });
         });
     });
@@ -402,10 +403,6 @@ exports.addWord = functions
                 throw new functions.https.HttpsError('invalid-argument', 'Invalid word');
             }
 
-            console.log('Word', data.word);
-
-            console.log('doc', doc.data());
-
             return doc.ref.update({
                 words: doc.data().words.some(x => x.toLowerCase() === data.word.toLowerCase())
                     ? doc.data().words : operations.arrayUnion(data.word)
@@ -440,9 +437,6 @@ exports.startWhoInHat = functions
 
             const firstTeamName = fp.first(remainingTeams).name;
             const firstExplainer = fp.first(fp.first(remainingTeams).members);
-
-            console.log('first explainer', firstExplainer);
-            console.log('first team name', firstTeamName);
 
             return doc.ref.update({
                 activeTeam: firstTeamName,
@@ -499,8 +493,8 @@ exports.gotWord = functions
             }
 
             return doc.ref.update({
-                wordsGuessed: operations.arrayUnion(data.word),
-                words: operations.arrayRemove(data.word)
+                currentWordIndex: operations.increment(1),
+                wordsGuessed: operations.arrayUnion(data.word)
             });
         });
     });
@@ -518,15 +512,15 @@ exports.skipWord = functions
                 throw new functions.https.HttpsError('invalid-argument', 'Invalid word');
             }
 
-            const { activeExplainer } = doc.data();
+            const { activeExplainer, currentWordIndex, skippingRule } = doc.data();
 
             if (context.auth.uid !== activeExplainer) {
                 throw new functions.https.HttpsError('invalid-argument', 'You are not the explainer');
             }
 
             return doc.ref.update({
-                skippedWords: operations.arrayUnion(data.word),
-                words: operations.arrayRemove(data.word)
+                currentWordIndex: skippingRule === constants.whoInHatSkipping.OneSkip ? currentWordIndex : operations.increment(1),
+                skippedWords: operations.arrayUnion(data.word)
             });
         });
     });
@@ -552,8 +546,8 @@ exports.trashWord = functions
             }
 
             return doc.ref.update({
-                trashedWords: operations.arrayUnion(data.word),
-                words: operations.arrayRemove(data.word)
+                currentWordIndex: operations.increment(1),
+                trashedWords: operations.arrayUnion(data.word)
             });
         });
     });
@@ -618,16 +612,21 @@ exports.confirmScore = functions
             }
 
             const {
-                activeTeam, teams, confirmedWords, words
+                activeTeam, teams, confirmedWords, words, isCustomNames, scoreCap
             } = doc.data();
 
             const nextTeam = findNextTeam(activeTeam, teams);
             const nextExplainer = findNextExplainerInTeam(nextTeam);
 
+            const newScore = teams.find(team => team.name === activeTeam).score + confirmedWords.length;
+
+            const gameFinished = !isCustomNames && newScore >= scoreCap;
+
             return doc.ref.update({
-                activeTeam: nextTeam.name,
-                activeExplainer: nextExplainer,
-                status: constants.whoInHatGameStatuses.PrepareToGuess,
+                activeTeam: gameFinished ? null : nextTeam.name,
+                activeExplainer: gameFinished ? null : nextExplainer,
+                status: gameFinished ? constants.whoInHatGameStatuses.ScoreCapReached
+                    : constants.whoInHatGameStatuses.PrepareToGuess,
                 confirmedWords: [],
                 confirmedTrashed: [],
                 confirmedSkipped: [],
@@ -637,7 +636,8 @@ exports.confirmScore = functions
                     if (team.name === nextTeam.name) {
                         return {
                             ...team,
-                            previousExplainer: nextExplainer
+                            previousExplainer: nextExplainer,
+                            score: team.name === activeTeam ? team.score + confirmedWords.length : team.score
                         };
                     }
                     if (team.name === activeTeam) {
@@ -648,8 +648,50 @@ exports.confirmScore = functions
                     }
                     return team;
                 }),
+                winningTeam: gameFinished ? activeTeam : null,
                 wordsGuessed: [],
                 words: fp.shuffle(words)
+            });
+        });
+    });
+
+exports.leaveWhoInHatGame = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            if (doc.data().activeExplainer === context.auth.uid) {
+                throw new functions.https.HttpsError('invalid-argument', 'Cannot leave game when it\'s your turn');
+            }
+
+            if (doc.data().currentPlayers && doc.data().currentPlayers.length <= 1) {
+                return doc.ref.delete();
+            }
+
+            if (doc.data().host === context.auth.uid && doc.data().currentPlayers && doc.data().currentPlayers.length > 1) {
+                return doc.ref.update({
+                    host: doc.data().currentPlayers.find(x => x !== context.auth.uid),
+                    playersReady: operations.arrayRemove(context.auth.uid),
+                    currentPlayers: operations.arrayRemove(context.auth.uid),
+                    teams: doc.data().teams.map(team => ({
+                        ...team,
+                        members: team.members.filter(member => member !== context.auth.uid)
+                    })).filter(team => team.members.length > 0)
+                });
+            }
+
+
+            return doc.ref.update({
+                playersReady: operations.arrayRemove(context.auth.uid),
+                currentPlayers: operations.arrayRemove(context.auth.uid),
+                teams: doc.data().teams.map(team => ({
+                    ...team,
+                    members: team.members.filter(member => member !== context.auth.uid)
+                })).filter(team => team.members.length > 0)
             });
         });
     });

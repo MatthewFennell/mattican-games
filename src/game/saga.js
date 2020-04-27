@@ -460,6 +460,16 @@ export function* confirmScore(api, action) {
     }
 }
 
+export function* leaveWhoInHatGame(api, action) {
+    try {
+        yield call(api.leaveWhoInHatGame, ({
+            gameId: action.gameId
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Leave Game error'));
+    }
+}
+
 export default function* overviewSaga() {
     yield all([
         takeEvery(actions.LEAVE_GAME_REQUEST, leaveGame, gameApi),
@@ -505,6 +515,7 @@ export default function* overviewSaga() {
         takeEvery(actions.TRASH_WORD_WHO_IN_HAT_REQUEST, trashWord, gameApi),
         takeEvery(actions.LOAD_SCORE_SUMMARY_REQUEST, loadSummary, gameApi),
         takeEvery(actions.SET_WORD_CONFIRMED_REQUEST, confirmWord, gameApi),
-        takeEvery(actions.CONFIRM_SCORE_REQUEST, confirmScore, gameApi)
+        takeEvery(actions.CONFIRM_SCORE_REQUEST, confirmScore, gameApi),
+        takeEvery(actions.LEAVE_WHO_IN_HAT_GAME_REQUEST, leaveWhoInHatGame, gameApi)
     ]);
 }

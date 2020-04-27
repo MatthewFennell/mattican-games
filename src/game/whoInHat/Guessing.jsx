@@ -2,6 +2,7 @@ import React, { useCallback, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
 import moment from 'moment';
+import fp from 'lodash/fp';
 import defaultStyles from './Guessing.module.scss';
 import * as helpers from '../helpers';
 import TeamsAndScore from './TeamsAndScore';
@@ -22,7 +23,7 @@ const isSkippingDisabled = (skippingRule, skippedWord) => {
     return false;
 };
 
-const PrepareToGuess = props => {
+const Guessing = props => {
     const [viewingTeams, setViewingTeams] = useState(false);
     const toggleViewingTeams = useCallback(() => {
         setViewingTeams(!viewingTeams);
@@ -35,8 +36,10 @@ const PrepareToGuess = props => {
 
     const { words } = props.currentGame;
 
-    const [currentWordIndex, setCurrentWordIndex] = useState(0);
-    const [skippedWord, setSkippedWord] = useState('');
+    const [currentWordIndex, setCurrentWordIndex] = useState(
+        props.currentGame.currentWordIndex || 0
+    );
+    const [skippedWord, setSkippedWord] = useState(fp.first(props.currentGame.skippedWords) || '');
     const [viewingSkippedWord, setViewingSkippedWord] = useState(false);
     const [triedToEndRound, setTriedToEndRound] = useState(false);
 
@@ -93,7 +96,7 @@ const PrepareToGuess = props => {
     }, []);
 
     useEffect(() => {
-        if (Math.round(timeUntil < 0) && !triedToEndRound) {
+        if (Math.round(timeUntil < 1) && !triedToEndRound) {
             props.loadScoreSummaryRequest(props.currentGameId);
             setTriedToEndRound(true);
         }
@@ -180,18 +183,20 @@ const PrepareToGuess = props => {
     );
 };
 
-PrepareToGuess.defaultProps = {
+Guessing.defaultProps = {
     auth: {
         uid: ''
     },
     currentGame: {
         activeExplainer: '',
         activeTeam: '',
+        currentWordIndex: 0,
         finishTime: null,
         words: [],
         host: '',
         isCustomNames: false,
         skippingRule: '',
+        skippedWords: [],
         teams: []
     },
     currentGameId: '',
@@ -203,18 +208,20 @@ PrepareToGuess.defaultProps = {
     users: {}
 };
 
-PrepareToGuess.propTypes = {
+Guessing.propTypes = {
     auth: PropTypes.shape({
         uid: PropTypes.string
     }),
     currentGame: PropTypes.shape({
         activeExplainer: PropTypes.string,
         activeTeam: PropTypes.string,
-        finishTime: PropTypes.instanceOf(Date),
+        currentWordIndex: PropTypes.number,
+        finishTime: PropTypes.string,
         words: PropTypes.arrayOf(PropTypes.string),
         host: PropTypes.string,
         isCustomNames: PropTypes.bool,
         skippingRule: PropTypes.string,
+        skippedWords: PropTypes.arrayOf(PropTypes.string),
         teams: PropTypes.arrayOf(PropTypes.shape({
             members: PropTypes.arrayOf(PropTypes.string),
             name: PropTypes.string,
@@ -230,4 +237,4 @@ PrepareToGuess.propTypes = {
     users: PropTypes.shape({})
 };
 
-export default PrepareToGuess;
+export default Guessing;

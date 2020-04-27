@@ -106,7 +106,8 @@ export const whoInHatGameStatuses = {
     MakingTeams: 'MakingTeams',
     PrepareToGuess: 'PrepareToGuess',
     Guessing: 'Guessing',
-    RoundSummary: 'RoundSummary'
+    RoundSummary: 'RoundSummary',
+    ScoreCapReached: 'ScoreCapReached'
 };
 
 // round -> num players
