@@ -82,6 +82,8 @@ export const SET_WORD_CONFIRMED_REQUEST = `${pre}SET_WORD_CONFIRMED_REQUEST`;
 
 export const CONFIRM_SCORE_REQUEST = `${pre}CONFIRM_SCORE_REQUEST`;
 
+export const LEAVE_WHO_IN_HAT_GAME_REQUEST = `${pre}LEAVE_WHO_IN_HAT_GAME_REQUEST`;
+
 export const gameError = (error, header) => ({
     type: GAME_ERROR,
     error,
@@ -331,5 +333,10 @@ export const setWordConfirmedRequest = (gameId, word, isConfirmed) => ({
 
 export const confirmScoreRequest = gameId => ({
     type: CONFIRM_SCORE_REQUEST,
+    gameId
+});
+
+export const leaveWhoInHatGameRequest = gameId => ({
+    type: LEAVE_WHO_IN_HAT_GAME_REQUEST,
     gameId
 });

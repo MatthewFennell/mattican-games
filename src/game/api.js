@@ -46,3 +46,4 @@ export const trashWord = request => functionToCall('trashWord')(request);
 export const loadSummary = request => functionToCall('loadSummary')(request);
 export const confirmWord = request => functionToCall('confirmWord')(request);
 export const confirmScore = request => functionToCall('confirmScore')(request);
+export const leaveWhoInHatGame = request => functionToCall('leaveWhoInHatGame')(request);

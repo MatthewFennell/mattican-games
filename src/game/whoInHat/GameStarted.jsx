@@ -6,11 +6,12 @@ import MakingTeams from './MakingTeams';
 import PrepareToGuess from './PrepareToGuess';
 import Guessing from './Guessing';
 import RoundSummary from './RoundSummary';
+import ScoreCapReached from './ScoreCapReached';
 import {
     addTeamRequest, joinTeamRequest, addWordRequest, startWhoInHatGameRequest,
     startWhoInHatRoundRequest, gotWhoInHatWordRequest, skipWordRequest,
     trashWordRequest, loadScoreSummaryRequest, setWordConfirmedRequest,
-    confirmScoreRequest
+    confirmScoreRequest, leaveWhoInHatGameRequest
 } from '../actions';
 
 const GameStarted = props => {
@@ -69,6 +70,18 @@ const GameStarted = props => {
         );
     }
 
+    if (props.currentGame.status === constants.whoInHatGameStatuses.ScoreCapReached) {
+        return (
+            <ScoreCapReached
+                auth={props.auth}
+                currentGame={props.currentGame}
+                currentGameId={props.currentGameId}
+                leaveWhoInHatGameRequest={props.leaveWhoInHatGameRequest}
+                users={props.users}
+            />
+        );
+    }
+
     return (
         <div>
        Hey
@@ -100,6 +113,7 @@ GameStarted.propTypes = {
     currentGameId: PropTypes.string,
     gotWhoInHatWordRequest: PropTypes.func.isRequired,
     joinTeamRequest: PropTypes.func.isRequired,
+    leaveWhoInHatGameRequest: PropTypes.func.isRequired,
     loadScoreSummaryRequest: PropTypes.func.isRequired,
     setWordConfirmedRequest: PropTypes.func.isRequired,
     skipWordRequest: PropTypes.func.isRequired,
@@ -115,6 +129,7 @@ const mapDispatchToProps = {
     confirmScoreRequest,
     gotWhoInHatWordRequest,
     joinTeamRequest,
+    leaveWhoInHatGameRequest,
     loadScoreSummaryRequest,
     setWordConfirmedRequest,
     skipWordRequest,

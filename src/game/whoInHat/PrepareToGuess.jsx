@@ -61,7 +61,7 @@ PrepareToGuess.defaultProps = {
     currentGame: {
         activeExplainer: '',
         activeTeam: '',
-        finishTime: null,
+        finishTime: '',
         words: [],
         host: '',
         isCustomNames: false,
