@@ -56,3 +56,10 @@
     text-align: center;
     color: crimson;
 }
+
+.remainingWordsInPool {
+    margin-top: $spacing-tiny;
+    text-align: center;
+    color: $color-green;
+    font-weight: bold;
+}

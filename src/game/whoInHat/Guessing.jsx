@@ -10,6 +10,13 @@ import * as constants from '../../constants';
 import StyledButton from '../../common/StyledButton/StyledButton';
 import Fade from '../../common/Fade/Fade';
 
+export const remainingCards = game => {
+    const {
+        words, skippedWords, trashedWords, wordsGuessed
+    } = game;
+    return words.length - skippedWords.length - trashedWords.length - wordsGuessed.length;
+};
+
 const isSkippingDisabled = (skippingRule, skippedWord) => {
     if (skippingRule === constants.whoInHatSkipping.Unlimited) {
         return false;
@@ -103,11 +110,14 @@ const Guessing = props => {
         // eslint-disable-next-line
     }, [time, props.currentGame, props.auth, props.loadScoreSummaryRequest, triedToEndRound, setTriedToEndRound]);
 
-
     return (
         <div className={props.styles.guessingWrapper}>
             <div className={props.styles.guessingHeader}>
                 {`Silence! Team ${helpers.mapUserIdToName(props.users, props.currentGame.activeExplainer)} is currently describing to their team`}
+            </div>
+
+            <div className={props.styles.remainingWordsInPool}>
+                {`There are ${remainingCards(props.currentGame)} cards remaining in the pool`}
             </div>
 
             <div className={props.styles.remainingTime}>
@@ -116,7 +126,7 @@ const Guessing = props => {
 
             <div className={props.styles.describeWords}>
                 <div className={props.styles.wordToDescribe}>
-                    {viewingSkippedWord ? skippedWord : words[currentWordIndex]}
+                    {viewingSkippedWord ? skippedWord : words[currentWordIndex] || 'No cards left'}
                 </div>
 
 

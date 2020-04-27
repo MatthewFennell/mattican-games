@@ -1,14 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
-import defaultStyles from './ScoreCapReached.module.scss';
+import defaultStyles from './GameFinished.module.scss';
 import TeamsAndScore from './TeamsAndScore';
 import StyledButton from '../../common/StyledButton/StyledButton';
+import * as constants from '../../constants';
 
-const ScoreCapReached = props => (
-    <div className={props.styles.ScoreCapReachedWrapper}>
-        <div className={props.styles.scoreCapReachedHeader}>
-            {'Score cap reached!'}
+const sortingMethod = (a, b) => (b.score - a.score !== 0
+    ? b.score - a.score : a.members.length - b.members.length);
+
+const GameFinished = props => (
+    <div className={props.styles.gameFinishedWrapper}>
+        <div className={props.styles.gameFinishedHeader}>
+            {props.currentGame.status === constants.whoInHatGameStatuses.ScoreCapReached ? 'Score cap reached!' : 'No cards remaining!'}
         </div>
         <div className={props.styles.winningTeam}>
             {`Winning team - ${props.currentGame.winningTeam}`}
@@ -18,6 +22,7 @@ const ScoreCapReached = props => (
             auth={props.auth}
             currentGame={props.currentGame}
             showScore
+            sortingMethod={sortingMethod}
             users={props.users}
         />
 
@@ -30,7 +35,7 @@ const ScoreCapReached = props => (
     </div>
 );
 
-ScoreCapReached.defaultProps = {
+GameFinished.defaultProps = {
     auth: {
         uid: ''
     },
@@ -41,6 +46,7 @@ ScoreCapReached.defaultProps = {
         words: [],
         host: '',
         isCustomNames: false,
+        status: '',
         teams: [],
         winningTeam: ''
     },
@@ -50,7 +56,7 @@ ScoreCapReached.defaultProps = {
     users: {}
 };
 
-ScoreCapReached.propTypes = {
+GameFinished.propTypes = {
     auth: PropTypes.shape({
         uid: PropTypes.string
     }),
@@ -61,6 +67,7 @@ ScoreCapReached.propTypes = {
         words: PropTypes.arrayOf(PropTypes.string),
         host: PropTypes.string,
         isCustomNames: PropTypes.bool,
+        status: PropTypes.string,
         teams: PropTypes.arrayOf(PropTypes.shape({
             members: PropTypes.arrayOf(PropTypes.string),
             name: PropTypes.string,
@@ -74,4 +81,4 @@ ScoreCapReached.propTypes = {
     users: PropTypes.shape({})
 };
 
-export default ScoreCapReached;
+export default GameFinished;

@@ -107,7 +107,8 @@ export const whoInHatGameStatuses = {
     PrepareToGuess: 'PrepareToGuess',
     Guessing: 'Guessing',
     RoundSummary: 'RoundSummary',
-    ScoreCapReached: 'ScoreCapReached'
+    ScoreCapReached: 'ScoreCapReached',
+    NoCardsLeft: 'NoCardsLeft'
 };
 
 // round -> num players

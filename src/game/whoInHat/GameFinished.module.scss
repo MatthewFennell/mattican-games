@@ -1,13 +1,13 @@
 @import "../../common/Styles.scss";
 
-.scoreCapReachedHeader, .winningTeam {
+.gameFinishedHeader, .winningTeam {
     text-align: center;
     font-weight: bold;
     color: $color-blue;
     font-size: $font-size-medium;
 }
 
-.scoreCapReachedHeader {
+.gameFinishedHeader {
     margin-top: $spacing-medium;
 }
 

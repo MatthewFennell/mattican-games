@@ -40,7 +40,6 @@ const MakingTeams = props => {
 
     const confirmAddWord = useCallback(() => {
         props.addWordRequest(props.currentGameId, word);
-        setAddingWord(false);
         setWord('');
         // eslint-disable-next-line
     }, [word, props.currentGameId, setAddingWord, setWord, props.addWordRequest]);
@@ -121,7 +120,7 @@ const MakingTeams = props => {
                         <StyledButton
                             color="secondary"
                             onClick={closeAddingWord}
-                            text="Cancel"
+                            text="Close"
                         />
                     </div>
                 </div>

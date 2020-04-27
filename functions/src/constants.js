@@ -214,7 +214,8 @@ module.exports.whoInHatGameStatuses = {
     PrepareToGuess: 'PrepareToGuess',
     Guessing: 'Guessing',
     RoundSummary: 'RoundSummary',
-    ScoreCapReached: 'ScoreCapReached'
+    ScoreCapReached: 'ScoreCapReached',
+    NoCardsLeft: 'NoCardsLeft'
 };
 
 module.exports.historyTypes = {

@@ -6,7 +6,7 @@ import MakingTeams from './MakingTeams';
 import PrepareToGuess from './PrepareToGuess';
 import Guessing from './Guessing';
 import RoundSummary from './RoundSummary';
-import ScoreCapReached from './ScoreCapReached';
+import GameFinished from './GameFinished';
 import {
     addTeamRequest, joinTeamRequest, addWordRequest, startWhoInHatGameRequest,
     startWhoInHatRoundRequest, gotWhoInHatWordRequest, skipWordRequest,
@@ -70,9 +70,10 @@ const GameStarted = props => {
         );
     }
 
-    if (props.currentGame.status === constants.whoInHatGameStatuses.ScoreCapReached) {
+    if (props.currentGame.status === constants.whoInHatGameStatuses.ScoreCapReached
+        || props.currentGame.status === constants.whoInHatGameStatuses.NoCardsLeft) {
         return (
-            <ScoreCapReached
+            <GameFinished
                 auth={props.auth}
                 currentGame={props.currentGame}
                 currentGameId={props.currentGameId}
