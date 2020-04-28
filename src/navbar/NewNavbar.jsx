@@ -26,6 +26,7 @@ const NewNavbar = props => {
         <>
             <TopNavbar
                 auth={props.auth}
+                currentGame={props.currentGame}
                 currentGameId={props.currentGameId}
                 editDisplayName={props.editDisplayName}
                 leaveMidgameRequest={props.leaveMidgameRequest}
@@ -57,6 +58,7 @@ NewNavbar.propTypes = {
         emailVerified: PropTypes.bool,
         photoURL: PropTypes.string
     }),
+    currentGame: PropTypes.shape({}),
     currentGameId: PropTypes.string,
     history: PropTypes.shape({
         push: PropTypes.func.isRequired,
@@ -73,6 +75,7 @@ NewNavbar.propTypes = {
 
 NewNavbar.defaultProps = {
     auth: {},
+    currentGame: {},
     currentGameId: '',
     maxGameWeek: null,
     userPermissions: []
@@ -80,6 +83,7 @@ NewNavbar.defaultProps = {
 
 const mapStateToProps = state => ({
     auth: state.firebase.auth,
+    currentGame: selectors.getCurrentGame(state),
     currentGameId: selectors.getGameId(state),
     maxGameWeek: state.overview.maxGameWeek,
     profile: state.firebase.profile,

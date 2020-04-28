@@ -7,7 +7,7 @@ import defaultStyles from './Overview.module.scss';
 import * as constants from '../constants';
 import {
     createAvalonGameRequest, joinGameRequest, createHiterGameRequest,
-    createWhoInHatGameRequest
+    createWhoInHatGameRequest, joinWhoInHatTeamMidgameRequest
 } from './actions';
 import CreateGame from './CreateGame';
 import * as selectors from './selectors';
@@ -72,13 +72,22 @@ const Overview = props => {
             setGameModeToJoin(game.mode);
             setGameToJoin(game.id);
         }
+        if (game.hasStarted && game.mode === constants.gameModes.WhosInTheHat) {
+            setGameToJoin(game.id);
+            setGameModeToJoin(game.mode);
+        }
     }, [setGameToJoin, setGameModeToJoin]);
 
+
     const joinGame = useCallback(() => {
-        props.joinGameRequest(gameToJoin, gameModeToJoin);
+        if (gameModeToJoin === constants.gameModes.WhosInTheHat) {
+            props.joinWhoInHatTeamMidgameRequest(gameToJoin);
+        } else {
+            props.joinGameRequest(gameToJoin, gameModeToJoin);
+        }
         setGameToJoin('');
         // eslint-disable-next-line
-    }, [gameToJoin, setGameToJoin, gameModeToJoin])
+    }, [gameToJoin, setGameToJoin, gameModeToJoin, gameModeToJoin])
     // ------------------------------------------------------------------------ //
 
     const toggleCustomNames = useCallback(() => {
@@ -199,6 +208,7 @@ Overview.propTypes = {
     createAvalonGameRequest: PropTypes.func.isRequired,
     createHiterGameRequest: PropTypes.func.isRequired,
     createWhoInHatGameRequest: PropTypes.func.isRequired,
+    joinWhoInHatTeamMidgameRequest: PropTypes.func.isRequired,
     creatingGame: PropTypes.bool,
     joiningGame: PropTypes.bool,
     joinGameRequest: PropTypes.func.isRequired,
@@ -213,7 +223,8 @@ const mapDispatchToProps = {
     createHiterGameRequest,
     createAvalonGameRequest,
     createWhoInHatGameRequest,
-    joinGameRequest
+    joinGameRequest,
+    joinWhoInHatTeamMidgameRequest
 };
 
 const mapStateToProps = state => ({
