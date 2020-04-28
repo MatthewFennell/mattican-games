@@ -116,9 +116,15 @@ export function* destroyGame(api, action) {
 
 export function* leaveMidgame(api, action) {
     try {
-        yield call(api.leaveMidgame, ({
-            gameId: action.gameId
-        }));
+        if (action.mode === constants.gameModes.WhosInTheHat) {
+            yield call(api.leaveWhoInHatGame, ({
+                gameId: action.gameId
+            }));
+        } else {
+            yield call(api.leaveMidgame, ({
+                gameId: action.gameId
+            }));
+        }
     } catch (error) {
         yield put(actions.gameError(error, 'Leave Midgame Error'));
     }
@@ -470,6 +476,17 @@ export function* leaveWhoInHatGame(api, action) {
     }
 }
 
+export function* joinWhoInHatTeamMidgame(api, action) {
+    try {
+        yield call(api.joinWhoInHatTeamMidgame, ({
+            gameId: action.gameId,
+            teamName: action.teamName
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Join Midgame error'));
+    }
+}
+
 export default function* overviewSaga() {
     yield all([
         takeEvery(actions.LEAVE_GAME_REQUEST, leaveGame, gameApi),
@@ -516,6 +533,7 @@ export default function* overviewSaga() {
         takeEvery(actions.LOAD_SCORE_SUMMARY_REQUEST, loadSummary, gameApi),
         takeEvery(actions.SET_WORD_CONFIRMED_REQUEST, confirmWord, gameApi),
         takeEvery(actions.CONFIRM_SCORE_REQUEST, confirmScore, gameApi),
-        takeEvery(actions.LEAVE_WHO_IN_HAT_GAME_REQUEST, leaveWhoInHatGame, gameApi)
+        takeEvery(actions.LEAVE_WHO_IN_HAT_GAME_REQUEST, leaveWhoInHatGame, gameApi),
+        takeEvery(actions.JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST, joinWhoInHatTeamMidgame, gameApi)
     ]);
 }

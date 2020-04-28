@@ -6,28 +6,27 @@ import defaultStyles from './TeamsAndScore.module.scss';
 import * as helpers from '../helpers';
 
 const TeamsAndScore = props => (
-    props.currentGame.teams.slice().sort(props.sortingMethod)
-        .map((team, index) => (
-            <div
-                className={classNames({
-                    [props.styles.teamWrapper]: true,
-                    [props.styles[`team-${index % 5}`]]: true
-                })}
-                tabIndex={0}
-                role="button"
-                onClick={() => props.onTeamClick(team.name)}
-                key={team.name}
-            >
-                <div className={props.styles.teamName}>
-                    {team.name + (props.showScore ? ` (${team.score} points)` : '')}
-                </div>
-                {team.members.map(member => (
-                    <div key={member}>
-                        {helpers.mapUserIdToName(props.users, member)}
-                    </div>
-                ))}
+    props.currentGame.teams.map((team, index) => (
+        <div
+            className={classNames({
+                [props.styles.teamWrapper]: true,
+                [props.styles[`team-${index % 5}`]]: true
+            })}
+            tabIndex={0}
+            role="button"
+            onClick={() => props.onTeamClick(team.name)}
+            key={team.name}
+        >
+            <div className={props.styles.teamName}>
+                {team.name + (props.showScore ? ` (${team.score} points)` : '')}
             </div>
-        ))
+            {team.members.map(member => (
+                <div key={member}>
+                    {helpers.mapUserIdToName(props.users, member)}
+                </div>
+            ))}
+        </div>
+    ))
 );
 
 TeamsAndScore.defaultProps = {
@@ -43,7 +42,6 @@ TeamsAndScore.defaultProps = {
     },
     onTeamClick: noop,
     showScore: false,
-    sortingMethod: () => 0,
     styles: defaultStyles,
     users: {}
 };
@@ -61,7 +59,6 @@ TeamsAndScore.propTypes = {
     }),
     onTeamClick: PropTypes.func,
     showScore: PropTypes.bool,
-    sortingMethod: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})
 };

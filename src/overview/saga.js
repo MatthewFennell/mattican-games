@@ -64,11 +64,22 @@ export function* createWhoInHatGame(api, action) {
     }
 }
 
+export function* joinWhoInHatMidgame(api, action) {
+    try {
+        yield call(api.joinWhoInHatMidgame, ({
+            gameId: action.gameId
+        }));
+    } catch (error) {
+        yield put(gameActions.gameError(error, 'Join Game Error'));
+    }
+}
+
 export default function* overviewSaga() {
     yield all([
         takeEvery(actions.CREATE_AVALON_GAME_REQUEST, createAvalonGame, overviewApi),
         takeEvery(actions.JOIN_GAME_REQUEST, joinGame, overviewApi),
         takeEvery(actions.CREATE_HITLER_GAME_REQUEST, createHitlerGame, overviewApi),
-        takeEvery(actions.CREATE_WHO_IN_HAT_GAME_REQUEST, createWhoInHatGame, overviewApi)
+        takeEvery(actions.CREATE_WHO_IN_HAT_GAME_REQUEST, createWhoInHatGame, overviewApi),
+        takeEvery(actions.JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST, joinWhoInHatMidgame, overviewApi)
     ]);
 }

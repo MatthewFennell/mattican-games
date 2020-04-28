@@ -51,7 +51,10 @@ const MakingTeams = props => {
 
     return (
         <div className={props.styles.makingTeamsWrapper}>
-            <div className={props.styles.makingTeamsHeader}>Teams are currently being selected</div>
+            <div className={props.styles.makingTeamsHeader}>
+                {findPlayersNotInTeam(props.currentGame).length > 0 ? 'Teams are currently being selected'
+                    : `Waiting for ${helpers.mapUserIdToName(props.users, props.currentGame.host)} to start the game`}
+            </div>
             <div className={props.styles.createTeamWrapper}>
                 <div>
                     <StyledButton

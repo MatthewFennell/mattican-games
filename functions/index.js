@@ -265,7 +265,8 @@ exports.createWhoInHatGame = functions
                         skippedWords: [],
                         trashedWords: [],
                         words: [],
-                        timePerRound: Math.min(Number(data.timePerRound), 120)
+                        timePerRound: Math.min(Number(data.timePerRound), 120),
+                        waitingToJoinTeam: []
                     });
                 }
             );
@@ -680,12 +681,12 @@ exports.leaveWhoInHatGame = functions
                 throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
             }
 
-            if (doc.data().activeExplainer === context.auth.uid) {
-                throw new functions.https.HttpsError('invalid-argument', 'Cannot leave game when it\'s your turn');
-            }
-
             if (doc.data().currentPlayers && doc.data().currentPlayers.length <= 1) {
                 return doc.ref.delete();
+            }
+
+            if (doc.data().activeExplainer === context.auth.uid) {
+                throw new functions.https.HttpsError('invalid-argument', 'Cannot leave game when it\'s your turn');
             }
 
             if (doc.data().host === context.auth.uid && doc.data().currentPlayers && doc.data().currentPlayers.length > 1) {
@@ -708,6 +709,69 @@ exports.leaveWhoInHatGame = functions
                     ...team,
                     members: team.members.filter(member => member !== context.auth.uid)
                 })).filter(team => team.members.length > 0)
+            });
+        });
+    });
+
+
+exports.joinWhoInHatMidgame = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found');
+            }
+
+            return db.collection('users').doc(context.auth.uid).get().then(response => {
+                const { displayName } = response.data();
+                if (!displayName) {
+                    throw new functions.https.HttpsError('invalid-argument', 'Please set a display name before joining');
+                }
+                return doc.ref.update({
+                    currentPlayers: operations.arrayUnion(context.auth.uid),
+                    usernameMappings: {
+                        ...doc.data().usernameMappings,
+                        [context.auth.uid]: displayName
+                    },
+                    waitingToJoinTeam: operations.arrayUnion(context.auth.uid)
+                });
+            });
+        });
+    });
+
+exports.joinWhoInHatTeamMidgame = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found');
+            }
+
+            if (!data.teamName) {
+                throw new functions.https.HttpsError('invalid-argument', 'Please select a team');
+            }
+
+            const { teams } = doc.data();
+
+            if (!teams.some(team => team.name === data.teamName)) {
+                throw new functions.https.HttpsError('invalid-argument', 'There is no team with that name');
+            }
+
+            const teamToBeAddedTo = teams.find(team => team.name === data.teamName);
+            const previousIndex = teamToBeAddedTo.members.indexOf(teamToBeAddedTo.previousExplainer) || 0;
+
+            const newIndex = previousIndex === 0 ? teamToBeAddedTo.members.length : previousIndex - 1;
+            teamToBeAddedTo.members.splice(newIndex, 0, context.auth.uid);
+
+
+            return doc.ref.update({
+                teams: doc.data().teams.map(team => (team.name === data.teamName ? teamToBeAddedTo : ({
+                    ...team,
+                    members: team.members.filter(x => x !== context.auth.uid)
+                }))).filter(team => team.members.length > 0),
+                waitingToJoinTeam: operations.arrayRemove(context.auth.uid)
             });
         });
     });

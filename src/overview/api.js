@@ -7,3 +7,5 @@ export const createAvalonGame = request => functionToCall('avalon-createAvalonGa
 export const createHitlerGame = request => functionToCall('hitler-createHitlerGame')(request);
 
 export const createWhoInHatGame = request => functionToCall('createWhoInHatGame')(request);
+
+export const joinWhoInHatMidgame = request => functionToCall('joinWhoInHatMidgame')(request);

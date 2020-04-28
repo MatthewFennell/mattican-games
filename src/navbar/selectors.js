@@ -1,6 +1,5 @@
 import fp from 'lodash/fp';
 
-// eslint-disable-next-line import/prefer-default-export
 export const getGameId = state => {
     const { pathname } = state.router.location;
 
@@ -15,3 +14,10 @@ export const getGameId = state => {
 
     return null;
 };
+
+export const getCurrentGame = state => fp.flow(
+    fp.get('firestore'),
+    fp.get('data'),
+    fp.get('games'),
+    fp.get(getGameId(state))
+)(state);

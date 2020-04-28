@@ -84,6 +84,8 @@ export const CONFIRM_SCORE_REQUEST = `${pre}CONFIRM_SCORE_REQUEST`;
 
 export const LEAVE_WHO_IN_HAT_GAME_REQUEST = `${pre}LEAVE_WHO_IN_HAT_GAME_REQUEST`;
 
+export const JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST = `${pre}JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST`;
+
 export const gameError = (error, header) => ({
     type: GAME_ERROR,
     error,
@@ -164,9 +166,10 @@ export const destroyGameRequest = gameId => ({
     gameId
 });
 
-export const leaveMidgameRequest = gameId => ({
+export const leaveMidgameRequest = (gameId, mode) => ({
     type: LEAVE_MIDGAME_REQUEST,
-    gameId
+    gameId,
+    mode
 });
 
 export const approveLeaveMidgameRequest = (gameId, isApprove) => ({
@@ -339,4 +342,10 @@ export const confirmScoreRequest = gameId => ({
 export const leaveWhoInHatGameRequest = gameId => ({
     type: LEAVE_WHO_IN_HAT_GAME_REQUEST,
     gameId
+});
+
+export const joinWhoInHatTeamMidgameRequest = (gameId, teamName) => ({
+    type: JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST,
+    gameId,
+    teamName
 });

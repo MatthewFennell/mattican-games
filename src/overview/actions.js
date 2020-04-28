@@ -11,6 +11,8 @@ export const CREATE_HITLER_GAME_REQUEST = `${pre}CREATE_HITLER_GAME_REQUEST`;
 
 export const CREATE_WHO_IN_HAT_GAME_REQUEST = `${pre}CREATE_WHO_IN_HAT_GAME_REQUEST`;
 
+export const JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST = `${pre}JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST`;
+
 export const createAvalonGameRequest = (mode, gameName, numberOfPlayers, roles) => ({
     type: CREATE_AVALON_GAME_REQUEST,
     mode,
@@ -52,4 +54,9 @@ export const createWhoInHatGameRequest = (gameName, skippingRule,
     isCustomNames,
     scoreCap,
     timePerRound
+});
+
+export const joinWhoInHatTeamMidgameRequest = gameId => ({
+    type: JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST,
+    gameId
 });

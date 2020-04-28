@@ -11,6 +11,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
+import fp from 'lodash/fp';
 import * as constants from '../constants';
 import defaultStyles from './TopNavbar.module.scss';
 import SuccessModal from '../common/modal/SuccessModal';
@@ -44,6 +45,13 @@ const useStyles = makeStyles(theme => ({
         }
     }
 }));
+
+const getMessage = mode => {
+    if (mode === constants.gameModes.WhosInTheHat) {
+        return 'Leave Game';
+    }
+    return 'End Game';
+};
 
 const TopNavbar = props => {
     const classes = useStyles();
@@ -130,11 +138,12 @@ const TopNavbar = props => {
                                             onClick={() => {
                                                 handleClose();
                                                 props.leaveMidgameRequest(
-                                                    props.currentGameId
+                                                    props.currentGameId,
+                                                    fp.get('mode')(props.currentGame)
                                                 );
                                             }}
                                         >
-                                            End Game
+                                            {getMessage(fp.get('mode')(props.currentGame))}
                                         </MenuItem>
                                         <MenuItem onClick={props.signOut}>
                                             Sign out
@@ -199,6 +208,9 @@ const TopNavbar = props => {
 
 TopNavbar.defaultProps = {
     auth: {},
+    currentGame: {
+        mode: ''
+    },
     currentGameId: null,
     editDisplayName: noop,
     leaveMidgameRequest: noop,
@@ -212,6 +224,9 @@ TopNavbar.propTypes = {
     auth: PropTypes.shape({
         uid: PropTypes.string,
         emailVerified: PropTypes.bool
+    }),
+    currentGame: PropTypes.shape({
+        mode: PropTypes.string
     }),
     currentGameId: PropTypes.string,
     editDisplayName: PropTypes.func,
