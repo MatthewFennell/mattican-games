@@ -447,7 +447,8 @@ exports.startWhoInHat = functions
                     ...team,
                     previousExplainer: firstExplainer
                 } : team)),
-                status: constants.whoInHatGameStatuses.PrepareToGuess
+                status: constants.whoInHatGameStatuses.PrepareToGuess,
+                waitingToJoinTeam: []
             });
         });
     });
@@ -646,13 +647,15 @@ exports.confirmScore = functions
                 return team;
             });
 
-            if (scoreCapReached) {
-                nextGameStatus = constants.whoInHatGameStatuses.ScoreCapReached;
-                winningTeam = activeTeam;
-            } else if (newWords.length === 0) {
+            if (newWords.length === 0) {
                 nextGameStatus = constants.whoInHatGameStatuses.NoCardsLeft;
                 winningTeam = fp.get('name')(newTeamScores.reduce((acc, cur) => (acc.score > cur.score ? acc : cur)));
+            } else if (scoreCapReached) {
+                nextGameStatus = constants.whoInHatGameStatuses.ScoreCapReached;
+                winningTeam = activeTeam;
             }
+
+            console.log('next game status', nextGameStatus);
 
             return doc.ref.update({
                 activeTeam: nextGameStatus === constants.whoInHatGameStatuses.PrepareToGuess ? nextTeam.name : null, // If PrepareToGuess, game has not finished

@@ -5,7 +5,6 @@
     font-weight: bold;
     font-size: $font-size-medium;
     color: $color-blue;
-    margin-top: $spacing-large;
     margin-left: 15%;
     margin-right: 15%;
 }
@@ -62,4 +61,41 @@
     text-align: center;
     color: $color-green;
     font-weight: bold;
+    margin-top: $spacing-large;
+}
+
+.loadingWrapper {
+    font-weight: bold;
+    margin-top: $spacing-gigantic;
+    text-align: center;
+    align-items: center;
+    color: $color-blue;
+    justify-content: center;
+}
+
+.guessDescribedWord {
+    text-align: center;
+    font-weight: bold;
+    color: $color-blue;
+    font-size: $font-size-huge;
+    margin-left: 15%;
+    margin-right: 15%;
+}
+
+.viewOtherTeamWordWrapper {
+    text-align: center;
+    border: 2px solid $color-green;
+    margin: $spacing-huge;
+    margin-top: $spacing-tiny;
+    margin-bottom: $spacing-tiny;
+    padding: $spacing-small;
+}
+
+.otherTeamGuessingMessage {
+    color: $color-gray;
+    font-weight: bold;
+}
+
+.otherCardsWrapper {
+    color: $color-blue;
 }
