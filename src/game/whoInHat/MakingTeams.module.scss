@@ -18,6 +18,7 @@
 .playersNotInTeams {
     background-color: bisque;
     border-radius: $spacing-small;
+    margin-top: $spacing-small;
 }
 
 .team-0 {
@@ -70,5 +71,4 @@
 
 .startGame {
     text-align: center;
-    margin-bottom: $spacing-medium;
 }

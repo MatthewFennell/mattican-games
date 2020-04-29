@@ -55,7 +55,18 @@ const MakingTeams = props => {
                 {findPlayersNotInTeam(props.currentGame).length > 0 ? 'Teams are currently being selected'
                     : `Waiting for ${helpers.mapUserIdToName(props.users, props.currentGame.host)} to start the game`}
             </div>
+            <div className={props.styles.makingTeamsHeader}>
+                {'Click on a team to join it'}
+            </div>
             <div className={props.styles.createTeamWrapper}>
+                {props.currentGame.host === props.auth.uid && (
+                    <div className={props.styles.startGame}>
+                        <StyledButton
+                            onClick={() => props.startWhoInHatGameRequest(props.currentGameId)}
+                            text="Start Game"
+                        />
+                    </div>
+                )}
                 <div>
                     <StyledButton
                         onClick={() => setAddingTeam(true)}
@@ -82,7 +93,7 @@ const MakingTeams = props => {
                 </div>
                 {findPlayersNotInTeam(props.currentGame).map(player => (
                     <div key={player}>
-                        {helpers.mapUserIdToName(props.users, player)}
+                        {helpers.mapUserIdToName(props.users, player) + (player === props.auth.uid ? ' (you)' : '')}
                     </div>
                 ))}
 
@@ -94,15 +105,6 @@ const MakingTeams = props => {
                 onTeamClick={joinTeam}
                 users={props.users}
             />
-
-            {props.currentGame.host === props.auth.uid && (
-                <div className={props.styles.startGame}>
-                    <StyledButton
-                        onClick={() => props.startWhoInHatGameRequest(props.currentGameId)}
-                        text="Start Game"
-                    />
-                </div>
-            )}
 
             <SuccessModal
                 backdrop

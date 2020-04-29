@@ -25,6 +25,8 @@ const GameStarted = props => {
         // eslint-disable-next-line
     }, [teamToJoin, props.joinWhoInHatTeamMidgameRequest, props.currentGameId])
 
+    console.log('status', props.currentGame.status);
+
     const generateComponent = () => {
         if (props.currentGame.status === constants.whoInHatGameStatuses.MakingTeams) {
             return (
@@ -102,7 +104,8 @@ const GameStarted = props => {
         <>
             {generateComponent()}
             <JoinTeamModal
-                isOpen={props.currentGame.waitingToJoinTeam.includes(props.auth.uid)}
+                isOpen={props.currentGame.waitingToJoinTeam.includes(props.auth.uid)
+                && props.currentGame.status !== constants.whoInHatGameStatuses.MakingTeams}
                 onChange={setTeamToJoin}
                 value={teamToJoin}
                 teams={props.currentGame.teams}

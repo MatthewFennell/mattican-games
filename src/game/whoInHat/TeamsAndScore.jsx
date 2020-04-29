@@ -22,7 +22,7 @@ const TeamsAndScore = props => (
             </div>
             {team.members.map(member => (
                 <div key={member}>
-                    {helpers.mapUserIdToName(props.users, member)}
+                    {helpers.mapUserIdToName(props.users, member) + (member === props.auth.uid ? ' (you)' : '')}
                 </div>
             ))}
         </div>
