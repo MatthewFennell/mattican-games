@@ -62,7 +62,9 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-
+    - name: Test
+      run: |
+        ls
     # - name: Deploy Firebase Functions
     #   run: |
     #     cd functions
