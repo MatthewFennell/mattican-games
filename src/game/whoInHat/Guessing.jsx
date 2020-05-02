@@ -87,6 +87,7 @@ const Guessing = props => {
         setViewingSkippedWord(!viewingSkippedWord);
     }, [setViewingSkippedWord, viewingSkippedWord]);
 
+
     const gotWord = useCallback(() => {
         if (viewingSkippedWord) {
             setViewingSkippedWord(false);
