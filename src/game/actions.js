@@ -86,6 +86,8 @@ export const LEAVE_WHO_IN_HAT_GAME_REQUEST = `${pre}LEAVE_WHO_IN_HAT_GAME_REQUES
 
 export const JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST = `${pre}JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST`;
 
+export const RANDOMISE_TEAMS_REQUEST = `${pre}RANDOMISE_TEAMS_REQUEST`;
+
 export const gameError = (error, header) => ({
     type: GAME_ERROR,
     error,
@@ -348,4 +350,10 @@ export const joinWhoInHatTeamMidgameRequest = (gameId, teamName) => ({
     type: JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST,
     gameId,
     teamName
+});
+
+export const randomiseTeamsRequest = (gameId, numberOfTeams) => ({
+    type: RANDOMISE_TEAMS_REQUEST,
+    gameId,
+    numberOfTeams
 });

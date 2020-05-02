@@ -12,7 +12,8 @@ import {
     addTeamRequest, joinTeamRequest, addWordRequest, startWhoInHatGameRequest,
     startWhoInHatRoundRequest, gotWhoInHatWordRequest, skipWordRequest,
     trashWordRequest, loadScoreSummaryRequest, setWordConfirmedRequest,
-    confirmScoreRequest, leaveWhoInHatGameRequest, joinWhoInHatTeamMidgameRequest
+    confirmScoreRequest, leaveWhoInHatGameRequest, joinWhoInHatTeamMidgameRequest,
+    randomiseTeamsRequest
 } from '../actions';
 import defaultStyles from './GameStarted.module.scss';
 import JoinTeamModal from './JoinTeamModal';
@@ -37,6 +38,7 @@ const GameStarted = props => {
                     currentGame={props.currentGame}
                     currentGameId={props.currentGameId}
                     joinTeamRequest={props.joinTeamRequest}
+                    randomiseTeamsRequest={props.randomiseTeamsRequest}
                     startWhoInHatGameRequest={props.startWhoInHatGameRequest}
                     users={props.users}
                 />
@@ -149,6 +151,7 @@ GameStarted.propTypes = {
     joinWhoInHatTeamMidgameRequest: PropTypes.func.isRequired,
     leaveWhoInHatGameRequest: PropTypes.func.isRequired,
     loadScoreSummaryRequest: PropTypes.func.isRequired,
+    randomiseTeamsRequest: PropTypes.func.isRequired,
     setWordConfirmedRequest: PropTypes.func.isRequired,
     skipWordRequest: PropTypes.func.isRequired,
     startWhoInHatGameRequest: PropTypes.func.isRequired,
@@ -167,6 +170,7 @@ const mapDispatchToProps = {
     joinWhoInHatTeamMidgameRequest,
     leaveWhoInHatGameRequest,
     loadScoreSummaryRequest,
+    randomiseTeamsRequest,
     setWordConfirmedRequest,
     skipWordRequest,
     startWhoInHatGameRequest,

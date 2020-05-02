@@ -428,6 +428,8 @@ exports.startWhoInHat = functions
 
             const playersNotInTeams = findPlayersNotInTeam(doc.data());
 
+            console.log('players not in teams', playersNotInTeams);
+
             if (playersNotInTeams && playersNotInTeams.length > 0) {
                 throw new functions.https.HttpsError('invalid-argument', 'There are some players not in a team');
             }
@@ -470,6 +472,7 @@ exports.startWhoInHatRound = functions
 
             return doc.ref.update({
                 finishTime: moment().add(timePerRound, 'seconds').format(),
+                round: operations.increment(1),
                 status: constants.whoInHatGameStatuses.Guessing
             });
         });
@@ -563,14 +566,26 @@ exports.loadSummary = functions
                 throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
             }
 
-            const { wordsGuessed, trashedWords, skippedWords } = doc.data();
+            if (doc.data().status !== constants.whoInHatGameStatuses.Guessing) {
+                return Promise.resolve();
+            }
+
+            const {
+                wordsGuessed, trashedWords, skippedWords, words, currentWordIndex
+            } = doc.data();
+
+            const endingWord = words[currentWordIndex];
+
+            console.log('previous word', words[currentWordIndex]);
 
             return doc.ref.update({
                 currentWordIndex: 0,
                 status: constants.whoInHatGameStatuses.RoundSummary,
                 confirmedWords: wordsGuessed,
-                confirmedTrashed: trashedWords,
-                confirmedSkipped: skippedWords
+                confirmedTrashed: endingWord ? trashedWords.concat(endingWord) : trashedWords,
+                confirmedSkipped: skippedWords,
+                words: words.filter(word => word !== endingWord),
+                trashedWords: endingWord ? [...trashedWords, endingWord] : trashedWords
             });
         });
     });
@@ -775,6 +790,81 @@ exports.joinWhoInHatTeamMidgame = functions
                     members: team.members.filter(x => x !== context.auth.uid)
                 }))).filter(team => team.members.length > 0),
                 waitingToJoinTeam: operations.arrayRemove(context.auth.uid)
+            });
+        });
+    });
+
+exports.randomiseTeams = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            if (!data.numberOfTeams) {
+                throw new functions.https.HttpsError('invalid-argument', 'Invalid number of teams');
+            }
+
+            const { currentPlayers, host } = doc.data();
+            let newTeams = constants.initialTeams;
+
+            console.log('teams before', newTeams);
+
+            if (context.auth.uid !== host) {
+                throw new functions.https.HttpsError('invalid-argument', 'You are not the explainer');
+            }
+
+            if (data.numberOfTeams >= 3) {
+                newTeams = [...newTeams, {
+                    name: constants.defaultTeamNames.TeamZero,
+                    members: [],
+                    score: 0,
+                    previousExplainer: null
+                }];
+            }
+
+            if (data.numberOfTeams >= 4) {
+                newTeams = [...newTeams, {
+                    name: constants.defaultTeamNames.UndefinedName,
+                    members: [],
+                    score: 0,
+                    previousExplainer: null
+                }];
+            }
+
+            if (data.numberOfTeams >= 5) {
+                newTeams = [...newTeams, {
+                    name: constants.defaultTeamNames.LastTeam,
+                    members: [],
+                    score: 0,
+                    previousExplainer: null
+                }];
+            }
+
+            console.log('teams here', newTeams);
+
+            // fp.shuffle(currentPlayers).forEach((player, index) => {
+            //     newTeams[index % newTeams.length] = ({
+            //         ...newTeams[index % newTeams.length],
+            //         members: [...newTeams[index % newTeams.length].members, player]
+            //     });
+            // });
+            const newTeamsArray = newTeams.map(a => ({ ...a }));
+
+            fp.shuffle(currentPlayers).forEach((player, index) => {
+                newTeamsArray[index % newTeamsArray.length] = ({
+                    ...newTeamsArray[index % newTeamsArray.length],
+                    members: [...newTeamsArray[index % newTeamsArray.length].members, player]
+                });
+            });
+
+            console.log('newTeams after', newTeamsArray);
+
+            return doc.ref.update({
+                teams: newTeamsArray,
+                waitingToJoinTeam: []
             });
         });
     });

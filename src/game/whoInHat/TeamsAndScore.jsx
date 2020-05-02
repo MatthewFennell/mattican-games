@@ -21,7 +21,7 @@ const TeamsAndScore = props => (
                 {team.name + (props.showScore ? ` (${team.score} points)` : '')}
             </div>
             {team.members.map(member => (
-                <div key={member}>
+                <div>
                     {helpers.mapUserIdToName(props.users, member) + (member === props.auth.uid ? ' (you)' : '')}
                 </div>
             ))}

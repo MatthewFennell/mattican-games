@@ -487,6 +487,18 @@ export function* joinWhoInHatTeamMidgame(api, action) {
     }
 }
 
+
+export function* randomiseTeams(api, action) {
+    try {
+        yield call(api.randomiseTeams, ({
+            gameId: action.gameId,
+            numberOfTeams: action.numberOfTeams
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Randomise Teams error'));
+    }
+}
+
 export default function* overviewSaga() {
     yield all([
         takeEvery(actions.LEAVE_GAME_REQUEST, leaveGame, gameApi),
@@ -534,6 +546,7 @@ export default function* overviewSaga() {
         takeEvery(actions.SET_WORD_CONFIRMED_REQUEST, confirmWord, gameApi),
         takeEvery(actions.CONFIRM_SCORE_REQUEST, confirmScore, gameApi),
         takeEvery(actions.LEAVE_WHO_IN_HAT_GAME_REQUEST, leaveWhoInHatGame, gameApi),
-        takeEvery(actions.JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST, joinWhoInHatTeamMidgame, gameApi)
+        takeEvery(actions.JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST, joinWhoInHatTeamMidgame, gameApi),
+        takeEvery(actions.RANDOMISE_TEAMS_REQUEST, randomiseTeams, gameApi)
     ]);
 }

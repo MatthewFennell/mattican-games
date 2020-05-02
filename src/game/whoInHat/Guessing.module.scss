@@ -5,8 +5,8 @@
     font-weight: bold;
     font-size: $font-size-medium;
     color: $color-blue;
-    margin-left: 15%;
-    margin-right: 15%;
+    margin-left: 10%;
+    margin-right: 10%;
 }
 
 .remainingTime {
@@ -41,6 +41,8 @@
     padding: $spacing-small;
     border: 2px solid $color-blue;
     font-size: $font-size-medium;
+    margin-top: $spacing-small;
+    margin-bottom: $spacing-small;
 }
 
 .swapBackMessage {
@@ -62,6 +64,9 @@
     color: $color-green;
     font-weight: bold;
     margin-top: $spacing-large;
+    font-size: $font-size-large;
+    margin-left: 10%;
+    margin-right: 10%;
 }
 
 .loadingWrapper {

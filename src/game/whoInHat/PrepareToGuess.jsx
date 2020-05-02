@@ -40,10 +40,10 @@ const PrepareToGuess = props => {
     return (
         <div className={props.styles.prepareToGuessWrapper}>
             <div className={props.styles.prepareToGuessHeader}>
-                {`The next team to go is ${props.currentGame.activeTeam}`}
+                {`Next team: ${props.currentGame.activeTeam}`}
             </div>
             <div className={props.styles.remainingWords}>
-                {`There are ${remainingCards(props.currentGame)} cards remaining in the pool`}
+                {`Remaining cards: ${remainingCards(props.currentGame)}`}
             </div>
             {props.auth.uid !== props.currentGame.activeExplainer
         && (

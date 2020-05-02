@@ -22,7 +22,8 @@ const isSkippingDisabled = (skippingRule, skippedWord) => {
     if (skippingRule === constants.whoInHatSkipping.Unlimited) {
         return false;
     }
-    if (skippingRule === constants.whoInHatSkipping.NoSkipping) {
+    if (skippingRule === constants.whoInHatSkipping.NoSkipping.split(' ')
+        .join('')) {
         return true;
     }
     if (skippedWord) {
@@ -121,7 +122,8 @@ const Guessing = props => {
     }, []);
 
     useEffect(() => {
-        if (Math.round(timeUntil < 1) && !triedToEndRound) {
+        if (Math.round(timeUntil < 1) && !triedToEndRound
+        && props.currentGame.status === constants.whoInHatGameStatuses.Guessing) {
             props.loadScoreSummaryRequest(props.currentGameId);
             setTriedToEndRound(true);
         }
@@ -132,12 +134,12 @@ const Guessing = props => {
         Math.round(timeUntil) > 0 ? (
             <div className={props.styles.guessingWrapper}>
                 <div className={props.styles.remainingWordsInPool}>
-                    {`There are ${remainingCards(props.currentGame)} cards remaining in the pool`}
+                    {`Remaining cards: ${remainingCards(props.currentGame)}`}
                 </div>
                 {isActiveExplainerOnMyTeam(props.currentGame, props.auth.uid)
                 && (
                     <div className={props.styles.guessingHeader}>
-                        {`Silence! Team ${helpers.mapUserIdToName(props.users, props.currentGame.activeExplainer)} is currently describing to their team`}
+                        {`Silence! ${helpers.mapUserIdToName(props.users, props.currentGame.activeExplainer)} is currently describing to their team`}
                     </div>
                 ) }
 
@@ -167,7 +169,7 @@ const Guessing = props => {
                                  label="View word being described"
                              >
                                  <div className={props.styles.viewOtherTeamWordWrapper}>
-                                     {words[currentWordIndex]}
+                                     {words[props.currentGame.currentWordIndex]}
                                  </div>
                              </Fade>
                          </div>
@@ -188,7 +190,6 @@ const Guessing = props => {
                                     )}
                                     onClick={skipWord}
                                     text="Skip word"
-                                    color="secondary"
                                 />
                             </div>
 
@@ -196,7 +197,6 @@ const Guessing = props => {
                                 <StyledButton
                                     onClick={trashWord}
                                     text="Trash word"
-                                    color="secondary"
                                 />
                             </div>
                         </div>
@@ -262,6 +262,7 @@ Guessing.defaultProps = {
         isCustomNames: false,
         skippingRule: '',
         skippedWords: [],
+        status: '',
         teams: []
     },
     currentGameId: '',
@@ -287,6 +288,7 @@ Guessing.propTypes = {
         isCustomNames: PropTypes.bool,
         skippingRule: PropTypes.string,
         skippedWords: PropTypes.arrayOf(PropTypes.string),
+        status: PropTypes.string,
         teams: PropTypes.arrayOf(PropTypes.shape({
             members: PropTypes.arrayOf(PropTypes.string),
             name: PropTypes.string,
