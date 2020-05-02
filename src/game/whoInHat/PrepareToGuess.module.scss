@@ -5,12 +5,18 @@
     font-weight: bold;
     text-align: center;
     margin-top: $spacing-large;
+    font-size: $font-size-large;
+    margin-left: 5%;
+    margin-right: 5%;
 }
 
 .waitingToStart {
     color: $color-blue;
     font-weight: bold;
     text-align: center;
+    font-size: $font-size-large;
+    margin-left: 10%;
+    margin-right: 10%;
 }
 
 .viewTeamsWrapper {
@@ -27,6 +33,9 @@
     text-align: center;
     color: $color-green;
     font-weight: bold;
+    font-size: $font-size-large;
+    margin-left: 10%;
+    margin-right: 10%;
 }
 
 .buttonsWrapper {

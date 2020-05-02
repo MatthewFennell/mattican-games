@@ -235,16 +235,28 @@ module.exports.gameModes = {
     Hitler: 'Hitler'
 };
 
+const defaultTeamNames = {
+    Collywobble: 'Collywobble Clowns',
+    Electric: 'Electric Boogaloo',
+    TeamZero: 'Team Zero',
+    UndefinedName: 'Undefined and Null',
+    LastTeam: 'Last Team'
+};
+
+module.exports.defaultTeamNames = defaultTeamNames;
+
 module.exports.initialTeams = [
     {
-        name: 'Collywobble Clowns',
+        name: defaultTeamNames.Collywobble,
         members: [],
-        score: 0
+        score: 0,
+        previousExplainer: null
     },
     {
-        name: 'Electric Boogaloo',
+        name: defaultTeamNames.Electric,
         members: [],
-        score: 0
+        score: 0,
+        previousExplainer: null
     }
 ];
 

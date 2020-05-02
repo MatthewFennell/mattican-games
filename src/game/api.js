@@ -48,3 +48,4 @@ export const confirmWord = request => functionToCall('confirmWord')(request);
 export const confirmScore = request => functionToCall('confirmScore')(request);
 export const leaveWhoInHatGame = request => functionToCall('leaveWhoInHatGame')(request);
 export const joinWhoInHatTeamMidgame = request => functionToCall('joinWhoInHatTeamMidgame')(request);
+export const randomiseTeams = request => functionToCall('randomiseTeams')(request);

@@ -49,6 +49,20 @@ const MakingTeams = props => {
         // eslint-disable-next-line
     }, [props.joinTeamRequest])
 
+    const [randomisingTeams, setRandomisingTeams] = useState(false);
+    const [numberOfRandomTeams, setNumberOfRandomTeams] = useState(2);
+
+    const closeRandomisingTeams = useCallback(() => {
+        setRandomisingTeams(false);
+        setNumberOfRandomTeams(2);
+    }, [setRandomisingTeams, setNumberOfRandomTeams]);
+
+    const randomiseTeams = useCallback(() => {
+        props.randomiseTeamsRequest(props.currentGameId, parseInt(numberOfRandomTeams, 10));
+        setRandomisingTeams(false);
+        // eslint-disable-next-line
+    }, [numberOfRandomTeams, setRandomisingTeams, props.currentGameId])
+
     return (
         <div className={props.styles.makingTeamsWrapper}>
             <div className={props.styles.makingTeamsHeader}>
@@ -73,6 +87,14 @@ const MakingTeams = props => {
                         text="Add team"
                     />
                 </div>
+                {props.currentGame.host === props.auth.uid && (
+                    <div className={props.styles.startGame}>
+                        <StyledButton
+                            onClick={() => setRandomisingTeams(true)}
+                            text="Randomise Teams"
+                        />
+                    </div>
+                )}
                 {props.currentGame.isCustomNames && (
                     <div>
                         <StyledButton
@@ -105,6 +127,36 @@ const MakingTeams = props => {
                 onTeamClick={joinTeam}
                 users={props.users}
             />
+
+            <SuccessModal
+                backdrop
+                closeModal={closeRandomisingTeams}
+                error
+                isOpen={randomisingTeams}
+                headerMessage="Confirm Randomising Teams"
+            >
+                <div className={props.styles.randomiseTeamsWrapper}>
+
+                    <div className={props.styles.numberOfRandomTeams}>
+                        Maximum of 5 random teams
+                    </div>
+
+                    <TextInput onChange={setNumberOfRandomTeams} value={numberOfRandomTeams} label="Number of teams" />
+
+                    <div className={props.styles.confirmButtons}>
+                        <StyledButton
+                            text="Confirm"
+                            onClick={randomiseTeams}
+                        />
+
+                        <StyledButton
+                            color="secondary"
+                            onClick={() => setRandomisingTeams(false)}
+                            text="Close"
+                        />
+                    </div>
+                </div>
+            </SuccessModal>
 
             <SuccessModal
                 backdrop
@@ -173,6 +225,7 @@ MakingTeams.defaultProps = {
     },
     currentGameId: '',
     joinTeamRequest: noop,
+    randomiseTeamsRequest: noop,
     startWhoInHatGameRequest: noop,
     styles: defaultStyles,
     users: {}
@@ -196,6 +249,7 @@ MakingTeams.propTypes = {
     }),
     currentGameId: PropTypes.string,
     joinTeamRequest: PropTypes.func,
+    randomiseTeamsRequest: PropTypes.func,
     startWhoInHatGameRequest: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})
