@@ -45,6 +45,7 @@ const GameStarted = props => {
             );
         }
 
+
         if (props.currentGame.status === constants.whoInHatGameStatuses.PrepareToGuess) {
             return (
                 <PrepareToGuess
