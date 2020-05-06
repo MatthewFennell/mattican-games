@@ -32,6 +32,7 @@ export const PERMISSIONS = {
 export const successDelay = 3500;
 
 export const gameModes = {
+    Articulate: 'Articulate',
     Avalon: 'Avalon',
     Hitler: 'Hitler',
     WhosInTheHat: 'Who\'s in the Hat?'
@@ -103,6 +104,15 @@ export const hitlerGameStatuses = {
 };
 
 export const whoInHatGameStatuses = {
+    MakingTeams: 'MakingTeams',
+    PrepareToGuess: 'PrepareToGuess',
+    Guessing: 'Guessing',
+    RoundSummary: 'RoundSummary',
+    ScoreCapReached: 'ScoreCapReached',
+    NoCardsLeft: 'NoCardsLeft'
+};
+
+export const articulateGameStatuses = {
     MakingTeams: 'MakingTeams',
     PrepareToGuess: 'PrepareToGuess',
     Guessing: 'Guessing',
@@ -186,4 +196,20 @@ export const whoInHatSkipping = {
     Unlimited: 'Unlimited',
     OneSkip: 'One Skip',
     NoSkipping: 'No Skipping'
+};
+
+export const articulateSkipping = {
+    Unlimited: 'Unlimited',
+    OneSkip: 'One Skip',
+    NoSkipping: 'No Skipping'
+};
+
+export const articulateCategories = {
+    Action: 'Action',
+    Nature: 'Nature',
+    Person: 'Person',
+    Random: 'Random',
+    Spade: 'Spade',
+    World: 'World',
+    Object: 'Object'
 };

@@ -76,7 +76,7 @@ const MakingTeams = props => {
                 {props.currentGame.host === props.auth.uid && (
                     <div className={props.styles.startGame}>
                         <StyledButton
-                            onClick={() => props.startWhoInHatGameRequest(props.currentGameId)}
+                            onClick={() => props.startGameRequest(props.currentGameId)}
                             text="Start Game"
                         />
                     </div>
@@ -226,7 +226,7 @@ MakingTeams.defaultProps = {
     currentGameId: '',
     joinTeamRequest: noop,
     randomiseTeamsRequest: noop,
-    startWhoInHatGameRequest: noop,
+    startGameRequest: noop,
     styles: defaultStyles,
     users: {}
 };
@@ -250,7 +250,7 @@ MakingTeams.propTypes = {
     currentGameId: PropTypes.string,
     joinTeamRequest: PropTypes.func,
     randomiseTeamsRequest: PropTypes.func,
-    startWhoInHatGameRequest: PropTypes.func,
+    startGameRequest: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})
 };

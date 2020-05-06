@@ -26,8 +26,6 @@ const GameStarted = props => {
         // eslint-disable-next-line
     }, [teamToJoin, props.joinWhoInHatTeamMidgameRequest, props.currentGameId])
 
-    console.log('status', props.currentGame.status);
-
     const generateComponent = () => {
         if (props.currentGame.status === constants.whoInHatGameStatuses.MakingTeams) {
             return (
@@ -39,7 +37,7 @@ const GameStarted = props => {
                     currentGameId={props.currentGameId}
                     joinTeamRequest={props.joinTeamRequest}
                     randomiseTeamsRequest={props.randomiseTeamsRequest}
-                    startWhoInHatGameRequest={props.startWhoInHatGameRequest}
+                    startGameRequest={props.startWhoInHatGameRequest}
                     users={props.users}
                 />
             );

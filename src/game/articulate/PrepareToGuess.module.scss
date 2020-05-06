@@ -1,0 +1,54 @@
+@import "../../common/Styles.scss";
+
+.prepareToGuessHeader {
+    color: $color-blue;
+    font-weight: bold;
+    text-align: center;
+    margin-top: $spacing-large;
+    font-size: $font-size-large;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+.categoryToExplain {
+    color: $color-blue;
+    font-weight: bold;
+    text-align: center;
+    font-size: $font-size-large;
+    margin-left: 5%;
+    margin-right: 5%;  
+}
+
+.waitingToStart {
+    color: $color-blue;
+    font-weight: bold;
+    text-align: center;
+    font-size: $font-size-large;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.viewTeamsWrapper {
+    margin-top: $spacing-small;
+    text-align: center;
+    color: crimson;
+}
+
+.startRoundButton {
+    text-align: center;
+}
+
+.remainingWords {
+    text-align: center;
+    color: $color-green;
+    font-weight: bold;
+    font-size: $font-size-large;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.buttonsWrapper {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}

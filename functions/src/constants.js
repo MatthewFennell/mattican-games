@@ -208,7 +208,6 @@ module.exports.hitlerGameStatuses = {
     TemporaryPresident: 'TemporaryPresident'
 };
 
-
 module.exports.whoInHatGameStatuses = {
     MakingTeams: 'MakingTeams',
     PrepareToGuess: 'PrepareToGuess',
@@ -216,6 +215,24 @@ module.exports.whoInHatGameStatuses = {
     RoundSummary: 'RoundSummary',
     ScoreCapReached: 'ScoreCapReached',
     NoCardsLeft: 'NoCardsLeft'
+};
+
+module.exports.articulateGameStatuses = {
+    MakingTeams: 'MakingTeams',
+    PrepareToGuess: 'PrepareToGuess',
+    Guessing: 'Guessing',
+    RoundSummary: 'RoundSummary',
+    ScoreCapReached: 'ScoreCapReached'
+};
+
+module.exports.articulateCategories = {
+    Action: 'Action',
+    Nature: 'Nature',
+    Person: 'Person',
+    Random: 'Random',
+    Spade: 'Spade',
+    World: 'World',
+    Object: 'Object'
 };
 
 module.exports.historyTypes = {
@@ -266,7 +283,14 @@ module.exports.whoInHatSkipping = {
     NoSkipping: 'No Skipping'
 };
 
+module.exports.articulateSkipping = {
+    Unlimited: 'Unlimited',
+    OneSkip: 'One Skip',
+    NoSkipping: 'No Skipping'
+};
+
 module.exports.gameModes = {
+    Articulate: 'Articulate',
     Avalon: 'Avalon',
     Hitler: 'Hitler',
     WhosInTheHat: 'Who\'s in the Hat?'

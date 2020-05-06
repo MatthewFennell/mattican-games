@@ -29,20 +29,20 @@ export function* setAppLoading() {
 }
 
 
-export function* loggingIn(api) {
+export function* loggingIn() {
     try {
         yield fork(setAppLoading);
-        const user = yield firebase.auth().currentUser.getIdTokenResult();
-        const rolePermissions = yield call(api.getRolePermissions);
-        yield put(actions.setPermissionsMappingsAndRoles(rolePermissions));
+        // const user = yield firebase.auth().currentUser.getIdTokenResult();
+        // const rolePermissions = yield call(api.getRolePermissions);
+        // yield put(actions.setPermissionsMappingsAndRoles(rolePermissions));
 
-        yield all(rolePermissions.allRoles.map(role => {
-            if (user.claims[role]) {
-                const permissions = rolePermissions.mappings[role];
-                return put(actions.addPermissions(permissions));
-            }
-            return null;
-        }));
+        // yield all(rolePermissions.allRoles.map(role => {
+        //     if (user.claims[role]) {
+        //         const permissions = rolePermissions.mappings[role];
+        //         return put(actions.addPermissions(permissions));
+        //     }
+        //     return null;
+        // }));
         yield put(actions.setLoadedPermissions(true));
         yield put(push(consts.URL.OVERVIEW));
     } catch (error) {

@@ -3,15 +3,9 @@ const admin = require('firebase-admin');
 const functions = require('firebase-functions');
 const fp = require('lodash/fp');
 const lodash = require('lodash');
-const firestore = require('@google-cloud/firestore');
 const moment = require('moment');
 const constants = require('./src/constants');
 const common = require('./src/common');
-
-const client = new firestore.v1.FirestoreAdminClient();
-const bucket = 'gs://learning-backups';
-
-const config = functions.config();
 
 admin.initializeApp(functions.config().firebase);
 
@@ -428,7 +422,6 @@ exports.startWhoInHat = functions
 
             const playersNotInTeams = findPlayersNotInTeam(doc.data());
 
-            console.log('players not in teams', playersNotInTeams);
 
             if (playersNotInTeams && playersNotInTeams.length > 0) {
                 throw new functions.https.HttpsError('invalid-argument', 'There are some players not in a team');
@@ -576,7 +569,6 @@ exports.loadSummary = functions
 
             const endingWord = words[currentWordIndex];
 
-            console.log('previous word', words[currentWordIndex]);
 
             return doc.ref.update({
                 currentWordIndex: 0,
@@ -616,6 +608,7 @@ const findNextTeam = (activeTeam, teams) => {
 };
 
 const findNextExplainerInTeam = team => {
+    console.log('team', team);
     const index = team.members.findIndex(member => member === team.previousExplainer);
     return team.members[(index + 1) % team.members.length];
 };
@@ -669,8 +662,6 @@ exports.confirmScore = functions
                 nextGameStatus = constants.whoInHatGameStatuses.ScoreCapReached;
                 winningTeam = activeTeam;
             }
-
-            console.log('next game status', nextGameStatus);
 
             return doc.ref.update({
                 activeTeam: nextGameStatus === constants.whoInHatGameStatuses.PrepareToGuess ? nextTeam.name : null, // If PrepareToGuess, game has not finished
@@ -810,8 +801,6 @@ exports.randomiseTeams = functions
             const { currentPlayers, host } = doc.data();
             let newTeams = constants.initialTeams;
 
-            console.log('teams before', newTeams);
-
             if (context.auth.uid !== host) {
                 throw new functions.https.HttpsError('invalid-argument', 'You are not the explainer');
             }
@@ -842,15 +831,6 @@ exports.randomiseTeams = functions
                     previousExplainer: null
                 }];
             }
-
-            console.log('teams here', newTeams);
-
-            // fp.shuffle(currentPlayers).forEach((player, index) => {
-            //     newTeams[index % newTeams.length] = ({
-            //         ...newTeams[index % newTeams.length],
-            //         members: [...newTeams[index % newTeams.length].members, player]
-            //     });
-            // });
             const newTeamsArray = newTeams.map(a => ({ ...a }));
 
             fp.shuffle(currentPlayers).forEach((player, index) => {
@@ -860,11 +840,479 @@ exports.randomiseTeams = functions
                 });
             });
 
-            console.log('newTeams after', newTeamsArray);
-
             return doc.ref.update({
                 teams: newTeamsArray,
                 waitingToJoinTeam: []
+            });
+        });
+    });
+
+
+exports.createArticulateGame = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+
+        if (!data.name) {
+            throw new functions.https.HttpsError('invalid-argument', 'Must provide a game name');
+        }
+
+        if (!data.skippingRule || !constants.whoInHatSkipping[data.skippingRule]) {
+            throw new functions.https.HttpsError('invalid-argument', 'Must provide a valid skipping rule');
+        }
+
+        if (!data.timePerRound) {
+            throw new functions.https.HttpsError('invalid-argument', 'Must provide a valid time per round');
+        }
+
+        if (data.name && data.name.length > 32) {
+            throw new functions.https.HttpsError('invalid-argument', 'Game name too long. Max 32 characters');
+        }
+
+        return db.collection('users').doc(context.auth.uid).get().then(response => {
+            const { displayName } = response.data();
+            return db.collection('games').where('name', '==', data.name).get().then(
+                docs => {
+                    if (docs.size > 0) {
+                        throw new functions.https.HttpsError('already-exists', 'A game with that name already exists');
+                    }
+                    return db.collection('games').add({
+                        activeCategory: null,
+                        activeTeam: '',
+                        activeExplainer: '',
+                        currentPlayers: [context.auth.uid],
+                        currentWordIndex: 0,
+                        hasStarted: false,
+                        host: context.auth.uid,
+                        mode: constants.gameModes.Articulate,
+                        name: data.name,
+                        playersReady: [],
+                        round: null,
+                        skippingRule: data.skippingRule,
+                        teams: constants.initialTeams,
+                        usernameMappings: {
+                            [context.auth.uid]: displayName
+                        },
+                        wordsGuessed: [],
+                        skippedWords: [],
+                        temporaryTeam: null,
+                        trashedWords: [],
+                        words: {
+                            Object: ['Object 1', 'Object 2', 'Object 3', 'Object 4', 'Object 5', 'Object 6', 'Object 7', 'Object 8', 'Object 9'],
+                            Nature: ['Nature 1', 'Nature 2', 'Nature 3', 'Nature 4', 'Nature 5', 'Nature 6', 'Nature 7', 'Nature 8', 'Nature 9'],
+                            Random: ['Random 1', 'Random 2', 'Random 3', 'Random 4', 'Random 5', 'Random 6', 'Random 7', 'Random 8', 'Random 9'],
+                            World: ['World 1', 'World 2', 'World 3', 'World 4', 'World 5', 'World 6', 'World 7', 'World 8', 'World 9'],
+                            Person: ['Person 1', 'Person 2', 'Person 3', 'Person 4', 'Person 5', 'Person 6', 'Person 7', 'Person 8', 'Person 9'],
+                            Action: ['Action 1', 'Action 2', 'Action 3', 'Action 4', 'Action 5', 'Action 6', 'Action 7', 'Action 8', 'Action 9'],
+                            Spade: ['Spade 1', 'Spade 2', 'Spade 3', 'Spade 4', 'Spade 5', 'Spade 6', 'Spade 7', 'Spade 8', 'Spade 9']
+                        },
+                        scoreLimit: 42, // 6 x 7
+                        timePerRound: Math.min(Number(data.timePerRound), 120),
+                        waitingToJoinTeam: []
+                    });
+                }
+            );
+        });
+    });
+
+
+exports.editArticulateGame = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+            if (!data.skippingRule || !constants.articulateSkipping[data.skippingRule]) {
+                throw new functions.https.HttpsError('invalid-argument', 'Must provide a valid skipping rule');
+            }
+            if (!data.timePerRound) {
+                throw new functions.https.HttpsError('invalid-argument', 'Must provide a valid time per round');
+            }
+            return doc.ref.update({
+                skippingRule: data.skippingRule,
+                timePerRound: Math.min(Number(data.timePerRound), 120)
+            });
+        });
+    });
+
+
+exports.startArticulateGame = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            if (doc.data().host !== context.auth.uid) {
+                throw new functions.https.HttpsError('invalid-argument', 'You are not the host');
+            }
+
+            if (doc.data().playersReady.length !== doc.data().currentPlayers.length) {
+                throw new functions.https.HttpsError('invalid-argument', 'Not everybody is ready');
+            }
+
+            return doc.ref.update({
+                hasStarted: true,
+                round: 1,
+                status: constants.articulateGameStatuses.MakingTeams
+            });
+        });
+    });
+
+
+exports.startArticulate = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            const playersNotInTeams = findPlayersNotInTeam(doc.data());
+
+            if (playersNotInTeams && playersNotInTeams.length > 0) {
+                throw new functions.https.HttpsError('invalid-argument', 'There are some players not in a team');
+            }
+
+            const { words, teams } = doc.data();
+
+            const remainingTeams = fp.shuffle(teams.filter(team => team.members.length > 0));
+
+            const firstTeamName = fp.first(remainingTeams).name;
+            const firstExplainer = fp.first(fp.first(remainingTeams).members);
+
+            return doc.ref.update({
+                activeTeam: firstTeamName,
+                activeExplainer: firstExplainer,
+                words: {
+                    Object: fp.shuffle(words.Object),
+                    Nature: fp.shuffle(words.Nature),
+                    Random: fp.shuffle(words.Random),
+                    World: fp.shuffle(words.World),
+                    Person: fp.shuffle(words.Person),
+                    Action: fp.shuffle(words.Action),
+                    Spade: fp.shuffle(words.Spade)
+                },
+                teams: remainingTeams.map(team => (team.name === firstTeamName ? {
+                    ...team,
+                    previousExplainer: firstExplainer
+                } : team)),
+                status: constants.articulateGameStatuses.PrepareToGuess,
+                waitingToJoinTeam: []
+            });
+        });
+    });
+
+
+exports.startArticulateRound = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            const {
+                activeExplainer, timePerRound, activeTeam, teams, temporaryTeam
+            } = doc.data();
+
+            if (context.auth.uid !== activeExplainer) {
+                throw new functions.https.HttpsError('invalid-argument', 'You are not the explainer');
+            }
+
+            const activeTeamScore = fp.get('score')(teams.find(team => team.name === (temporaryTeam || activeTeam)));
+
+            return doc.ref.update({
+                activeCategory: common.getCategory(activeTeamScore),
+                finishTime: moment().add(timePerRound, 'seconds').format(),
+                round: operations.increment(1),
+                status: constants.articulateGameStatuses.Guessing
+            });
+        });
+    });
+
+
+exports.skipArticulateWord = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            if (!data.word) {
+                throw new functions.https.HttpsError('invalid-argument', 'Invalid word');
+            }
+
+            const { activeExplainer, currentWordIndex, skippingRule } = doc.data();
+
+            if (context.auth.uid !== activeExplainer) {
+                throw new functions.https.HttpsError('invalid-argument', 'You are not the explainer');
+            }
+
+            return doc.ref.update({
+                currentWordIndex: skippingRule === constants.whoInHatSkipping.OneSkip ? currentWordIndex : operations.increment(1),
+                skippedWords: operations.arrayUnion(data.word)
+            });
+        });
+    });
+
+
+exports.gotArticulateWord = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            if (!data.word) {
+                throw new functions.https.HttpsError('invalid-argument', 'Invalid word');
+            }
+
+            const { activeExplainer } = doc.data();
+
+            if (context.auth.uid !== activeExplainer) {
+                throw new functions.https.HttpsError('invalid-argument', 'You are not the explainer');
+            }
+
+            return doc.ref.update({
+                currentWordIndex: operations.increment(1),
+                wordsGuessed: operations.arrayUnion(data.word)
+            });
+        });
+    });
+
+
+exports.trashArticulateWord = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            if (!data.word) {
+                throw new functions.https.HttpsError('invalid-argument', 'Invalid word');
+            }
+
+            const { activeExplainer } = doc.data();
+
+            if (context.auth.uid !== activeExplainer) {
+                throw new functions.https.HttpsError('invalid-argument', 'You are not the explainer');
+            }
+
+            return doc.ref.update({
+                currentWordIndex: operations.increment(1),
+                trashedWords: operations.arrayUnion(data.word)
+            });
+        });
+    });
+
+
+exports.loadArticulateSummary = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            if (doc.data().status !== constants.articulateGameStatuses.Guessing) {
+                return Promise.resolve();
+            }
+
+            const {
+                activeCategory, wordsGuessed, trashedWords, skippedWords, words, currentWordIndex
+            } = doc.data();
+
+            const endingWord = fp.flow(fp.get(activeCategory), fp.get(currentWordIndex))(words);
+
+            return doc.ref.update({
+                currentWordIndex: 0,
+                status: constants.whoInHatGameStatuses.RoundSummary,
+                confirmedWords: wordsGuessed,
+                confirmedTrashed: endingWord ? trashedWords.concat(endingWord) : trashedWords,
+                confirmedSkipped: skippedWords,
+                words: {
+                    ...words,
+                    [activeCategory]: words[activeCategory].filter(word => word !== endingWord)
+                },
+                trashedWords: endingWord ? [...trashedWords, endingWord] : trashedWords
+            });
+        });
+    });
+
+exports.setArticulateWordConfirmed = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            if (!data.word) {
+                throw new functions.https.HttpsError('invalid-argument', 'Invalid word');
+            }
+
+            return doc.ref.update({
+                confirmedWords: data.isConfirmed ? operations.arrayUnion(data.word) : operations.arrayRemove(data.word)
+            });
+        });
+    });
+
+
+exports.confirmArticulateScore = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            const {
+                activeCategory, activeTeam, teams, confirmedWords, words, skippedWords, trashedWords, temporaryTeam
+            } = doc.data();
+
+            const teamThatPlayed = temporaryTeam || activeTeam;
+
+            const newScore = teams.find(team => team.name === teamThatPlayed).score + confirmedWords.length;
+            const nextCategory = common.getCategory(newScore);
+            console.log('next category', nextCategory);
+
+            const nextTeam = findNextTeam(activeTeam, teams);
+            const nextExplainer = findNextExplainerInTeam(nextTeam);
+            console.log('next team', nextTeam);
+            console.log('next Explainer', nextExplainer);
+
+            const newWords = {
+                ...words,
+                [activeCategory]: words[activeCategory].filter(x => !confirmedWords.includes(x)
+                && !skippedWords.includes(x) && !trashedWords.includes(x))
+            };
+
+            const newTeamScores = teams.map(team => {
+                if (team.name === nextTeam.name) {
+                    return {
+                        ...team,
+                        previousExplainer: nextExplainer,
+                        score: team.name === teamThatPlayed ? team.score + confirmedWords.length : team.score
+                    };
+                }
+                if (team.name === teamThatPlayed) {
+                    return {
+                        ...team,
+                        score: team.score + confirmedWords.length
+                    };
+                }
+                return team;
+            });
+
+            if (nextCategory === constants.articulateCategories.Spade) {
+                console.log('spade');
+                const teamObj = teams.find(t => t.name === activeTeam);
+                const nextExplainerInTeam = findNextExplainerInTeam(teamObj);
+                console.log('next explainer in same team', nextExplainerInTeam);
+
+                const nextTeams = teams.map(team => (team.name === teamObj.name ? ({
+                    ...team,
+                    previousExplainer: nextExplainerInTeam,
+                    score: newScore
+                }) : team));
+
+                return doc.ref.update({
+                    activeExplainer: nextExplainerInTeam,
+                    activeCategory: constants.articulateCategories.Spade,
+                    confirmedWords: [],
+                    confirmedTrashed: [],
+                    confirmedSkipped: [],
+                    currentWordIndex: 0,
+                    trashedWords: [],
+                    skippedWords: [],
+                    isSpadeRound: true,
+                    status: constants.articulateGameStatuses.PrepareToGuess,
+                    temporaryTeam: null,
+                    teams: nextTeams,
+                    words: newWords
+                });
+            }
+
+            return doc.ref.update({
+                activeTeam: nextTeam.name, // If PpareToGuess, game has not finished
+                activeExplainer: nextExplainer, // If PrepareToGuess, game has not finished,
+                activeCategory: nextCategory,
+                status: constants.articulateGameStatuses.PrepareToGuess,
+                isSpadeRound: false,
+                confirmedWords: [],
+                confirmedTrashed: [],
+                confirmedSkipped: [],
+                currentWordIndex: 0,
+                trashedWords: [],
+                skippedWords: [],
+                teams: newTeamScores,
+                temporaryTeam: null,
+                wordsGuessed: [],
+                words: newWords
+            });
+        });
+    });
+
+
+exports.confirmSpadeRoundWinner = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found');
+            }
+
+            if (!data.name) {
+                throw new functions.https.HttpsError('invalid-argument', 'Invalid team');
+            }
+
+            const {
+                activeCategory, trashedWords, teams, words
+            } = doc.data();
+
+            const nextTeam = teams.find(team => team.name === data.name);
+            const nextExplainer = findNextExplainerInTeam(nextTeam);
+            const nextCategory = common.getCategory(nextTeam.score);
+
+            const newWords = words[activeCategory].filter(word => !trashedWords.includes(word));
+
+            return doc.ref.update({
+                activeExplainer: nextExplainer,
+                activeCategory: nextCategory,
+                isSpadeRound: false,
+                temporaryTeam: fp.get('name')(nextTeam),
+                status: constants.articulateGameStatuses.PrepareToGuess,
+                confirmedWords: [],
+                confirmedTrashed: [],
+                confirmedSkipped: [],
+                currentWordIndex: 0,
+                trashedWords: [],
+                skippedWords: [],
+                teams: teams.map(team => (team.name === fp.get('name')(nextTeam) ? ({
+                    ...team,
+                    previousExplainer: nextExplainer
+                }) : team)),
+                words: {
+                    ...words,
+                    [activeCategory]: newWords
+                }
             });
         });
     });

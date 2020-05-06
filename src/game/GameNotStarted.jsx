@@ -8,7 +8,7 @@ import { mapUserIdToName, gameHasSetNumberOfPlayers } from './helpers';
 import * as constants from '../constants';
 import StyledButton from '../common/StyledButton/StyledButton';
 import {
-    leaveGameRequest, readyUpRequest, startGameRequest,
+    leaveGameRequest, readyUpRequest, startGameRequest, editArticulateGameRequest,
     editHitlerGameRequest, gameError, editAvalonGameRequest, editWhoInHateGameRequest
 } from './actions';
 import Switch from '../common/Switch/Switch';
@@ -23,6 +23,9 @@ const canStartGame = game => {
             && game.playersReady.length === game.numberOfPlayers;
     }
     if (game.mode === constants.gameModes.WhosInTheHat) {
+        return game.currentPlayers.length === game.playersReady.length;
+    }
+    if (game.mode === constants.gameModes.Articulate) {
         return game.currentPlayers.length === game.playersReady.length;
     }
     return false;
@@ -83,6 +86,9 @@ const GameNotStarted = props => {
             props.editWhoInHateGameRequest(props.currentGameId,
                 editedSkippingRule, editedIsCustonNames, scoreCap, timePerRound);
         }
+        if (props.currentGame.mode === constants.gameModes.Articulate) {
+            props.editArticulateGameRequest(props.currentGameId, editedSkippingRule, timePerRound);
+        }
         // eslint-disable-next-line
     }, [props.currentGame, numberOfPlayers, editedAvalonRoles, editedSkippingRule, editedIsCustonNames, scoreCap, timePerRound])
 
@@ -111,9 +117,32 @@ const GameNotStarted = props => {
                     </div>
                 </div>
 
-                <div className={props.styles.currentPlayersMessage}>
-                    {props.currentGame.numberOfPlayers ? `Current players: (${props.currentGame.currentPlayers.length}/${props.currentGame.numberOfPlayers})`
-                        : `Current players: ${props.currentGame.currentPlayers.length}`}
+                {(props.currentGame.mode === constants.gameModes.Articulate
+                || props.currentGame.mode === constants.gameModes.WhosInTheHat) && (
+                    <>
+                        <div className={props.styles.timePerRoundWrapper}>
+                            <div>Time per round:</div>
+
+                            <div className={props.styles.timePerRoundValue}>
+                                <div>{`${props.currentGame.timePerRound} (s)`}</div>
+                            </div>
+                        </div>
+                        <div className={props.styles.timePerRoundWrapper}>
+                            <div>Skipping:</div>
+
+                            <div className={props.styles.timePerRoundValue}>
+                                <div>{`${constants.whoInHatSkipping[props.currentGame.skippingRule]}`}</div>
+                            </div>
+                        </div>
+                    </>
+                )}
+
+                <div className={props.styles.currentPlayersText}>
+                    <div>Current Players:</div>
+                    <div className={props.styles.currentPlayersValue}>
+                        {props.currentGame.numberOfPlayers ? `${props.currentGame.currentPlayers.length}/${props.currentGame.numberOfPlayers}`
+                            : props.currentGame.currentPlayers.length }
+                    </div>
                 </div>
 
                 {props.currentGame.currentPlayers.map(player => (
@@ -285,12 +314,40 @@ const GameNotStarted = props => {
                         </div>
                     )}
 
+                    {props.currentGame.mode === constants.gameModes.Articulate
+                    && (
+                        <div className={props.styles.editWhoInGame}>
+                            <div className={props.styles.skippingRules}>
+                                <Dropdown
+                                    options={Object.keys(constants.articulateSkipping)
+                                        .map(mode => ({
+                                            id: mode,
+                                            value: mode,
+                                            text: constants.articulateSkipping[mode]
+                                        }))}
+                                    value={editedSkippingRule}
+                                    onChange={setEditedSkippingRule}
+                                    title="Skipping"
+                                />
+                            </div>
+                            <div className={props.styles.timePerRound}>
+                                <TextInput
+                                    type="number"
+                                    value={timePerRound}
+                                    onChange={setTimePerRound}
+                                    label="Time to guess (seconds)"
+                                />
+                            </div>
+                        </div>
+                    )}
+
                     <div className={props.styles.confirmEditButton}>
                         <StyledButton
                             disabled={(props.currentGame.numberOfPlayers === numberOfPlayers
                                 || numberOfPlayers < 5)
                                 && !differenceInRoles(editedAvalonRoles, props.currentGame.roles)
-                                && props.currentGame.mode !== constants.gameModes.WhosInTheHat}
+                                && props.currentGame.mode !== constants.gameModes.WhosInTheHat
+                                && props.currentGame.mode !== constants.gameModes.Articulate}
                             text="Confirm"
                             onClick={editGame}
                         />
@@ -401,6 +458,7 @@ GameNotStarted.propTypes = {
         playersReady: PropTypes.arrayOf(PropTypes.string)
     }),
     currentGameId: PropTypes.string,
+    editArticulateGameRequest: PropTypes.func.isRequired,
     isReady: PropTypes.bool,
     leaveGameRequest: PropTypes.func.isRequired,
     readyUpRequest: PropTypes.func.isRequired,
@@ -414,6 +472,7 @@ GameNotStarted.propTypes = {
 };
 
 const mapDispatchToProps = {
+    editArticulateGameRequest,
     leaveGameRequest,
     readyUpRequest,
     startGameRequest,

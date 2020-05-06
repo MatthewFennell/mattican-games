@@ -19,7 +19,8 @@ export const printRoleName = role => {
 };
 
 export const gameHasSetNumberOfPlayers = gameMode => {
-    if (gameMode === constants.gameModes.WhosInTheHat) {
+    if (gameMode === constants.gameModes.WhosInTheHat
+        || gameMode === constants.gameModes.Articulate) {
         return false;
     }
     return true;

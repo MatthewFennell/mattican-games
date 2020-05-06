@@ -7,7 +7,8 @@ import defaultStyles from './Overview.module.scss';
 import * as constants from '../constants';
 import {
     createAvalonGameRequest, joinGameRequest, createHiterGameRequest,
-    createWhoInHatGameRequest, joinWhoInHatTeamMidgameRequest
+    createWhoInHatGameRequest, joinWhoInHatTeamMidgameRequest,
+    createArticulateGameRequest
 } from './actions';
 import CreateGame from './CreateGame';
 import * as selectors from './selectors';
@@ -56,6 +57,9 @@ const Overview = props => {
         if (gameMode === constants.gameModes.WhosInTheHat) {
             props.createWhoInHatGameRequest(gameName, skippingRule,
                 isCustomNames, scoreCap, timePerRound);
+        }
+        if (gameMode === constants.gameModes.Articulate) {
+            props.createArticulateGameRequest(gameName, skippingRule, timePerRound);
         }
         setMakingGame(false);
 
@@ -205,6 +209,7 @@ Overview.defaultProps = {
 Overview.propTypes = {
     allGames: PropTypes.arrayOf(PropTypes.shape({})),
     closeGameError: PropTypes.func.isRequired,
+    createArticulateGameRequest: PropTypes.func.isRequired,
     createAvalonGameRequest: PropTypes.func.isRequired,
     createHiterGameRequest: PropTypes.func.isRequired,
     createWhoInHatGameRequest: PropTypes.func.isRequired,
@@ -220,8 +225,9 @@ Overview.propTypes = {
 
 const mapDispatchToProps = {
     closeGameError,
-    createHiterGameRequest,
+    createArticulateGameRequest,
     createAvalonGameRequest,
+    createHiterGameRequest,
     createWhoInHatGameRequest,
     joinGameRequest,
     joinWhoInHatTeamMidgameRequest
