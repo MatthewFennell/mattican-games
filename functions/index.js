@@ -929,7 +929,8 @@ exports.createArticulateGame = functions
                         scoreLimit: 42, // 6 x 7
                         timePerRound: Math.min(Number(data.timePerRound), 120),
                         waitingToJoinTeam: [],
-                        winningTeam: null
+                        winningTeam: null,
+                        scoreCap: data.scoreCap || constants.articulateMaxScore
                     });
                 }
             );
@@ -953,7 +954,8 @@ exports.editArticulateGame = functions
             }
             return doc.ref.update({
                 skippingRule: data.skippingRule,
-                timePerRound: Math.min(Number(data.timePerRound), 120)
+                timePerRound: Math.min(Number(data.timePerRound), 120),
+                scoreCap: data.scoreCap || constants.articulateMaxScore
             });
         });
     });
@@ -1000,7 +1002,7 @@ exports.startArticulate = functions
                 throw new functions.https.HttpsError('invalid-argument', 'There are some players not in a team');
             }
 
-            const { words, teams } = doc.data();
+            const { words, teams, scoreCap } = doc.data();
 
             const remainingTeams = fp.shuffle(teams.filter(team => team.members.length > 0));
 
@@ -1010,7 +1012,7 @@ exports.startArticulate = functions
             return doc.ref.update({
                 activeTeam: firstTeamName,
                 activeExplainer: firstExplainer,
-                activeCategory: common.getCategory(0),
+                activeCategory: common.getCategory(0, scoreCap),
                 words: {
                     Object: fp.shuffle(words.Object),
                     Nature: fp.shuffle(words.Nature),
@@ -1045,7 +1047,7 @@ exports.startArticulateRound = functions
             }
 
             const {
-                activeExplainer, timePerRound, activeTeam, teams, temporaryTeam
+                activeExplainer, timePerRound, activeTeam, teams, temporaryTeam, scoreCap
             } = doc.data();
 
             if (context.auth.uid !== activeExplainer) {
@@ -1056,7 +1058,7 @@ exports.startArticulateRound = functions
             console.log('active team score', activeTeamScore);
 
             return doc.ref.update({
-                activeCategory: common.getCategory(activeTeamScore),
+                activeCategory: common.getCategory(activeTeamScore, scoreCap),
                 finishTime: moment().add(timePerRound, 'seconds').format(),
                 round: operations.increment(1),
                 status: constants.articulateGameStatuses.Guessing
@@ -1211,14 +1213,14 @@ exports.confirmArticulateScore = functions
 
             const {
                 activeCategory, activeTeam, teams, confirmedWords, words, skippedWords, trashedWords, temporaryTeam,
-                isSpadeRound
+                isSpadeRound, scoreCap
             } = doc.data();
 
             const teamThatPlayed = temporaryTeam || activeTeam;
 
-            const newScore = Math.min(teams.find(team => team.name === teamThatPlayed).score + confirmedWords.length, constants.articulateMaxScore);
+            const newScore = Math.min(teams.find(team => team.name === teamThatPlayed).score + confirmedWords.length, scoreCap);
             console.log('new score', newScore);
-            const nextCategory = common.getCategory(newScore);
+            const nextCategory = common.getCategory(newScore, scoreCap);
             console.log('next category', nextCategory);
 
             const nextTeam = findNextTeam(activeTeam, teams);
@@ -1250,7 +1252,7 @@ exports.confirmArticulateScore = functions
             });
 
             if (nextCategory === constants.articulateCategories.Spade && confirmedWords.length !== 0
-                 && newScore !== constants.articulateMaxScore && !temporaryTeam) {
+                 && newScore !== scoreCap && !temporaryTeam) {
                 const teamObj = teams.find(t => t.name === activeTeam);
                 const nextExplainerInTeam = findNextExplainerInTeam(teamObj);
 
@@ -1283,9 +1285,9 @@ exports.confirmArticulateScore = functions
             return doc.ref.update({
                 activeTeam: nextTeam.name, // If PrepareToGuess, game has not finished
                 activeExplainer: nextExplainer, // If PrepareToGuess, game has not finished,
-                activeCategory: common.getCategory(nextTeamCurrentScore),
+                activeCategory: common.getCategory(nextTeamCurrentScore, scoreCap),
                 status: constants.articulateGameStatuses.PrepareToGuess,
-                isFinalRound: nextTeamCurrentScore === constants.articulateMaxScore,
+                isFinalRound: nextTeamCurrentScore === scoreCap,
                 isSpadeRound: false,
                 confirmedWords: [],
                 confirmedTrashed: [],
@@ -1316,12 +1318,12 @@ exports.confirmSpadeRoundWinner = functions
             }
 
             const {
-                activeCategory, trashedWords, teams, words
+                activeCategory, trashedWords, teams, words, scoreCap
             } = doc.data();
 
             const nextTeam = teams.find(team => team.name === data.name);
             const nextExplainer = findNextExplainerInTeam(nextTeam);
-            const nextCategory = common.getCategory(nextTeam.score);
+            const nextCategory = common.getCategory(nextTeam.score, scoreCap);
 
             const newWords = words[activeCategory].filter(word => !trashedWords.includes(word));
 
@@ -1358,12 +1360,12 @@ exports.confirmArticulateWinner = functions
                 throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
             }
 
-            const { activeTeam, teams } = doc.data();
+            const { activeTeam, teams, scoreCap } = doc.data();
 
             const scoreOfActiveTeam = fp.get('score')(teams.find(team => team.name === activeTeam));
             console.log('score of active team', scoreOfActiveTeam);
 
-            if (scoreOfActiveTeam !== constants.articulateMaxScore) {
+            if (scoreOfActiveTeam !== scoreCap) {
                 throw new functions.https.HttpsError('not-found', 'That team hasn\'t reached the max score yet');
             }
 

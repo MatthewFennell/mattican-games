@@ -134,6 +134,14 @@ const CreateGame = props => (
                         label="Time to guess (seconds)"
                     />
                 </div>
+                <div className={props.styles.scoreCap}>
+                    <TextInput
+                        type="number"
+                        value={props.scoreCap}
+                        onChange={props.setScoreCap}
+                        label="Score cap"
+                    />
+                </div>
             </Fade>
 
             <Fade checked={props.gameMode === constants.gameModes.Avalon} label="Test">

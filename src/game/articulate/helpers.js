@@ -1,8 +1,8 @@
 import * as constants from '../../constants';
 
 // eslint-disable-next-line import/prefer-default-export
-export const getCategory = teamScore => {
-    if (teamScore === constants.articulateMaxScore) {
+export const getCategory = (teamScore, scoreCap) => {
+    if (teamScore === scoreCap) {
         return constants.articulateCategories.Spade;
     }
     if (teamScore % 7 === 0) {

@@ -183,8 +183,8 @@ module.exports.nextGameStatus = (numberOfPlayers, fascistNum) => {
 // ------------------------------------------------------------------------------------------------- //
 // Artciulate helpers
 
-module.exports.getCategory = teamScore => {
-    if (teamScore === constants.articulateMaxScore) {
+module.exports.getCategory = (teamScore, scoreCap) => {
+    if (teamScore === scoreCap) {
         return constants.articulateCategories.Spade;
     }
 

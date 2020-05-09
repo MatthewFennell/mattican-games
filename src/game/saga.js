@@ -513,7 +513,8 @@ export function* editArticulateGame(api, action) {
         yield call(api.editArticulateGame, ({
             gameId: action.gameId,
             skippingRule: action.skippingRule,
-            timePerRound: action.timePerRound
+            timePerRound: action.timePerRound,
+            scoreCap: action.scoreCap
         }));
     } catch (error) {
         yield put(actions.gameError(error, 'Edit Game error'));

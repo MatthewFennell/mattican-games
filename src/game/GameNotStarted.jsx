@@ -35,14 +35,14 @@ const GameNotStarted = props => {
     const [editingGame, setEditingGame] = useState(false);
     const [numberOfPlayers, setNumberOfPlayers] = useState(props.currentGame.numberOfPlayers || '');
 
-    const [editedIsCustonNames, setIsEditedCustomNames] = useState(props.currentGame.isCustomNames);
+    const [editedIsCustomNames, setIsEditedCustomNames] = useState(props.currentGame.isCustomNames);
     const [editedSkippingRule, setEditedSkippingRule] = useState(props.currentGame.skippingRule);
     const [scoreCap, setScoreCap] = useState(props.currentGame.scoreCap || 20);
     const [timePerRound, setTimePerRound] = useState(props.currentGame.timePerRound || 60);
 
     const toggleEditedCustomNames = useCallback(() => {
-        setIsEditedCustomNames(!editedIsCustonNames);
-    }, [setIsEditedCustomNames, editedIsCustonNames]);
+        setIsEditedCustomNames(!editedIsCustomNames);
+    }, [setIsEditedCustomNames, editedIsCustomNames]);
 
     const toggleEditingGame = useCallback(() => {
         setEditingGame(!editingGame);
@@ -84,13 +84,13 @@ const GameNotStarted = props => {
         }
         if (props.currentGame.mode === constants.gameModes.WhosInTheHat) {
             props.editWhoInHateGameRequest(props.currentGameId,
-                editedSkippingRule, editedIsCustonNames, scoreCap, timePerRound);
+                editedSkippingRule, editedIsCustomNames, scoreCap, timePerRound);
         }
         if (props.currentGame.mode === constants.gameModes.Articulate) {
-            props.editArticulateGameRequest(props.currentGameId, editedSkippingRule, timePerRound);
+            props.editArticulateGameRequest(props.currentGameId, editedSkippingRule, timePerRound, scoreCap);
         }
         // eslint-disable-next-line
-    }, [props.currentGame, numberOfPlayers, editedAvalonRoles, editedSkippingRule, editedIsCustonNames, scoreCap, timePerRound])
+    }, [props.currentGame, numberOfPlayers, editedAvalonRoles, editedSkippingRule, editedIsCustomNames, scoreCap, timePerRound])
 
     return (
         <div className={props.styles.gameNotStartedWrapper}>
@@ -132,6 +132,13 @@ const GameNotStarted = props => {
 
                             <div className={props.styles.timePerRoundValue}>
                                 <div>{`${constants.whoInHatSkipping[props.currentGame.skippingRule]}`}</div>
+                            </div>
+                        </div>
+                        <div className={props.styles.timePerRoundWrapper}>
+                            <div>Score cap:</div>
+
+                            <div className={props.styles.timePerRoundValue}>
+                                <div>{`${props.currentGame.scoreCap}`}</div>
                             </div>
                         </div>
                     </>
@@ -294,13 +301,13 @@ const GameNotStarted = props => {
                             Custom Names
                                     </div>
                                     <Switch
-                                        checked={editedIsCustonNames}
+                                        checked={editedIsCustomNames}
                                         onChange={toggleEditedCustomNames}
                                         color="primary"
                                     />
                                 </div>
                             </div>
-                            {editedIsCustonNames && (
+                            {editedIsCustomNames && (
                                 <div className={props.styles.scoreCap}>
                                     <TextInput
                                         type="number"
@@ -343,6 +350,14 @@ const GameNotStarted = props => {
                                     value={timePerRound}
                                     onChange={setTimePerRound}
                                     label="Time to guess (seconds)"
+                                />
+                            </div>
+                            <div className={props.styles.scoreCap}>
+                                <TextInput
+                                    type="number"
+                                    value={scoreCap}
+                                    onChange={setScoreCap}
+                                    label="Score cap"
                                 />
                             </div>
                         </div>

@@ -382,11 +382,12 @@ export const randomiseTeamsRequest = (gameId, numberOfTeams) => ({
     numberOfTeams
 });
 
-export const editArticulateGameRequest = (gameId, skippingRule, timePerRound) => ({
+export const editArticulateGameRequest = (gameId, skippingRule, timePerRound, scoreCap) => ({
     type: EDIT_ARTICULATE_GAME_REQUEST,
     gameId,
     skippingRule,
-    timePerRound
+    timePerRound,
+    scoreCap
 });
 
 export const startArticulateGameRequest = gameId => ({
