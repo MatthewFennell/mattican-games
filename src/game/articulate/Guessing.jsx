@@ -67,6 +67,9 @@ const Guessing = props => {
     const [spadeRoundCompleted, setSpadeRoundCompleted] = useState(false);
     const [winningSpadeTeam, setWinningSpadeTeam] = useState('');
 
+    const [finalRoundCompleted, setFinalRoundCompleted] = useState(false);
+    const [winningFinalTeam, setWinningFinalTeam] = useState('');
+
     const skipWord = useCallback(() => {
         if (props.currentGame.skippingRule === constants.articulateSkipping.OneSkip.split(' ').join('')) {
             setSkippedWord(fp.flow(
@@ -90,9 +93,14 @@ const Guessing = props => {
         setViewingSkippedWord(!viewingSkippedWord);
     }, [setViewingSkippedWord, viewingSkippedWord]);
 
+    // NEXT THING TO DO IS WHAT HAPPENS IN gotWord when on finalRound
+    // New dropdown for final team - could be same as other
+
     const gotWord = useCallback(() => {
         if (props.currentGame.isSpadeRound) {
             setSpadeRoundCompleted(true);
+        } else if (props.currentGame.isFinalRound) {
+            setFinalRoundCompleted(true);
         } else if (viewingSkippedWord) {
             setViewingSkippedWord(false);
             setSkippedWord('');
@@ -107,7 +115,7 @@ const Guessing = props => {
         // eslint-disable-next-line
     }, [setViewingSkippedWord, setSkippedWord, viewingSkippedWord, setCurrentWordIndex,
         currentWordIndex, words, props.currentGameId, props.currentGame.isSpadeRound,
-        setSpadeRoundCompleted]);
+        setSpadeRoundCompleted, setFinalRoundCompleted]);
 
     const trashWord = useCallback(() => {
         props.trashArticulateWordRequest(props.currentGameId, fp.flow(
@@ -129,12 +137,30 @@ const Guessing = props => {
         setWinningSpadeTeam('');
     }, [setSpadeRoundCompleted, setWinningSpadeTeam]);
 
+    const closeFinalRound = useCallback(() => {
+        setFinalRoundCompleted(false);
+        setWinningFinalTeam('');
+    }, [setFinalRoundCompleted, setWinningFinalTeam]);
+
     const confirmSpadeWinner = useCallback(() => {
         props.spadeRoundWinnerRequest(props.currentGameId, winningSpadeTeam);
         setWinningSpadeTeam('');
         setSpadeRoundCompleted(false);
         // eslint-disable-next-line
     }, [props.currentGameId, winningSpadeTeam])
+
+    const confirmFinalWinner = useCallback(() => {
+        if (props.currentGame.activeTeam === winningFinalTeam) {
+            props.confirmArticulateWinner(props.currentGameId);
+            setFinalRoundCompleted(false);
+            setWinningFinalTeam('');
+        } else {
+            props.confirmArticulateScoreRequest(props.currentGameId);
+            setFinalRoundCompleted(false);
+            setWinningFinalTeam('');
+        }
+        // eslint-disable-next-line
+    }, [props.currentGame.activeTeam, winningFinalTeam, props.currentGameId]);
 
     useEffect(() => {
         const interval = setInterval(() => setTime(moment()), 1000);
@@ -146,7 +172,7 @@ const Guessing = props => {
     useEffect(() => {
         if (Math.round(timeUntil < 1) && !triedToEndRound
         && props.currentGame.status === constants.whoInHatGameStatuses.Guessing
-        && !props.currentGame.isSpadeRound) {
+        && !props.currentGame.isSpadeRound && !props.currentGame.isFinalRound) {
             props.loadArticulateSummaryRequest(props.currentGameId);
             setTriedToEndRound(true);
         }
@@ -155,19 +181,21 @@ const Guessing = props => {
         props.currentGame.isSpadeRound]);
 
     return (
-        // Math.round(timeUntil) > 0 ? (
-        true > 0 ? (
+        Math.round(timeUntil) > 0 || props.currentGame.isFinalRound
+        || props.currentGame.isSpadeRound ? (
+        // true ? (
             <>
                 <div className={props.styles.guessingWrapper}>
 
-                    {isActiveExplainerOnMyTeam(props.currentGame, props.auth.uid) && !props.currentGame.isSpadeRound
+                    {isActiveExplainerOnMyTeam(props.currentGame, props.auth.uid)
+                    && !props.currentGame.isSpadeRound
                 && (
                     <div className={props.styles.guessingHeader}>
                         {`Silence! ${helpers.mapUserIdToName(props.users, props.currentGame.activeExplainer)} is currently describing to their team`}
                     </div>
                 ) }
 
-                    {!props.currentGame.isSpadeRound && (
+                    {!props.currentGame.isSpadeRound && !props.currentGame.isFinalRound && (
                         <div className={props.styles.remainingTime}>
                             {Math.round(timeUntil)}
                         </div>
@@ -188,13 +216,14 @@ const Guessing = props => {
                     )}
 
                     {(isActiveExplainerOnMyTeam(props.currentGame, props.auth.uid)
-                    || props.currentGame.isSpadeRound) && (
+                    || props.currentGame.isSpadeRound || props.currentGame.isFinalRound) && (
                         <div className={props.styles.guessDescribedWord}>
-                            {'Guess the word being described!'}
+                            {`Guess the word being described by ${helpers.mapUserIdToName(props.users,
+                                props.currentGame.activeExplainer)}`}
                         </div>
                     ) }
 
-                    {props.currentGame.isSpadeRound && (
+                    {(props.currentGame.isSpadeRound || props.currentGame.isFinalRound) && (
                         <div className={props.styles.allPlayMessage}>
                             {'This is an all play round!'}
                         </div>
@@ -203,7 +232,7 @@ const Guessing = props => {
 
                     {!isActiveExplainerOnMyTeam(props.currentGame, props.auth.uid)
                  && props.auth.uid !== props.currentGame.activeExplainer
-                 && !props.currentGame.isSpadeRound
+                 && !props.currentGame.isSpadeRound && !props.currentGame.isFinalRound
                  && (
                      <div className={props.styles.viewTeamsWrapper}>
                          <div className={props.styles.otherTeamGuessingMessage}>
@@ -241,7 +270,8 @@ const Guessing = props => {
                                     <StyledButton
                                         disabled={isSkippingDisabled(
                                             props.currentGame.skippingRule, skippedWord
-                                        ) || props.currentGame.isSpadeRound}
+                                        ) || props.currentGame.isSpadeRound
+                                        || props.currentGame.isFinalRound}
                                         onClick={skipWord}
                                         text="Skip word"
                                     />
@@ -291,6 +321,7 @@ const Guessing = props => {
                             <TeamsAndScore
                                 auth={props.auth}
                                 currentGame={props.currentGame}
+                                showScore
                                 users={props.users}
                             />
                         </Fade>
@@ -324,13 +355,41 @@ const Guessing = props => {
                         </div>
                     </div>
                 </SuccessModal>
+                <SuccessModal
+                    backdrop
+                    closeModal={closeFinalRound}
+                    error
+                    isOpen={finalRoundCompleted}
+                    headerMessage="Select the winner"
+                >
+                    <div className={props.styles.spadeRoundCompleted}>
+                        <Dropdown
+                            title="Choose a team"
+                            value={winningFinalTeam}
+                            onChange={setWinningFinalTeam}
+                            options={props.currentGame.teams.map(team => ({
+                                id: team.name,
+                                value: team.name,
+                                text: team.name
+                            }))}
+                        />
+
+                        <div className={props.styles.confirmButtons}>
+                            <StyledButton
+                                disabled={!winningFinalTeam}
+                                text="Confirm"
+                                onClick={confirmFinalWinner}
+                            />
+                        </div>
+                    </div>
+                </SuccessModal>
             </>
-        ) : (
-            <div className={props.styles.loadingWrapper}>
-                <div>Loading score</div>
-                <Spinner />
-            </div>
-        )
+            ) : (
+                <div className={props.styles.loadingWrapper}>
+                    <div>Loading score</div>
+                    <Spinner />
+                </div>
+            )
     );
 };
 
@@ -344,6 +403,7 @@ Guessing.defaultProps = {
         activeTeam: '',
         currentWordIndex: 0,
         finishTime: null,
+        isFinalRound: false,
         isSpadeRound: false,
         words: [],
         host: '',
@@ -355,6 +415,8 @@ Guessing.defaultProps = {
         temporaryTeam: ''
     },
     currentGameId: '',
+    confirmArticulateScoreRequest: noop,
+    confirmArticulateWinner: noop,
     gotArticulateWordRequest: noop,
     loadArticulateSummaryRequest: noop,
     skipWordArticulateRequest: noop,
@@ -374,6 +436,7 @@ Guessing.propTypes = {
         activeTeam: PropTypes.string,
         currentWordIndex: PropTypes.number,
         finishTime: PropTypes.string,
+        isFinalRound: PropTypes.bool,
         isSpadeRound: PropTypes.bool,
         words: PropTypes.arrayOf(PropTypes.string),
         host: PropTypes.string,
@@ -388,6 +451,8 @@ Guessing.propTypes = {
         })),
         temporaryTeam: PropTypes.string
     }),
+    confirmArticulateScoreRequest: PropTypes.func,
+    confirmArticulateWinner: PropTypes.func,
     currentGameId: PropTypes.string,
     gotArticulateWordRequest: PropTypes.func,
     spadeRoundWinnerRequest: PropTypes.func,

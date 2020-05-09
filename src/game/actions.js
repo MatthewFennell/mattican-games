@@ -108,6 +108,10 @@ export const CONFIRM_ARTICULATE_SCORE_REQUEST = `${pre}CONFIRM_ARTICULATE_SCORE_
 
 export const SPADE_ROUND_WINNER_REQUEST = `${pre}SPADE_ROUND_WINNER_REQUEST`;
 
+export const CONFIRM_ARTICULATE_WINNER = `${pre}CONFIRM_ARTICULATE_WINNER`;
+
+export const LEAVE_ARTICULATE_GAME_REQUEST = `${pre}LEAVE_ARTICULATE_GAME_REQUEST`;
+
 export const gameError = (error, header) => ({
     type: GAME_ERROR,
     error,
@@ -434,4 +438,14 @@ export const spadeRoundWinnerRequest = (gameId, name) => ({
     type: SPADE_ROUND_WINNER_REQUEST,
     gameId,
     name
+});
+
+export const confirmArticulateWinner = gameId => ({
+    type: CONFIRM_ARTICULATE_WINNER,
+    gameId
+});
+
+export const leaveArticulateGameRequest = gameId => ({
+    type: LEAVE_ARTICULATE_GAME_REQUEST,
+    gameId
 });

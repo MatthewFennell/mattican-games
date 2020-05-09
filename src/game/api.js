@@ -61,3 +61,5 @@ export const loadArticulateSummary = request => functionToCall('loadArticulateSu
 export const setArticulateWordConfirmed = request => functionToCall('setArticulateWordConfirmed')(request);
 export const confirmArticulateScore = request => functionToCall('confirmArticulateScore')(request);
 export const confirmSpadeRoundWinner = request => functionToCall('confirmSpadeRoundWinner')(request);
+export const confirmArticulateWinner = request => functionToCall('confirmArticulateWinner')(request);
+export const leaveArticulateGame = request => functionToCall('leaveArticulateGame')(request);

@@ -76,7 +76,8 @@ const Overview = props => {
             setGameModeToJoin(game.mode);
             setGameToJoin(game.id);
         }
-        if (game.hasStarted && game.mode === constants.gameModes.WhosInTheHat) {
+        if (game.hasStarted && (game.mode === constants.gameModes.WhosInTheHat
+            || game.mode === constants.gameModes.Articulate)) {
             setGameToJoin(game.id);
             setGameModeToJoin(game.mode);
         }
@@ -84,7 +85,8 @@ const Overview = props => {
 
 
     const joinGame = useCallback(() => {
-        if (gameModeToJoin === constants.gameModes.WhosInTheHat) {
+        if (gameModeToJoin === constants.gameModes.WhosInTheHat
+            || gameModeToJoin === constants.gameModes.Articulate) {
             props.joinWhoInHatTeamMidgameRequest(gameToJoin);
         } else {
             props.joinGameRequest(gameToJoin, gameModeToJoin);

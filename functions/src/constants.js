@@ -222,7 +222,7 @@ module.exports.articulateGameStatuses = {
     PrepareToGuess: 'PrepareToGuess',
     Guessing: 'Guessing',
     RoundSummary: 'RoundSummary',
-    ScoreCapReached: 'ScoreCapReached'
+    GameFinished: 'GameFinished'
 };
 
 module.exports.articulateCategories = {
@@ -255,9 +255,9 @@ module.exports.gameModes = {
 const defaultTeamNames = {
     Collywobble: 'Collywobble Clowns',
     Electric: 'Electric Boogaloo',
-    TeamZero: 'Team Zero',
-    UndefinedName: 'Undefined and Null',
-    LastTeam: 'Last Team'
+    TeamZero: 'Noxus',
+    UndefinedName: 'Ionia',
+    LastTeam: 'Shurima'
 };
 
 module.exports.defaultTeamNames = defaultTeamNames;
@@ -295,3 +295,5 @@ module.exports.gameModes = {
     Hitler: 'Hitler',
     WhosInTheHat: 'Who\'s in the Hat?'
 };
+
+module.exports.articulateMaxScore = 15;

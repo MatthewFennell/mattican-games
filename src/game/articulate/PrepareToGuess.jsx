@@ -1,19 +1,11 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
-import fp from 'lodash/fp';
 import defaultStyles from './PrepareToGuess.module.scss';
 import * as helpers from '../helpers';
 import TeamsAndScore from '../whoInHat/TeamsAndScore';
 import Fade from '../../common/Fade/Fade';
 import StyledButton from '../../common/StyledButton/StyledButton';
-import { getCategory } from './helpers';
-
-const findCategory = game => {
-    const teamToFind = game.temporaryTeam || game.activeTeam;
-    const score = fp.get('score')(game.teams.find(team => team.name === teamToFind));
-    return getCategory(score);
-};
 
 const PrepareToGuess = props => {
     const [viewingTeams, setViewingTeams] = useState(false);
@@ -24,17 +16,28 @@ const PrepareToGuess = props => {
     return (
         <div className={props.styles.prepareToGuessWrapper}>
             <div className={props.styles.prepareToGuessHeader}>
-                {props.currentGame.isSpadeRound ? 'All teams play this round!' : `Next team: ${props.currentGame.temporaryTeam || props.currentGame.activeTeam}`}
+                {props.currentGame.isSpadeRound || props.currentGame.isFinalRound ? 'All teams play this round!'
+                    : `Next team: ${props.currentGame.temporaryTeam || props.currentGame.activeTeam}`}
             </div>
             <div className={props.styles.categoryToExplain}>
-                {`Category: ${findCategory(props.currentGame)}`}
+                {`Category: ${props.currentGame.activeCategory}`}
             </div>
+            {props.currentGame.temporaryTeam && (
+                <div className={props.styles.bonusRound}>
+                    {'Bonus round'}
+                </div>
+            )}
             {props.auth.uid !== props.currentGame.activeExplainer
         && (
             <div className={props.styles.waitingToStart}>
                 {`Waiting for ${helpers.mapUserIdToName(props.users, props.currentGame.activeExplainer)} to start`}
             </div>
         )}
+            {props.currentGame.isFinalRound && (
+                <div className={props.styles.winningMessage}>
+                    {`${props.currentGame.activeTeam} will win the game if they win this round!`}
+                </div>
+            )}
 
             <div className={props.styles.buttonsWrapper}>
                 {props.auth.uid === props.currentGame.activeExplainer && (
@@ -71,11 +74,13 @@ PrepareToGuess.defaultProps = {
         uid: ''
     },
     currentGame: {
+        activeCategory: '',
         activeExplainer: '',
         activeTeam: '',
         finishTime: '',
+        isFinalRound: false,
         isSpadeRound: false,
-        words: [],
+        words: {},
         host: '',
         isCustomNames: false,
         teams: [],
@@ -92,11 +97,13 @@ PrepareToGuess.propTypes = {
         uid: PropTypes.string
     }),
     currentGame: PropTypes.shape({
+        activeCategory: PropTypes.string,
         activeExplainer: PropTypes.string,
         activeTeam: PropTypes.string,
         finishTime: PropTypes.string,
+        isFinalRound: PropTypes.bool,
         isSpadeRound: PropTypes.bool,
-        words: PropTypes.arrayOf(PropTypes.string),
+        words: PropTypes.shape({}),
         host: PropTypes.string,
         isCustomNames: PropTypes.bool,
         teams: PropTypes.arrayOf(PropTypes.shape({

@@ -52,3 +52,18 @@
     justify-content: center;
     text-align: center;
 }
+
+.winningMessage {
+    margin-left: 10%;
+    margin-right: 10%;
+    text-align: center;
+    color: $color-green;
+    font-weight: bold;
+}
+
+.bonusRound {
+    margin-top: $spacing-small;
+    text-align: center;
+    color: $color-green;
+    font-weight: bold;
+}

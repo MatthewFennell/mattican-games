@@ -117,8 +117,7 @@ export const articulateGameStatuses = {
     PrepareToGuess: 'PrepareToGuess',
     Guessing: 'Guessing',
     RoundSummary: 'RoundSummary',
-    ScoreCapReached: 'ScoreCapReached',
-    NoCardsLeft: 'NoCardsLeft'
+    GameFinished: 'GameFinished'
 };
 
 // round -> num players
@@ -213,3 +212,5 @@ export const articulateCategories = {
     World: 'World',
     Object: 'Object'
 };
+
+export const articulateMaxScore = 50;

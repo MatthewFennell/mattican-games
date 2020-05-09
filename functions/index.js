@@ -876,6 +876,26 @@ exports.createArticulateGame = functions
                     if (docs.size > 0) {
                         throw new functions.https.HttpsError('already-exists', 'A game with that name already exists');
                     }
+
+                    const spade = [];
+                    const random = [];
+                    const object = [];
+                    const action = [];
+                    const world = [];
+                    const person = [];
+                    const nature = [];
+
+                    for (let x = 0; x < 100; x += 1) {
+                        spade.push(`Spade ${x}`);
+                        random.push(`Random ${x}`);
+                        object.push(`Object ${x}`);
+                        action.push(`Action ${x}`);
+                        world.push(`World ${x}`);
+                        person.push(`Person ${x}`);
+                        nature.push(`Nature ${x}`);
+                    }
+
+
                     return db.collection('games').add({
                         activeCategory: null,
                         activeTeam: '',
@@ -898,17 +918,18 @@ exports.createArticulateGame = functions
                         temporaryTeam: null,
                         trashedWords: [],
                         words: {
-                            Object: ['Object 1', 'Object 2', 'Object 3', 'Object 4', 'Object 5', 'Object 6', 'Object 7', 'Object 8', 'Object 9'],
-                            Nature: ['Nature 1', 'Nature 2', 'Nature 3', 'Nature 4', 'Nature 5', 'Nature 6', 'Nature 7', 'Nature 8', 'Nature 9'],
-                            Random: ['Random 1', 'Random 2', 'Random 3', 'Random 4', 'Random 5', 'Random 6', 'Random 7', 'Random 8', 'Random 9'],
-                            World: ['World 1', 'World 2', 'World 3', 'World 4', 'World 5', 'World 6', 'World 7', 'World 8', 'World 9'],
-                            Person: ['Person 1', 'Person 2', 'Person 3', 'Person 4', 'Person 5', 'Person 6', 'Person 7', 'Person 8', 'Person 9'],
-                            Action: ['Action 1', 'Action 2', 'Action 3', 'Action 4', 'Action 5', 'Action 6', 'Action 7', 'Action 8', 'Action 9'],
-                            Spade: ['Spade 1', 'Spade 2', 'Spade 3', 'Spade 4', 'Spade 5', 'Spade 6', 'Spade 7', 'Spade 8', 'Spade 9']
+                            Object: object,
+                            World: world,
+                            Spade: spade,
+                            Nature: nature,
+                            Random: random,
+                            Action: action,
+                            Person: person
                         },
                         scoreLimit: 42, // 6 x 7
                         timePerRound: Math.min(Number(data.timePerRound), 120),
-                        waitingToJoinTeam: []
+                        waitingToJoinTeam: [],
+                        winningTeam: null
                     });
                 }
             );
@@ -989,6 +1010,7 @@ exports.startArticulate = functions
             return doc.ref.update({
                 activeTeam: firstTeamName,
                 activeExplainer: firstExplainer,
+                activeCategory: common.getCategory(0),
                 words: {
                     Object: fp.shuffle(words.Object),
                     Nature: fp.shuffle(words.Nature),
@@ -998,10 +1020,14 @@ exports.startArticulate = functions
                     Action: fp.shuffle(words.Action),
                     Spade: fp.shuffle(words.Spade)
                 },
-                teams: remainingTeams.map(team => (team.name === firstTeamName ? {
+                teams: fp.shuffle(remainingTeams.map(team => (team.name === firstTeamName ? {
                     ...team,
+                    members: fp.shuffle(team.members),
                     previousExplainer: firstExplainer
-                } : team)),
+                } : ({
+                    ...team,
+                    members: fp.shuffle(team.members)
+                })))),
                 status: constants.articulateGameStatuses.PrepareToGuess,
                 waitingToJoinTeam: []
             });
@@ -1027,6 +1053,7 @@ exports.startArticulateRound = functions
             }
 
             const activeTeamScore = fp.get('score')(teams.find(team => team.name === (temporaryTeam || activeTeam)));
+            console.log('active team score', activeTeamScore);
 
             return doc.ref.update({
                 activeCategory: common.getCategory(activeTeamScore),
@@ -1183,19 +1210,21 @@ exports.confirmArticulateScore = functions
             }
 
             const {
-                activeCategory, activeTeam, teams, confirmedWords, words, skippedWords, trashedWords, temporaryTeam
+                activeCategory, activeTeam, teams, confirmedWords, words, skippedWords, trashedWords, temporaryTeam,
+                isSpadeRound
             } = doc.data();
 
             const teamThatPlayed = temporaryTeam || activeTeam;
 
-            const newScore = teams.find(team => team.name === teamThatPlayed).score + confirmedWords.length;
+            const newScore = Math.min(teams.find(team => team.name === teamThatPlayed).score + confirmedWords.length, constants.articulateMaxScore);
+            console.log('new score', newScore);
             const nextCategory = common.getCategory(newScore);
             console.log('next category', nextCategory);
 
             const nextTeam = findNextTeam(activeTeam, teams);
-            const nextExplainer = findNextExplainerInTeam(nextTeam);
             console.log('next team', nextTeam);
-            console.log('next Explainer', nextExplainer);
+            const nextExplainer = findNextExplainerInTeam(nextTeam);
+            console.log('is spade round', isSpadeRound);
 
             const newWords = {
                 ...words,
@@ -1208,23 +1237,22 @@ exports.confirmArticulateScore = functions
                     return {
                         ...team,
                         previousExplainer: nextExplainer,
-                        score: team.name === teamThatPlayed ? team.score + confirmedWords.length : team.score
+                        score: team.name === teamThatPlayed ? newScore : team.score
                     };
                 }
                 if (team.name === teamThatPlayed) {
                     return {
                         ...team,
-                        score: team.score + confirmedWords.length
+                        score: newScore
                     };
                 }
                 return team;
             });
 
-            if (nextCategory === constants.articulateCategories.Spade) {
-                console.log('spade');
+            if (nextCategory === constants.articulateCategories.Spade && confirmedWords.length !== 0
+                 && newScore !== constants.articulateMaxScore && !temporaryTeam) {
                 const teamObj = teams.find(t => t.name === activeTeam);
                 const nextExplainerInTeam = findNextExplainerInTeam(teamObj);
-                console.log('next explainer in same team', nextExplainerInTeam);
 
                 const nextTeams = teams.map(team => (team.name === teamObj.name ? ({
                     ...team,
@@ -1245,15 +1273,19 @@ exports.confirmArticulateScore = functions
                     status: constants.articulateGameStatuses.PrepareToGuess,
                     temporaryTeam: null,
                     teams: nextTeams,
-                    words: newWords
+                    words: newWords,
+                    wordsGuessed: []
                 });
             }
 
+            const nextTeamCurrentScore = fp.get('score')(teams.find(t => t.name === nextTeam.name));
+
             return doc.ref.update({
-                activeTeam: nextTeam.name, // If PpareToGuess, game has not finished
+                activeTeam: nextTeam.name, // If PrepareToGuess, game has not finished
                 activeExplainer: nextExplainer, // If PrepareToGuess, game has not finished,
-                activeCategory: nextCategory,
+                activeCategory: common.getCategory(nextTeamCurrentScore),
                 status: constants.articulateGameStatuses.PrepareToGuess,
+                isFinalRound: nextTeamCurrentScore === constants.articulateMaxScore,
                 isSpadeRound: false,
                 confirmedWords: [],
                 confirmedTrashed: [],
@@ -1313,6 +1345,75 @@ exports.confirmSpadeRoundWinner = functions
                     ...words,
                     [activeCategory]: newWords
                 }
+            });
+        });
+    });
+
+exports.confirmArticulateWinner = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            const { activeTeam, teams } = doc.data();
+
+            const scoreOfActiveTeam = fp.get('score')(teams.find(team => team.name === activeTeam));
+            console.log('score of active team', scoreOfActiveTeam);
+
+            if (scoreOfActiveTeam !== constants.articulateMaxScore) {
+                throw new functions.https.HttpsError('not-found', 'That team hasn\'t reached the max score yet');
+            }
+
+            console.log('active team', activeTeam);
+
+            return doc.ref.update({
+                activeExplainer: null,
+                status: constants.articulateGameStatuses.GameFinished,
+                winningTeam: activeTeam
+            });
+        });
+    });
+
+exports.leaveArticulateGame = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            if (doc.data().currentPlayers && doc.data().currentPlayers.length <= 1) {
+                return doc.ref.delete();
+            }
+
+            if (doc.data().activeExplainer === context.auth.uid) {
+                throw new functions.https.HttpsError('invalid-argument', 'Cannot leave game when it\'s your turn');
+            }
+
+            if (doc.data().host === context.auth.uid && doc.data().currentPlayers && doc.data().currentPlayers.length > 1) {
+                return doc.ref.update({
+                    host: doc.data().currentPlayers.find(x => x !== context.auth.uid),
+                    playersReady: operations.arrayRemove(context.auth.uid),
+                    currentPlayers: operations.arrayRemove(context.auth.uid),
+                    teams: doc.data().teams.map(team => ({
+                        ...team,
+                        members: team.members.filter(member => member !== context.auth.uid)
+                    })).filter(team => team.members.length > 0)
+                });
+            }
+
+
+            return doc.ref.update({
+                playersReady: operations.arrayRemove(context.auth.uid),
+                currentPlayers: operations.arrayRemove(context.auth.uid),
+                teams: doc.data().teams.map(team => ({
+                    ...team,
+                    members: team.members.filter(member => member !== context.auth.uid)
+                })).filter(team => team.members.length > 0)
             });
         });
     });

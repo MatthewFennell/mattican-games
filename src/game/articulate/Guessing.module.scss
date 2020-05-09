@@ -7,6 +7,7 @@
     color: $color-blue;
     margin-left: 10%;
     margin-right: 10%;
+    margin-top: $spacing-small;
 }
 
 .remainingTime {
@@ -82,7 +83,7 @@
     text-align: center;
     font-weight: bold;
     color: $color-blue;
-    font-size: $font-size-huge;
+    font-size: $font-size-large;
     margin-left: 15%;
     margin-right: 15%;
     margin-top: $spacing-small;

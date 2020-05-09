@@ -125,6 +125,10 @@ export function* leaveMidgame(api, action) {
             yield call(api.leaveWhoInHatGame, ({
                 gameId: action.gameId
             }));
+        } else if (action.mode === constants.gameModes.Articulate) {
+            yield call(api.leaveArticulateGame, ({
+                gameId: action.gameId
+            }));
         } else {
             yield call(api.leaveMidgame, ({
                 gameId: action.gameId
@@ -612,6 +616,26 @@ export function* confirmSpadeRoundWinner(api, action) {
     }
 }
 
+export function* confirmArticulateWinner(api, action) {
+    try {
+        yield call(api.confirmArticulateWinner, ({
+            gameId: action.gameId
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Confirm Winner error'));
+    }
+}
+
+export function* leaveArticulateGame(api, action) {
+    try {
+        yield call(api.leaveArticulateGame, ({
+            gameId: action.gameId
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Leave Game error'));
+    }
+}
+
 export default function* overviewSaga() {
     yield all([
         takeEvery(actions.LEAVE_GAME_REQUEST, leaveGame, gameApi),
@@ -672,6 +696,8 @@ export default function* overviewSaga() {
         takeEvery(actions.SET_ARTICULATE_WORD_CONFIRMED_REQUEST, setArticulateWordConfirmed,
             gameApi),
         takeEvery(actions.CONFIRM_ARTICULATE_SCORE_REQUEST, confirmArticulateScore, gameApi),
-        takeEvery(actions.SPADE_ROUND_WINNER_REQUEST, confirmSpadeRoundWinner, gameApi)
+        takeEvery(actions.SPADE_ROUND_WINNER_REQUEST, confirmSpadeRoundWinner, gameApi),
+        takeEvery(actions.CONFIRM_ARTICULATE_WINNER, confirmArticulateWinner, gameApi),
+        takeEvery(actions.LEAVE_ARTICULATE_GAME_REQUEST, leaveArticulateGame, gameApi)
     ]);
 }

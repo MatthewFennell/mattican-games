@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unused-prop-types */
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as constants from '../../constants';
@@ -8,15 +8,26 @@ import {
     trashWordRequest, randomiseTeamsRequest, startArticulateGameRequest,
     startArticulateRoundRequest, skipWordArticulateRequest, gotArticulateWordRequest,
     trashArticulateWordRequest, loadArticulateSummaryRequest, setArticulateWordConfirmedRequest,
-    confirmArticulateScoreRequest, spadeRoundWinnerRequest
+    confirmArticulateScoreRequest, spadeRoundWinnerRequest, confirmArticulateWinner,
+    leaveArticulateGameRequest, joinWhoInHatTeamMidgameRequest
 } from '../actions';
 import defaultStyles from './GameStarted.module.scss';
 import MakingTeams from '../whoInHat/MakingTeams';
 import PrepareToGuess from './PrepareToGuess';
 import Guessing from './Guessing';
 import RoundSummary from './RoundSummary';
+import GameFinished from './GameFinished';
+import JoinTeamModal from '../whoInHat/JoinTeamModal';
 
 const GameStarted = props => {
+    const [teamToJoin, setTeamToJoin] = useState('');
+
+    const joinTeam = useCallback(() => {
+        props.joinWhoInHatTeamMidgameRequest(props.currentGameId, teamToJoin);
+        // eslint-disable-next-line
+    }, [teamToJoin, props.joinWhoInHatTeamMidgameRequest, props.currentGameId])
+
+
     const generateComponent = () => {
         if (props.currentGame.status === constants.whoInHatGameStatuses.MakingTeams) {
             return (
@@ -50,6 +61,8 @@ const GameStarted = props => {
             return (
                 <Guessing
                     auth={props.auth}
+                    confirmArticulateScoreRequest={props.confirmArticulateScoreRequest}
+                    confirmArticulateWinner={props.confirmArticulateWinner}
                     currentGame={props.currentGame}
                     currentGameId={props.currentGameId}
                     gotArticulateWordRequest={props.gotArticulateWordRequest}
@@ -74,6 +87,17 @@ const GameStarted = props => {
                 />
             );
         }
+        if (props.currentGame.status === constants.articulateGameStatuses.GameFinished) {
+            return (
+                <GameFinished
+                    auth={props.auth}
+                    currentGame={props.currentGame}
+                    currentGameId={props.currentGameId}
+                    leaveArticulateGameRequest={props.leaveArticulateGameRequest}
+                    users={props.users}
+                />
+            );
+        }
 
         return <div>hey</div>;
     };
@@ -81,6 +105,14 @@ const GameStarted = props => {
     return (
         <>
             {generateComponent()}
+            <JoinTeamModal
+                isOpen={props.currentGame.waitingToJoinTeam.includes(props.auth.uid)
+                && props.currentGame.status !== constants.whoInHatGameStatuses.MakingTeams}
+                onChange={setTeamToJoin}
+                value={teamToJoin}
+                teams={props.currentGame.teams}
+                onConfirm={joinTeam}
+            />
         </>
     );
 };
@@ -103,8 +135,11 @@ GameStarted.propTypes = {
     addTeamRequest: PropTypes.func.isRequired,
     addWordRequest: PropTypes.func.isRequired,
     confirmArticulateScoreRequest: PropTypes.func.isRequired,
+    confirmArticulateWinner: PropTypes.func.isRequired,
     gotArticulateWordRequest: PropTypes.func.isRequired,
+    leaveArticulateGameRequest: PropTypes.func.isRequired,
     joinTeamRequest: PropTypes.func.isRequired,
+    joinWhoInHatTeamMidgameRequest: PropTypes.func.isRequired,
     loadArticulateSummaryRequest: PropTypes.func.isRequired,
     randomiseTeamsRequest: PropTypes.func.isRequired,
     setArticulateWordConfirmedRequest: PropTypes.func.isRequired,
@@ -134,9 +169,12 @@ const mapDispatchToProps = {
     addTeamRequest,
     addWordRequest,
     confirmArticulateScoreRequest,
+    confirmArticulateWinner,
     gotArticulateWordRequest,
-    joinTeamRequest,
+    leaveArticulateGameRequest,
     loadArticulateSummaryRequest,
+    joinTeamRequest,
+    joinWhoInHatTeamMidgameRequest,
     randomiseTeamsRequest,
     setArticulateWordConfirmedRequest,
     skipWordArticulateRequest,

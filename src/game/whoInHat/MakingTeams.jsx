@@ -238,7 +238,10 @@ MakingTeams.propTypes = {
         uid: PropTypes.string
     }),
     currentGame: PropTypes.shape({
-        words: PropTypes.arrayOf(PropTypes.string),
+        words: PropTypes.oneOfType([
+            PropTypes.arrayOf(PropTypes.string),
+            PropTypes.shape({})
+        ]),
         host: PropTypes.string,
         isCustomNames: PropTypes.bool,
         teams: PropTypes.arrayOf(PropTypes.shape({
