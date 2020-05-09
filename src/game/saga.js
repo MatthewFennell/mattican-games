@@ -43,8 +43,13 @@ export function* startGame(api, action) {
                 gameId: action.gameId
             }));
         }
+        if (action.mode === constants.gameModes.Articulate) {
+            yield call(api.startArticulateGame, ({
+                gameId: action.gameId
+            }));
+        }
     } catch (error) {
-        yield put(actions.gameError(error, 'Ready Up Error'));
+        yield put(actions.gameError(error, 'Start Game Error'));
     }
 }
 
@@ -118,6 +123,10 @@ export function* leaveMidgame(api, action) {
     try {
         if (action.mode === constants.gameModes.WhosInTheHat) {
             yield call(api.leaveWhoInHatGame, ({
+                gameId: action.gameId
+            }));
+        } else if (action.mode === constants.gameModes.Articulate) {
+            yield call(api.leaveArticulateGame, ({
                 gameId: action.gameId
             }));
         } else {
@@ -499,6 +508,135 @@ export function* randomiseTeams(api, action) {
     }
 }
 
+export function* editArticulateGame(api, action) {
+    try {
+        yield call(api.editArticulateGame, ({
+            gameId: action.gameId,
+            skippingRule: action.skippingRule,
+            timePerRound: action.timePerRound,
+            scoreCap: action.scoreCap
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Edit Game error'));
+    }
+}
+
+export function* startArticulate(api, action) {
+    try {
+        yield call(api.startArticulate, ({
+            gameId: action.gameId
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Start Game error'));
+    }
+}
+
+export function* startArticulateRound(api, action) {
+    try {
+        yield call(api.startArticulateRound, ({
+            gameId: action.gameId
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Start Round error'));
+    }
+}
+
+export function* skipArticulateWord(api, action) {
+    try {
+        yield call(api.skipArticulateWord, ({
+            gameId: action.gameId,
+            word: action.word
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Skip Word error'));
+    }
+}
+
+export function* gotArticulateWord(api, action) {
+    try {
+        yield call(api.gotArticulateWord, ({
+            gameId: action.gameId,
+            word: action.word
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Got Word error'));
+    }
+}
+
+export function* trashArticulateWord(api, action) {
+    try {
+        yield call(api.trashArticulateWord, ({
+            gameId: action.gameId,
+            word: action.word
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Trash Word error'));
+    }
+}
+
+export function* loadArticulateSummary(api, action) {
+    try {
+        yield call(api.loadArticulateSummary, ({
+            gameId: action.gameId
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Load Summary error'));
+    }
+}
+
+export function* setArticulateWordConfirmed(api, action) {
+    try {
+        yield call(api.setArticulateWordConfirmed, ({
+            gameId: action.gameId,
+            word: action.word,
+            isConfirmed: action.isConfirmed
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Confirm Word error'));
+    }
+}
+
+export function* confirmArticulateScore(api, action) {
+    try {
+        yield call(api.confirmArticulateScore, ({
+            gameId: action.gameId
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Confirm Score error'));
+    }
+}
+
+export function* confirmSpadeRoundWinner(api, action) {
+    try {
+        yield call(api.confirmSpadeRoundWinner, ({
+            gameId: action.gameId,
+            name: action.name
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Confirm Winner error'));
+    }
+}
+
+export function* confirmArticulateWinner(api, action) {
+    try {
+        yield call(api.confirmArticulateWinner, ({
+            gameId: action.gameId
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Confirm Winner error'));
+    }
+}
+
+export function* leaveArticulateGame(api, action) {
+    try {
+        yield call(api.leaveArticulateGame, ({
+            gameId: action.gameId
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Leave Game error'));
+    }
+}
+
 export default function* overviewSaga() {
     yield all([
         takeEvery(actions.LEAVE_GAME_REQUEST, leaveGame, gameApi),
@@ -547,6 +685,20 @@ export default function* overviewSaga() {
         takeEvery(actions.CONFIRM_SCORE_REQUEST, confirmScore, gameApi),
         takeEvery(actions.LEAVE_WHO_IN_HAT_GAME_REQUEST, leaveWhoInHatGame, gameApi),
         takeEvery(actions.JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST, joinWhoInHatTeamMidgame, gameApi),
-        takeEvery(actions.RANDOMISE_TEAMS_REQUEST, randomiseTeams, gameApi)
+        takeEvery(actions.RANDOMISE_TEAMS_REQUEST, randomiseTeams, gameApi),
+
+        takeEvery(actions.EDIT_ARTICULATE_GAME_REQUEST, editArticulateGame, gameApi),
+        takeEvery(actions.START_ARTICULATE_GAME_REQUEST, startArticulate, gameApi),
+        takeEvery(actions.START_ARTICULATE_ROUND_REQUEST, startArticulateRound, gameApi),
+        takeEvery(actions.SKIP_WORD_ARTICULATE_REQUEST, skipArticulateWord, gameApi),
+        takeEvery(actions.GOT_ARTICULATE_WORD_REQUEST, gotArticulateWord, gameApi),
+        takeEvery(actions.TRASH_ARTICULATE_WORD_REQUEST, trashArticulateWord, gameApi),
+        takeEvery(actions.LOAD_ARTICULATE_SUMMARY_REQUEST, loadArticulateSummary, gameApi),
+        takeEvery(actions.SET_ARTICULATE_WORD_CONFIRMED_REQUEST, setArticulateWordConfirmed,
+            gameApi),
+        takeEvery(actions.CONFIRM_ARTICULATE_SCORE_REQUEST, confirmArticulateScore, gameApi),
+        takeEvery(actions.SPADE_ROUND_WINNER_REQUEST, confirmSpadeRoundWinner, gameApi),
+        takeEvery(actions.CONFIRM_ARTICULATE_WINNER, confirmArticulateWinner, gameApi),
+        takeEvery(actions.LEAVE_ARTICULATE_GAME_REQUEST, leaveArticulateGame, gameApi)
     ]);
 }

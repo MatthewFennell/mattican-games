@@ -3,20 +3,21 @@ import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as constants from '../../constants';
-import MakingTeams from './MakingTeams';
+import {
+    addTeamRequest, joinTeamRequest, addWordRequest, startWhoInHatGameRequest,
+    trashWordRequest, randomiseTeamsRequest, startArticulateGameRequest,
+    startArticulateRoundRequest, skipWordArticulateRequest, gotArticulateWordRequest,
+    trashArticulateWordRequest, loadArticulateSummaryRequest, setArticulateWordConfirmedRequest,
+    confirmArticulateScoreRequest, spadeRoundWinnerRequest, confirmArticulateWinner,
+    leaveArticulateGameRequest, joinWhoInHatTeamMidgameRequest
+} from '../actions';
+import defaultStyles from './GameStarted.module.scss';
+import MakingTeams from '../whoInHat/MakingTeams';
 import PrepareToGuess from './PrepareToGuess';
 import Guessing from './Guessing';
 import RoundSummary from './RoundSummary';
 import GameFinished from './GameFinished';
-import {
-    addTeamRequest, joinTeamRequest, addWordRequest, startWhoInHatGameRequest,
-    startWhoInHatRoundRequest, gotWhoInHatWordRequest, skipWordRequest,
-    trashWordRequest, loadScoreSummaryRequest, setWordConfirmedRequest,
-    confirmScoreRequest, leaveWhoInHatGameRequest, joinWhoInHatTeamMidgameRequest,
-    randomiseTeamsRequest
-} from '../actions';
-import defaultStyles from './GameStarted.module.scss';
-import JoinTeamModal from './JoinTeamModal';
+import JoinTeamModal from '../whoInHat/JoinTeamModal';
 
 const GameStarted = props => {
     const [teamToJoin, setTeamToJoin] = useState('');
@@ -25,6 +26,7 @@ const GameStarted = props => {
         props.joinWhoInHatTeamMidgameRequest(props.currentGameId, teamToJoin);
         // eslint-disable-next-line
     }, [teamToJoin, props.joinWhoInHatTeamMidgameRequest, props.currentGameId])
+
 
     const generateComponent = () => {
         if (props.currentGame.status === constants.whoInHatGameStatuses.MakingTeams) {
@@ -37,62 +39,61 @@ const GameStarted = props => {
                     currentGameId={props.currentGameId}
                     joinTeamRequest={props.joinTeamRequest}
                     randomiseTeamsRequest={props.randomiseTeamsRequest}
-                    startGameRequest={props.startWhoInHatGameRequest}
+                    startGameRequest={props.startArticulateGameRequest}
                     users={props.users}
                 />
             );
         }
 
-
-        if (props.currentGame.status === constants.whoInHatGameStatuses.PrepareToGuess) {
+        if (props.currentGame.status === constants.articulateGameStatuses.PrepareToGuess) {
             return (
                 <PrepareToGuess
                     auth={props.auth}
                     currentGame={props.currentGame}
                     currentGameId={props.currentGameId}
-                    joinWhoInHatTeamMidgameRequest={props.joinWhoInHatTeamMidgameRequest}
-                    startWhoInHatRoundRequest={props.startWhoInHatRoundRequest}
+                    startArticulateRoundRequest={props.startArticulateRoundRequest}
                     users={props.users}
                 />
             );
         }
 
-        if (props.currentGame.status === constants.whoInHatGameStatuses.Guessing) {
+        if (props.currentGame.status === constants.articulateGameStatuses.Guessing) {
             return (
                 <Guessing
                     auth={props.auth}
+                    confirmArticulateScoreRequest={props.confirmArticulateScoreRequest}
+                    confirmArticulateWinner={props.confirmArticulateWinner}
                     currentGame={props.currentGame}
                     currentGameId={props.currentGameId}
-                    gotWhoInHatWordRequest={props.gotWhoInHatWordRequest}
-                    loadScoreSummaryRequest={props.loadScoreSummaryRequest}
-                    skipWordRequest={props.skipWordRequest}
-                    trashWordRequest={props.trashWordRequest}
+                    gotArticulateWordRequest={props.gotArticulateWordRequest}
+                    loadArticulateSummaryRequest={props.loadArticulateSummaryRequest}
+                    skipWordArticulateRequest={props.skipWordArticulateRequest}
+                    spadeRoundWinnerRequest={props.spadeRoundWinnerRequest}
+                    trashArticulateWordRequest={props.trashArticulateWordRequest}
                     users={props.users}
                 />
             );
         }
 
-        if (props.currentGame.status === constants.whoInHatGameStatuses.RoundSummary) {
+        if (props.currentGame.status === constants.articulateGameStatuses.RoundSummary) {
             return (
                 <RoundSummary
                     auth={props.auth}
-                    confirmScoreRequest={props.confirmScoreRequest}
+                    confirmArticulateScoreRequest={props.confirmArticulateScoreRequest}
                     currentGame={props.currentGame}
                     currentGameId={props.currentGameId}
-                    setWordConfirmedRequest={props.setWordConfirmedRequest}
+                    setArticulateWordConfirmedRequest={props.setArticulateWordConfirmedRequest}
                     users={props.users}
                 />
             );
         }
-
-        if (props.currentGame.status === constants.whoInHatGameStatuses.ScoreCapReached
-        || props.currentGame.status === constants.whoInHatGameStatuses.NoCardsLeft) {
+        if (props.currentGame.status === constants.articulateGameStatuses.GameFinished) {
             return (
                 <GameFinished
                     auth={props.auth}
                     currentGame={props.currentGame}
                     currentGameId={props.currentGameId}
-                    leaveWhoInHatGameRequest={props.leaveWhoInHatGameRequest}
+                    leaveArticulateGameRequest={props.leaveArticulateGameRequest}
                     users={props.users}
                 />
             );
@@ -133,10 +134,25 @@ GameStarted.defaultProps = {
 GameStarted.propTypes = {
     addTeamRequest: PropTypes.func.isRequired,
     addWordRequest: PropTypes.func.isRequired,
+    confirmArticulateScoreRequest: PropTypes.func.isRequired,
+    confirmArticulateWinner: PropTypes.func.isRequired,
+    gotArticulateWordRequest: PropTypes.func.isRequired,
+    leaveArticulateGameRequest: PropTypes.func.isRequired,
+    joinTeamRequest: PropTypes.func.isRequired,
+    joinWhoInHatTeamMidgameRequest: PropTypes.func.isRequired,
+    loadArticulateSummaryRequest: PropTypes.func.isRequired,
+    randomiseTeamsRequest: PropTypes.func.isRequired,
+    setArticulateWordConfirmedRequest: PropTypes.func.isRequired,
+    startArticulateGameRequest: PropTypes.func.isRequired,
+    startArticulateRoundRequest: PropTypes.func.isRequired,
+    startWhoInHatGameRequest: PropTypes.func.isRequired,
+    skipWordArticulateRequest: PropTypes.func.isRequired,
+    trashArticulateWordRequest: PropTypes.func.isRequired,
+    spadeRoundWinnerRequest: PropTypes.func.isRequired,
+
     auth: PropTypes.shape({
         uid: PropTypes.string
     }),
-    confirmScoreRequest: PropTypes.func.isRequired,
     currentGame: PropTypes.shape({
         status: PropTypes.string,
         teams: PropTypes.arrayOf(PropTypes.shape({
@@ -145,35 +161,28 @@ GameStarted.propTypes = {
         waitingToJoinTeam: PropTypes.arrayOf(PropTypes.string)
     }),
     currentGameId: PropTypes.string,
-    gotWhoInHatWordRequest: PropTypes.func.isRequired,
-    joinTeamRequest: PropTypes.func.isRequired,
-    joinWhoInHatTeamMidgameRequest: PropTypes.func.isRequired,
-    leaveWhoInHatGameRequest: PropTypes.func.isRequired,
-    loadScoreSummaryRequest: PropTypes.func.isRequired,
-    randomiseTeamsRequest: PropTypes.func.isRequired,
-    setWordConfirmedRequest: PropTypes.func.isRequired,
-    skipWordRequest: PropTypes.func.isRequired,
-    startWhoInHatGameRequest: PropTypes.func.isRequired,
-    startWhoInHatRoundRequest: PropTypes.func.isRequired,
     styles: PropTypes.objectOf(PropTypes.string),
-    trashWordRequest: PropTypes.func.isRequired,
     users: PropTypes.shape({})
 };
 
 const mapDispatchToProps = {
     addTeamRequest,
     addWordRequest,
-    confirmScoreRequest,
-    gotWhoInHatWordRequest,
+    confirmArticulateScoreRequest,
+    confirmArticulateWinner,
+    gotArticulateWordRequest,
+    leaveArticulateGameRequest,
+    loadArticulateSummaryRequest,
     joinTeamRequest,
     joinWhoInHatTeamMidgameRequest,
-    leaveWhoInHatGameRequest,
-    loadScoreSummaryRequest,
     randomiseTeamsRequest,
-    setWordConfirmedRequest,
-    skipWordRequest,
+    setArticulateWordConfirmedRequest,
+    skipWordArticulateRequest,
+    spadeRoundWinnerRequest,
+    startArticulateGameRequest,
+    startArticulateRoundRequest,
     startWhoInHatGameRequest,
-    startWhoInHatRoundRequest,
+    trashArticulateWordRequest,
     trashWordRequest
 };
 

@@ -65,8 +65,6 @@ jobs:
     - name: Test
       run: |
         ls
-        npm run build
-        ls
     # - name: Deploy Firebase Functions
     #   run: |
     #     cd functions

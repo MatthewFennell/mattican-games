@@ -13,6 +13,8 @@ export const CREATE_WHO_IN_HAT_GAME_REQUEST = `${pre}CREATE_WHO_IN_HAT_GAME_REQU
 
 export const JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST = `${pre}JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST`;
 
+export const CREATE_ARTICULATE_GAME_REQUEST = `${pre}CREATE_ARTICULATE_GAME_REQUEST`;
+
 export const createAvalonGameRequest = (mode, gameName, numberOfPlayers, roles) => ({
     type: CREATE_AVALON_GAME_REQUEST,
     mode,
@@ -59,4 +61,11 @@ export const createWhoInHatGameRequest = (gameName, skippingRule,
 export const joinWhoInHatTeamMidgameRequest = gameId => ({
     type: JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST,
     gameId
+});
+
+export const createArticulateGameRequest = (gameName, skippingRule, timePerRound) => ({
+    type: CREATE_ARTICULATE_GAME_REQUEST,
+    gameName,
+    skippingRule,
+    timePerRound
 });

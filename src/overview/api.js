@@ -9,3 +9,5 @@ export const createHitlerGame = request => functionToCall('hitler-createHitlerGa
 export const createWhoInHatGame = request => functionToCall('createWhoInHatGame')(request);
 
 export const joinWhoInHatMidgame = request => functionToCall('joinWhoInHatMidgame')(request);
+
+export const createArticulateGame = request => functionToCall('createArticulateGame')(request);

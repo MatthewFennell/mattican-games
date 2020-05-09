@@ -47,7 +47,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const getMessage = mode => {
-    if (mode === constants.gameModes.WhosInTheHat) {
+    if (mode === constants.gameModes.WhosInTheHat || mode === constants.gameModes.Articulate) {
         return 'Leave Game';
     }
     return 'End Game';

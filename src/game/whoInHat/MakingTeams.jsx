@@ -69,14 +69,14 @@ const MakingTeams = props => {
                 {findPlayersNotInTeam(props.currentGame).length > 0 ? 'Teams are currently being selected'
                     : `Waiting for ${helpers.mapUserIdToName(props.users, props.currentGame.host)} to start the game`}
             </div>
-            <div className={props.styles.makingTeamsHeader}>
+            <div className={props.styles.clickTeamToJoin}>
                 {'Click on a team to join it'}
             </div>
             <div className={props.styles.createTeamWrapper}>
                 {props.currentGame.host === props.auth.uid && (
                     <div className={props.styles.startGame}>
                         <StyledButton
-                            onClick={() => props.startWhoInHatGameRequest(props.currentGameId)}
+                            onClick={() => props.startGameRequest(props.currentGameId)}
                             text="Start Game"
                         />
                     </div>
@@ -226,7 +226,7 @@ MakingTeams.defaultProps = {
     currentGameId: '',
     joinTeamRequest: noop,
     randomiseTeamsRequest: noop,
-    startWhoInHatGameRequest: noop,
+    startGameRequest: noop,
     styles: defaultStyles,
     users: {}
 };
@@ -238,7 +238,10 @@ MakingTeams.propTypes = {
         uid: PropTypes.string
     }),
     currentGame: PropTypes.shape({
-        words: PropTypes.arrayOf(PropTypes.string),
+        words: PropTypes.oneOfType([
+            PropTypes.arrayOf(PropTypes.string),
+            PropTypes.shape({})
+        ]),
         host: PropTypes.string,
         isCustomNames: PropTypes.bool,
         teams: PropTypes.arrayOf(PropTypes.shape({
@@ -250,7 +253,7 @@ MakingTeams.propTypes = {
     currentGameId: PropTypes.string,
     joinTeamRequest: PropTypes.func,
     randomiseTeamsRequest: PropTypes.func,
-    startWhoInHatGameRequest: PropTypes.func,
+    startGameRequest: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})
 };

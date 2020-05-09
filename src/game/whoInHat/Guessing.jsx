@@ -235,6 +235,7 @@ const Guessing = props => {
                         <TeamsAndScore
                             auth={props.auth}
                             currentGame={props.currentGame}
+                            showScore
                             users={props.users}
                         />
                     </Fade>

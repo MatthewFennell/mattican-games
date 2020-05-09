@@ -7,7 +7,8 @@ import defaultStyles from './Overview.module.scss';
 import * as constants from '../constants';
 import {
     createAvalonGameRequest, joinGameRequest, createHiterGameRequest,
-    createWhoInHatGameRequest, joinWhoInHatTeamMidgameRequest
+    createWhoInHatGameRequest, joinWhoInHatTeamMidgameRequest,
+    createArticulateGameRequest
 } from './actions';
 import CreateGame from './CreateGame';
 import * as selectors from './selectors';
@@ -27,7 +28,7 @@ const Overview = props => {
 
     const [skippingRule, setSkippingRule] = useState(constants.whoInHatSkipping.Unlimited);
     const [isCustomNames, setCustomNames] = useState(false);
-    const [scoreCap, setScoreCap] = useState(20);
+    const [scoreCap, setScoreCap] = useState(50);
     const [timePerRound, setTimePerRound] = useState(60);
 
     const toggleRole = useCallback(role => {
@@ -57,6 +58,9 @@ const Overview = props => {
             props.createWhoInHatGameRequest(gameName, skippingRule,
                 isCustomNames, scoreCap, timePerRound);
         }
+        if (gameMode === constants.gameModes.Articulate) {
+            props.createArticulateGameRequest(gameName, skippingRule, timePerRound);
+        }
         setMakingGame(false);
 
         // eslint-disable-next-line
@@ -72,7 +76,8 @@ const Overview = props => {
             setGameModeToJoin(game.mode);
             setGameToJoin(game.id);
         }
-        if (game.hasStarted && game.mode === constants.gameModes.WhosInTheHat) {
+        if (game.hasStarted && (game.mode === constants.gameModes.WhosInTheHat
+            || game.mode === constants.gameModes.Articulate)) {
             setGameToJoin(game.id);
             setGameModeToJoin(game.mode);
         }
@@ -80,7 +85,8 @@ const Overview = props => {
 
 
     const joinGame = useCallback(() => {
-        if (gameModeToJoin === constants.gameModes.WhosInTheHat) {
+        if (gameModeToJoin === constants.gameModes.WhosInTheHat
+            || gameModeToJoin === constants.gameModes.Articulate) {
             props.joinWhoInHatTeamMidgameRequest(gameToJoin);
         } else {
             props.joinGameRequest(gameToJoin, gameModeToJoin);
@@ -205,6 +211,7 @@ Overview.defaultProps = {
 Overview.propTypes = {
     allGames: PropTypes.arrayOf(PropTypes.shape({})),
     closeGameError: PropTypes.func.isRequired,
+    createArticulateGameRequest: PropTypes.func.isRequired,
     createAvalonGameRequest: PropTypes.func.isRequired,
     createHiterGameRequest: PropTypes.func.isRequired,
     createWhoInHatGameRequest: PropTypes.func.isRequired,
@@ -220,8 +227,9 @@ Overview.propTypes = {
 
 const mapDispatchToProps = {
     closeGameError,
-    createHiterGameRequest,
+    createArticulateGameRequest,
     createAvalonGameRequest,
+    createHiterGameRequest,
     createWhoInHatGameRequest,
     joinGameRequest,
     joinWhoInHatTeamMidgameRequest

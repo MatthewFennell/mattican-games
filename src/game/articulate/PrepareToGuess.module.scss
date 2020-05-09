@@ -1,0 +1,74 @@
+@import "../../common/Styles.scss";
+
+.prepareToGuessWrapper {
+    margin-top: $spacing-medium;
+}
+
+.waitingToStart {
+    color: slategray;
+    font-weight: bold;
+    text-align: center;
+    font-size: $font-size-small;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.viewTeamsWrapper {
+    margin-top: $spacing-small;
+    text-align: center;
+    color: crimson;
+}
+
+.startRoundButton {
+    text-align: center;
+}
+
+.remainingWords {
+    text-align: center;
+    color: $color-green;
+    font-weight: bold;
+    font-size: $font-size-large;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.buttonsWrapper {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.winningMessage {
+    margin-left: 10%;
+    margin-right: 10%;
+    text-align: center;
+    color: $color-green;
+    font-weight: bold;
+}
+
+.bonusRound {
+    text-align: center;
+    color: $color-green;
+    font-weight: bold;
+}
+
+.teamText  {
+    text-align: center;
+    color: $color-green;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    font-size: $font-size-medium;
+}
+
+.teamValue {
+    color: $color-black;
+    margin-left: 4px;
+}
+
+.roundInfoWrapper {
+    margin: $spacing-small;
+    padding: $spacing-small;
+    background-color: khaki;
+    border-radius: $spacing-small;
+}

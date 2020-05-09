@@ -113,6 +113,37 @@ const CreateGame = props => (
                 </div>
             </Fade>
 
+            <Fade checked={props.gameMode === constants.gameModes.Articulate} label="Articulate">
+                <div className={props.styles.skippingRules}>
+                    <Dropdown
+                        options={Object.keys(constants.articulateSkipping).map(mode => ({
+                            id: mode,
+                            value: mode,
+                            text: constants.articulateSkipping[mode]
+                        }))}
+                        value={props.skippingRule}
+                        onChange={props.setSkippingRule}
+                        title="Skipping"
+                    />
+                </div>
+                <div className={props.styles.timePerRound}>
+                    <TextInput
+                        type="number"
+                        value={props.timePerRound}
+                        onChange={props.setTimePerRound}
+                        label="Time to guess (seconds)"
+                    />
+                </div>
+                <div className={props.styles.scoreCap}>
+                    <TextInput
+                        type="number"
+                        value={props.scoreCap}
+                        onChange={props.setScoreCap}
+                        label="Score cap"
+                    />
+                </div>
+            </Fade>
+
             <Fade checked={props.gameMode === constants.gameModes.Avalon} label="Test">
                 <div>
                     <div className={props.styles.avalonRolesMessage}>

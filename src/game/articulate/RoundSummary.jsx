@@ -8,47 +8,52 @@ import Switch from '../../common/Switch/Switch';
 
 const RoundSummary = props => {
     const toggleWord = useCallback(word => {
-        props.setWordConfirmedRequest(props.currentGameId, word,
+        props.setArticulateWordConfirmedRequest(props.currentGameId, word,
             !props.currentGame.confirmedWords.includes(word));
         // eslint-disable-next-line
-    }, [props.currentGameId, props.currentGame, props.setWordConfirmedRequest]);
+    }, [props.currentGameId, props.currentGame, props.setArticulateWordConfirmedRequest]);
 
     return (
         <div className={props.styles.roundSummaryWrapper}>
-            <div className={props.styles.timeUp}>
-                {'Time is up!'}
-            </div>
-            <div className={props.styles.confirmWords}>
-                {'Confirm the words you got'}
+            <div className={props.styles.headerWrapper}>
+                <div className={props.styles.timeUp}>
+                    {'Time is up!'}
+                </div>
+                <div className={props.styles.confirmWords}>
+                    {'Confirm the words you got'}
+                </div>
             </div>
 
             <div className={props.styles.wordsGuessed}>
-                <div className={props.styles.confirmedWrapper}>
-                    <div className={props.styles.confirmedWordsHeader}>
-                        {'Confirmed Words'}
-                    </div>
-                    {props.currentGame.wordsGuessed.map(word => (
-                        <div className={props.styles.wordRowWrapper} key={word}>
-                            <div className={classNames({
-                                [props.styles.word]: true,
-                                [props.styles.isConfirmedWord]: props.currentGame
-                                    .confirmedWords.includes(word),
-                                [props.styles.notConfirmed]: !props.currentGame
-                                    .confirmedWords.includes(word)
-                            })}
-                            >
-                                {word}
-                            </div>
-                            <div>
-                                <Switch
-                                    checked={props.currentGame.confirmedWords.includes(word)}
-                                    onChange={() => toggleWord(word)}
-                                    color="primary"
-                                />
-                            </div>
+                {props.currentGame.wordsGuessed.length > 0
+                && (
+                    <div className={props.styles.confirmedWrapper}>
+                        <div className={props.styles.confirmedWordsHeader}>
+                            {'Confirmed Words'}
                         </div>
-                    ))}
-                </div>
+                        {props.currentGame.wordsGuessed.map(word => (
+                            <div className={props.styles.wordRowWrapper} key={word}>
+                                <div className={classNames({
+                                    [props.styles.word]: true,
+                                    [props.styles.isConfirmedWord]: props.currentGame
+                                        .confirmedWords.includes(word),
+                                    [props.styles.notConfirmed]: !props.currentGame
+                                        .confirmedWords.includes(word)
+                                })}
+                                >
+                                    {word}
+                                </div>
+                                <div>
+                                    <Switch
+                                        checked={props.currentGame.confirmedWords.includes(word)}
+                                        onChange={() => toggleWord(word)}
+                                        color="primary"
+                                    />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ) }
 
 
                 {props.currentGame.skippedWords.length > 0
@@ -113,7 +118,7 @@ const RoundSummary = props => {
                 ) }
 
                 <StyledButton
-                    onClick={() => props.confirmScoreRequest(props.currentGameId)}
+                    onClick={() => props.confirmArticulateScoreRequest(props.currentGameId)}
                     text={`Confirm score of ${props.currentGame.confirmedWords.length}`}
                 />
 
@@ -126,7 +131,7 @@ RoundSummary.defaultProps = {
     auth: {
         uid: ''
     },
-    confirmScoreRequest: noop,
+    confirmArticulateScoreRequest: noop,
     currentGame: {
         activeExplainer: '',
         activeTeam: '',
@@ -141,7 +146,7 @@ RoundSummary.defaultProps = {
         wordsGuessed: []
     },
     currentGameId: '',
-    setWordConfirmedRequest: noop,
+    setArticulateWordConfirmedRequest: noop,
     styles: defaultStyles,
     users: {}
 };
@@ -150,7 +155,7 @@ RoundSummary.propTypes = {
     auth: PropTypes.shape({
         uid: PropTypes.string
     }),
-    confirmScoreRequest: PropTypes.func,
+    confirmArticulateScoreRequest: PropTypes.func,
     currentGame: PropTypes.shape({
         activeExplainer: PropTypes.string,
         activeTeam: PropTypes.string,
@@ -169,7 +174,7 @@ RoundSummary.propTypes = {
         wordsGuessed: PropTypes.arrayOf(PropTypes.string)
     }),
     currentGameId: PropTypes.string,
-    setWordConfirmedRequest: PropTypes.func,
+    setArticulateWordConfirmedRequest: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})
 };

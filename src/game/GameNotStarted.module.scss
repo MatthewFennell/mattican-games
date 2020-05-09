@@ -15,11 +15,29 @@
     margin-top: $spacing-small;
 }
 
-.gameModeText {
+.timePerRoundWrapper {
+    text-align: center;
+    color: $color-green;
+    font-weight: bold;
+}
+
+.gameModeText, .timePerRoundWrapper {
     display: flex;
 }
 
-.gameModeValue {
+.currentPlayersText {
+    font-weight: bold;
+    text-align: center;
+    justify-content: center;
+    color: $color-green;
+    display: flex;
+}
+
+.timePerRoundWrapper {
+    justify-content: center;
+}
+
+.gameModeValue, .timePerRoundValue, .currentPlayersValue {
     color: $color-black;
     margin-left: 4px;
 }
@@ -32,16 +50,26 @@
     }
 }
 
+.timePerRound {
+    display: flex;
+    justify-content: space-evenly;
+    > div {
+        @include vertical-center-div();
+    }
+}
+
 .currentPlayersWrapper {
     margin: $spacing-small;
     padding: $spacing-small;
     background-color: khaki;
+    border-radius: $spacing-small;
 }
 
 .editGame {
     margin: $spacing-small;
     padding: $spacing-small;
     background-color: khaki;
+    border-radius: $spacing-small;
 }
 
 .readyUp {
@@ -91,6 +119,7 @@
 .gameInfo {
     display: flex;
     justify-content: space-evenly;
+    margin-bottom: $spacing-tiny;
 }
 
 .editNumberOfPlayers {
@@ -179,6 +208,7 @@
     padding: $spacing-small;
     margin: $spacing-small;
     background-color: cadetblue;
+    border-radius: $spacing-small;
 }
 
 .goodGuyRoles, .badGuyRoles {

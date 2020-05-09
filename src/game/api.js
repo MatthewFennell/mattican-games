@@ -49,3 +49,17 @@ export const confirmScore = request => functionToCall('confirmScore')(request);
 export const leaveWhoInHatGame = request => functionToCall('leaveWhoInHatGame')(request);
 export const joinWhoInHatTeamMidgame = request => functionToCall('joinWhoInHatTeamMidgame')(request);
 export const randomiseTeams = request => functionToCall('randomiseTeams')(request);
+
+export const editArticulateGame = request => functionToCall('editArticulateGame')(request);
+export const startArticulateGame = request => functionToCall('startArticulateGame')(request); // Into lobby
+export const startArticulate = request => functionToCall('startArticulate')(request); // Confirm teams
+export const startArticulateRound = request => functionToCall('startArticulateRound')(request); // Start round
+export const skipArticulateWord = request => functionToCall('skipArticulateWord')(request);
+export const gotArticulateWord = request => functionToCall('gotArticulateWord')(request);
+export const trashArticulateWord = request => functionToCall('trashArticulateWord')(request);
+export const loadArticulateSummary = request => functionToCall('loadArticulateSummary')(request);
+export const setArticulateWordConfirmed = request => functionToCall('setArticulateWordConfirmed')(request);
+export const confirmArticulateScore = request => functionToCall('confirmArticulateScore')(request);
+export const confirmSpadeRoundWinner = request => functionToCall('confirmSpadeRoundWinner')(request);
+export const confirmArticulateWinner = request => functionToCall('confirmArticulateWinner')(request);
+export const leaveArticulateGame = request => functionToCall('leaveArticulateGame')(request);
