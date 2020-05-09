@@ -181,7 +181,16 @@ module.exports.nextGameStatus = (numberOfPlayers, fascistNum) => {
 };
 
 // ------------------------------------------------------------------------------------------------- //
-// Artciulate helpers
+// Who In Hat helpers
+
+const playerExistsInTeam = (game, playerId) => game.teams
+    .some(team => team.members.includes(playerId));
+
+module.exports.findPlayersNotInTeam = game => game.currentPlayers
+    .filter(playerId => !playerExistsInTeam(game, playerId));
+
+// ------------------------------------------------------------------------------------------------- //
+// Articulate helpers
 
 module.exports.getCategory = (teamScore, scoreCap) => {
     if (teamScore === scoreCap) {
@@ -210,4 +219,14 @@ module.exports.getCategory = (teamScore, scoreCap) => {
         return constants.articulateCategories.Nature;
     }
     return 'ERROR';
+};
+
+module.exports.findNextTeam = (activeTeam, teams) => {
+    const index = teams.findIndex(team => team.name === activeTeam);
+    return teams[(index + 1) % teams.length];
+};
+
+module.exports.findNextExplainerInTeam = team => {
+    const index = team.members.findIndex(member => member === team.previousExplainer);
+    return team.members[(index + 1) % team.members.length];
 };

@@ -1,11 +1,11 @@
 import { functionToCall } from '../api/api';
 
-export const leaveGame = request => functionToCall('leaveGame')(request);
-export const readyUp = request => functionToCall('readyUp')(request);
-export const destroyGame = request => functionToCall('destroyGame')(request);
-export const leaveMidgame = request => functionToCall('leaveMidgame')(request);
-export const approveLeaveMidgame = request => functionToCall('approveLeaveMidgame')(request);
-export const editDisplayName = request => functionToCall('editDisplayName')(request);
+export const leaveGame = request => functionToCall('shared-leaveGame')(request);
+export const readyUp = request => functionToCall('shared-readyUp')(request);
+export const destroyGame = request => functionToCall('shared-destroyGame')(request);
+export const leaveMidgame = request => functionToCall('shared-leaveMidgame')(request);
+export const approveLeaveMidgame = request => functionToCall('shared-approveLeaveMidgame')(request);
+export const editDisplayName = request => functionToCall('shared-editDisplayName')(request);
 
 export const startHitlerGame = request => functionToCall('hitler-startGame')(request);
 export const nominateChancellor = request => functionToCall('hitler-nominateChancellor')(request);
@@ -33,33 +33,30 @@ export const makeVote = request => functionToCall('avalon-makeVote')(request);
 export const goOnQuest = request => functionToCall('avalon-goOnQuest')(request);
 export const guessMerlin = request => functionToCall('avalon-guessMerlin')(request);
 
-export const editGameWhoInHat = request => functionToCall('editGameWhoInHat')(request);
-export const startWhoInHatGame = request => functionToCall('startWhoInHatGame')(request);
-export const addTeam = request => functionToCall('addTeam')(request);
-export const joinTeam = request => functionToCall('joinTeam')(request);
-export const addWord = request => functionToCall('addWord')(request);
-export const startWhoInHat = request => functionToCall('startWhoInHat')(request);
-export const startWhoInHatRound = request => functionToCall('startWhoInHatRound')(request);
-export const gotWord = request => functionToCall('gotWord')(request);
-export const skipWord = request => functionToCall('skipWord')(request);
-export const trashWord = request => functionToCall('trashWord')(request);
-export const loadSummary = request => functionToCall('loadSummary')(request);
-export const confirmWord = request => functionToCall('confirmWord')(request);
-export const confirmScore = request => functionToCall('confirmScore')(request);
-export const leaveWhoInHatGame = request => functionToCall('leaveWhoInHatGame')(request);
-export const joinWhoInHatTeamMidgame = request => functionToCall('joinWhoInHatTeamMidgame')(request);
-export const randomiseTeams = request => functionToCall('randomiseTeams')(request);
+export const editGameWhoInHat = request => functionToCall('whoInHat-editGame')(request);
+export const startWhoInHatGame = request => functionToCall('whoInHat-startGame')(request);
+export const addTeam = request => functionToCall('shared-addTeam')(request);
+export const joinTeam = request => functionToCall('shared-joinTeam')(request);
+export const addWord = request => functionToCall('whoInHat-addWord')(request);
+export const startWhoInHat = request => functionToCall('whoInHat-start')(request);
+export const startWhoInHatRound = request => functionToCall('whoInHat-startRound')(request);
+export const gotWord = request => functionToCall('shared-gotWord')(request);
+export const skipWord = request => functionToCall('shared-skipWord')(request);
+export const trashWord = request => functionToCall('shared-trashWord')(request);
+export const loadSummary = request => functionToCall('whoInHat-loadSummary')(request);
+export const confirmWord = request => functionToCall('shared-confirmWord')(request);
+export const confirmScore = request => functionToCall('whoInHat-confirmScore')(request);
+export const sharedLeaveMidgame = request => functionToCall('shared-leaveMidgame')(request);
+export const joinWhoInHatTeamMidgame = request => functionToCall('shared-joinTeamMidgame')(request);
+export const randomiseTeams = request => functionToCall('shared-randomiseTeams')(request);
 
-export const editArticulateGame = request => functionToCall('editArticulateGame')(request);
-export const startArticulateGame = request => functionToCall('startArticulateGame')(request); // Into lobby
-export const startArticulate = request => functionToCall('startArticulate')(request); // Confirm teams
-export const startArticulateRound = request => functionToCall('startArticulateRound')(request); // Start round
-export const skipArticulateWord = request => functionToCall('skipArticulateWord')(request);
-export const gotArticulateWord = request => functionToCall('gotArticulateWord')(request);
-export const trashArticulateWord = request => functionToCall('trashArticulateWord')(request);
-export const loadArticulateSummary = request => functionToCall('loadArticulateSummary')(request);
-export const setArticulateWordConfirmed = request => functionToCall('setArticulateWordConfirmed')(request);
-export const confirmArticulateScore = request => functionToCall('confirmArticulateScore')(request);
-export const confirmSpadeRoundWinner = request => functionToCall('confirmSpadeRoundWinner')(request);
-export const confirmArticulateWinner = request => functionToCall('confirmArticulateWinner')(request);
-export const leaveArticulateGame = request => functionToCall('leaveArticulateGame')(request);
+export const editArticulateGame = request => functionToCall('articulate-editGame')(request);
+export const startArticulateGame = request => functionToCall('articulate-startGame')(request); // Into lobby
+export const startArticulate = request => functionToCall('articulate-start')(request); // Confirm teams
+export const startArticulateRound = request => functionToCall('articulate-startRound')(request); // Start round
+export const loadArticulateSummary = request => functionToCall('articulate-loadSummary')(request);
+export const setArticulateWordConfirmed = request => functionToCall('articulate-setWordConfirmed')(request);
+export const confirmArticulateScore = request => functionToCall('articulate-confirmScore')(request);
+export const confirmSpadeRoundWinner = request => functionToCall('articulate-confirmSpadeRoundWinner')(request);
+export const confirmArticulateWinner = request => functionToCall('articulate-confirmWinner')(request);
+export const leaveArticulateGame = request => functionToCall('shared-leaveMidgame')(request);

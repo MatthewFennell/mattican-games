@@ -87,8 +87,10 @@ const GameNotStarted = props => {
                 editedSkippingRule, editedIsCustomNames, scoreCap, timePerRound);
         }
         if (props.currentGame.mode === constants.gameModes.Articulate) {
-            props.editArticulateGameRequest(props.currentGameId, editedSkippingRule, timePerRound, scoreCap);
+            props.editArticulateGameRequest(props.currentGameId,
+                editedSkippingRule, timePerRound, scoreCap);
         }
+        setEditingGame(false);
         // eslint-disable-next-line
     }, [props.currentGame, numberOfPlayers, editedAvalonRoles, editedSkippingRule, editedIsCustomNames, scoreCap, timePerRound])
 

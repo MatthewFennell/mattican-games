@@ -122,7 +122,7 @@ export function* destroyGame(api, action) {
 export function* leaveMidgame(api, action) {
     try {
         if (action.mode === constants.gameModes.WhosInTheHat) {
-            yield call(api.leaveWhoInHatGame, ({
+            yield call(api.sharedLeaveMidgame, ({
                 gameId: action.gameId
             }));
         } else if (action.mode === constants.gameModes.Articulate) {
@@ -477,7 +477,7 @@ export function* confirmScore(api, action) {
 
 export function* leaveWhoInHatGame(api, action) {
     try {
-        yield call(api.leaveWhoInHatGame, ({
+        yield call(api.sharedLeaveMidgame, ({
             gameId: action.gameId
         }));
     } catch (error) {
@@ -543,7 +543,7 @@ export function* startArticulateRound(api, action) {
 
 export function* skipArticulateWord(api, action) {
     try {
-        yield call(api.skipArticulateWord, ({
+        yield call(api.skipWord, ({
             gameId: action.gameId,
             word: action.word
         }));
@@ -554,7 +554,7 @@ export function* skipArticulateWord(api, action) {
 
 export function* gotArticulateWord(api, action) {
     try {
-        yield call(api.gotArticulateWord, ({
+        yield call(api.gotWord, ({
             gameId: action.gameId,
             word: action.word
         }));
@@ -565,7 +565,7 @@ export function* gotArticulateWord(api, action) {
 
 export function* trashArticulateWord(api, action) {
     try {
-        yield call(api.trashArticulateWord, ({
+        yield call(api.trashWord, ({
             gameId: action.gameId,
             word: action.word
         }));
