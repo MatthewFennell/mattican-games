@@ -1,29 +1,14 @@
 @import "../../common/Styles.scss";
 
-.prepareToGuessHeader {
-    color: $color-blue;
-    font-weight: bold;
-    text-align: center;
-    margin-top: $spacing-large;
-    font-size: $font-size-large;
-    margin-left: 5%;
-    margin-right: 5%;
-}
-
-.categoryToExplain {
-    color: $color-blue;
-    font-weight: bold;
-    text-align: center;
-    font-size: $font-size-large;
-    margin-left: 5%;
-    margin-right: 5%;  
+.prepareToGuessWrapper {
+    margin-top: $spacing-medium;
 }
 
 .waitingToStart {
-    color: $color-blue;
+    color: slategray;
     font-weight: bold;
     text-align: center;
-    font-size: $font-size-large;
+    font-size: $font-size-small;
     margin-left: 10%;
     margin-right: 10%;
 }
@@ -62,8 +47,28 @@
 }
 
 .bonusRound {
-    margin-top: $spacing-small;
     text-align: center;
     color: $color-green;
     font-weight: bold;
+}
+
+.teamText  {
+    text-align: center;
+    color: $color-green;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    font-size: $font-size-medium;
+}
+
+.teamValue {
+    color: $color-black;
+    margin-left: 4px;
+}
+
+.roundInfoWrapper {
+    margin: $spacing-small;
+    padding: $spacing-small;
+    background-color: khaki;
+    border-radius: $spacing-small;
 }

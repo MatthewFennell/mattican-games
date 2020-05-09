@@ -187,17 +187,19 @@ const GameNotStarted = props => {
             )}
             </div>
 
-            <div className={props.styles.editGame}>
-                <div className={props.styles.readyUp}>
-                    <div>
-                        <div>Ready Up</div>
-                        <Switch
-                            checked={props.isReady}
-                            onChange={() => props.readyUpRequest(props.currentGameId,
-                                !props.isReady)}
-                        />
-                    </div>
-                    {props.currentGame.host === props.auth.uid && (
+            {props.currentGame.host === props.auth.uid
+
+            && (
+                <div className={props.styles.editGame}>
+                    <div className={props.styles.readyUp}>
+                        <div>
+                            <div>Ready Up</div>
+                            <Switch
+                                checked={props.isReady}
+                                onChange={() => props.readyUpRequest(props.currentGameId,
+                                    !props.isReady)}
+                            />
+                        </div>
                         <div>
                             <div>Edit game</div>
                             <Switch
@@ -205,15 +207,14 @@ const GameNotStarted = props => {
                                 onChange={toggleEditingGame}
                             />
                         </div>
-                    ) }
-                </div>
-                <Fade
+                    </div>
+                    <Fade
 
-                    checked={editingGame}
-                >
+                        checked={editingGame}
+                    >
 
-                    <div className={props.styles.editGameWrapper}>
-                        {gameHasSetNumberOfPlayers(props.currentGame.mode)
+                        <div className={props.styles.editGameWrapper}>
+                            {gameHasSetNumberOfPlayers(props.currentGame.mode)
                         && (
                             <div className={props.styles.editNumberOfPlayers}>
                                 <TextInput
@@ -224,48 +225,54 @@ const GameNotStarted = props => {
                                 />
                             </div>
                         ) }
-                    </div>
-
-                    {props.currentGame.mode === constants.gameModes.Avalon && (
-                        <div className={props.styles.avalonWrapper}>
-                            <div className={props.styles.goodGuyRoles}>
-                                {Object.values(constants.avalonRoles)
-                                    .filter(role => role.isGood).filter(role => role.isSpecial)
-                                    .map(role => (
-                                        <div className={props.styles.roleWrapper} key={role.name}>
-                                            <div className={props.styles.avalonGoodRoleName}>
-                                                {role.name}
-                                            </div>
-                                            <Switch
-                                                checked={editedAvalonRoles.includes(role.name)}
-                                                onChange={() => toggleRole(role.name)}
-                                                color="primary"
-                                            />
-                                        </div>
-                                    ))}
-                            </div>
-                            <div className={props.styles.badGuyRoles}>
-                                {Object.values(constants.avalonRoles)
-                                    .filter(role => !role.isGood).filter(role => role.isSpecial)
-                                    .map(role => (
-                                        <div className={props.styles.roleWrapper} key={role.name}>
-                                            <div className={props.styles.avalonBadRoleName}>
-                                                {role.name}
-                                            </div>
-                                            <Switch
-                                                checked={editedAvalonRoles.includes(role.name)}
-                                                onChange={() => toggleRole(role.name)}
-                                                color="secondary"
-                                                disabled={shouldBeDisabled(numberOfPlayers,
-                                                    editedAvalonRoles, role.name)}
-                                            />
-                                        </div>
-                                    ))}
-                            </div>
                         </div>
-                    )}
 
-                    {props.currentGame.mode === constants.gameModes.WhosInTheHat
+                        {props.currentGame.mode === constants.gameModes.Avalon && (
+                            <div className={props.styles.avalonWrapper}>
+                                <div className={props.styles.goodGuyRoles}>
+                                    {Object.values(constants.avalonRoles)
+                                        .filter(role => role.isGood).filter(role => role.isSpecial)
+                                        .map(role => (
+                                            <div
+                                                className={props.styles.roleWrapper}
+                                                key={role.name}
+                                            >
+                                                <div className={props.styles.avalonGoodRoleName}>
+                                                    {role.name}
+                                                </div>
+                                                <Switch
+                                                    checked={editedAvalonRoles.includes(role.name)}
+                                                    onChange={() => toggleRole(role.name)}
+                                                    color="primary"
+                                                />
+                                            </div>
+                                        ))}
+                                </div>
+                                <div className={props.styles.badGuyRoles}>
+                                    {Object.values(constants.avalonRoles)
+                                        .filter(role => !role.isGood).filter(role => role.isSpecial)
+                                        .map(role => (
+                                            <div
+                                                className={props.styles.roleWrapper}
+                                                key={role.name}
+                                            >
+                                                <div className={props.styles.avalonBadRoleName}>
+                                                    {role.name}
+                                                </div>
+                                                <Switch
+                                                    checked={editedAvalonRoles.includes(role.name)}
+                                                    onChange={() => toggleRole(role.name)}
+                                                    color="secondary"
+                                                    disabled={shouldBeDisabled(numberOfPlayers,
+                                                        editedAvalonRoles, role.name)}
+                                                />
+                                            </div>
+                                        ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {props.currentGame.mode === constants.gameModes.WhosInTheHat
                     && (
                         <div className={props.styles.editWhoInGame}>
                             <div className={props.styles.skippingRules}>
@@ -314,7 +321,7 @@ const GameNotStarted = props => {
                         </div>
                     )}
 
-                    {props.currentGame.mode === constants.gameModes.Articulate
+                        {props.currentGame.mode === constants.gameModes.Articulate
                     && (
                         <div className={props.styles.editWhoInGame}>
                             <div className={props.styles.skippingRules}>
@@ -341,22 +348,34 @@ const GameNotStarted = props => {
                         </div>
                     )}
 
-                    <div className={props.styles.confirmEditButton}>
-                        <StyledButton
-                            disabled={(props.currentGame.numberOfPlayers === numberOfPlayers
+                        <div className={props.styles.confirmEditButton}>
+                            <StyledButton
+                                disabled={(props.currentGame.numberOfPlayers === numberOfPlayers
                                 || numberOfPlayers < 5)
                                 && !differenceInRoles(editedAvalonRoles, props.currentGame.roles)
                                 && props.currentGame.mode !== constants.gameModes.WhosInTheHat
                                 && props.currentGame.mode !== constants.gameModes.Articulate}
-                            text="Confirm"
-                            onClick={editGame}
-                        />
-                    </div>
-                </Fade>
-            </div>
+                                text="Confirm"
+                                onClick={editGame}
+                            />
+                        </div>
+                    </Fade>
+                </div>
+            )}
 
 
             <div className={props.styles.startAndLeave}>
+                {props.currentGame.host !== props.auth.uid
+                && (
+                    <div>
+                        <div>Ready Up</div>
+                        <Switch
+                            checked={props.isReady}
+                            onChange={() => props.readyUpRequest(props.currentGameId,
+                                !props.isReady)}
+                        />
+                    </div>
+                ) }
                 {props.currentGame.host === props.auth.uid
             && (
                 <div

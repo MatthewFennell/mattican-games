@@ -2,7 +2,12 @@
 
 .makingTeamsHeader{
     margin-top: $spacing-small;
-    margin-bottom: $spacing-small;
+    text-align: center;
+    font-weight: bold;
+    color: $color-gray;
+}
+
+.clickTeamToJoin {
     text-align: center;
     font-weight: bold;
     color: $color-gray;

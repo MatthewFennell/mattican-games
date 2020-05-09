@@ -110,22 +110,6 @@ describe('Auth saga', () => {
             .run();
     });
 
-    it('logging in error', () => {
-        const error = new Error('error');
-        const action = {
-            type: constants.actionTypes.LOGIN,
-            auth: {
-                emailVerified: false
-            }
-        };
-        return expectSaga(sagas.loggingIn, api, action)
-            .provide([
-                [matchers.call.fn(api.getRolePermissions), throwError(error)]
-            ])
-            .put(actions.signInError(error))
-            .run();
-    });
-
     it('sign up', () => {
         const action = actions.signUp('email', 'password', 'display');
         return expectSaga(sagas.signUp, api, action)

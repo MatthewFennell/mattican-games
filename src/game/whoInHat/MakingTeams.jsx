@@ -69,7 +69,7 @@ const MakingTeams = props => {
                 {findPlayersNotInTeam(props.currentGame).length > 0 ? 'Teams are currently being selected'
                     : `Waiting for ${helpers.mapUserIdToName(props.users, props.currentGame.host)} to start the game`}
             </div>
-            <div className={props.styles.makingTeamsHeader}>
+            <div className={props.styles.clickTeamToJoin}>
                 {'Click on a team to join it'}
             </div>
             <div className={props.styles.createTeamWrapper}>

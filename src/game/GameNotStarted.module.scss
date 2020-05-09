@@ -62,12 +62,14 @@
     margin: $spacing-small;
     padding: $spacing-small;
     background-color: khaki;
+    border-radius: $spacing-small;
 }
 
 .editGame {
     margin: $spacing-small;
     padding: $spacing-small;
     background-color: khaki;
+    border-radius: $spacing-small;
 }
 
 .readyUp {
@@ -206,6 +208,7 @@
     padding: $spacing-small;
     margin: $spacing-small;
     background-color: cadetblue;
+    border-radius: $spacing-small;
 }
 
 .goodGuyRoles, .badGuyRoles {

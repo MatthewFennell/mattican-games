@@ -15,39 +15,55 @@ const PrepareToGuess = props => {
 
     return (
         <div className={props.styles.prepareToGuessWrapper}>
-            <div className={props.styles.prepareToGuessHeader}>
-                {props.currentGame.isSpadeRound || props.currentGame.isFinalRound ? 'All teams play this round!'
-                    : `Next team: ${props.currentGame.temporaryTeam || props.currentGame.activeTeam}`}
-            </div>
-            <div className={props.styles.categoryToExplain}>
-                {`Category: ${props.currentGame.activeCategory}`}
-            </div>
-            {props.currentGame.temporaryTeam && (
-                <div className={props.styles.bonusRound}>
-                    {'Bonus round'}
+            <div className={props.styles.roundInfoWrapper}>
+                {props.currentGame.isSpadeRound || props.currentGame.isFinalRound ? (
+                    <div className={props.styles.teamText}>
+                        {'All teams play this round!'}
+                    </div>
+                )
+                    : (
+                        <div className={props.styles.teamText}>
+                            <div>Team:</div>
+                            <div className={props.styles.teamValue}>
+                                {props.currentGame.temporaryTeam || props.currentGame.activeTeam}
+                            </div>
+                        </div>
+                    )}
+                <div className={props.styles.teamText}>
+                    <div>Category:</div>
+                    <div className={props.styles.teamValue}>
+                        {props.currentGame.activeCategory}
+                    </div>
                 </div>
-            )}
-            {props.auth.uid !== props.currentGame.activeExplainer
+                {props.currentGame.temporaryTeam && (
+                    <div className={props.styles.bonusRound}>
+                        {'Bonus round'}
+                    </div>
+                )}
+                {props.auth.uid !== props.currentGame.activeExplainer
         && (
             <div className={props.styles.waitingToStart}>
                 {`Waiting for ${helpers.mapUserIdToName(props.users, props.currentGame.activeExplainer)} to start`}
             </div>
         )}
-            {props.currentGame.isFinalRound && (
-                <div className={props.styles.winningMessage}>
-                    {`${props.currentGame.activeTeam} will win the game if they win this round!`}
-                </div>
-            )}
-
-            <div className={props.styles.buttonsWrapper}>
-                {props.auth.uid === props.currentGame.activeExplainer && (
-                    <div className={props.styles.startRoundButton}>
-                        <StyledButton
-                            onClick={() => props.startArticulateRoundRequest(props.currentGameId)}
-                            text="Start round"
-                        />
+                {props.currentGame.isFinalRound && (
+                    <div className={props.styles.winningMessage}>
+                        {`${props.currentGame.activeTeam} will win the game if they win this round!`}
                     </div>
                 )}
+
+                <div className={props.styles.buttonsWrapper}>
+                    {props.auth.uid === props.currentGame.activeExplainer && (
+                        <div className={props.styles.startRoundButton}>
+                            <StyledButton
+                                onClick={() => props.startArticulateRoundRequest(
+                                    props.currentGameId
+                                )}
+                                text="Start round"
+                            />
+                        </div>
+                    )}
+                </div>
             </div>
 
             <div className={props.styles.viewTeamsWrapper}>
