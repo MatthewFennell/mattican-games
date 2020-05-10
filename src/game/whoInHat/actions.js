@@ -23,7 +23,7 @@ export const startWhoInHatRoundRequest = gameId => ({
     gameId
 });
 
-export const editWhoInHateGameRequest = (gameId, skippingRule,
+export const editGameRequest = (gameId, skippingRule,
     isCustomNames, scoreCap, timePerRound) => ({
     type: EDIT_WHO_IN_HAT_GAME_REQUEST,
     gameId,

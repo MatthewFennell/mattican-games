@@ -94,176 +94,6 @@ export function* approveLeaveMidgame(api, action) {
     }
 }
 
-export function* nominateChancellor(api, action) {
-    try {
-        yield call(api.nominateChancellor, ({
-            gameId: action.gameId,
-            chancellor: action.chancellor
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Nominate Chancellor Error'));
-    }
-}
-
-export function* confirmChancellor(api, action) {
-    try {
-        yield call(api.confirmChancellor, ({
-            gameId: action.gameId
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Confirm Chancellor Error'));
-    }
-}
-
-export function* makeHitlerVote(api, action) {
-    try {
-        yield call(api.makeHitlerVote, ({
-            gameId: action.gameId,
-            vote: action.vote
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Make Vote Error'));
-    }
-}
-
-export function* giveCardsToChancellor(api, action) {
-    try {
-        yield call(api.giveCardsToChancellor, ({
-            gameId: action.gameId,
-            cards: action.cards
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Give cards to chancellor error'));
-    }
-}
-
-export function* playChancellorCard(api, action) {
-    try {
-        yield call(api.playChancellorCard, ({
-            gameId: action.gameId,
-            card: action.card
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Play Chancellor Card error'));
-    }
-}
-
-export function* selectInvestigateRequest(api, action) {
-    try {
-        yield call(api.investigatePlayer, ({
-            gameId: action.gameId,
-            player: action.player
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Investigate Player error'));
-    }
-}
-
-export function* confirmInvestigation(api, action) {
-    try {
-        yield call(api.confirmInvestigation, ({
-            gameId: action.gameId
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Confirm Investigation error'));
-    }
-}
-
-export function* makeTemporaryPresidentRequest(api, action) {
-    try {
-        yield call(api.temporaryPresident, ({
-            gameId: action.gameId,
-            player: action.player
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Make President error'));
-    }
-}
-
-export function* confirmPresident(api, action) {
-    try {
-        yield call(api.confirmPresident, ({
-            gameId: action.gameId
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Confirm President error'));
-    }
-}
-
-export function* killPlayer(api, action) {
-    try {
-        yield call(api.killPlayer, ({
-            gameId: action.gameId,
-            player: action.player
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Kill Player error'));
-    }
-}
-
-export function* confirmKillPlayer(api, action) {
-    try {
-        yield call(api.confirmKillPlayer, ({
-            gameId: action.gameId
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Confirm Kill Player error'));
-    }
-}
-
-export function* initiateVeto(api, action) {
-    try {
-        yield call(api.initiateVeto, ({
-            gameId: action.gameId
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Request Veto error'));
-    }
-}
-
-export function* replyToVeto(api, action) {
-    try {
-        yield call(api.replyToVeto, ({
-            gameId: action.gameId,
-            isApprove: action.isApprove
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Reply to Veto error'));
-    }
-}
-
-export function* closeTopThree(api, action) {
-    try {
-        yield call(api.closeTopThree, ({
-            gameId: action.gameId
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Close Top three error'));
-    }
-}
-
-export function* editGameHitler(api, action) {
-    try {
-        yield call(api.editGameHitler, ({
-            gameId: action.gameId,
-            numberOfPlayers: action.numberOfPlayers
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Edit Game error'));
-    }
-}
-
-export function* closeLookAtInvestigation(api, action) {
-    try {
-        yield call(api.closeInvestigation, ({
-            gameId: action.gameId,
-            isFirst: action.isFirst
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Close Investigation error'));
-    }
-}
-
 export function* editDisplayName(api, action) {
     try {
         yield call(api.editDisplayName, ({
@@ -342,7 +172,7 @@ export function* confirmWord(api, action) {
     }
 }
 
-export function* leaveWhoInHatGame(api, action) {
+export function* leaveUnconstrainedGame(api, action) {
     try {
         yield call(api.sharedLeaveMidgame, ({
             gameId: action.gameId
@@ -384,23 +214,6 @@ export default function* overviewSaga() {
         takeEvery(actions.LEAVE_MIDGAME_REQUEST, leaveMidgame, gameApi),
         takeEvery(actions.APPROVE_LEAVE_MIDGAME_REQUEST, approveLeaveMidgame, gameApi),
 
-        takeEvery(actions.NOMINATE_CHANCELLOR_REQUEST, nominateChancellor, gameApi),
-        takeEvery(actions.CONFIRM_CHANCELLOR_REQUEST, confirmChancellor, gameApi),
-        takeEvery(actions.MAKE_HITLER_VOTE_REQUEST, makeHitlerVote, gameApi),
-        takeEvery(actions.GIVE_CARDS_TO_CHANCELLOR_REQUEST, giveCardsToChancellor, gameApi),
-        takeEvery(actions.PLAY_CHANCELLOR_CARD_REQUEST, playChancellorCard, gameApi),
-        takeEvery(actions.SELECT_INVESTIGATE_REQUEST, selectInvestigateRequest, gameApi),
-        takeEvery(actions.CONFIRM_INVESIGATION_REQUEST, confirmInvestigation, gameApi),
-        takeEvery(actions.MAKE_TEMPORARY_PRESIDENT_REQUEST, makeTemporaryPresidentRequest, gameApi),
-        takeEvery(actions.CONFIRM_PRESIDENT_REQUEST, confirmPresident, gameApi),
-        takeEvery(actions.KILL_PLAYER_REQUEST, killPlayer, gameApi),
-        takeEvery(actions.CONFIRM_KILL_PLAYER_REQUEST, confirmKillPlayer, gameApi),
-        takeEvery(actions.INITIATE_VETO_REQUEST, initiateVeto, gameApi),
-        takeEvery(actions.REPLY_TO_VETO_REQUEST, replyToVeto, gameApi),
-        takeEvery(actions.CLOSE_LOOK_AT_TOP_THREE_REQUEST, closeTopThree, gameApi),
-        takeEvery(actions.EDIT_HITLER_GAME_REQUEST, editGameHitler, gameApi),
-        takeEvery(actions.CLOSE_LOOK_AT_INVESTIGATION_REQUEST, closeLookAtInvestigation, gameApi),
-
         takeEvery(actions.EDIT_DISPLAY_NAME, editDisplayName, gameApi),
 
         takeEvery(actions.ADD_TEAM_REQUEST, addTeam, gameApi),
@@ -409,7 +222,7 @@ export default function* overviewSaga() {
         takeEvery(actions.SKIP_WORD_WHO_IN_HAT_REQUEST, skipWord, gameApi),
         takeEvery(actions.TRASH_WORD_WHO_IN_HAT_REQUEST, trashWord, gameApi),
         takeEvery(actions.SET_WORD_CONFIRMED_REQUEST, confirmWord, gameApi),
-        takeEvery(actions.LEAVE_UNCONSTRAINED_GAME_REQUEST, leaveWhoInHatGame, gameApi),
+        takeEvery(actions.LEAVE_UNCONSTRAINED_GAME_REQUEST, leaveUnconstrainedGame, gameApi),
         takeEvery(actions.JOIN_TEAM_MIDGAME_REQUEST, joinTeamMidgame, gameApi),
         takeEvery(actions.RANDOMISE_TEAMS_REQUEST, randomiseTeams, gameApi)
     ]);

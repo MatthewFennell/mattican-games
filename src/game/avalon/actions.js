@@ -1,14 +1,14 @@
 const pre = 'AVALON/';
 
-export const EDIT_AVALON_GAME_REQUEST = `${pre}EDIT_AVALON_GAME_REQUEST`;
+export const EDIT_GAME_REQUEST = `${pre}EDIT_GAME_REQUEST`;
 export const NOMINATE_PLAYER_FOR_QUEST_REQUEST = `${pre}NOMINATE_PLAYER_FOR_QUEST_REQUEST`;
 export const CONFIRM_NOMINATIONS_REQUEST = `${pre}CONFIRM_NOMINATIONS_REQUEST`;
 export const MAKE_AVALON_VOTE_REQUEST = `${pre}MAKE_AVALON_VOTE_REQUEST`;
 export const MAKE_QUEST_REQUEST = `${pre}MAKE_QUEST_REQUEST`;
 export const GUESS_MERLIN_REQUEST = `${pre}GUESS_MERLIN_REQUEST`;
 
-export const editAvalonGameRequest = (gameId, numberOfPlayers, roles) => ({
-    type: EDIT_AVALON_GAME_REQUEST,
+export const editGameRequest = (gameId, numberOfPlayers, roles) => ({
+    type: EDIT_GAME_REQUEST,
     gameId,
     numberOfPlayers,
     roles
@@ -27,7 +27,7 @@ export const confirmNominationsRequest = (gameId, nominations) => ({
     nominations
 });
 
-export const makeAvalonVoteRequest = (gameId, vote) => ({
+export const makeVoteRequest = (gameId, vote) => ({
     type: MAKE_AVALON_VOTE_REQUEST,
     gameId,
     vote

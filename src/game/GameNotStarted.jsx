@@ -9,7 +9,7 @@ import * as constants from '../constants';
 import StyledButton from '../common/StyledButton/StyledButton';
 import {
     leaveGameRequest, readyUpRequest, startGameRequest,
-    editHitlerGameRequest, gameError
+    gameError
 } from './actions';
 import Switch from '../common/Switch/Switch';
 import Fade from '../common/Fade/Fade';
@@ -17,15 +17,10 @@ import TextInput from '../common/TextInput/TextInput';
 import { shouldBeDisabled } from '../overview/CreateGame';
 import Dropdown from '../common/dropdown/Dropdown';
 
-import {
-    editGameRequest as editArticulateGameRequest
-} from './articulate/actions';
-
-import {
-    editWhoInHateGameRequest
-} from './whoInHat/actions';
-
-import { editAvalonGameRequest } from './avalon/actions';
+import { editGameRequest as editArticulateGameRequest } from './articulate/actions';
+import { editGameRequest as editWhoInHatGameRequest } from './whoInHat/actions';
+import { editGameRequest as editAvalonGameRequest } from './avalon/actions';
+import { editGameRequest as editHitlerGameRequest } from './hitler/actions';
 
 const canStartGame = game => {
     if (game.mode === constants.gameModes.Hitler || game.mode === constants.gameModes.Avalon) {
@@ -93,7 +88,7 @@ const GameNotStarted = props => {
             props.editAvalonGameRequest(props.currentGameId, numberOfPlayers, editedAvalonRoles);
         }
         if (props.currentGame.mode === constants.gameModes.WhosInTheHat) {
-            props.editWhoInHateGameRequest(props.currentGameId,
+            props.editWhoInHatGameRequest(props.currentGameId,
                 editedSkippingRule, editedIsCustomNames, scoreCap, timePerRound);
         }
         if (props.currentGame.mode === constants.gameModes.Articulate) {
@@ -512,7 +507,7 @@ GameNotStarted.propTypes = {
     gameError: PropTypes.func.isRequired,
     startGameRequest: PropTypes.func.isRequired,
     editAvalonGameRequest: PropTypes.func.isRequired,
-    editWhoInHateGameRequest: PropTypes.func.isRequired,
+    editWhoInHatGameRequest: PropTypes.func.isRequired,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})
 };
@@ -525,7 +520,7 @@ const mapDispatchToProps = {
     gameError,
     editAvalonGameRequest,
     editHitlerGameRequest,
-    editWhoInHateGameRequest
+    editWhoInHatGameRequest
 };
 
 export default connect(null, mapDispatchToProps)(GameNotStarted);

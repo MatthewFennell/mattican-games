@@ -1,4 +1,5 @@
 import * as actions from './actions';
+import * as hitlerActions from './hitler/actions';
 
 export const initialState = {
     errorCode: '',
@@ -28,13 +29,13 @@ const overviewReducer = (state = initialState, action) => {
             errorHeader: ''
         };
     }
-    case actions.CLOSE_LOOK_AT_TOP_THREE_REQUEST: {
+    case hitlerActions.CLOSE_LOOK_AT_TOP_THREE_REQUEST: {
         return {
             ...state,
             haveClosedPeekModal: true
         };
     }
-    case actions.CLOSE_LOOK_AT_INVESTIGATION_REQUEST: {
+    case hitlerActions.CLOSE_LOOK_AT_INVESTIGATION_REQUEST: {
         return {
             ...state,
             haveClosedFirstInvestigation: action.isFirst,

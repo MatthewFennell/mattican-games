@@ -80,7 +80,7 @@ export function* guessMerlin(api, action) {
 
 export default function* whoInHatSaga() {
     yield all([
-        takeEvery(actions.EDIT_AVALON_GAME_REQUEST, editGameAvalon, avalonApi),
+        takeEvery(actions.EDIT_GAME_REQUEST, editGameAvalon, avalonApi),
         takeEvery(actions.NOMINATE_PLAYER_FOR_QUEST_REQUEST, nominatePlayerForQuest, avalonApi),
         takeEvery(actions.CONFIRM_NOMINATIONS_REQUEST, confirmNominations, avalonApi),
         takeEvery(actions.MAKE_AVALON_VOTE_REQUEST, makeVote, avalonApi),

@@ -168,7 +168,7 @@ History.propTypes = {
     history: PropTypes.arrayOf(PropTypes.shape({
 
     })),
-    makeAvalonVoteRequest: PropTypes.func,
+    makeVoteRequest: PropTypes.func,
     makeQuestRequest: PropTypes.func.isRequired,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})

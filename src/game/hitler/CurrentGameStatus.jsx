@@ -10,13 +10,13 @@ import * as constants from '../../constants';
 import StyledButton from '../../common/StyledButton/StyledButton';
 import Fade from '../../common/Fade/Fade';
 import {
-    makeHitlerVoteRequest, giveCardsToChancellorRequest,
-    playChancellorCardRequest, initiateVetoRequest, replyToVetoRequest
-} from '../actions';
+    giveCardsToChancellorRequest, makeVoteRequest, playChancellorCardRequest,
+    initiateVetoRequest, replyToVetoRequest
+} from './actions';
 
 const CurrentGameStatus = props => {
     const placeVote = useCallback(vote => {
-        props.makeHitlerVoteRequest(props.currentGameId, vote);
+        props.makeVoteRequest(props.currentGameId, vote);
         // eslint-disable-next-line
     }, [props.currentGameId])
 
@@ -463,7 +463,7 @@ CurrentGameStatus.propTypes = {
     currentGameId: PropTypes.string,
     giveCardsToChancellorRequest: PropTypes.func.isRequired,
     initiateVetoRequest: PropTypes.func.isRequired,
-    makeHitlerVoteRequest: PropTypes.func.isRequired,
+    makeVoteRequest: PropTypes.func.isRequired,
     replyToVetoRequest: PropTypes.func.isRequired,
     playChancellorCardRequest: PropTypes.func.isRequired,
     styles: PropTypes.objectOf(PropTypes.string),
@@ -473,7 +473,7 @@ CurrentGameStatus.propTypes = {
 const mapDispatchToProps = {
     initiateVetoRequest,
     giveCardsToChancellorRequest,
-    makeHitlerVoteRequest,
+    makeVoteRequest,
     playChancellorCardRequest,
     replyToVetoRequest
 };
