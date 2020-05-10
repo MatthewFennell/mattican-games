@@ -6,8 +6,8 @@ import * as helpers from '../helpers';
 import * as constants from '../../constants';
 import StyledButton from '../../common/StyledButton/StyledButton';
 import Fade from '../../common/Fade/Fade';
-import { makeAvalonVoteRequest, makeQuestRequest } from '../actions';
 import GameFinished from './GameFinished';
+import { makeAvalonVoteRequest, makeQuestRequest } from './actions';
 
 const CurrentGameStatus = props => {
     const [makingQuest, setMakingQuest] = useState(false);

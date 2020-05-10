@@ -10,7 +10,7 @@ import * as constants from '../../constants';
 import StyledButton from '../../common/StyledButton/StyledButton';
 import Fade from '../../common/Fade/Fade';
 import {
-    makeHitlerVoteRequest, makeQuestRequest, giveCardsToChancellorRequest,
+    makeHitlerVoteRequest, giveCardsToChancellorRequest,
     playChancellorCardRequest, initiateVetoRequest, replyToVetoRequest
 } from '../actions';
 
@@ -474,7 +474,6 @@ const mapDispatchToProps = {
     initiateVetoRequest,
     giveCardsToChancellorRequest,
     makeHitlerVoteRequest,
-    makeQuestRequest,
     playChancellorCardRequest,
     replyToVetoRequest
 };

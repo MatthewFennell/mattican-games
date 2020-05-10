@@ -9,18 +9,11 @@ export const READY_UP_REQUEST = `${pre}READY_UP_REQUEST`;
 
 export const START_GAME_REQUEST = `${pre}START_GAME_REQUEST`;
 
-export const NOMINATE_PLAYER_FOR_QUEST_REQUEST = `${pre}NOMINATE_PLAYER_FOR_QUEST_REQUEST`;
 export const NOMINATE_CHANCELLOR_REQUEST = `${pre}NOMINATE_CHANCELLOR_REQUEST`;
 
-export const CONFIRM_NOMINATIONS_REQUEST = `${pre}CONFIRM_NOMINATIONS_REQUEST`;
 export const CONFIRM_CHANCELLOR_REQUEST = `${pre}CONFIRM_CHANCELLOR_REQUEST`;
 
-export const MAKE_AVALON_VOTE_REQUEST = `${pre}MAKE_AVALON_VOTE_REQUEST`;
 export const MAKE_HITLER_VOTE_REQUEST = `${pre}MAKE_HITLER_VOTE_REQUEST`;
-
-export const MAKE_QUEST_REQUEST = `${pre}MAKE_QUEST_REQUEST`;
-
-export const GUESS_MERLIN_REQUEST = `${pre}GUESS_MERLIN_REQUEST`;
 
 export const DESTROY_GAME_REQUEST = `${pre}DESTROY_GAME_REQUEST`;
 
@@ -53,8 +46,6 @@ export const CLOSE_LOOK_AT_TOP_THREE_REQUEST = `${pre}CLOSE_LOOK_AT_TOP_THREE_RE
 export const CLOSE_LOOK_AT_INVESTIGATION_REQUEST = `${pre}CLOSE_LOOK_AT_INVESTIGATION_REQUEST`;
 
 export const EDIT_HITLER_GAME_REQUEST = `${pre}EDIT_HITLER_GAME_REQUEST`;
-
-export const EDIT_AVALON_GAME_REQUEST = `${pre}EDIT_AVALON_GAME_REQUEST`;
 
 export const EDIT_DISPLAY_NAME = `${pre}EDIT_DISPLAY_NAME`;
 
@@ -103,13 +94,6 @@ export const startGameRequest = (gameId, mode) => ({
     mode
 });
 
-export const nominatePlayerForQuest = (gameId, player, isOnQuest) => ({
-    type: NOMINATE_PLAYER_FOR_QUEST_REQUEST,
-    gameId,
-    player,
-    isOnQuest
-});
-
 export const nominateChancellorRequest = (gameId, chancellor) => ({
     type: NOMINATE_CHANCELLOR_REQUEST,
     gameId,
@@ -121,34 +105,10 @@ export const confirmChancellorRequest = gameId => ({
     gameId
 });
 
-export const confirmNominationsRequest = (gameId, nominations) => ({
-    type: CONFIRM_NOMINATIONS_REQUEST,
-    gameId,
-    nominations
-});
-
-export const makeAvalonVoteRequest = (gameId, vote) => ({
-    type: MAKE_AVALON_VOTE_REQUEST,
-    gameId,
-    vote
-});
-
 export const makeHitlerVoteRequest = (gameId, vote) => ({
     type: MAKE_HITLER_VOTE_REQUEST,
     gameId,
     vote
-});
-
-export const makeQuestRequest = (gameId, isSuccess) => ({
-    type: MAKE_QUEST_REQUEST,
-    gameId,
-    isSuccess
-});
-
-export const guessMerlinRequest = (gameId, merlin) => ({
-    type: GUESS_MERLIN_REQUEST,
-    gameId,
-    merlin
 });
 
 export const destroyGameRequest = gameId => ({
@@ -240,13 +200,6 @@ export const editHitlerGameRequest = (gameId, numberOfPlayers) => ({
     type: EDIT_HITLER_GAME_REQUEST,
     gameId,
     numberOfPlayers
-});
-
-export const editAvalonGameRequest = (gameId, numberOfPlayers, roles) => ({
-    type: EDIT_AVALON_GAME_REQUEST,
-    gameId,
-    numberOfPlayers,
-    roles
 });
 
 export const editDisplayName = (gameId, displayName) => ({

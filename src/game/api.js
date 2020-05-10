@@ -26,14 +26,6 @@ export const closeTopThree = request => functionToCall('hitler-closeTopThree')(r
 export const editGameHitler = request => functionToCall('hitler-editGameHitler')(request);
 export const closeInvestigation = request => functionToCall('hitler-closeInvestigation')(request);
 
-export const editGameAvalon = request => functionToCall('editGameAvalon')(request);
-export const startAvalonGame = request => functionToCall('avalon-startGame')(request);
-export const nominatePlayer = request => functionToCall('avalon-nominatePlayer')(request);
-export const confirmNominations = request => functionToCall('avalon-confirmNominations')(request);
-export const makeVote = request => functionToCall('avalon-makeVote')(request);
-export const goOnQuest = request => functionToCall('avalon-goOnQuest')(request);
-export const guessMerlin = request => functionToCall('avalon-guessMerlin')(request);
-
 export const startWhoInHatGame = request => functionToCall('whoInHat-startGame')(request);
 export const addTeam = request => functionToCall('shared-addTeam')(request);
 export const joinTeam = request => functionToCall('shared-joinTeam')(request);
@@ -43,6 +35,7 @@ export const confirmWord = request => functionToCall('shared-confirmWord')(reque
 export const sharedLeaveMidgame = request => functionToCall('shared-leaveMidgame')(request);
 export const joinTeamMidgame = request => functionToCall('shared-joinTeamMidgame')(request);
 export const randomiseTeams = request => functionToCall('shared-randomiseTeams')(request);
+export const startAvalonGame = request => functionToCall('avalon-startGame')(request);
 
-export const leaveArticulateGame = request => functionToCall('shared-leaveMidgame')(request);
+
 export const startArticulateGame = request => functionToCall('articulate-startGame')(request); // Into lobby

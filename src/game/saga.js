@@ -53,62 +53,6 @@ export function* startGame(api, action) {
     }
 }
 
-export function* nominatePlayerForQuest(api, action) {
-    try {
-        yield call(api.nominatePlayer, ({
-            gameId: action.gameId,
-            player: action.player,
-            isOnQuest: action.isOnQuest
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Nominate Player Error'));
-    }
-}
-
-export function* confirmNominations(api, action) {
-    try {
-        yield call(api.confirmNominations, ({
-            gameId: action.gameId,
-            nominations: action.nominations
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Nominate Player Error'));
-    }
-}
-
-export function* makeVote(api, action) {
-    try {
-        yield call(api.makeVote, ({
-            gameId: action.gameId,
-            vote: action.vote
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Make Vote Error'));
-    }
-}
-
-export function* goOnQuest(api, action) {
-    try {
-        yield call(api.goOnQuest, ({
-            gameId: action.gameId,
-            isSuccess: action.isSuccess
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Go On Quest Error'));
-    }
-}
-
-export function* guessMerlin(api, action) {
-    try {
-        yield call(api.guessMerlin, ({
-            gameId: action.gameId,
-            merlin: action.merlin
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Guess Merlin Error'));
-    }
-}
-
 export function* destroyGame(api, action) {
     try {
         yield call(api.destroyGame, ({
@@ -126,7 +70,7 @@ export function* leaveMidgame(api, action) {
                 gameId: action.gameId
             }));
         } else if (action.mode === constants.gameModes.Articulate) {
-            yield call(api.leaveArticulateGame, ({
+            yield call(api.sharedLeaveMidgame, ({
                 gameId: action.gameId
             }));
         } else {
@@ -309,18 +253,6 @@ export function* editGameHitler(api, action) {
     }
 }
 
-export function* editGameAvalon(api, action) {
-    try {
-        yield call(api.editGameAvalon, ({
-            gameId: action.gameId,
-            numberOfPlayers: action.numberOfPlayers,
-            roles: action.roles
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Edit Game error'));
-    }
-}
-
 export function* closeLookAtInvestigation(api, action) {
     try {
         yield call(api.closeInvestigation, ({
@@ -443,26 +375,11 @@ export function* randomiseTeams(api, action) {
     }
 }
 
-export function* leaveArticulateGame(api, action) {
-    try {
-        yield call(api.leaveArticulateGame, ({
-            gameId: action.gameId
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Leave Game error'));
-    }
-}
-
 export default function* overviewSaga() {
     yield all([
         takeEvery(actions.LEAVE_GAME_REQUEST, leaveGame, gameApi),
         takeEvery(actions.READY_UP_REQUEST, readyUp, gameApi),
         takeEvery(actions.START_GAME_REQUEST, startGame, gameApi),
-        takeEvery(actions.NOMINATE_PLAYER_FOR_QUEST_REQUEST, nominatePlayerForQuest, gameApi),
-        takeEvery(actions.CONFIRM_NOMINATIONS_REQUEST, confirmNominations, gameApi),
-        takeEvery(actions.MAKE_AVALON_VOTE_REQUEST, makeVote, gameApi),
-        takeEvery(actions.MAKE_QUEST_REQUEST, goOnQuest, gameApi),
-        takeEvery(actions.GUESS_MERLIN_REQUEST, guessMerlin, gameApi),
         takeEvery(actions.DESTROY_GAME_REQUEST, destroyGame, gameApi),
         takeEvery(actions.LEAVE_MIDGAME_REQUEST, leaveMidgame, gameApi),
         takeEvery(actions.APPROVE_LEAVE_MIDGAME_REQUEST, approveLeaveMidgame, gameApi),
@@ -482,10 +399,10 @@ export default function* overviewSaga() {
         takeEvery(actions.REPLY_TO_VETO_REQUEST, replyToVeto, gameApi),
         takeEvery(actions.CLOSE_LOOK_AT_TOP_THREE_REQUEST, closeTopThree, gameApi),
         takeEvery(actions.EDIT_HITLER_GAME_REQUEST, editGameHitler, gameApi),
-        takeEvery(actions.EDIT_AVALON_GAME_REQUEST, editGameAvalon, gameApi),
         takeEvery(actions.CLOSE_LOOK_AT_INVESTIGATION_REQUEST, closeLookAtInvestigation, gameApi),
 
         takeEvery(actions.EDIT_DISPLAY_NAME, editDisplayName, gameApi),
+
         takeEvery(actions.ADD_TEAM_REQUEST, addTeam, gameApi),
         takeEvery(actions.JOIN_TEAM_REQUEST, joinTeam, gameApi),
         takeEvery(actions.GOT_WORD_REQUEST, gotWord, gameApi),
