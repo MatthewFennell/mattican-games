@@ -5,7 +5,7 @@ import moment from 'moment';
 import fp from 'lodash/fp';
 import defaultStyles from './Guessing.module.scss';
 import * as helpers from '../helpers';
-import TeamsAndScore from './TeamsAndScore';
+import TeamsAndScore from '../common/TeamsAndScore';
 import * as constants from '../../constants';
 import StyledButton from '../../common/StyledButton/StyledButton';
 import Fade from '../../common/Fade/Fade';

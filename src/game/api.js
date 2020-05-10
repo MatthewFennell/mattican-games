@@ -50,7 +50,6 @@ export const sharedLeaveMidgame = request => functionToCall('shared-leaveMidgame
 export const joinWhoInHatTeamMidgame = request => functionToCall('shared-joinTeamMidgame')(request);
 export const randomiseTeams = request => functionToCall('shared-randomiseTeams')(request);
 
-export const editArticulateGame = request => functionToCall('articulate-editGame')(request);
 export const startArticulateGame = request => functionToCall('articulate-startGame')(request); // Into lobby
 export const startArticulate = request => functionToCall('articulate-start')(request); // Confirm teams
 export const startArticulateRound = request => functionToCall('articulate-startRound')(request); // Start round

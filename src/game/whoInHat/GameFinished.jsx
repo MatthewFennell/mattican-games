@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
 import defaultStyles from './GameFinished.module.scss';
-import TeamsAndScore from './TeamsAndScore';
+import TeamsAndScore from '../common/TeamsAndScore';
 import StyledButton from '../../common/StyledButton/StyledButton';
 import * as constants from '../../constants';
 

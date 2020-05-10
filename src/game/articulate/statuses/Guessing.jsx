@@ -5,14 +5,14 @@ import moment from 'moment';
 import fp from 'lodash/fp';
 import classNames from 'classnames';
 import defaultStyles from './Guessing.module.scss';
-import * as helpers from '../helpers';
-import TeamsAndScore from '../whoInHat/TeamsAndScore';
-import * as constants from '../../constants';
-import StyledButton from '../../common/StyledButton/StyledButton';
-import Fade from '../../common/Fade/Fade';
-import Spinner from '../../common/spinner/Spinner';
-import SuccessModal from '../../common/modal/SuccessModal';
-import Dropdown from '../../common/dropdown/Dropdown';
+import * as helpers from '../../helpers';
+import TeamsAndScore from '../../common/TeamsAndScore';
+import * as constants from '../../../constants';
+import StyledButton from '../../../common/StyledButton/StyledButton';
+import Fade from '../../../common/Fade/Fade';
+import Spinner from '../../../common/spinner/Spinner';
+import SuccessModal from '../../../common/modal/SuccessModal';
+import Dropdown from '../../../common/dropdown/Dropdown';
 
 const isSkippingDisabled = (skippingRule, skippedWord) => {
     if (skippingRule === constants.articulateSkipping.Unlimited) {

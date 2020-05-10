@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { noop } from 'lodash';
 import defaultStyles from './PrepareToGuess.module.scss';
 import * as helpers from '../helpers';
-import TeamsAndScore from './TeamsAndScore';
+import TeamsAndScore from '../common/TeamsAndScore';
 import Fade from '../../common/Fade/Fade';
 import StyledButton from '../../common/StyledButton/StyledButton';
 import { remainingCards } from './Guessing';
-import JoinTeamModal from './JoinTeamModal';
+import JoinTeamModal from '../common/JoinTeamModal';
 
 const teamHasOnlyMe = (game, myId) => {
     if (!game || !game.teams) {

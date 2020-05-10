@@ -508,19 +508,6 @@ export function* randomiseTeams(api, action) {
     }
 }
 
-export function* editArticulateGame(api, action) {
-    try {
-        yield call(api.editArticulateGame, ({
-            gameId: action.gameId,
-            skippingRule: action.skippingRule,
-            timePerRound: action.timePerRound,
-            scoreCap: action.scoreCap
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Edit Game error'));
-    }
-}
-
 export function* startArticulate(api, action) {
     try {
         yield call(api.startArticulate, ({
@@ -687,7 +674,6 @@ export default function* overviewSaga() {
         takeEvery(actions.JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST, joinWhoInHatTeamMidgame, gameApi),
         takeEvery(actions.RANDOMISE_TEAMS_REQUEST, randomiseTeams, gameApi),
 
-        takeEvery(actions.EDIT_ARTICULATE_GAME_REQUEST, editArticulateGame, gameApi),
         takeEvery(actions.START_ARTICULATE_GAME_REQUEST, startArticulate, gameApi),
         takeEvery(actions.START_ARTICULATE_ROUND_REQUEST, startArticulateRound, gameApi),
         takeEvery(actions.SKIP_WORD_ARTICULATE_REQUEST, skipArticulateWord, gameApi),

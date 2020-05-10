@@ -88,8 +88,6 @@ export const JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST = `${pre}JOIN_WHO_IN_HAT_TEAM_
 
 export const RANDOMISE_TEAMS_REQUEST = `${pre}RANDOMISE_TEAMS_REQUEST`;
 
-export const EDIT_ARTICULATE_GAME_REQUEST = `${pre}EDIT_ARTICULATE_GAME_REQUEST`;
-
 export const START_ARTICULATE_GAME_REQUEST = `${pre}START_ARTICULATE_GAME_REQUEST`;
 
 export const START_ARTICULATE_ROUND_REQUEST = `${pre}START_ARTICULATE_ROUND_REQUEST`;
@@ -380,14 +378,6 @@ export const randomiseTeamsRequest = (gameId, numberOfTeams) => ({
     type: RANDOMISE_TEAMS_REQUEST,
     gameId,
     numberOfTeams
-});
-
-export const editArticulateGameRequest = (gameId, skippingRule, timePerRound, scoreCap) => ({
-    type: EDIT_ARTICULATE_GAME_REQUEST,
-    gameId,
-    skippingRule,
-    timePerRound,
-    scoreCap
 });
 
 export const startArticulateGameRequest = gameId => ({

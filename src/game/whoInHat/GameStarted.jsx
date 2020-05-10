@@ -3,7 +3,7 @@ import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as constants from '../../constants';
-import MakingTeams from './MakingTeams';
+import MakingTeams from '../common/MakingTeams';
 import PrepareToGuess from './PrepareToGuess';
 import Guessing from './Guessing';
 import RoundSummary from './RoundSummary';
@@ -16,7 +16,7 @@ import {
     randomiseTeamsRequest
 } from '../actions';
 import defaultStyles from './GameStarted.module.scss';
-import JoinTeamModal from './JoinTeamModal';
+import JoinTeamModal from '../common/JoinTeamModal';
 
 const GameStarted = props => {
     const [teamToJoin, setTeamToJoin] = useState('');

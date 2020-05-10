@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
 import defaultStyles from './GameFinished.module.scss';
-import TeamsAndScore from '../whoInHat/TeamsAndScore';
-import StyledButton from '../../common/StyledButton/StyledButton';
+import TeamsAndScore from '../../common/TeamsAndScore';
+import StyledButton from '../../../common/StyledButton/StyledButton';
 
 const sortingMethod = (a, b) => (b.score - a.score !== 0
     ? b.score - a.score : a.members.length - b.members.length);

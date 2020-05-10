@@ -12,12 +12,12 @@ import {
     leaveArticulateGameRequest, joinWhoInHatTeamMidgameRequest
 } from '../actions';
 import defaultStyles from './GameStarted.module.scss';
-import MakingTeams from '../whoInHat/MakingTeams';
-import PrepareToGuess from './PrepareToGuess';
-import Guessing from './Guessing';
-import RoundSummary from './RoundSummary';
-import GameFinished from './GameFinished';
-import JoinTeamModal from '../whoInHat/JoinTeamModal';
+import MakingTeams from '../common/MakingTeams';
+import PrepareToGuess from './statuses/PrepareToGuess';
+import Guessing from './statuses/Guessing';
+import RoundSummary from './statuses/RoundSummary';
+import GameFinished from './statuses/GameFinished';
+import JoinTeamModal from '../common/JoinTeamModal';
 
 const GameStarted = props => {
     const [teamToJoin, setTeamToJoin] = useState('');

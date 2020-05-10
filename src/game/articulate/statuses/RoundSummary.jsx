@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { noop } from 'lodash';
 import classNames from 'classnames';
 import defaultStyles from './RoundSummary.module.scss';
-import StyledButton from '../../common/StyledButton/StyledButton';
-import Switch from '../../common/Switch/Switch';
+import StyledButton from '../../../common/StyledButton/StyledButton';
+import Switch from '../../../common/Switch/Switch';
 
 const RoundSummary = props => {
     const toggleWord = useCallback(word => {

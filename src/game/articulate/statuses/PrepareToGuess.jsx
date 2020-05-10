@@ -2,10 +2,10 @@ import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
 import defaultStyles from './PrepareToGuess.module.scss';
-import * as helpers from '../helpers';
-import TeamsAndScore from '../whoInHat/TeamsAndScore';
-import Fade from '../../common/Fade/Fade';
-import StyledButton from '../../common/StyledButton/StyledButton';
+import * as helpers from '../../helpers';
+import TeamsAndScore from '../../common/TeamsAndScore';
+import Fade from '../../../common/Fade/Fade';
+import StyledButton from '../../../common/StyledButton/StyledButton';
 
 const PrepareToGuess = props => {
     const [viewingTeams, setViewingTeams] = useState(false);

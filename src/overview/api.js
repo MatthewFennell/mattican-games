@@ -10,4 +10,4 @@ export const createWhoInHatGame = request => functionToCall('whoInHat-createGame
 
 export const joinWhoInHatMidgame = request => functionToCall('shared-joinMidgame')(request);
 
-export const createArticulateGame = request => functionToCall('articulate-createArticulateGame')(request);
+export const createArticulateGame = request => functionToCall('articulate-createGame')(request);

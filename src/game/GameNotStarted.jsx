@@ -8,7 +8,7 @@ import { mapUserIdToName, gameHasSetNumberOfPlayers } from './helpers';
 import * as constants from '../constants';
 import StyledButton from '../common/StyledButton/StyledButton';
 import {
-    leaveGameRequest, readyUpRequest, startGameRequest, editArticulateGameRequest,
+    leaveGameRequest, readyUpRequest, startGameRequest,
     editHitlerGameRequest, gameError, editAvalonGameRequest, editWhoInHateGameRequest
 } from './actions';
 import Switch from '../common/Switch/Switch';
@@ -16,6 +16,10 @@ import Fade from '../common/Fade/Fade';
 import TextInput from '../common/TextInput/TextInput';
 import { shouldBeDisabled } from '../overview/CreateGame';
 import Dropdown from '../common/dropdown/Dropdown';
+
+import {
+    editGameRequest as editArticulateGameRequest
+} from './articulate/actions';
 
 const canStartGame = game => {
     if (game.mode === constants.gameModes.Hitler || game.mode === constants.gameModes.Avalon) {
