@@ -269,32 +269,6 @@ exports.confirmScore = functions
         });
     });
 
-exports.trashWord = functions
-    .region(constants.region)
-    .https.onCall((data, context) => {
-        common.isAuthenticated(context);
-        return db.collection('games').doc(data.gameId).get().then(doc => {
-            if (!doc.exists) {
-                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
-            }
-
-            if (!data.word) {
-                throw new functions.https.HttpsError('invalid-argument', 'Invalid word');
-            }
-
-            const { activeExplainer } = doc.data();
-
-            if (context.auth.uid !== activeExplainer) {
-                throw new functions.https.HttpsError('invalid-argument', 'You are not the explainer');
-            }
-
-            return doc.ref.update({
-                currentWordIndex: operations.increment(1),
-                trashedWords: operations.arrayUnion(data.word)
-            });
-        });
-    });
-
 exports.loadSummary = functions
     .region(constants.region)
     .https.onCall((data, context) => {

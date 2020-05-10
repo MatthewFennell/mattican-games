@@ -59,7 +59,7 @@ const Overview = props => {
                 isCustomNames, scoreCap, timePerRound);
         }
         if (gameMode === constants.gameModes.Articulate) {
-            props.createArticulateGameRequest(gameName, skippingRule, timePerRound);
+            props.createArticulateGameRequest(gameName, skippingRule, timePerRound, scoreCap);
         }
         setMakingGame(false);
 

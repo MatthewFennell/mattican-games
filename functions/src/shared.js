@@ -2,6 +2,7 @@
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
 const fp = require('lodash/fp');
+const lodash = require('lodash');
 const constants = require('./constants');
 const common = require('./common');
 
@@ -103,6 +104,32 @@ exports.skipWord = functions
         });
     });
 
+
+exports.trashWord = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            if (!data.word) {
+                throw new functions.https.HttpsError('invalid-argument', 'Invalid word');
+            }
+
+            const { activeExplainer } = doc.data();
+
+            if (context.auth.uid !== activeExplainer) {
+                throw new functions.https.HttpsError('invalid-argument', 'You are not the explainer');
+            }
+
+            return doc.ref.update({
+                currentWordIndex: operations.increment(1),
+                trashedWords: operations.arrayUnion(data.word)
+            });
+        });
+    });
 
 exports.editDisplayName = functions
     .region(constants.region)
@@ -369,6 +396,37 @@ exports.joinMidgame = functions
                     },
                     waitingToJoinTeam: operations.arrayUnion(context.auth.uid)
                 });
+            });
+        });
+    });
+
+exports.joinTeam = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            if (!data.teamName) {
+                throw new functions.https.HttpsError('invalid-argument', 'Invalid team name');
+            }
+
+            const currentTeamNames = doc.data().teams.map(team => team.name);
+
+            if (!currentTeamNames.includes(data.teamName)) {
+                throw new functions.https.HttpsError('invalid-argument', 'There is no team with that name');
+            }
+
+            return doc.ref.update({
+                teams: doc.data().teams.map(team => (team.name === data.teamName ? {
+                    ...team,
+                    members: lodash.union([...team.members, context.auth.uid])
+                } : {
+                    ...team,
+                    members: team.members.filter(x => x !== context.auth.uid)
+                }))
             });
         });
     });

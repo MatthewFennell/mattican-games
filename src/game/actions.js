@@ -70,7 +70,7 @@ export const START_WHO_IN_HAT_GAME_REQUEST = `${pre}START_WHO_IN_HAT_GAME_REQUES
 
 export const START_WHO_IN_HAT_ROUND_REQUEST = `${pre}START_WHO_IN_HAT_ROUND_REQUEST`;
 
-export const GOT_WHO_IN_HAT_WORD_REQUEST = `${pre}GOT_WHO_IN_HAT_WORD_REQUEST`;
+export const GOT_WORD_REQUEST = `${pre}GOT_WORD_REQUEST`;
 
 export const SKIP_WORD_WHO_IN_HAT_REQUEST = `${pre}SKIP_WORD_WHO_IN_HAT_REQUEST`;
 
@@ -87,26 +87,6 @@ export const LEAVE_WHO_IN_HAT_GAME_REQUEST = `${pre}LEAVE_WHO_IN_HAT_GAME_REQUES
 export const JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST = `${pre}JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST`;
 
 export const RANDOMISE_TEAMS_REQUEST = `${pre}RANDOMISE_TEAMS_REQUEST`;
-
-export const START_ARTICULATE_GAME_REQUEST = `${pre}START_ARTICULATE_GAME_REQUEST`;
-
-export const START_ARTICULATE_ROUND_REQUEST = `${pre}START_ARTICULATE_ROUND_REQUEST`;
-
-export const SKIP_WORD_ARTICULATE_REQUEST = `${pre}SKIP_WORD_ARTICULATE_REQUEST`;
-
-export const GOT_ARTICULATE_WORD_REQUEST = `${pre}GOT_ARTICULATE_WORD_REQUEST`;
-
-export const TRASH_ARTICULATE_WORD_REQUEST = `${pre}TRASH_ARTICULATE_WORD_REQUEST`;
-
-export const LOAD_ARTICULATE_SUMMARY_REQUEST = `${pre}LOAD_ARTICULATE_SUMMARY_REQUEST`;
-
-export const SET_ARTICULATE_WORD_CONFIRMED_REQUEST = `${pre}SET_ARTICULATE_WORD_CONFIRMED_REQUEST`;
-
-export const CONFIRM_ARTICULATE_SCORE_REQUEST = `${pre}CONFIRM_ARTICULATE_SCORE_REQUEST`;
-
-export const SPADE_ROUND_WINNER_REQUEST = `${pre}SPADE_ROUND_WINNER_REQUEST`;
-
-export const CONFIRM_ARTICULATE_WINNER = `${pre}CONFIRM_ARTICULATE_WINNER`;
 
 export const LEAVE_ARTICULATE_GAME_REQUEST = `${pre}LEAVE_ARTICULATE_GAME_REQUEST`;
 
@@ -328,8 +308,8 @@ export const startWhoInHatRoundRequest = gameId => ({
     gameId
 });
 
-export const gotWhoInHatWordRequest = (gameId, word) => ({
-    type: GOT_WHO_IN_HAT_WORD_REQUEST,
+export const gotWordRequest = (gameId, word) => ({
+    type: GOT_WORD_REQUEST,
     gameId,
     word
 });
@@ -378,62 +358,6 @@ export const randomiseTeamsRequest = (gameId, numberOfTeams) => ({
     type: RANDOMISE_TEAMS_REQUEST,
     gameId,
     numberOfTeams
-});
-
-export const startArticulateGameRequest = gameId => ({
-    type: START_ARTICULATE_GAME_REQUEST,
-    gameId
-});
-
-export const startArticulateRoundRequest = gameId => ({
-    type: START_ARTICULATE_ROUND_REQUEST,
-    gameId
-});
-
-export const skipWordArticulateRequest = (gameId, word) => ({
-    type: SKIP_WORD_ARTICULATE_REQUEST,
-    gameId,
-    word
-});
-
-export const gotArticulateWordRequest = (gameId, word) => ({
-    type: GOT_ARTICULATE_WORD_REQUEST,
-    gameId,
-    word
-});
-
-export const trashArticulateWordRequest = (gameId, word) => ({
-    type: TRASH_ARTICULATE_WORD_REQUEST,
-    gameId,
-    word
-});
-
-export const loadArticulateSummaryRequest = gameId => ({
-    type: LOAD_ARTICULATE_SUMMARY_REQUEST,
-    gameId
-});
-
-export const setArticulateWordConfirmedRequest = (gameId, word, isConfirmed) => ({
-    type: SET_ARTICULATE_WORD_CONFIRMED_REQUEST,
-    gameId,
-    word,
-    isConfirmed
-});
-
-export const confirmArticulateScoreRequest = gameId => ({
-    type: CONFIRM_ARTICULATE_SCORE_REQUEST,
-    gameId
-});
-
-export const spadeRoundWinnerRequest = (gameId, name) => ({
-    type: SPADE_ROUND_WINNER_REQUEST,
-    gameId,
-    name
-});
-
-export const confirmArticulateWinner = gameId => ({
-    type: CONFIRM_ARTICULATE_WINNER,
-    gameId
 });
 
 export const leaveArticulateGameRequest = gameId => ({

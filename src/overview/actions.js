@@ -63,9 +63,10 @@ export const joinWhoInHatTeamMidgameRequest = gameId => ({
     gameId
 });
 
-export const createArticulateGameRequest = (gameName, skippingRule, timePerRound) => ({
+export const createArticulateGameRequest = (gameName, skippingRule, timePerRound, scoreCap) => ({
     type: CREATE_ARTICULATE_GAME_REQUEST,
     gameName,
     skippingRule,
-    timePerRound
+    timePerRound,
+    scoreCap
 });

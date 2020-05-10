@@ -10,7 +10,7 @@ import RoundSummary from './RoundSummary';
 import GameFinished from './GameFinished';
 import {
     addTeamRequest, joinTeamRequest, addWordRequest, startWhoInHatGameRequest,
-    startWhoInHatRoundRequest, gotWhoInHatWordRequest, skipWordRequest,
+    startWhoInHatRoundRequest, gotWordRequest, skipWordRequest,
     trashWordRequest, loadScoreSummaryRequest, setWordConfirmedRequest,
     confirmScoreRequest, leaveWhoInHatGameRequest, joinWhoInHatTeamMidgameRequest,
     randomiseTeamsRequest
@@ -63,7 +63,7 @@ const GameStarted = props => {
                     auth={props.auth}
                     currentGame={props.currentGame}
                     currentGameId={props.currentGameId}
-                    gotWhoInHatWordRequest={props.gotWhoInHatWordRequest}
+                    gotWordRequest={props.gotWordRequest}
                     loadScoreSummaryRequest={props.loadScoreSummaryRequest}
                     skipWordRequest={props.skipWordRequest}
                     trashWordRequest={props.trashWordRequest}
@@ -145,7 +145,7 @@ GameStarted.propTypes = {
         waitingToJoinTeam: PropTypes.arrayOf(PropTypes.string)
     }),
     currentGameId: PropTypes.string,
-    gotWhoInHatWordRequest: PropTypes.func.isRequired,
+    gotWordRequest: PropTypes.func.isRequired,
     joinTeamRequest: PropTypes.func.isRequired,
     joinWhoInHatTeamMidgameRequest: PropTypes.func.isRequired,
     leaveWhoInHatGameRequest: PropTypes.func.isRequired,
@@ -164,7 +164,7 @@ const mapDispatchToProps = {
     addTeamRequest,
     addWordRequest,
     confirmScoreRequest,
-    gotWhoInHatWordRequest,
+    gotWordRequest,
     joinTeamRequest,
     joinWhoInHatTeamMidgameRequest,
     leaveWhoInHatGameRequest,

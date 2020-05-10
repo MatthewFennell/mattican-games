@@ -56,7 +56,7 @@ const PrepareToGuess = props => {
                     {props.auth.uid === props.currentGame.activeExplainer && (
                         <div className={props.styles.startRoundButton}>
                             <StyledButton
-                                onClick={() => props.startArticulateRoundRequest(
+                                onClick={() => props.startRoundRequest(
                                     props.currentGameId
                                 )}
                                 text="Start round"
@@ -103,7 +103,7 @@ PrepareToGuess.defaultProps = {
         temporaryTeam: ''
     },
     currentGameId: '',
-    startArticulateRoundRequest: noop,
+    startRoundRequest: noop,
     styles: defaultStyles,
     users: {}
 };
@@ -130,7 +130,7 @@ PrepareToGuess.propTypes = {
         temporaryTeam: PropTypes.string
     }),
     currentGameId: PropTypes.string,
-    startArticulateRoundRequest: PropTypes.func,
+    startRoundRequest: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})
 };

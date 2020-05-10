@@ -80,7 +80,7 @@ const Guessing = props => {
             setCurrentWordIndex(currentWordIndex + 1);
         }
         if (props.currentGame.skippingRule === constants.articulateSkipping.Unlimited) {
-            props.skipWordArticulateRequest(props.currentGameId, fp.flow(
+            props.skipWordRequest(props.currentGameId, fp.flow(
                 fp.get(props.currentGame.activeCategory),
                 fp.get(currentWordIndex)
             )(words));
@@ -105,9 +105,9 @@ const Guessing = props => {
         } else if (viewingSkippedWord) {
             setViewingSkippedWord(false);
             setSkippedWord('');
-            props.gotArticulateWordRequest(props.currentGameId, skippedWord);
+            props.gotWordRequest(props.currentGameId, skippedWord);
         } else {
-            props.gotArticulateWordRequest(props.currentGameId, fp.flow(
+            props.gotWordRequest(props.currentGameId, fp.flow(
                 fp.get(props.currentGame.activeCategory),
                 fp.get(currentWordIndex)
             )(words));
@@ -119,7 +119,7 @@ const Guessing = props => {
         setSpadeRoundCompleted, setFinalRoundCompleted]);
 
     const trashWord = useCallback(() => {
-        props.trashArticulateWordRequest(props.currentGameId, fp.flow(
+        props.trashWordRequest(props.currentGameId, fp.flow(
             fp.get(props.currentGame.activeCategory),
             fp.get(currentWordIndex)
         )(words));
@@ -130,7 +130,7 @@ const Guessing = props => {
             setCurrentWordIndex(currentWordIndex + 1);
         }
         // eslint-disable-next-line
-    }, [props.currentGameId, words, currentWordIndex, setCurrentWordIndex, props.trashArticulateWordRequest,
+    }, [props.currentGameId, words, currentWordIndex, setCurrentWordIndex, props.trashWordRequest,
         setViewingSkippedWord, setSkippedWord, viewingSkippedWord]);
 
     const closeSpadeFinished = useCallback(() => {
@@ -152,11 +152,11 @@ const Guessing = props => {
 
     const confirmFinalWinner = useCallback(() => {
         if (props.currentGame.activeTeam === winningFinalTeam) {
-            props.confirmArticulateWinner(props.currentGameId);
+            props.confirmWinner(props.currentGameId);
             setFinalRoundCompleted(false);
             setWinningFinalTeam('');
         } else {
-            props.confirmArticulateScoreRequest(props.currentGameId);
+            props.confirmScoreRequest(props.currentGameId);
             setFinalRoundCompleted(false);
             setWinningFinalTeam('');
         }
@@ -174,11 +174,11 @@ const Guessing = props => {
         if (Math.round(timeUntil < 1) && !triedToEndRound
         && props.currentGame.status === constants.whoInHatGameStatuses.Guessing
         && !props.currentGame.isSpadeRound && !props.currentGame.isFinalRound) {
-            props.loadArticulateSummaryRequest(props.currentGameId);
+            props.loadSummaryRequest(props.currentGameId);
             setTriedToEndRound(true);
         }
         // eslint-disable-next-line
-    }, [time, props.currentGame, props.auth, props.loadArticulateSummaryRequest, triedToEndRound, setTriedToEndRound,
+    }, [time, props.currentGame, props.auth, props.loadSummaryRequest, triedToEndRound, setTriedToEndRound,
         props.currentGame.isSpadeRound]);
 
     return (
@@ -440,13 +440,13 @@ Guessing.defaultProps = {
         temporaryTeam: ''
     },
     currentGameId: '',
-    confirmArticulateScoreRequest: noop,
-    confirmArticulateWinner: noop,
-    gotArticulateWordRequest: noop,
-    loadArticulateSummaryRequest: noop,
-    skipWordArticulateRequest: noop,
+    confirmScoreRequest: noop,
+    confirmWinner: noop,
+    gotWordRequest: noop,
+    loadSummaryRequest: noop,
+    skipWordRequest: noop,
     spadeRoundWinnerRequest: noop,
-    trashArticulateWordRequest: noop,
+    trashWordRequest: noop,
     styles: defaultStyles,
     users: {}
 };
@@ -476,15 +476,15 @@ Guessing.propTypes = {
         })),
         temporaryTeam: PropTypes.string
     }),
-    confirmArticulateScoreRequest: PropTypes.func,
-    confirmArticulateWinner: PropTypes.func,
+    confirmScoreRequest: PropTypes.func,
+    confirmWinner: PropTypes.func,
     currentGameId: PropTypes.string,
-    gotArticulateWordRequest: PropTypes.func,
+    gotWordRequest: PropTypes.func,
     spadeRoundWinnerRequest: PropTypes.func,
-    loadArticulateSummaryRequest: PropTypes.func,
-    skipWordArticulateRequest: PropTypes.func,
+    loadSummaryRequest: PropTypes.func,
+    skipWordRequest: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),
-    trashArticulateWordRequest: PropTypes.func,
+    trashWordRequest: PropTypes.func,
     users: PropTypes.shape({})
 };
 

@@ -92,9 +92,9 @@ const Guessing = props => {
         if (viewingSkippedWord) {
             setViewingSkippedWord(false);
             setSkippedWord('');
-            props.gotWhoInHatWordRequest(props.currentGameId, skippedWord);
+            props.gotWordRequest(props.currentGameId, skippedWord);
         } else {
-            props.gotWhoInHatWordRequest(props.currentGameId, words[currentWordIndex]);
+            props.gotWordRequest(props.currentGameId, words[currentWordIndex]);
             setCurrentWordIndex(currentWordIndex + 1);
         }
         // eslint-disable-next-line
@@ -268,7 +268,7 @@ Guessing.defaultProps = {
         teams: []
     },
     currentGameId: '',
-    gotWhoInHatWordRequest: noop,
+    gotWordRequest: noop,
     loadScoreSummaryRequest: noop,
     skipWordRequest: noop,
     trashWordRequest: noop,
@@ -298,7 +298,7 @@ Guessing.propTypes = {
         }))
     }),
     currentGameId: PropTypes.string,
-    gotWhoInHatWordRequest: PropTypes.func,
+    gotWordRequest: PropTypes.func,
     loadScoreSummaryRequest: PropTypes.func,
     skipWordRequest: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),

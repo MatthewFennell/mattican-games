@@ -88,7 +88,6 @@ exports.createGame = functions
                             Action: action,
                             Person: person
                         },
-                        scoreLimit: 42, // 6 x 7
                         timePerRound: Math.min(Number(data.timePerRound), 120),
                         waitingToJoinTeam: [],
                         winningTeam: null,
@@ -256,25 +255,6 @@ exports.loadSummary = functions
         });
     });
 
-exports.setWordConfirmed = functions
-    .region(constants.region)
-    .https.onCall((data, context) => {
-        common.isAuthenticated(context);
-        return db.collection('games').doc(data.gameId).get().then(doc => {
-            if (!doc.exists) {
-                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
-            }
-
-            if (!data.word) {
-                throw new functions.https.HttpsError('invalid-argument', 'Invalid word');
-            }
-
-            return doc.ref.update({
-                confirmedWords: data.isConfirmed ? operations.arrayUnion(data.word) : operations.arrayRemove(data.word)
-            });
-        });
-    });
-
 exports.confirmScore = functions
     .region(constants.region)
     .https.onCall((data, context) => {
@@ -349,7 +329,7 @@ exports.confirmScore = functions
                 });
             }
 
-            const nextTeamCurrentScore = fp.get('score')(teams.find(t => t.name === nextTeam.name));
+            const nextTeamCurrentScore = fp.get('score')(newTeamScores.find(t => t.name === nextTeam.name));
 
             return doc.ref.update({
                 activeTeam: nextTeam.name, // If PrepareToGuess, game has not finished

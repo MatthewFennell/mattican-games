@@ -79,7 +79,8 @@ export function* createArticulateGame(api, action) {
         yield call(api.createArticulateGame, ({
             name: action.gameName,
             skippingRule: action.skippingRule,
-            timePerRound: action.timePerRound
+            timePerRound: action.timePerRound,
+            scoreCap: action.scoreCap
         }));
     } catch (error) {
         yield put(gameActions.gameError(error, 'Create Game Error'));
