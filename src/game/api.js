@@ -34,20 +34,14 @@ export const makeVote = request => functionToCall('avalon-makeVote')(request);
 export const goOnQuest = request => functionToCall('avalon-goOnQuest')(request);
 export const guessMerlin = request => functionToCall('avalon-guessMerlin')(request);
 
-export const editGameWhoInHat = request => functionToCall('whoInHat-editGame')(request);
 export const startWhoInHatGame = request => functionToCall('whoInHat-startGame')(request);
 export const addTeam = request => functionToCall('shared-addTeam')(request);
 export const joinTeam = request => functionToCall('shared-joinTeam')(request);
-export const addWord = request => functionToCall('whoInHat-addWord')(request);
-export const startWhoInHat = request => functionToCall('whoInHat-start')(request);
-export const startWhoInHatRound = request => functionToCall('whoInHat-startRound')(request);
 export const skipWord = request => functionToCall('shared-skipWord')(request);
 export const trashWord = request => functionToCall('shared-trashWord')(request);
-export const loadSummary = request => functionToCall('whoInHat-loadSummary')(request);
 export const confirmWord = request => functionToCall('shared-confirmWord')(request);
-export const confirmScore = request => functionToCall('whoInHat-confirmScore')(request);
 export const sharedLeaveMidgame = request => functionToCall('shared-leaveMidgame')(request);
-export const joinWhoInHatTeamMidgame = request => functionToCall('shared-joinTeamMidgame')(request);
+export const joinTeamMidgame = request => functionToCall('shared-joinTeamMidgame')(request);
 export const randomiseTeams = request => functionToCall('shared-randomiseTeams')(request);
 
 export const leaveArticulateGame = request => functionToCall('shared-leaveMidgame')(request);

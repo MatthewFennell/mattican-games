@@ -11,7 +11,7 @@ export const CREATE_HITLER_GAME_REQUEST = `${pre}CREATE_HITLER_GAME_REQUEST`;
 
 export const CREATE_WHO_IN_HAT_GAME_REQUEST = `${pre}CREATE_WHO_IN_HAT_GAME_REQUEST`;
 
-export const JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST = `${pre}JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST`;
+export const JOIN_TEAM_MIDGAME_REQUEST = `${pre}JOIN_TEAM_MIDGAME_REQUEST`;
 
 export const CREATE_ARTICULATE_GAME_REQUEST = `${pre}CREATE_ARTICULATE_GAME_REQUEST`;
 
@@ -58,8 +58,8 @@ export const createWhoInHatGameRequest = (gameName, skippingRule,
     timePerRound
 });
 
-export const joinWhoInHatTeamMidgameRequest = gameId => ({
-    type: JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST,
+export const joinTeamMidgameRequest = gameId => ({
+    type: JOIN_TEAM_MIDGAME_REQUEST,
     gameId
 });
 

@@ -93,7 +93,7 @@ export default function* overviewSaga() {
         takeEvery(actions.JOIN_GAME_REQUEST, joinGame, overviewApi),
         takeEvery(actions.CREATE_HITLER_GAME_REQUEST, createHitlerGame, overviewApi),
         takeEvery(actions.CREATE_WHO_IN_HAT_GAME_REQUEST, createWhoInHatGame, overviewApi),
-        takeEvery(actions.JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST, joinWhoInHatMidgame, overviewApi),
+        takeEvery(actions.JOIN_TEAM_MIDGAME_REQUEST, joinWhoInHatMidgame, overviewApi),
         takeEvery(actions.CREATE_ARTICULATE_GAME_REQUEST, createArticulateGame, overviewApi)
     ]);
 }

@@ -4,27 +4,31 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as constants from '../../constants';
 import MakingTeams from '../common/MakingTeams';
-import PrepareToGuess from './PrepareToGuess';
-import Guessing from './Guessing';
-import RoundSummary from './RoundSummary';
-import GameFinished from './GameFinished';
+import PrepareToGuess from './statuses/PrepareToGuess';
+import Guessing from './statuses/Guessing';
+import RoundSummary from './statuses/RoundSummary';
+import GameFinished from './statuses/GameFinished';
 import {
-    addTeamRequest, joinTeamRequest, addWordRequest, startWhoInHatGameRequest,
-    startWhoInHatRoundRequest, gotWordRequest, skipWordRequest,
-    trashWordRequest, loadScoreSummaryRequest, setWordConfirmedRequest,
-    confirmScoreRequest, leaveWhoInHatGameRequest, joinWhoInHatTeamMidgameRequest,
+    addTeamRequest, joinTeamRequest, gotWordRequest, skipWordRequest,
+    trashWordRequest, setWordConfirmedRequest,
+    leaveUnconstrainedGameRequest, joinTeamMidgameRequest,
     randomiseTeamsRequest
 } from '../actions';
 import defaultStyles from './GameStarted.module.scss';
 import JoinTeamModal from '../common/JoinTeamModal';
 
+import {
+    addWordRequest, startWhoInHatGameRequest, confirmScoreRequest,
+    startWhoInHatRoundRequest, loadScoreSummaryRequest
+} from './actions';
+
 const GameStarted = props => {
     const [teamToJoin, setTeamToJoin] = useState('');
 
     const joinTeam = useCallback(() => {
-        props.joinWhoInHatTeamMidgameRequest(props.currentGameId, teamToJoin);
+        props.joinTeamMidgameRequest(props.currentGameId, teamToJoin);
         // eslint-disable-next-line
-    }, [teamToJoin, props.joinWhoInHatTeamMidgameRequest, props.currentGameId])
+    }, [teamToJoin, props.joinTeamMidgameRequest, props.currentGameId])
 
     const generateComponent = () => {
         if (props.currentGame.status === constants.whoInHatGameStatuses.MakingTeams) {
@@ -50,7 +54,7 @@ const GameStarted = props => {
                     auth={props.auth}
                     currentGame={props.currentGame}
                     currentGameId={props.currentGameId}
-                    joinWhoInHatTeamMidgameRequest={props.joinWhoInHatTeamMidgameRequest}
+                    joinTeamMidgameRequest={props.joinTeamMidgameRequest}
                     startWhoInHatRoundRequest={props.startWhoInHatRoundRequest}
                     users={props.users}
                 />
@@ -92,7 +96,7 @@ const GameStarted = props => {
                     auth={props.auth}
                     currentGame={props.currentGame}
                     currentGameId={props.currentGameId}
-                    leaveWhoInHatGameRequest={props.leaveWhoInHatGameRequest}
+                    leaveUnconstrainedGameRequest={props.leaveUnconstrainedGameRequest}
                     users={props.users}
                 />
             );
@@ -147,8 +151,8 @@ GameStarted.propTypes = {
     currentGameId: PropTypes.string,
     gotWordRequest: PropTypes.func.isRequired,
     joinTeamRequest: PropTypes.func.isRequired,
-    joinWhoInHatTeamMidgameRequest: PropTypes.func.isRequired,
-    leaveWhoInHatGameRequest: PropTypes.func.isRequired,
+    joinTeamMidgameRequest: PropTypes.func.isRequired,
+    leaveUnconstrainedGameRequest: PropTypes.func.isRequired,
     loadScoreSummaryRequest: PropTypes.func.isRequired,
     randomiseTeamsRequest: PropTypes.func.isRequired,
     setWordConfirmedRequest: PropTypes.func.isRequired,
@@ -166,8 +170,8 @@ const mapDispatchToProps = {
     confirmScoreRequest,
     gotWordRequest,
     joinTeamRequest,
-    joinWhoInHatTeamMidgameRequest,
-    leaveWhoInHatGameRequest,
+    joinTeamMidgameRequest,
+    leaveUnconstrainedGameRequest,
     loadScoreSummaryRequest,
     randomiseTeamsRequest,
     setWordConfirmedRequest,

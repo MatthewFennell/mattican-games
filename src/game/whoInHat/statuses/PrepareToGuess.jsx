@@ -2,12 +2,12 @@ import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
 import defaultStyles from './PrepareToGuess.module.scss';
-import * as helpers from '../helpers';
-import TeamsAndScore from '../common/TeamsAndScore';
-import Fade from '../../common/Fade/Fade';
-import StyledButton from '../../common/StyledButton/StyledButton';
+import * as helpers from '../../helpers';
+import TeamsAndScore from '../../common/TeamsAndScore';
+import Fade from '../../../common/Fade/Fade';
+import StyledButton from '../../../common/StyledButton/StyledButton';
 import { remainingCards } from './Guessing';
-import JoinTeamModal from '../common/JoinTeamModal';
+import JoinTeamModal from '../../common/JoinTeamModal';
 
 const teamHasOnlyMe = (game, myId) => {
     if (!game || !game.teams) {
@@ -30,11 +30,11 @@ const PrepareToGuess = props => {
     const [teamToJoin, setTeamToJoin] = useState('');
 
     const joinTeam = useCallback(() => {
-        props.joinWhoInHatTeamMidgameRequest(props.currentGameId, teamToJoin);
+        props.joinTeamMidgameRequest(props.currentGameId, teamToJoin);
         setJoiningNewTeam(false);
         setTeamToJoin('');
         // eslint-disable-next-line
-    }, [teamToJoin, props.joinWhoInHatTeamMidgameRequest, props.currentGameId])
+    }, [teamToJoin, props.joinTeamMidgameRequest, props.currentGameId])
 
 
     return (
@@ -116,7 +116,7 @@ PrepareToGuess.defaultProps = {
         teams: []
     },
     currentGameId: '',
-    joinWhoInHatTeamMidgameRequest: noop,
+    joinTeamMidgameRequest: noop,
     startWhoInHatRoundRequest: noop,
     styles: defaultStyles,
     users: {}
@@ -140,7 +140,7 @@ PrepareToGuess.propTypes = {
         }))
     }),
     currentGameId: PropTypes.string,
-    joinWhoInHatTeamMidgameRequest: PropTypes.func,
+    joinTeamMidgameRequest: PropTypes.func,
     startWhoInHatRoundRequest: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})

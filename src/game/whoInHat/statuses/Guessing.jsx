@@ -4,12 +4,12 @@ import { noop } from 'lodash';
 import moment from 'moment';
 import fp from 'lodash/fp';
 import defaultStyles from './Guessing.module.scss';
-import * as helpers from '../helpers';
-import TeamsAndScore from '../common/TeamsAndScore';
-import * as constants from '../../constants';
-import StyledButton from '../../common/StyledButton/StyledButton';
-import Fade from '../../common/Fade/Fade';
-import Spinner from '../../common/spinner/Spinner';
+import * as helpers from '../../helpers';
+import TeamsAndScore from '../../common/TeamsAndScore';
+import * as constants from '../../../constants';
+import StyledButton from '../../../common/StyledButton/StyledButton';
+import Fade from '../../../common/Fade/Fade';
+import Spinner from '../../../common/spinner/Spinner';
 
 export const remainingCards = game => {
     const {

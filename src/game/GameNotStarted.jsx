@@ -9,7 +9,7 @@ import * as constants from '../constants';
 import StyledButton from '../common/StyledButton/StyledButton';
 import {
     leaveGameRequest, readyUpRequest, startGameRequest,
-    editHitlerGameRequest, gameError, editAvalonGameRequest, editWhoInHateGameRequest
+    editHitlerGameRequest, gameError, editAvalonGameRequest
 } from './actions';
 import Switch from '../common/Switch/Switch';
 import Fade from '../common/Fade/Fade';
@@ -20,6 +20,10 @@ import Dropdown from '../common/dropdown/Dropdown';
 import {
     editGameRequest as editArticulateGameRequest
 } from './articulate/actions';
+
+import {
+    editWhoInHateGameRequest
+} from './whoInHat/actions';
 
 const canStartGame = game => {
     if (game.mode === constants.gameModes.Hitler || game.mode === constants.gameModes.Avalon) {

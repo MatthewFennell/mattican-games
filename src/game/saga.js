@@ -321,20 +321,6 @@ export function* editGameAvalon(api, action) {
     }
 }
 
-export function* editGameWhoInHat(api, action) {
-    try {
-        yield call(api.editGameWhoInHat, ({
-            gameId: action.gameId,
-            skippingRule: action.skippingRule,
-            isCustomNames: action.roles,
-            scoreCap: action.scoreCap,
-            timePerRound: action.timePerRound
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Edit Game error'));
-    }
-}
-
 export function* closeLookAtInvestigation(api, action) {
     try {
         yield call(api.closeInvestigation, ({
@@ -379,37 +365,6 @@ export function* joinTeam(api, action) {
     }
 }
 
-export function* addWord(api, action) {
-    try {
-        yield call(api.addWord, ({
-            gameId: action.gameId,
-            word: action.word
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Add Word error'));
-    }
-}
-
-export function* startWhoInHat(api, action) {
-    try {
-        yield call(api.startWhoInHat, ({
-            gameId: action.gameId
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Start Game error'));
-    }
-}
-
-export function* startWhoInHatRound(api, action) {
-    try {
-        yield call(api.startWhoInHatRound, ({
-            gameId: action.gameId
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Start Round error'));
-    }
-}
-
 export function* gotWord(api, action) {
     try {
         yield call(api.gotWord, ({
@@ -443,16 +398,6 @@ export function* trashWord(api, action) {
     }
 }
 
-export function* loadSummary(api, action) {
-    try {
-        yield call(api.loadSummary, ({
-            gameId: action.gameId
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Load Summary error'));
-    }
-}
-
 export function* confirmWord(api, action) {
     try {
         yield call(api.confirmWord, ({
@@ -462,16 +407,6 @@ export function* confirmWord(api, action) {
         }));
     } catch (error) {
         yield put(actions.gameError(error, 'Confirm Word error'));
-    }
-}
-
-export function* confirmScore(api, action) {
-    try {
-        yield call(api.confirmScore, ({
-            gameId: action.gameId
-        }));
-    } catch (error) {
-        yield put(actions.gameError(error, 'Confirm Score error'));
     }
 }
 
@@ -485,9 +420,9 @@ export function* leaveWhoInHatGame(api, action) {
     }
 }
 
-export function* joinWhoInHatTeamMidgame(api, action) {
+export function* joinTeamMidgame(api, action) {
     try {
-        yield call(api.joinWhoInHatTeamMidgame, ({
+        yield call(api.joinTeamMidgame, ({
             gameId: action.gameId,
             teamName: action.teamName
         }));
@@ -548,26 +483,17 @@ export default function* overviewSaga() {
         takeEvery(actions.CLOSE_LOOK_AT_TOP_THREE_REQUEST, closeTopThree, gameApi),
         takeEvery(actions.EDIT_HITLER_GAME_REQUEST, editGameHitler, gameApi),
         takeEvery(actions.EDIT_AVALON_GAME_REQUEST, editGameAvalon, gameApi),
-        takeEvery(actions.EDIT_WHO_IN_HAT_GAME_REQUEST, editGameWhoInHat, gameApi),
         takeEvery(actions.CLOSE_LOOK_AT_INVESTIGATION_REQUEST, closeLookAtInvestigation, gameApi),
 
         takeEvery(actions.EDIT_DISPLAY_NAME, editDisplayName, gameApi),
-
         takeEvery(actions.ADD_TEAM_REQUEST, addTeam, gameApi),
         takeEvery(actions.JOIN_TEAM_REQUEST, joinTeam, gameApi),
-        takeEvery(actions.ADD_WORD_REQUEST, addWord, gameApi),
-        takeEvery(actions.START_WHO_IN_HAT_GAME_REQUEST, startWhoInHat, gameApi),
-        takeEvery(actions.START_WHO_IN_HAT_ROUND_REQUEST, startWhoInHatRound, gameApi),
         takeEvery(actions.GOT_WORD_REQUEST, gotWord, gameApi),
         takeEvery(actions.SKIP_WORD_WHO_IN_HAT_REQUEST, skipWord, gameApi),
         takeEvery(actions.TRASH_WORD_WHO_IN_HAT_REQUEST, trashWord, gameApi),
-        takeEvery(actions.LOAD_SCORE_SUMMARY_REQUEST, loadSummary, gameApi),
         takeEvery(actions.SET_WORD_CONFIRMED_REQUEST, confirmWord, gameApi),
-        takeEvery(actions.CONFIRM_SCORE_REQUEST, confirmScore, gameApi),
-        takeEvery(actions.LEAVE_WHO_IN_HAT_GAME_REQUEST, leaveWhoInHatGame, gameApi),
-        takeEvery(actions.JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST, joinWhoInHatTeamMidgame, gameApi),
-        takeEvery(actions.RANDOMISE_TEAMS_REQUEST, randomiseTeams, gameApi),
-
-        takeEvery(actions.LEAVE_ARTICULATE_GAME_REQUEST, leaveArticulateGame, gameApi)
+        takeEvery(actions.LEAVE_UNCONSTRAINED_GAME_REQUEST, leaveWhoInHatGame, gameApi),
+        takeEvery(actions.JOIN_TEAM_MIDGAME_REQUEST, joinTeamMidgame, gameApi),
+        takeEvery(actions.RANDOMISE_TEAMS_REQUEST, randomiseTeams, gameApi)
     ]);
 }

@@ -56,19 +56,11 @@ export const EDIT_HITLER_GAME_REQUEST = `${pre}EDIT_HITLER_GAME_REQUEST`;
 
 export const EDIT_AVALON_GAME_REQUEST = `${pre}EDIT_AVALON_GAME_REQUEST`;
 
-export const EDIT_WHO_IN_HAT_GAME_REQUEST = `${pre}EDIT_WHO_IN_HAT_GAME_REQUEST`;
-
 export const EDIT_DISPLAY_NAME = `${pre}EDIT_DISPLAY_NAME`;
 
 export const ADD_TEAM_REQUEST = `${pre}ADD_TEAM_REQUEST`;
 
 export const JOIN_TEAM_REQUEST = `${pre}JOIN_TEAM_REQUEST`;
-
-export const ADD_WORD_REQUEST = `${pre}ADD_WORD_REQUEST`;
-
-export const START_WHO_IN_HAT_GAME_REQUEST = `${pre}START_WHO_IN_HAT_GAME_REQUEST`;
-
-export const START_WHO_IN_HAT_ROUND_REQUEST = `${pre}START_WHO_IN_HAT_ROUND_REQUEST`;
 
 export const GOT_WORD_REQUEST = `${pre}GOT_WORD_REQUEST`;
 
@@ -76,19 +68,13 @@ export const SKIP_WORD_WHO_IN_HAT_REQUEST = `${pre}SKIP_WORD_WHO_IN_HAT_REQUEST`
 
 export const TRASH_WORD_WHO_IN_HAT_REQUEST = `${pre}TRASH_WORD_WHO_IN_HAT_REQUEST`;
 
-export const LOAD_SCORE_SUMMARY_REQUEST = `${pre}LOAD_SCORE_SUMMARY_REQUEST`;
-
 export const SET_WORD_CONFIRMED_REQUEST = `${pre}SET_WORD_CONFIRMED_REQUEST`;
 
-export const CONFIRM_SCORE_REQUEST = `${pre}CONFIRM_SCORE_REQUEST`;
+export const LEAVE_UNCONSTRAINED_GAME_REQUEST = `${pre}LEAVE_UNCONSTRAINED_GAME_REQUEST`;
 
-export const LEAVE_WHO_IN_HAT_GAME_REQUEST = `${pre}LEAVE_WHO_IN_HAT_GAME_REQUEST`;
-
-export const JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST = `${pre}JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST`;
+export const JOIN_TEAM_MIDGAME_REQUEST = `${pre}JOIN_TEAM_MIDGAME_REQUEST`;
 
 export const RANDOMISE_TEAMS_REQUEST = `${pre}RANDOMISE_TEAMS_REQUEST`;
-
-export const LEAVE_ARTICULATE_GAME_REQUEST = `${pre}LEAVE_ARTICULATE_GAME_REQUEST`;
 
 export const gameError = (error, header) => ({
     type: GAME_ERROR,
@@ -263,16 +249,6 @@ export const editAvalonGameRequest = (gameId, numberOfPlayers, roles) => ({
     roles
 });
 
-export const editWhoInHateGameRequest = (gameId, skippingRule,
-    isCustomNames, scoreCap, timePerRound) => ({
-    type: EDIT_WHO_IN_HAT_GAME_REQUEST,
-    gameId,
-    skippingRule,
-    isCustomNames,
-    scoreCap,
-    timePerRound
-});
-
 export const editDisplayName = (gameId, displayName) => ({
     type: EDIT_DISPLAY_NAME,
     gameId,
@@ -290,22 +266,6 @@ export const joinTeamRequest = (gameId, teamName) => ({
     type: JOIN_TEAM_REQUEST,
     gameId,
     teamName
-});
-
-export const addWordRequest = (gameId, word) => ({
-    type: ADD_WORD_REQUEST,
-    gameId,
-    word
-});
-
-export const startWhoInHatGameRequest = gameId => ({
-    type: START_WHO_IN_HAT_GAME_REQUEST,
-    gameId
-});
-
-export const startWhoInHatRoundRequest = gameId => ({
-    type: START_WHO_IN_HAT_ROUND_REQUEST,
-    gameId
 });
 
 export const gotWordRequest = (gameId, word) => ({
@@ -326,11 +286,6 @@ export const trashWordRequest = (gameId, word) => ({
     word
 });
 
-export const loadScoreSummaryRequest = gameId => ({
-    type: LOAD_SCORE_SUMMARY_REQUEST,
-    gameId
-});
-
 export const setWordConfirmedRequest = (gameId, word, isConfirmed) => ({
     type: SET_WORD_CONFIRMED_REQUEST,
     gameId,
@@ -338,18 +293,13 @@ export const setWordConfirmedRequest = (gameId, word, isConfirmed) => ({
     isConfirmed
 });
 
-export const confirmScoreRequest = gameId => ({
-    type: CONFIRM_SCORE_REQUEST,
+export const leaveUnconstrainedGameRequest = gameId => ({
+    type: LEAVE_UNCONSTRAINED_GAME_REQUEST,
     gameId
 });
 
-export const leaveWhoInHatGameRequest = gameId => ({
-    type: LEAVE_WHO_IN_HAT_GAME_REQUEST,
-    gameId
-});
-
-export const joinWhoInHatTeamMidgameRequest = (gameId, teamName) => ({
-    type: JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST,
+export const joinTeamMidgameRequest = (gameId, teamName) => ({
+    type: JOIN_TEAM_MIDGAME_REQUEST,
     gameId,
     teamName
 });
@@ -358,9 +308,4 @@ export const randomiseTeamsRequest = (gameId, numberOfTeams) => ({
     type: RANDOMISE_TEAMS_REQUEST,
     gameId,
     numberOfTeams
-});
-
-export const leaveArticulateGameRequest = gameId => ({
-    type: LEAVE_ARTICULATE_GAME_REQUEST,
-    gameId
 });

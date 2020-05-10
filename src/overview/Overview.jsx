@@ -7,7 +7,7 @@ import defaultStyles from './Overview.module.scss';
 import * as constants from '../constants';
 import {
     createAvalonGameRequest, joinGameRequest, createHiterGameRequest,
-    createWhoInHatGameRequest, joinWhoInHatTeamMidgameRequest,
+    createWhoInHatGameRequest, joinTeamMidgameRequest,
     createArticulateGameRequest
 } from './actions';
 import CreateGame from './CreateGame';
@@ -87,7 +87,7 @@ const Overview = props => {
     const joinGame = useCallback(() => {
         if (gameModeToJoin === constants.gameModes.WhosInTheHat
             || gameModeToJoin === constants.gameModes.Articulate) {
-            props.joinWhoInHatTeamMidgameRequest(gameToJoin);
+            props.joinTeamMidgameRequest(gameToJoin);
         } else {
             props.joinGameRequest(gameToJoin, gameModeToJoin);
         }
@@ -215,7 +215,7 @@ Overview.propTypes = {
     createAvalonGameRequest: PropTypes.func.isRequired,
     createHiterGameRequest: PropTypes.func.isRequired,
     createWhoInHatGameRequest: PropTypes.func.isRequired,
-    joinWhoInHatTeamMidgameRequest: PropTypes.func.isRequired,
+    joinTeamMidgameRequest: PropTypes.func.isRequired,
     creatingGame: PropTypes.bool,
     joiningGame: PropTypes.bool,
     joinGameRequest: PropTypes.func.isRequired,
@@ -232,7 +232,7 @@ const mapDispatchToProps = {
     createHiterGameRequest,
     createWhoInHatGameRequest,
     joinGameRequest,
-    joinWhoInHatTeamMidgameRequest
+    joinTeamMidgameRequest
 };
 
 const mapStateToProps = state => ({

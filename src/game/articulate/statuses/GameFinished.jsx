@@ -27,7 +27,7 @@ const GameFinished = props => (
 
         <div className={props.styles.leaveGameButton}>
             <StyledButton
-                onClick={() => props.leaveArticulateGameRequest(props.currentGameId)}
+                onClick={() => props.leaveUnconstrainedGameRequest(props.currentGameId)}
                 text="Leave Game"
             />
         </div>
@@ -50,7 +50,7 @@ GameFinished.defaultProps = {
         winningTeam: ''
     },
     currentGameId: '',
-    leaveArticulateGameRequest: noop,
+    leaveUnconstrainedGameRequest: noop,
     styles: defaultStyles,
     users: {}
 };
@@ -75,7 +75,7 @@ GameFinished.propTypes = {
         winningTeam: PropTypes.string
     }),
     currentGameId: PropTypes.string,
-    leaveArticulateGameRequest: PropTypes.func,
+    leaveUnconstrainedGameRequest: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})
 };
