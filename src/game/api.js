@@ -15,9 +15,3 @@ export const confirmWord = request => functionToCall('shared-confirmWord')(reque
 export const sharedLeaveMidgame = request => functionToCall('shared-leaveMidgame')(request);
 export const joinTeamMidgame = request => functionToCall('shared-joinTeamMidgame')(request);
 export const randomiseTeams = request => functionToCall('shared-randomiseTeams')(request);
-
-
-export const startWhoInHatGame = request => functionToCall('whoInHat-startGame')(request);
-export const startAvalonGame = request => functionToCall('avalon-startGame')(request);
-export const startArticulateGame = request => functionToCall('articulate-startGame')(request);
-export const startHitlerGame = request => functionToCall('hitler-startGame')(request);

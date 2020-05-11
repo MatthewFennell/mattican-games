@@ -8,7 +8,7 @@ import { mapUserIdToName, gameHasSetNumberOfPlayers } from './helpers';
 import * as constants from '../constants';
 import StyledButton from '../common/StyledButton/StyledButton';
 import {
-    leaveGameRequest, readyUpRequest, startGameRequest,
+    leaveGameRequest, readyUpRequest, startAnyGameRequest,
     gameError
 } from './actions';
 import Switch from '../common/Switch/Switch';
@@ -406,7 +406,7 @@ const GameNotStarted = props => {
                     <StyledButton
                         text="Start Game"
                         disabled={!canStartGame(props.currentGame)}
-                        onClick={() => props.startGameRequest(props.currentGameId,
+                        onClick={() => props.startAnyGameRequest(props.currentGameId,
                             props.currentGame.mode)}
                     />
                 </div>
@@ -505,7 +505,7 @@ GameNotStarted.propTypes = {
     readyUpRequest: PropTypes.func.isRequired,
     editHitlerGameRequest: PropTypes.func.isRequired,
     gameError: PropTypes.func.isRequired,
-    startGameRequest: PropTypes.func.isRequired,
+    startAnyGameRequest: PropTypes.func.isRequired,
     editAvalonGameRequest: PropTypes.func.isRequired,
     editWhoInHatGameRequest: PropTypes.func.isRequired,
     styles: PropTypes.objectOf(PropTypes.string),
@@ -516,7 +516,7 @@ const mapDispatchToProps = {
     editArticulateGameRequest,
     leaveGameRequest,
     readyUpRequest,
-    startGameRequest,
+    startAnyGameRequest,
     gameError,
     editAvalonGameRequest,
     editHitlerGameRequest,

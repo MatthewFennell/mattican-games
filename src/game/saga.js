@@ -26,33 +26,6 @@ export function* readyUp(api, action) {
     }
 }
 
-export function* startGame(api, action) {
-    try {
-        if (action.mode === constants.gameModes.Avalon) {
-            yield call(api.startAvalonGame, ({
-                gameId: action.gameId
-            }));
-        }
-        if (action.mode === constants.gameModes.Hitler) {
-            yield call(api.startHitlerGame, ({
-                gameId: action.gameId
-            }));
-        }
-        if (action.mode === constants.gameModes.WhosInTheHat) {
-            yield call(api.startWhoInHatGame, ({
-                gameId: action.gameId
-            }));
-        }
-        if (action.mode === constants.gameModes.Articulate) {
-            yield call(api.startArticulateGame, ({
-                gameId: action.gameId
-            }));
-        }
-    } catch (error) {
-        yield put(actions.gameError(error, 'Start Game Error'));
-    }
-}
-
 export function* destroyGame(api, action) {
     try {
         yield call(api.destroyGame, ({
@@ -172,7 +145,7 @@ export function* confirmWord(api, action) {
     }
 }
 
-export function* leaveUnconstrainedGame(api, action) {
+export function* leaveWhoInHatGame(api, action) {
     try {
         yield call(api.sharedLeaveMidgame, ({
             gameId: action.gameId
@@ -193,7 +166,6 @@ export function* joinTeamMidgame(api, action) {
     }
 }
 
-
 export function* randomiseTeams(api, action) {
     try {
         yield call(api.randomiseTeams, ({
@@ -209,7 +181,6 @@ export default function* overviewSaga() {
     yield all([
         takeEvery(actions.LEAVE_GAME_REQUEST, leaveGame, gameApi),
         takeEvery(actions.READY_UP_REQUEST, readyUp, gameApi),
-        takeEvery(actions.START_GAME_REQUEST, startGame, gameApi),
         takeEvery(actions.DESTROY_GAME_REQUEST, destroyGame, gameApi),
         takeEvery(actions.LEAVE_MIDGAME_REQUEST, leaveMidgame, gameApi),
         takeEvery(actions.APPROVE_LEAVE_MIDGAME_REQUEST, approveLeaveMidgame, gameApi),
@@ -222,7 +193,7 @@ export default function* overviewSaga() {
         takeEvery(actions.SKIP_WORD_WHO_IN_HAT_REQUEST, skipWord, gameApi),
         takeEvery(actions.TRASH_WORD_WHO_IN_HAT_REQUEST, trashWord, gameApi),
         takeEvery(actions.SET_WORD_CONFIRMED_REQUEST, confirmWord, gameApi),
-        takeEvery(actions.LEAVE_UNCONSTRAINED_GAME_REQUEST, leaveUnconstrainedGame, gameApi),
+        takeEvery(actions.LEAVE_UNCONSTRAINED_GAME_REQUEST, leaveWhoInHatGame, gameApi),
         takeEvery(actions.JOIN_TEAM_MIDGAME_REQUEST, joinTeamMidgame, gameApi),
         takeEvery(actions.RANDOMISE_TEAMS_REQUEST, randomiseTeams, gameApi)
     ]);

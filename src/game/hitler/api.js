@@ -1,5 +1,6 @@
 import { functionToCall } from '../../api/api';
 
+export const startHitlerGame = request => functionToCall('hitler-startGame')(request);
 export const nominateChancellor = request => functionToCall('hitler-nominateChancellor')(request);
 export const confirmChancellor = request => functionToCall('hitler-confirmChancellor')(request);
 export const makeHitlerVote = request => functionToCall('hitler-makeVote')(request);

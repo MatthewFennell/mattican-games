@@ -4,6 +4,7 @@ import {
 import * as actions from './actions';
 import * as whoInHatApi from './api';
 import * as commonActions from '../actions';
+import * as constants from '../../constants';
 
 export function* addWord(api, action) {
     try {
@@ -70,6 +71,18 @@ export function* confirmScore(api, action) {
     }
 }
 
+export function* startGame(api, action) {
+    try {
+        if (action.mode === constants.gameModes.WhosInTheHat) {
+            yield call(api.startWhoInHatGame, ({
+                gameId: action.gameId
+            }));
+        }
+    } catch (error) {
+        yield put(commonActions.gameError(error, 'Start Game Error'));
+    }
+}
+
 export default function* whoInHatSaga() {
     yield all([
         takeEvery(actions.ADD_WORD_REQUEST, addWord, whoInHatApi),
@@ -77,7 +90,8 @@ export default function* whoInHatSaga() {
         takeEvery(actions.START_WHO_IN_HAT_ROUND_REQUEST, startWhoInHatRound, whoInHatApi),
         takeEvery(actions.EDIT_WHO_IN_HAT_GAME_REQUEST, editGameWhoInHat, whoInHatApi),
         takeEvery(actions.LOAD_SCORE_SUMMARY_REQUEST, loadSummary, whoInHatApi),
-        takeEvery(actions.CONFIRM_SCORE_REQUEST, confirmScore, whoInHatApi)
+        takeEvery(actions.CONFIRM_SCORE_REQUEST, confirmScore, whoInHatApi),
+        takeEvery(commonActions.START_ANY_GAME_REQUEST, startGame, whoInHatApi)
 
     ]);
 }

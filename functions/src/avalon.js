@@ -46,7 +46,7 @@ exports.createAvalonGame = functions
                         history: [],
                         host: context.auth.uid,
                         leader: null,
-                        mode: data.mode,
+                        mode: constants.gameModes.Avalon,
                         name: data.name,
                         numberOfPlayers: Math.min(data.numberOfPlayers, 10),
                         playersOnQuest: [],

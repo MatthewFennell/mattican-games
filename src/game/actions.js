@@ -4,7 +4,7 @@ export const GAME_ERROR = `${pre}GAME_ERROR`;
 export const CLOSE_GAME_ERROR = `${pre}CLOSE_GAME_ERROR`;
 export const LEAVE_GAME_REQUEST = `${pre}LEAVE_GAME_REQUEST`;
 export const READY_UP_REQUEST = `${pre}READY_UP_REQUEST`;
-export const START_GAME_REQUEST = `${pre}START_GAME_REQUEST`;
+export const START_ANY_GAME_REQUEST = `${pre}START_ANY_GAME_REQUEST`;
 export const DESTROY_GAME_REQUEST = `${pre}DESTROY_GAME_REQUEST`;
 export const LEAVE_MIDGAME_REQUEST = `${pre}LEAVE_MIDGAME_REQUEST`;
 export const APPROVE_LEAVE_MIDGAME_REQUEST = `${pre}APPROVE_LEAVE_MIDGAME_REQUEST`;
@@ -40,8 +40,8 @@ export const readyUpRequest = (gameId, isReady) => ({
     isReady
 });
 
-export const startGameRequest = (gameId, mode) => ({
-    type: START_GAME_REQUEST,
+export const startAnyGameRequest = (gameId, mode) => ({
+    type: START_ANY_GAME_REQUEST,
     gameId,
     mode
 });

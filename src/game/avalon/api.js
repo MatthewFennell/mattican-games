@@ -1,5 +1,6 @@
 import { functionToCall } from '../../api/api';
 
+export const startAvalonGame = request => functionToCall('avalon-startGame')(request);
 export const editGameAvalon = request => functionToCall('editGameAvalon')(request);
 export const nominatePlayer = request => functionToCall('avalon-nominatePlayer')(request);
 export const confirmNominations = request => functionToCall('avalon-confirmNominations')(request);

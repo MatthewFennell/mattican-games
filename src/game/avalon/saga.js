@@ -4,6 +4,7 @@ import {
 import * as actions from './actions';
 import * as avalonApi from './api';
 import * as commonActions from '../actions';
+import * as constants from '../../constants';
 
 export function* editGameAvalon(api, action) {
     try {
@@ -78,6 +79,19 @@ export function* guessMerlin(api, action) {
     }
 }
 
+export function* startGame(api, action) {
+    try {
+        if (action.mode === constants.gameModes.Avalon) {
+            yield call(api.startAvalonGame, ({
+                gameId: action.gameId
+            }));
+        }
+    } catch (error) {
+        yield put(commonActions.gameError(error, 'Start Game Error'));
+    }
+}
+
+
 export default function* whoInHatSaga() {
     yield all([
         takeEvery(actions.EDIT_GAME_REQUEST, editGameAvalon, avalonApi),
@@ -85,8 +99,7 @@ export default function* whoInHatSaga() {
         takeEvery(actions.CONFIRM_NOMINATIONS_REQUEST, confirmNominations, avalonApi),
         takeEvery(actions.MAKE_AVALON_VOTE_REQUEST, makeVote, avalonApi),
         takeEvery(actions.GUESS_MERLIN_REQUEST, guessMerlin, avalonApi),
-        takeEvery(actions.MAKE_QUEST_REQUEST, goOnQuest, avalonApi)
-
-
+        takeEvery(actions.MAKE_QUEST_REQUEST, goOnQuest, avalonApi),
+        takeEvery(commonActions.START_ANY_GAME_REQUEST, startGame, avalonApi)
     ]);
 }

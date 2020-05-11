@@ -1,5 +1,6 @@
 import { functionToCall } from '../../api/api';
 
+export const startWhoInHatGame = request => functionToCall('whoInHat-startGame')(request);
 export const addWord = request => functionToCall('whoInHat-addWord')(request);
 export const startWhoInHat = request => functionToCall('whoInHat-start')(request);
 export const startWhoInHatRound = request => functionToCall('whoInHat-startRound')(request);

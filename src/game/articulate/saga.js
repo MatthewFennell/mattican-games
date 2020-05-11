@@ -4,6 +4,7 @@ import {
 import * as actions from './actions';
 import * as articulateApi from './api';
 import * as commonActions from '../actions';
+import * as constants from '../../constants';
 
 export function* editGame(api, action) {
     try {
@@ -79,6 +80,18 @@ export function* confirmWinner(api, action) {
     }
 }
 
+export function* startGame(api, action) {
+    try {
+        if (action.mode === constants.gameModes.Articulate) {
+            yield call(api.startArticulateGame, ({
+                gameId: action.gameId
+            }));
+        }
+    } catch (error) {
+        yield put(commonActions.gameError(error, 'Start Game Error'));
+    }
+}
+
 export default function* articulateSaga() {
     yield all([
         takeEvery(actions.EDIT_GAME_REQUEST, editGame, articulateApi),
@@ -87,6 +100,7 @@ export default function* articulateSaga() {
         takeEvery(actions.LOAD_SUMMARY_REQUEST, loadSummary, articulateApi),
         takeEvery(actions.CONFIRM_SCORE_REQUEST, confirmScore, articulateApi),
         takeEvery(actions.SPADE_ROUND_WINNER_REQUEST, confirmSpadeRoundWinner, articulateApi),
-        takeEvery(actions.CONFIRM_WINNER, confirmWinner, articulateApi)
+        takeEvery(actions.CONFIRM_WINNER, confirmWinner, articulateApi),
+        takeEvery(commonActions.START_ANY_GAME_REQUEST, startGame, articulateApi)
     ]);
 }

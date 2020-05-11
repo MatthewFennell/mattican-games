@@ -1,18 +1,14 @@
 const pre = 'OVERVIEW/';
 
-export const CREATE_AVALON_GAME_REQUEST = `${pre}CREATE_AVALON_GAME_REQUEST`;
-export const STOP_CREATE_GAME = `${pre}STOP_CREATE_GAME`;
 export const CREATE_GAME_SUCCESS = `${pre}CREATE_GAME_SUCCESS`;
-
+export const STOP_CREATE_GAME = `${pre}STOP_CREATE_GAME`;
 export const JOIN_GAME_REQUEST = `${pre}JOIN_GAME_REQUEST`;
 export const STOP_JOIN_GAME = `${pre}STOP_JOIN_GAME`;
-
-export const CREATE_HITLER_GAME_REQUEST = `${pre}CREATE_HITLER_GAME_REQUEST`;
-
-export const CREATE_WHO_IN_HAT_GAME_REQUEST = `${pre}CREATE_WHO_IN_HAT_GAME_REQUEST`;
-
 export const JOIN_TEAM_MIDGAME_REQUEST = `${pre}JOIN_TEAM_MIDGAME_REQUEST`;
 
+export const CREATE_AVALON_GAME_REQUEST = `${pre}CREATE_AVALON_GAME_REQUEST`;
+export const CREATE_HITLER_GAME_REQUEST = `${pre}CREATE_HITLER_GAME_REQUEST`;
+export const CREATE_WHO_IN_HAT_GAME_REQUEST = `${pre}CREATE_WHO_IN_HAT_GAME_REQUEST`;
 export const CREATE_ARTICULATE_GAME_REQUEST = `${pre}CREATE_ARTICULATE_GAME_REQUEST`;
 
 export const createAvalonGameRequest = (mode, gameName, numberOfPlayers, roles) => ({

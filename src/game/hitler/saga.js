@@ -4,7 +4,7 @@ import {
 import * as actions from './actions';
 import * as hitlerApi from './api';
 import * as commonActions from '../actions';
-
+import * as constants from '../../constants';
 
 export function* nominateChancellor(api, action) {
     try {
@@ -178,6 +178,19 @@ export function* closeLookAtInvestigation(api, action) {
     }
 }
 
+
+export function* startGame(api, action) {
+    try {
+        if (action.mode === constants.gameModes.Hitler) {
+            yield call(api.startHitlerGame, ({
+                gameId: action.gameId
+            }));
+        }
+    } catch (error) {
+        yield put(commonActions.gameError(error, 'Start Game Error'));
+    }
+}
+
 export default function* whoInHatSaga() {
     yield all([
         takeEvery(actions.NOMINATE_CHANCELLOR_REQUEST, nominateChancellor, hitlerApi),
@@ -196,8 +209,7 @@ export default function* whoInHatSaga() {
         takeEvery(actions.REPLY_TO_VETO_REQUEST, replyToVeto, hitlerApi),
         takeEvery(actions.CLOSE_LOOK_AT_TOP_THREE_REQUEST, closeTopThree, hitlerApi),
         takeEvery(actions.EDIT_HITLER_GAME_REQUEST, editGameHitler, hitlerApi),
-        takeEvery(actions.CLOSE_LOOK_AT_INVESTIGATION_REQUEST, closeLookAtInvestigation, hitlerApi)
-
-
+        takeEvery(actions.CLOSE_LOOK_AT_INVESTIGATION_REQUEST, closeLookAtInvestigation, hitlerApi),
+        takeEvery(commonActions.START_ANY_GAME_REQUEST, startGame, hitlerApi)
     ]);
 }
