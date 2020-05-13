@@ -7,3 +7,4 @@ export const confirmNominations = request => functionToCall('avalon-confirmNomin
 export const makeVote = request => functionToCall('avalon-makeVote')(request);
 export const goOnQuest = request => functionToCall('avalon-goOnQuest')(request);
 export const guessMerlin = request => functionToCall('avalon-guessMerlin')(request);
+export const createAvalonGame = request => functionToCall('avalon-createAvalonGame')(request);

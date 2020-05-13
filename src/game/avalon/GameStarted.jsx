@@ -305,7 +305,7 @@ const GameStarted = props => {
                         [props.styles.isBad]: !helpers.isRoleGood(props.myRole)
                     })}
                     >
-                        {`Role: ${props.myRole}`}
+                        {`Role: ${props.myRole === constants.avalonRoles.RegularGood.name ? 'Regular Good' : props.myRole}`}
                     </div>
                     {generateSecretInfo(props.myRole)}
                 </div>

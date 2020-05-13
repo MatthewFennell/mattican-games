@@ -15,11 +15,13 @@ const RoundSummary = props => {
 
     return (
         <div className={props.styles.roundSummaryWrapper}>
-            <div className={props.styles.timeUp}>
-                {'Time is up!'}
-            </div>
-            <div className={props.styles.confirmWords}>
-                {'Confirm the words you got'}
+            <div className={props.styles.headerWrapper}>
+                <div className={props.styles.timeUp}>
+                    {'Time is up!'}
+                </div>
+                <div className={props.styles.confirmWords}>
+                    {'Confirm the words you got'}
+                </div>
             </div>
 
             <div className={props.styles.wordsGuessed}>

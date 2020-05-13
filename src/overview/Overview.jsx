@@ -6,9 +6,9 @@ import { compose } from 'redux';
 import defaultStyles from './Overview.module.scss';
 import * as constants from '../constants';
 import {
-    createAvalonGameRequest, joinGameRequest, createHiterGameRequest,
-    createWhoInHatGameRequest, joinTeamMidgameRequest,
-    createArticulateGameRequest
+    joinGameRequest,
+    joinTeamMidgameRequest,
+    createGameRequest
 } from './actions';
 import CreateGame from './CreateGame';
 import * as selectors from './selectors';
@@ -17,6 +17,18 @@ import { mapUserIdToName } from '../game/helpers';
 import Spinner from '../common/spinner/Spinner';
 import ErrorModal from '../common/modal/ErrorModal';
 import { closeGameError } from '../game/actions';
+
+const convertToString = items => {
+    let string = '';
+    items.forEach((item, index) => {
+        if (index === items.length - 1) {
+            string += item;
+        } else {
+            string = `${string + item}, `;
+        }
+    });
+    return string;
+};
 
 const Overview = props => {
     // ------------------------- AVALON GAME CREATION ------------------------- //
@@ -48,18 +60,35 @@ const Overview = props => {
 
     const createGame = useCallback(() => {
         if (gameMode === constants.gameModes.Avalon) {
-            props.createAvalonGameRequest(gameMode, gameName,
-                parseInt(numberOfPlayers, 10), activeAvalonRoles);
+            props.createGameRequest(gameMode, {
+                name: gameName,
+                numberOfPlayers: parseInt(numberOfPlayers, 10),
+                roles: activeAvalonRoles
+            });
         }
         if (gameMode === constants.gameModes.Hitler) {
-            props.createHiterGameRequest(gameMode, gameName, parseInt(numberOfPlayers, 10));
+            props.createGameRequest(gameMode, {
+                name: gameName,
+                numberOfPlayers: parseInt(numberOfPlayers, 10)
+            });
         }
         if (gameMode === constants.gameModes.WhosInTheHat) {
-            props.createWhoInHatGameRequest(gameName, skippingRule,
-                isCustomNames, scoreCap, timePerRound);
+            props.createGameRequest(gameMode,
+                {
+                    name: gameName,
+                    skippingRule,
+                    isCustomNames,
+                    scoreCap: parseInt(scoreCap, 10),
+                    timePerRound: parseInt(timePerRound, 10)
+                });
         }
         if (gameMode === constants.gameModes.Articulate) {
-            props.createArticulateGameRequest(gameName, skippingRule, timePerRound, scoreCap);
+            props.createGameRequest(gameMode, {
+                name: gameName,
+                skippingRule,
+                scoreCap: parseInt(scoreCap, 10),
+                timePerRound: parseInt(timePerRound, 10)
+            });
         }
         setMakingGame(false);
 
@@ -82,7 +111,6 @@ const Overview = props => {
             setGameModeToJoin(game.mode);
         }
     }, [setGameToJoin, setGameModeToJoin]);
-
 
     const joinGame = useCallback(() => {
         if (gameModeToJoin === constants.gameModes.WhosInTheHat
@@ -139,27 +167,35 @@ const Overview = props => {
                         key={game.name}
                     >
                         <div className={props.styles.gameName}>
-                            <div>
-                                {`Name: ${game.name}`}
+                            <div className={props.styles.textWrapper}>
+                                <div>Name:</div>
+                                <div className={props.styles.textValue}>
+                                    {game.name}
+                                </div>
                             </div>
                             {game.currentPlayers && game.numberOfPlayers && (
-                                <div>
-                                    {`Number of players: ${game.currentPlayers.length}/${game.numberOfPlayers}` }
+                                <div className={props.styles.textWrapper}>
+                                    <div>Number of players:</div>
+                                    <div className={props.styles.textValue}>
+                                        {`${game.currentPlayers.length}/${game.numberOfPlayers}`}
+                                    </div>
                                 </div>
                             )}
-                            <div>
-                                {`Game Mode: ${game.mode}` }
-                            </div>
-                            {game.mode === constants.gameModes.Avalon && game && game.roles
-                            && (
-                                <div>
-                                    {`Roles: ${game.roles.reduce((acc, cur) => `${acc}, ${cur}`, '')}` }
+
+                            <div className={props.styles.textWrapper}>
+                                <div>Game Mode:</div>
+                                <div className={props.styles.textValue}>
+                                    {game.mode}
                                 </div>
-                            ) }
+                            </div>
                             {game.currentPlayers
                         && (
-                            <div className={props.styles.gameCurrentPlayers}>
-                                {`Current players: ${game.currentPlayers.map(x => mapUserIdToName(game.usernameMappings, x))}`}
+                            <div className={props.styles.textWrapper}>
+                                <div>Current players:</div>
+                                <div className={props.styles.textValue}>
+                                    {convertToString(game.currentPlayers
+                                        .map(x => mapUserIdToName(game.usernameMappings, x)))}
+                                </div>
                             </div>
                         ) }
                             {game.hasStarted && (
@@ -211,10 +247,7 @@ Overview.defaultProps = {
 Overview.propTypes = {
     allGames: PropTypes.arrayOf(PropTypes.shape({})),
     closeGameError: PropTypes.func.isRequired,
-    createArticulateGameRequest: PropTypes.func.isRequired,
-    createAvalonGameRequest: PropTypes.func.isRequired,
-    createHiterGameRequest: PropTypes.func.isRequired,
-    createWhoInHatGameRequest: PropTypes.func.isRequired,
+    createGameRequest: PropTypes.func.isRequired,
     joinTeamMidgameRequest: PropTypes.func.isRequired,
     creatingGame: PropTypes.bool,
     joiningGame: PropTypes.bool,
@@ -227,10 +260,7 @@ Overview.propTypes = {
 
 const mapDispatchToProps = {
     closeGameError,
-    createArticulateGameRequest,
-    createAvalonGameRequest,
-    createHiterGameRequest,
-    createWhoInHatGameRequest,
+    createGameRequest,
     joinGameRequest,
     joinTeamMidgameRequest
 };

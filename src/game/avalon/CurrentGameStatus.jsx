@@ -1,36 +1,29 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import defaultStyles from './CurrentGameStatus.module.scss';
 import * as helpers from '../helpers';
 import * as constants from '../../constants';
 import StyledButton from '../../common/StyledButton/StyledButton';
-import Fade from '../../common/Fade/Fade';
 import GameFinished from './GameFinished';
 import { makeVoteRequest, makeQuestRequest } from './actions';
 
 const CurrentGameStatus = props => {
-    const [makingQuest, setMakingQuest] = useState(false);
-    const toggleMakingQuest = useCallback(() => {
-        setMakingQuest(!makingQuest);
-    }, [makingQuest, setMakingQuest]);
-
     const makeQuest = useCallback(succeed => {
         props.makeQuestRequest(props.currentGameId, succeed);
-        setMakingQuest(false);
         // eslint-disable-next-line
-    }, [setMakingQuest, props.currentGameId]);
+    }, [props.currentGameId]);
 
     const placeVote = useCallback(vote => {
         props.makeVoteRequest(props.currentGameId, vote);
         // eslint-disable-next-line
-    }, [props.currentGameId, setMakingQuest])
+    }, [props.currentGameId])
 
     if (props.currentGame.status === constants.avalonGameStatuses.Nominating) {
         return (
             <div className={props.styles.nominating}>
-                {`${helpers.mapUserIdToName(props.users, props.currentGame.leader)} is currently selecting ${
-                    constants.avalonRounds[props.currentGame.numberOfPlayers][props.currentGame.round]} players to send on a quest`}
+                {props.currentGame.leader === props.auth.uid ? `You are the leader. Select ${constants.avalonRounds[props.currentGame.numberOfPlayers][props.currentGame.round]} players for quest` : `${helpers.mapUserIdToName(props.users, props.currentGame.leader)} is currently selecting ${
+                    constants.avalonRounds[props.currentGame.numberOfPlayers][props.currentGame.round]} players to send on a quest` }
             </div>
         );
     }
@@ -98,31 +91,24 @@ const CurrentGameStatus = props => {
 
         return (
             <div className={props.styles.questingWrapper}>
-                <Fade
-                    checked={makingQuest}
-                    onChange={toggleMakingQuest}
-                    includeCheckbox
-                    label="Go on quest"
-                >
-                    <div className={props.styles.questButtons}>
-                        {props.currentGame.questSuccesses.includes(props.auth.uid)
+                <div className={props.styles.questButtons}>
+                    {props.currentGame.questSuccesses.includes(props.auth.uid)
                         || props.currentGame.questFails.includes(props.auth.uid)
-                            ? <StyledButton text={`Played ${props.currentGame.questSuccesses.includes(props.auth.uid) ? 'Succeed' : 'Fail'}`} disabled /> : (
-                                <>
-                                    <StyledButton
-                                        text="Play Succeed"
-                                        onClick={() => makeQuest(true)}
-                                    />
-                                    <StyledButton
-                                        text="Play Fail"
-                                        color="secondary"
-                                        onClick={() => makeQuest(false)}
-                                        disabled={constants.avalonRoles[props.myRole].isGood}
-                                    />
-                                </>
-                            )}
-                    </div>
-                </Fade>
+                        ? <StyledButton text={`Played ${props.currentGame.questSuccesses.includes(props.auth.uid) ? 'Succeed' : 'Fail'}`} disabled /> : (
+                            <>
+                                <StyledButton
+                                    text="Play Succeed"
+                                    onClick={() => makeQuest(true)}
+                                />
+                                <StyledButton
+                                    text="Play Fail"
+                                    color="secondary"
+                                    onClick={() => makeQuest(false)}
+                                    disabled={constants.avalonRoles[props.myRole].isGood}
+                                />
+                            </>
+                        )}
+                </div>
             </div>
         );
     }

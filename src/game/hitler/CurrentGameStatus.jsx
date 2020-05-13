@@ -115,8 +115,9 @@ const CurrentGameStatus = props => {
     if (props.currentGame.status === constants.hitlerGameStatuses.Nominating) {
         return (
             <div className={props.styles.nominating}>
-                {`${helpers.mapUserIdToName(props.users,
-                    props.currentGame.temporaryPresident || props.currentGame.president)} is currently selecting a chancellor`}
+                {(props.currentGame.temporaryPresident || props.currentGame.president) === props.auth.uid
+                    ? 'You are the President. Select a Chancellor' : `${helpers.mapUserIdToName(props.users,
+                        props.currentGame.temporaryPresident || props.currentGame.president)} is currently selecting a chancellor`}
             </div>
         );
     }
@@ -124,7 +125,8 @@ const CurrentGameStatus = props => {
     if (props.currentGame.status === constants.hitlerGameStatuses.TemporaryPresident) {
         return (
             <div className={props.styles.nominating}>
-                {`${helpers.mapUserIdToName(props.users, props.currentGame.temporaryPresident)} is currently selecting a chancellor`}
+                {(props.currentGame.temporaryPresident || props.currentGame.president) === props.auth.uid
+                    ? 'You are the President. Select a Chancellor' : `${helpers.mapUserIdToName(props.users, props.currentGame.temporaryPresident)} is currently selecting a chancellor`}
             </div>
         );
     }
@@ -132,8 +134,9 @@ const CurrentGameStatus = props => {
     if (props.currentGame.status === constants.hitlerGameStatuses.Kill) {
         return (
             <div className={props.styles.nominating}>
-                {`${helpers.mapUserIdToName(props.users,
-                    props.currentGame.temporaryPresident || props.currentGame.president)} is currently choosing who to kill`}
+                {(props.currentGame.temporaryPresident || props.currentGame.president) === props.auth.uid
+                    ? 'You are the President. Kill somebody!' : `${helpers.mapUserIdToName(props.users,
+                        props.currentGame.temporaryPresident || props.currentGame.president)} is currently choosing who to kill`}
             </div>
         );
     }
@@ -266,7 +269,7 @@ const CurrentGameStatus = props => {
                         checked={selectingChancellorCard}
                         onChange={toggleChancellorSelectingCards}
                         includeCheckbox
-                        label="Select cards"
+                        label="Select card"
                     >
                         <div className={props.styles.allPresidentCards}>
                             {chancellorCards.map((card, index) => (
@@ -321,7 +324,7 @@ const CurrentGameStatus = props => {
     if (props.currentGame.status === constants.hitlerGameStatuses.Investigate) {
         return (
             <div className={props.styles.investigating}>
-                {`${helpers.mapUserIdToName(props.users, props.currentGame.president)} 
+                {props.currentGame.president === props.auth.uid ? 'Select a player to investigate' : `${helpers.mapUserIdToName(props.users, props.currentGame.president)} 
                 is currently selecting whose identity card to look at`}
             </div>
         );
@@ -330,7 +333,7 @@ const CurrentGameStatus = props => {
     if (props.currentGame.status === constants.hitlerGameStatuses.Transfer) {
         return (
             <div className={props.styles.investigating}>
-                {`${helpers.mapUserIdToName(props.users, props.currentGame.president)} 
+                {props.currentGame.president === props.auth.uid ? 'Select a player to make president' : `${helpers.mapUserIdToName(props.users, props.currentGame.president)} 
                 is currently selecting who to make a temporary President`}
             </div>
         );

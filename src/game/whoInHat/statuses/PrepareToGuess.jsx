@@ -39,30 +39,37 @@ const PrepareToGuess = props => {
 
     return (
         <div className={props.styles.prepareToGuessWrapper}>
-            <div className={props.styles.prepareToGuessHeader}>
-                {`Next team: ${props.currentGame.activeTeam}`}
-            </div>
-            <div className={props.styles.remainingWords}>
-                {`Remaining cards: ${remainingCards(props.currentGame)}`}
-            </div>
-            {props.auth.uid !== props.currentGame.activeExplainer
+            <div className={props.styles.infoWrapper}>
+                <div className={props.styles.teamText}>
+                    <div>Team:</div>
+                    <div className={props.styles.teamValue}>
+                        {props.currentGame.activeTeam}
+                    </div>
+                </div>
+                <div className={props.styles.teamText}>
+                    <div>Remaining cards::</div>
+                    <div className={props.styles.teamValue}>
+                        {remainingCards(props.currentGame)}
+                    </div>
+                </div>
+                {props.auth.uid !== props.currentGame.activeExplainer
         && (
             <div className={props.styles.waitingToStart}>
                 {`Waiting for ${helpers.mapUserIdToName(props.users, props.currentGame.activeExplainer)} to start`}
             </div>
         )}
 
-            <div className={props.styles.buttonsWrapper}>
-                {props.auth.uid === props.currentGame.activeExplainer && (
-                    <div className={props.styles.startRoundButton}>
-                        <StyledButton
-                            onClick={() => props.startWhoInHatRoundRequest(props.currentGameId)}
-                            text="Start round"
-                        />
-                    </div>
-                )}
+                <div className={props.styles.buttonsWrapper}>
+                    {props.auth.uid === props.currentGame.activeExplainer && (
+                        <div className={props.styles.startRoundButton}>
+                            <StyledButton
+                                onClick={() => props.startWhoInHatRoundRequest(props.currentGameId)}
+                                text="Start round"
+                            />
+                        </div>
+                    )}
 
-                {teamHasOnlyMe(props.currentGame, props.auth.uid) && (
+                    {teamHasOnlyMe(props.currentGame, props.auth.uid) && (
                     <>
                         <div className={props.styles.joinTeamNewTeamButton}>
                             <StyledButton
@@ -80,7 +87,8 @@ const PrepareToGuess = props => {
                             onConfirm={joinTeam}
                         />
                     </>
-                )}
+                    )}
+                </div>
             </div>
 
             <div className={props.styles.viewTeamsWrapper}>

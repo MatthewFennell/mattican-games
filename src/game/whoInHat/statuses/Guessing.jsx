@@ -133,10 +133,8 @@ const Guessing = props => {
 
     return (
         Math.round(timeUntil) > 0 ? (
+        // true ? (
             <div className={props.styles.guessingWrapper}>
-                <div className={props.styles.remainingWordsInPool}>
-                    {`Remaining cards: ${remainingCards(props.currentGame)}`}
-                </div>
                 {isActiveExplainerOnMyTeam(props.currentGame, props.auth.uid)
                 && (
                     <div className={props.styles.guessingHeader}>
@@ -149,31 +147,60 @@ const Guessing = props => {
                     {Math.round(timeUntil)}
                 </div>
 
-                {isActiveExplainerOnMyTeam(props.currentGame, props.auth.uid) && (
-                    <div className={props.styles.guessDescribedWord}>
-                        {'Guess the word being described!'}
+                <div className={props.styles.infoWrapper}>
+                    <div className={props.styles.textWrapper}>
+                        <div>Team:</div>
+                        <div className={props.styles.textValue}>
+                            {props.currentGame.activeTeam}
+                        </div>
                     </div>
-                ) }
+
+                    <div className={props.styles.textWrapper}>
+                        <div>Explainer:</div>
+                        <div className={props.styles.textValue}>
+                            {helpers.mapUserIdToName(props.users,
+                                props.currentGame.activeExplainer)}
+                        </div>
+                    </div>
+
+                    {isActiveExplainerOnMyTeam(props.currentGame, props.auth.uid) && (
+                        <div className={props.styles.guessDescribedWord}>
+                            {'Guess the word being described!'}
+                        </div>
+                    ) }
+
+                    <div className={props.styles.textWrapper}>
+                        <div>Remaining cards:</div>
+                        <div className={props.styles.textValue}>
+                            {remainingCards(props.currentGame)}
+                        </div>
+                    </div>
+
+
+                    {!isActiveExplainerOnMyTeam(props.currentGame, props.auth.uid)
+                 && props.auth.uid !== props.currentGame.activeExplainer
+                 && (
+                     <div className={props.styles.otherTeamGuessingMessage}>
+                         {'Shh! Other team is guessing'}
+                     </div>
+                 )}
+
+                </div>
 
                 {!isActiveExplainerOnMyTeam(props.currentGame, props.auth.uid)
                  && props.auth.uid !== props.currentGame.activeExplainer
                  && (
-                     <div className={props.styles.viewTeamsWrapper}>
-                         <div className={props.styles.otherTeamGuessingMessage}>
-                             {'Shh! Other team is guessing'}
-                         </div>
-                         <div className={props.styles.otherCardsWrapper}>
-                             <Fade
-                                 checked={viewingOtherTeamWord}
-                                 onChange={toggleViewingOtherTeamWord}
-                                 includeCheckbox
-                                 label="View word being described"
-                             >
-                                 <div className={props.styles.viewOtherTeamWordWrapper}>
-                                     {words[props.currentGame.currentWordIndex]}
-                                 </div>
-                             </Fade>
-                         </div>
+                     <div className={props.styles.otherCardsWrapper}>
+                         <Fade
+                             checked={viewingOtherTeamWord}
+                             onChange={toggleViewingOtherTeamWord}
+                             includeCheckbox
+                             label="View word being described"
+                         >
+                             <div className={props.styles.viewOtherTeamWordWrapper}>
+                                 {words[props.currentGame.currentWordIndex]}
+                             </div>
+                         </Fade>
                      </div>
                  ) }
 
@@ -183,46 +210,48 @@ const Guessing = props => {
                             {viewingSkippedWord ? skippedWord : words[currentWordIndex] || 'No cards left'}
                         </div>
 
-                        <div className={props.styles.buttonOptions}>
-                            <div className={props.styles.unlimitedSkip}>
-                                <StyledButton
-                                    disabled={isSkippingDisabled(
-                                        props.currentGame.skippingRule, skippedWord
-                                    )}
-                                    onClick={skipWord}
-                                    text="Skip word"
-                                />
-                            </div>
+                        <div className={props.styles.allButtonsWrapper}>
+                            <div className={props.styles.buttonOptions}>
+                                <div className={props.styles.unlimitedSkip}>
+                                    <StyledButton
+                                        disabled={isSkippingDisabled(
+                                            props.currentGame.skippingRule, skippedWord
+                                        )}
+                                        onClick={skipWord}
+                                        text="Skip word"
+                                    />
+                                </div>
 
-                            <div className={props.styles.trashWord}>
-                                <StyledButton
-                                    onClick={trashWord}
-                                    text="Trash word"
-                                />
-                            </div>
-                        </div>
-
-                        <div className={props.styles.gotWord}>
-                            <StyledButton
-                                onClick={gotWord}
-                                text="Got it!"
-                            />
-                        </div>
-
-                        {props.currentGame.skippingRule === constants.whoInHatSkipping.OneSkip.split(' ')
-                            .join('') && skippedWord && (
-                            <div
-                                className={props.styles.skippedWord}
-                                tabIndex={0}
-                                role="button"
-                                onClick={swapSkippedWord}
-                            >
-                                {viewingSkippedWord ? `Original word: ${words[currentWordIndex]}` : `Skipped word : ${skippedWord}`}
-                                <div className={props.styles.swapBackMessage}>
-                                    (Touch to swap)
+                                <div className={props.styles.trashWord}>
+                                    <StyledButton
+                                        onClick={trashWord}
+                                        text="Trash word"
+                                    />
                                 </div>
                             </div>
-                        )}
+
+                            <div className={props.styles.gotWord}>
+                                <StyledButton
+                                    onClick={gotWord}
+                                    text="Got it!"
+                                />
+                            </div>
+
+                            {props.currentGame.skippingRule === constants.whoInHatSkipping.OneSkip.split(' ')
+                                .join('') && skippedWord && (
+                                <div
+                                    className={props.styles.skippedWord}
+                                    tabIndex={0}
+                                    role="button"
+                                    onClick={swapSkippedWord}
+                                >
+                                    {viewingSkippedWord ? `Original word: ${words[currentWordIndex]}` : `Skipped word : ${skippedWord}`}
+                                    <div className={props.styles.swapBackMessage}>
+                                    (Touch to swap)
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 ) }
                 <div className={props.styles.viewTeamsWrapper}>

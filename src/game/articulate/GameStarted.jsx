@@ -15,6 +15,7 @@ import RoundSummary from './statuses/RoundSummary';
 import Guessing from './statuses/Guessing';
 import GameFinished from './statuses/GameFinished';
 import JoinTeamModal from '../common/JoinTeamModal';
+import defaultStyles from './GameStarted.module.scss';
 
 import {
     confirmScoreRequest, startGameRequest,
@@ -107,6 +108,9 @@ const GameStarted = props => {
 
     return (
         <>
+            <div className={props.styles.gameTitle}>
+                {constants.gameModes.Articulate}
+            </div>
             {generateComponent()}
             <JoinTeamModal
                 isOpen={props.currentGame.waitingToJoinTeam.includes(props.auth.uid)
@@ -130,7 +134,8 @@ GameStarted.defaultProps = {
         waitingToJoinTeam: []
     },
     currentGameId: '',
-    users: {}
+    users: {},
+    styles: defaultStyles
 };
 
 GameStarted.propTypes = {
@@ -149,6 +154,7 @@ GameStarted.propTypes = {
     skipWordRequest: PropTypes.func.isRequired,
     trashWordRequest: PropTypes.func.isRequired,
     spadeRoundWinnerRequest: PropTypes.func.isRequired,
+    styles: PropTypes.objectOf(PropTypes.string),
 
     auth: PropTypes.shape({
         uid: PropTypes.string

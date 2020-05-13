@@ -37,7 +37,6 @@
 .currentLeaderWrapper {
     text-align: center;
     color: $color-blue;
-    margin-bottom: $spacing-small;
     font-weight: bold;;
 }
 
@@ -223,9 +222,10 @@
 
 .guessingMerlinWrapper {
     text-align: center;
-    background-color: $color-amber;
+    background-color: aquamarine;
     margin: $spacing-small;
     padding: $spacing-small;
+    border-radius: $spacing-small;
 }
 
 .submitMerlinGuessWrapper {

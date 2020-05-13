@@ -10,7 +10,7 @@ const db = admin.firestore();
 
 const operations = admin.firestore.FieldValue;
 
-exports.leaveMidgame = functions
+exports.leaveUnconstrainedMidgame = functions
     .region(constants.region)
     .https.onCall((data, context) => {
         common.isAuthenticated(context);
@@ -292,11 +292,11 @@ exports.leaveMidgame = functions
                 throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
             }
 
-            if (doc.data().status === constants.avalonGameStatuses.Finished || !doc.data().hasStarted) {
-                if (doc.data().currentPlayers.length === 1) {
-                    return doc.ref.delete();
-                }
+            if (doc.data().currentPlayers.length === 1) {
+                return doc.ref.delete();
+            }
 
+            if (doc.data().status === constants.avalonGameStatuses.Finished || !doc.data().hasStarted) {
                 return doc.ref.update({
                     currentPlayers: operations.arrayRemove(context.auth.uid),
                     host: doc.data().currentPlayers.find(x => x !== context.auth.uid)

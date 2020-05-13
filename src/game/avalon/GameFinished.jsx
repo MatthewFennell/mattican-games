@@ -17,7 +17,10 @@ const GameFinished = props => {
                     </div>
                     <div className={props.styles.allRolesWrapper}>
                         {props.currentGame.playerRoles.map(r => (
-                            <div key={r.player}>{`${helpers.mapUserIdToName(props.users, r.player)} was ${r.role}`}</div>
+                            <div key={r.player}>
+                                {`${helpers.mapUserIdToName(props.users, r.player)} 
+                            was ${r.role === 'RegularGood' ? 'Regular Good' : r.role}`}
+                            </div>
                         ))}
                     </div>
                 </div>
@@ -37,7 +40,11 @@ const GameFinished = props => {
                 <div className={props.styles.goodGuysHeader}>The loyal servants of Arthur won</div>
                 <div className={props.styles.allRolesWrapper}>
                     {props.currentGame.playerRoles.map(r => (
-                        <div>{`${helpers.mapUserIdToName(props.users, r.player)} was ${r.role}`}</div>
+                        <div>
+                            {`${helpers.mapUserIdToName(props.users, r.player)}
+                         was ${r.role === 'RegularGood' ? 'Regular Good' : r.role}`}
+
+                        </div>
                     ))}
                 </div>
             </div>

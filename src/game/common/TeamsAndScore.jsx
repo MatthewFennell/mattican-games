@@ -6,7 +6,7 @@ import defaultStyles from './TeamsAndScore.module.scss';
 import * as helpers from '../helpers';
 
 const TeamsAndScore = props => (
-    props.currentGame.teams.map((team, index) => (
+    props.currentGame.teams.slice().sort(props.sortingMethod).map((team, index) => (
         <div
             className={classNames({
                 [props.styles.teamWrapper]: true,
@@ -42,6 +42,7 @@ TeamsAndScore.defaultProps = {
     },
     onTeamClick: noop,
     showScore: false,
+    sortingMethod: noop,
     styles: defaultStyles,
     users: {}
 };
@@ -59,6 +60,7 @@ TeamsAndScore.propTypes = {
     }),
     onTeamClick: PropTypes.func,
     showScore: PropTypes.bool,
+    sortingMethod: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})
 };

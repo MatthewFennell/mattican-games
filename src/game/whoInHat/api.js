@@ -7,3 +7,4 @@ export const startWhoInHatRound = request => functionToCall('whoInHat-startRound
 export const editGameWhoInHat = request => functionToCall('whoInHat-editGame')(request);
 export const loadSummary = request => functionToCall('whoInHat-loadSummary')(request);
 export const confirmScore = request => functionToCall('whoInHat-confirmScore')(request);
+export const createWhoInHatGame = request => functionToCall('whoInHat-createGame')(request);

@@ -5,6 +5,7 @@ import * as actions from './actions';
 import * as avalonApi from './api';
 import * as commonActions from '../actions';
 import * as constants from '../../constants';
+import * as overviewActions from '../../overview/actions';
 
 export function* editGameAvalon(api, action) {
     try {
@@ -91,6 +92,21 @@ export function* startGame(api, action) {
     }
 }
 
+export function* createGame(api, action) {
+    try {
+        if (action.mode === constants.gameModes.Avalon) {
+            yield call(api.createAvalonGame, ({
+                name: action.gameInfo.name,
+                numberOfPlayers: action.gameInfo.numberOfPlayers,
+                roles: action.gameInfo.roles
+            }));
+            yield put(overviewActions.createGameSuccess());
+        }
+    } catch (error) {
+        yield put(overviewActions.stopCreateGame());
+        yield put(commonActions.gameError(error, 'Create Game Error'));
+    }
+}
 
 export default function* whoInHatSaga() {
     yield all([
@@ -100,6 +116,7 @@ export default function* whoInHatSaga() {
         takeEvery(actions.MAKE_AVALON_VOTE_REQUEST, makeVote, avalonApi),
         takeEvery(actions.GUESS_MERLIN_REQUEST, guessMerlin, avalonApi),
         takeEvery(actions.MAKE_QUEST_REQUEST, goOnQuest, avalonApi),
-        takeEvery(commonActions.START_ANY_GAME_REQUEST, startGame, avalonApi)
+        takeEvery(commonActions.START_ANY_GAME_REQUEST, startGame, avalonApi),
+        takeEvery(overviewActions.CREATE_GAME_REQUEST, createGame, avalonApi)
     ]);
 }

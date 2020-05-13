@@ -15,3 +15,4 @@ export const confirmWord = request => functionToCall('shared-confirmWord')(reque
 export const sharedLeaveMidgame = request => functionToCall('shared-leaveMidgame')(request);
 export const joinTeamMidgame = request => functionToCall('shared-joinTeamMidgame')(request);
 export const randomiseTeams = request => functionToCall('shared-randomiseTeams')(request);
+export const leaveUnconstrainedMidgame = request => functionToCall('shared-leaveUnconstrainedMidgame')(request);

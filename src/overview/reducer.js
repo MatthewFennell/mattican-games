@@ -25,13 +25,7 @@ const overviewReducer = (state = initialState, action) => {
             joiningGame: false
         };
     }
-    case actions.CREATE_AVALON_GAME_REQUEST: {
-        return {
-            ...state,
-            creatingGame: true
-        };
-    }
-    case actions.CREATE_HITLER_GAME_REQUEST: {
+    case actions.CREATE_GAME_REQUEST: {
         return {
             ...state,
             creatingGame: true

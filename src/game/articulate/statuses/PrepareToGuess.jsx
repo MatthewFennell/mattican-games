@@ -14,7 +14,7 @@ const PrepareToGuess = props => {
     }, [viewingTeams, setViewingTeams]);
 
     return (
-        <div className={props.styles.prepareToGuessWrapper}>
+        <>
             <div className={props.styles.roundInfoWrapper}>
                 {props.currentGame.isSpadeRound || props.currentGame.isFinalRound ? (
                     <div className={props.styles.teamText}>
@@ -81,7 +81,7 @@ const PrepareToGuess = props => {
                     />
                 </Fade>
             </div>
-        </div>
+        </>
     );
 };
 

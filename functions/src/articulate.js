@@ -181,14 +181,14 @@ exports.start = functions
                     Action: fp.shuffle(words.Action),
                     Spade: fp.shuffle(words.Spade)
                 },
-                teams: fp.shuffle(remainingTeams.map(team => (team.name === firstTeamName ? {
+                teams: remainingTeams.map(team => (team.name === firstTeamName ? {
                     ...team,
                     members: fp.shuffle(team.members),
                     previousExplainer: firstExplainer
                 } : ({
                     ...team,
                     members: fp.shuffle(team.members)
-                })))),
+                }))),
                 status: constants.articulateGameStatuses.PrepareToGuess,
                 waitingToJoinTeam: []
             });

@@ -18,8 +18,11 @@
 }
 
 .gameWrapper {
-  margin: $spacing-small;
-  background-color: $color-separator;
+  margin: $spacing-medium;
+  margin-top: $spacing-small;
+  padding: $spacing-small;
+  background-color: khaki;
+  border-radius: $spacing-small;
   cursor: pointer;
 }
 
@@ -28,10 +31,6 @@
   color: $color-blue;
   font-size: $font-size-medium;
   font-weight: bold;
-
-  > div {
-    padding: $spacing-tiny;
-  }
 }
 
 .gameCurrentPlayers {
@@ -42,4 +41,19 @@
 
 .joiningGame {
   text-align: center;
+}
+
+.textWrapper {
+  text-align: center;
+  color: $color-green;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  font-size: $font-size-medium;
+  flex-wrap: wrap;
+}
+
+.textValue {
+  color: $color-black;
+  margin-left: 4px;
 }

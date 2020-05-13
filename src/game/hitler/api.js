@@ -17,3 +17,4 @@ export const replyToVeto = request => functionToCall('hitler-replyToVeto')(reque
 export const closeTopThree = request => functionToCall('hitler-closeTopThree')(request);
 export const editGameHitler = request => functionToCall('hitler-editGameHitler')(request);
 export const closeInvestigation = request => functionToCall('hitler-closeInvestigation')(request);
+export const createHitlerGame = request => functionToCall('hitler-createHitlerGame')(request);

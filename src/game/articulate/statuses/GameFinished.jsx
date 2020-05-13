@@ -10,11 +10,17 @@ const sortingMethod = (a, b) => (b.score - a.score !== 0
 
 const GameFinished = props => (
     <div className={props.styles.gameFinishedWrapper}>
-        <div className={props.styles.gameFinishedHeader}>
-            {'Game finished'}
-        </div>
-        <div className={props.styles.winningTeam}>
-            {`Winning team - ${props.currentGame.winningTeam}`}
+        <div className={props.styles.gameFinishedInfoWrapper}>
+            <div className={props.styles.gameFinishedValue}>
+                <div>Game Finished</div>
+            </div>
+
+            <div className={props.styles.teamText}>
+                <div>Winners:</div>
+                <div className={props.styles.teamValue}>
+                    {props.currentGame.winningTeam}
+                </div>
+            </div>
         </div>
 
         <TeamsAndScore
@@ -63,7 +69,7 @@ GameFinished.propTypes = {
         activeExplainer: PropTypes.string,
         activeTeam: PropTypes.string,
         finishTime: PropTypes.string,
-        words: PropTypes.arrayOf(PropTypes.string),
+        words: PropTypes.shape({}),
         host: PropTypes.string,
         isCustomNames: PropTypes.bool,
         status: PropTypes.string,

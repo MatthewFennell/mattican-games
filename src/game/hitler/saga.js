@@ -5,6 +5,7 @@ import * as actions from './actions';
 import * as hitlerApi from './api';
 import * as commonActions from '../actions';
 import * as constants from '../../constants';
+import * as overviewActions from '../../overview/actions';
 
 export function* nominateChancellor(api, action) {
     try {
@@ -191,6 +192,21 @@ export function* startGame(api, action) {
     }
 }
 
+export function* createGame(api, action) {
+    try {
+        if (action.mode === constants.gameModes.Hitler) {
+            yield call(api.createHitlerGame, ({
+                name: action.gameInfo.name,
+                numberOfPlayers: action.gameInfo.numberOfPlayers
+            }));
+            yield put(overviewActions.createGameSuccess());
+        }
+    } catch (error) {
+        yield put(overviewActions.stopCreateGame());
+        yield put(commonActions.gameError(error, 'Create Game Error'));
+    }
+}
+
 export default function* whoInHatSaga() {
     yield all([
         takeEvery(actions.NOMINATE_CHANCELLOR_REQUEST, nominateChancellor, hitlerApi),
@@ -210,6 +226,7 @@ export default function* whoInHatSaga() {
         takeEvery(actions.CLOSE_LOOK_AT_TOP_THREE_REQUEST, closeTopThree, hitlerApi),
         takeEvery(actions.EDIT_HITLER_GAME_REQUEST, editGameHitler, hitlerApi),
         takeEvery(actions.CLOSE_LOOK_AT_INVESTIGATION_REQUEST, closeLookAtInvestigation, hitlerApi),
-        takeEvery(commonActions.START_ANY_GAME_REQUEST, startGame, hitlerApi)
+        takeEvery(commonActions.START_ANY_GAME_REQUEST, startGame, hitlerApi),
+        takeEvery(overviewActions.CREATE_GAME_REQUEST, createGame, hitlerApi)
     ]);
 }

@@ -145,9 +145,9 @@ export function* confirmWord(api, action) {
     }
 }
 
-export function* leaveWhoInHatGame(api, action) {
+export function* leaveUnconstrainedGame(api, action) {
     try {
-        yield call(api.sharedLeaveMidgame, ({
+        yield call(api.leaveUnconstrainedMidgame, ({
             gameId: action.gameId
         }));
     } catch (error) {
@@ -193,7 +193,7 @@ export default function* overviewSaga() {
         takeEvery(actions.SKIP_WORD_WHO_IN_HAT_REQUEST, skipWord, gameApi),
         takeEvery(actions.TRASH_WORD_WHO_IN_HAT_REQUEST, trashWord, gameApi),
         takeEvery(actions.SET_WORD_CONFIRMED_REQUEST, confirmWord, gameApi),
-        takeEvery(actions.LEAVE_UNCONSTRAINED_GAME_REQUEST, leaveWhoInHatGame, gameApi),
+        takeEvery(actions.LEAVE_UNCONSTRAINED_GAME_REQUEST, leaveUnconstrainedGame, gameApi),
         takeEvery(actions.JOIN_TEAM_MIDGAME_REQUEST, joinTeamMidgame, gameApi),
         takeEvery(actions.RANDOMISE_TEAMS_REQUEST, randomiseTeams, gameApi)
     ]);

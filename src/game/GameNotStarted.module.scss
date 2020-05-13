@@ -195,6 +195,9 @@
     color: $color-gray;
 }
 
+.waitingForPlayersToJoin {
+    margin-bottom: $spacing-medium;
+}
 
 .profilePicture {
     height: 40px;
@@ -209,6 +212,7 @@
     margin: $spacing-small;
     background-color: cadetblue;
     border-radius: $spacing-small;
+    margin-bottom: $spacing-medium;
 }
 
 .goodGuyRoles, .badGuyRoles {

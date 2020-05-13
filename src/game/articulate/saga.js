@@ -5,6 +5,7 @@ import * as actions from './actions';
 import * as articulateApi from './api';
 import * as commonActions from '../actions';
 import * as constants from '../../constants';
+import * as overviewActions from '../../overview/actions';
 
 export function* editGame(api, action) {
     try {
@@ -92,6 +93,23 @@ export function* startGame(api, action) {
     }
 }
 
+export function* createGame(api, action) {
+    try {
+        if (action.mode === constants.gameModes.Articulate) {
+            yield call(api.createArticulateGame, ({
+                name: action.gameInfo.name,
+                skippingRule: action.gameInfo.skippingRule,
+                timePerRound: action.gameInfo.timePerRound,
+                scoreCap: action.gameInfo.scoreCap
+            }));
+            yield put(overviewActions.createGameSuccess());
+        }
+    } catch (error) {
+        yield put(overviewActions.stopCreateGame());
+        yield put(commonActions.gameError(error, 'Create Game Error'));
+    }
+}
+
 export default function* articulateSaga() {
     yield all([
         takeEvery(actions.EDIT_GAME_REQUEST, editGame, articulateApi),
@@ -101,6 +119,7 @@ export default function* articulateSaga() {
         takeEvery(actions.CONFIRM_SCORE_REQUEST, confirmScore, articulateApi),
         takeEvery(actions.SPADE_ROUND_WINNER_REQUEST, confirmSpadeRoundWinner, articulateApi),
         takeEvery(actions.CONFIRM_WINNER, confirmWinner, articulateApi),
-        takeEvery(commonActions.START_ANY_GAME_REQUEST, startGame, articulateApi)
+        takeEvery(commonActions.START_ANY_GAME_REQUEST, startGame, articulateApi),
+        takeEvery(overviewActions.CREATE_GAME_REQUEST, createGame, articulateApi)
     ]);
 }
