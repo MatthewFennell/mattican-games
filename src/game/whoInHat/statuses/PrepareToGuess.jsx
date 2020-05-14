@@ -2,10 +2,23 @@ import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
 import defaultStyles from './PrepareToGuess.module.scss';
-import * as helpers from '../helpers';
-import TeamsAndScore from '../whoInHat/TeamsAndScore';
-import Fade from '../../common/Fade/Fade';
-import StyledButton from '../../common/StyledButton/StyledButton';
+import * as helpers from '../../helpers';
+import TeamsAndScore from '../../common/TeamsAndScore';
+import Fade from '../../../common/Fade/Fade';
+import StyledButton from '../../../common/StyledButton/StyledButton';
+import { remainingCards } from './Guessing';
+import JoinTeamModal from '../../common/JoinTeamModal';
+
+const teamHasOnlyMe = (game, myId) => {
+    if (!game || !game.teams) {
+        return false;
+    }
+    const myTeam = game.teams.find(team => team.members && team.members.includes(myId));
+    if (!myTeam) {
+        return false;
+    }
+    return myTeam.members && myTeam.members.length === 1;
+};
 
 const PrepareToGuess = props => {
     const [viewingTeams, setViewingTeams] = useState(false);
@@ -13,55 +26,67 @@ const PrepareToGuess = props => {
         setViewingTeams(!viewingTeams);
     }, [viewingTeams, setViewingTeams]);
 
+    const [joiningNewTeam, setJoiningNewTeam] = useState(false);
+    const [teamToJoin, setTeamToJoin] = useState('');
+
+    const joinTeam = useCallback(() => {
+        props.joinTeamMidgameRequest(props.currentGameId, teamToJoin);
+        setJoiningNewTeam(false);
+        setTeamToJoin('');
+        // eslint-disable-next-line
+    }, [teamToJoin, props.joinTeamMidgameRequest, props.currentGameId])
+
+
     return (
         <div className={props.styles.prepareToGuessWrapper}>
-            <div className={props.styles.roundInfoWrapper}>
-                {props.currentGame.isSpadeRound || props.currentGame.isFinalRound ? (
-                    <div className={props.styles.teamText}>
-                        {'All teams play this round!'}
-                    </div>
-                )
-                    : (
-                        <div className={props.styles.teamText}>
-                            <div>Team:</div>
-                            <div className={props.styles.teamValue}>
-                                {props.currentGame.temporaryTeam || props.currentGame.activeTeam}
-                            </div>
-                        </div>
-                    )}
+            <div className={props.styles.infoWrapper}>
                 <div className={props.styles.teamText}>
-                    <div>Category:</div>
+                    <div>Team:</div>
                     <div className={props.styles.teamValue}>
-                        {props.currentGame.activeCategory}
+                        {props.currentGame.activeTeam}
                     </div>
                 </div>
-                {props.currentGame.temporaryTeam && (
-                    <div className={props.styles.bonusRound}>
-                        {'Bonus round'}
+                <div className={props.styles.teamText}>
+                    <div>Remaining cards::</div>
+                    <div className={props.styles.teamValue}>
+                        {remainingCards(props.currentGame)}
                     </div>
-                )}
+                </div>
                 {props.auth.uid !== props.currentGame.activeExplainer
         && (
             <div className={props.styles.waitingToStart}>
                 {`Waiting for ${helpers.mapUserIdToName(props.users, props.currentGame.activeExplainer)} to start`}
             </div>
         )}
-                {props.currentGame.isFinalRound && (
-                    <div className={props.styles.winningMessage}>
-                        {`${props.currentGame.activeTeam} will win the game if they win this round!`}
-                    </div>
-                )}
 
                 <div className={props.styles.buttonsWrapper}>
                     {props.auth.uid === props.currentGame.activeExplainer && (
                         <div className={props.styles.startRoundButton}>
                             <StyledButton
-                                onClick={() => props.startArticulateRoundRequest(
-                                    props.currentGameId
-                                )}
+                                onClick={() => props.startWhoInHatRoundRequest(props.currentGameId)}
                                 text="Start round"
                             />
                         </div>
+                    )}
+
+                    {teamHasOnlyMe(props.currentGame, props.auth.uid) && (
+                    <>
+                        <div className={props.styles.joinTeamNewTeamButton}>
+                            <StyledButton
+                                onClick={() => setJoiningNewTeam(true)}
+                                text="Join New Team"
+                            />
+                        </div>
+                        <JoinTeamModal
+                            closeModal={() => setJoiningNewTeam(false)}
+                            isOpen={joiningNewTeam}
+                            onChange={setTeamToJoin}
+                            value={teamToJoin}
+                            teams={props.currentGame.teams.filter(team => !team.members
+                                .includes(props.auth.uid))}
+                            onConfirm={joinTeam}
+                        />
+                    </>
                     )}
                 </div>
             </div>
@@ -90,20 +115,17 @@ PrepareToGuess.defaultProps = {
         uid: ''
     },
     currentGame: {
-        activeCategory: '',
         activeExplainer: '',
         activeTeam: '',
         finishTime: '',
-        isFinalRound: false,
-        isSpadeRound: false,
-        words: {},
+        words: [],
         host: '',
         isCustomNames: false,
-        teams: [],
-        temporaryTeam: ''
+        teams: []
     },
     currentGameId: '',
-    startArticulateRoundRequest: noop,
+    joinTeamMidgameRequest: noop,
+    startWhoInHatRoundRequest: noop,
     styles: defaultStyles,
     users: {}
 };
@@ -113,24 +135,21 @@ PrepareToGuess.propTypes = {
         uid: PropTypes.string
     }),
     currentGame: PropTypes.shape({
-        activeCategory: PropTypes.string,
         activeExplainer: PropTypes.string,
         activeTeam: PropTypes.string,
         finishTime: PropTypes.string,
-        isFinalRound: PropTypes.bool,
-        isSpadeRound: PropTypes.bool,
-        words: PropTypes.shape({}),
+        words: PropTypes.arrayOf(PropTypes.string),
         host: PropTypes.string,
         isCustomNames: PropTypes.bool,
         teams: PropTypes.arrayOf(PropTypes.shape({
             members: PropTypes.arrayOf(PropTypes.string),
             name: PropTypes.string,
             score: PropTypes.number
-        })),
-        temporaryTeam: PropTypes.string
+        }))
     }),
     currentGameId: PropTypes.string,
-    startArticulateRoundRequest: PropTypes.func,
+    joinTeamMidgameRequest: PropTypes.func,
+    startWhoInHatRoundRequest: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})
 };

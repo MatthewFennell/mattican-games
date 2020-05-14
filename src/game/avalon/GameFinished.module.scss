@@ -16,7 +16,12 @@
 
 .finalPlayerRoles {
     text-align: center;
+    color: $color-green;
     font-weight: bold;
+    margin: $spacing-small;
+    padding: $spacing-small;
+    background-color: moccasin;
+    border-radius: $spacing-small;
 }
 
 .guessedMerlin {
@@ -32,4 +37,5 @@
     margin: $spacing-small;
     padding: $spacing-small;
     background-color: moccasin;
+    border-radius: $spacing-small;
 }

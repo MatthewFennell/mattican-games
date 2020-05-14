@@ -1,4 +1,4 @@
-@import "../../common/Styles.scss";
+@import "../../../common/Styles.scss";
 
 .timeUp {
     font-size: $font-size-medium;
@@ -35,14 +35,6 @@
     border-radius: $spacing-small;
 }
 
-.headerWrapper {
-    margin: $spacing-medium;
-    margin-bottom: $spacing-small;
-    padding: $spacing-small;
-    background-color: gold;
-    border-radius: $spacing-small;
-}
-
 .confirmedWrapper {
     justify-content: center;
 }
@@ -63,4 +55,13 @@
 
 .trashedWordsHeader, .skippedWordsHeader, .confirmedWordsHeader {
     color: blueviolet;
+}
+
+.headerWrapper {
+    margin: $spacing-medium;
+    margin-bottom: $spacing-small;
+    margin-top: $spacing-small;
+    padding: $spacing-small;
+    background-color: gold;
+    border-radius: $spacing-small;
 }

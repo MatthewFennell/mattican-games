@@ -2,115 +2,22 @@ const pre = 'GAME/';
 
 export const GAME_ERROR = `${pre}GAME_ERROR`;
 export const CLOSE_GAME_ERROR = `${pre}CLOSE_GAME_ERROR`;
-
 export const LEAVE_GAME_REQUEST = `${pre}LEAVE_GAME_REQUEST`;
-
 export const READY_UP_REQUEST = `${pre}READY_UP_REQUEST`;
-
-export const START_GAME_REQUEST = `${pre}START_GAME_REQUEST`;
-
-export const NOMINATE_PLAYER_FOR_QUEST_REQUEST = `${pre}NOMINATE_PLAYER_FOR_QUEST_REQUEST`;
-export const NOMINATE_CHANCELLOR_REQUEST = `${pre}NOMINATE_CHANCELLOR_REQUEST`;
-
-export const CONFIRM_NOMINATIONS_REQUEST = `${pre}CONFIRM_NOMINATIONS_REQUEST`;
-export const CONFIRM_CHANCELLOR_REQUEST = `${pre}CONFIRM_CHANCELLOR_REQUEST`;
-
-export const MAKE_AVALON_VOTE_REQUEST = `${pre}MAKE_AVALON_VOTE_REQUEST`;
-export const MAKE_HITLER_VOTE_REQUEST = `${pre}MAKE_HITLER_VOTE_REQUEST`;
-
-export const MAKE_QUEST_REQUEST = `${pre}MAKE_QUEST_REQUEST`;
-
-export const GUESS_MERLIN_REQUEST = `${pre}GUESS_MERLIN_REQUEST`;
-
+export const START_ANY_GAME_REQUEST = `${pre}START_ANY_GAME_REQUEST`;
 export const DESTROY_GAME_REQUEST = `${pre}DESTROY_GAME_REQUEST`;
-
 export const LEAVE_MIDGAME_REQUEST = `${pre}LEAVE_MIDGAME_REQUEST`;
-
 export const APPROVE_LEAVE_MIDGAME_REQUEST = `${pre}APPROVE_LEAVE_MIDGAME_REQUEST`;
-
-export const GIVE_CARDS_TO_CHANCELLOR_REQUEST = `${pre}GIVE_CARDS_TO_CHANCELLOR_REQUEST`;
-
-export const PLAY_CHANCELLOR_CARD_REQUEST = `${pre}PLAY_CHANCELLOR_CARD_REQUEST`;
-
-export const SELECT_INVESTIGATE_REQUEST = `${pre}SELECT_INVESTIGATE_REQUEST`;
-
-export const CONFIRM_INVESIGATION_REQUEST = `${pre}CONFIRM_INVESIGATION_REQUEST`;
-
-export const MAKE_TEMPORARY_PRESIDENT_REQUEST = `${pre}MAKE_TEMPORARY_PRESIDENT_REQUEST`;
-
-export const CONFIRM_PRESIDENT_REQUEST = `${pre}CONFIRM_PRESIDENT_REQUEST`;
-
-export const KILL_PLAYER_REQUEST = `${pre}KILL_PLAYER_REQUEST`;
-
-export const CONFIRM_KILL_PLAYER_REQUEST = `${pre}CONFIRM_KILL_PLAYER_REQUEST`;
-
-export const INITIATE_VETO_REQUEST = `${pre}INITIATE_VETO_REQUEST`;
-
-export const REPLY_TO_VETO_REQUEST = `${pre}REPLY_TO_VETO_REQUEST`;
-
-export const CLOSE_LOOK_AT_TOP_THREE_REQUEST = `${pre}CLOSE_LOOK_AT_TOP_THREE_REQUEST`;
-
-export const CLOSE_LOOK_AT_INVESTIGATION_REQUEST = `${pre}CLOSE_LOOK_AT_INVESTIGATION_REQUEST`;
-
-export const EDIT_HITLER_GAME_REQUEST = `${pre}EDIT_HITLER_GAME_REQUEST`;
-
-export const EDIT_AVALON_GAME_REQUEST = `${pre}EDIT_AVALON_GAME_REQUEST`;
-
-export const EDIT_WHO_IN_HAT_GAME_REQUEST = `${pre}EDIT_WHO_IN_HAT_GAME_REQUEST`;
-
 export const EDIT_DISPLAY_NAME = `${pre}EDIT_DISPLAY_NAME`;
-
 export const ADD_TEAM_REQUEST = `${pre}ADD_TEAM_REQUEST`;
-
 export const JOIN_TEAM_REQUEST = `${pre}JOIN_TEAM_REQUEST`;
-
-export const ADD_WORD_REQUEST = `${pre}ADD_WORD_REQUEST`;
-
-export const START_WHO_IN_HAT_GAME_REQUEST = `${pre}START_WHO_IN_HAT_GAME_REQUEST`;
-
-export const START_WHO_IN_HAT_ROUND_REQUEST = `${pre}START_WHO_IN_HAT_ROUND_REQUEST`;
-
-export const GOT_WHO_IN_HAT_WORD_REQUEST = `${pre}GOT_WHO_IN_HAT_WORD_REQUEST`;
-
+export const GOT_WORD_REQUEST = `${pre}GOT_WORD_REQUEST`;
 export const SKIP_WORD_WHO_IN_HAT_REQUEST = `${pre}SKIP_WORD_WHO_IN_HAT_REQUEST`;
-
 export const TRASH_WORD_WHO_IN_HAT_REQUEST = `${pre}TRASH_WORD_WHO_IN_HAT_REQUEST`;
-
-export const LOAD_SCORE_SUMMARY_REQUEST = `${pre}LOAD_SCORE_SUMMARY_REQUEST`;
-
 export const SET_WORD_CONFIRMED_REQUEST = `${pre}SET_WORD_CONFIRMED_REQUEST`;
-
-export const CONFIRM_SCORE_REQUEST = `${pre}CONFIRM_SCORE_REQUEST`;
-
-export const LEAVE_WHO_IN_HAT_GAME_REQUEST = `${pre}LEAVE_WHO_IN_HAT_GAME_REQUEST`;
-
-export const JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST = `${pre}JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST`;
-
+export const LEAVE_UNCONSTRAINED_GAME_REQUEST = `${pre}LEAVE_UNCONSTRAINED_GAME_REQUEST`;
+export const JOIN_TEAM_MIDGAME_REQUEST = `${pre}JOIN_TEAM_MIDGAME_REQUEST`;
 export const RANDOMISE_TEAMS_REQUEST = `${pre}RANDOMISE_TEAMS_REQUEST`;
-
-export const EDIT_ARTICULATE_GAME_REQUEST = `${pre}EDIT_ARTICULATE_GAME_REQUEST`;
-
-export const START_ARTICULATE_GAME_REQUEST = `${pre}START_ARTICULATE_GAME_REQUEST`;
-
-export const START_ARTICULATE_ROUND_REQUEST = `${pre}START_ARTICULATE_ROUND_REQUEST`;
-
-export const SKIP_WORD_ARTICULATE_REQUEST = `${pre}SKIP_WORD_ARTICULATE_REQUEST`;
-
-export const GOT_ARTICULATE_WORD_REQUEST = `${pre}GOT_ARTICULATE_WORD_REQUEST`;
-
-export const TRASH_ARTICULATE_WORD_REQUEST = `${pre}TRASH_ARTICULATE_WORD_REQUEST`;
-
-export const LOAD_ARTICULATE_SUMMARY_REQUEST = `${pre}LOAD_ARTICULATE_SUMMARY_REQUEST`;
-
-export const SET_ARTICULATE_WORD_CONFIRMED_REQUEST = `${pre}SET_ARTICULATE_WORD_CONFIRMED_REQUEST`;
-
-export const CONFIRM_ARTICULATE_SCORE_REQUEST = `${pre}CONFIRM_ARTICULATE_SCORE_REQUEST`;
-
-export const SPADE_ROUND_WINNER_REQUEST = `${pre}SPADE_ROUND_WINNER_REQUEST`;
-
-export const CONFIRM_ARTICULATE_WINNER = `${pre}CONFIRM_ARTICULATE_WINNER`;
-
-export const LEAVE_ARTICULATE_GAME_REQUEST = `${pre}LEAVE_ARTICULATE_GAME_REQUEST`;
 
 export const gameError = (error, header) => ({
     type: GAME_ERROR,
@@ -133,58 +40,10 @@ export const readyUpRequest = (gameId, isReady) => ({
     isReady
 });
 
-export const startGameRequest = (gameId, mode) => ({
-    type: START_GAME_REQUEST,
+export const startAnyGameRequest = (gameId, mode) => ({
+    type: START_ANY_GAME_REQUEST,
     gameId,
     mode
-});
-
-export const nominatePlayerForQuest = (gameId, player, isOnQuest) => ({
-    type: NOMINATE_PLAYER_FOR_QUEST_REQUEST,
-    gameId,
-    player,
-    isOnQuest
-});
-
-export const nominateChancellorRequest = (gameId, chancellor) => ({
-    type: NOMINATE_CHANCELLOR_REQUEST,
-    gameId,
-    chancellor
-});
-
-export const confirmChancellorRequest = gameId => ({
-    type: CONFIRM_CHANCELLOR_REQUEST,
-    gameId
-});
-
-export const confirmNominationsRequest = (gameId, nominations) => ({
-    type: CONFIRM_NOMINATIONS_REQUEST,
-    gameId,
-    nominations
-});
-
-export const makeAvalonVoteRequest = (gameId, vote) => ({
-    type: MAKE_AVALON_VOTE_REQUEST,
-    gameId,
-    vote
-});
-
-export const makeHitlerVoteRequest = (gameId, vote) => ({
-    type: MAKE_HITLER_VOTE_REQUEST,
-    gameId,
-    vote
-});
-
-export const makeQuestRequest = (gameId, isSuccess) => ({
-    type: MAKE_QUEST_REQUEST,
-    gameId,
-    isSuccess
-});
-
-export const guessMerlinRequest = (gameId, merlin) => ({
-    type: GUESS_MERLIN_REQUEST,
-    gameId,
-    merlin
 });
 
 export const destroyGameRequest = gameId => ({
@@ -202,97 +61,6 @@ export const approveLeaveMidgameRequest = (gameId, isApprove) => ({
     type: APPROVE_LEAVE_MIDGAME_REQUEST,
     gameId,
     isApprove
-});
-
-export const giveCardsToChancellorRequest = (gameId, cards) => ({
-    type: GIVE_CARDS_TO_CHANCELLOR_REQUEST,
-    gameId,
-    cards
-});
-
-export const playChancellorCardRequest = (gameId, card) => ({
-    type: PLAY_CHANCELLOR_CARD_REQUEST,
-    gameId,
-    card
-});
-
-
-export const selectInvestigateRequest = (gameId, player) => ({
-    type: SELECT_INVESTIGATE_REQUEST,
-    gameId,
-    player
-});
-
-export const confirmInvesigationRequest = gameId => ({
-    type: CONFIRM_INVESIGATION_REQUEST,
-    gameId
-});
-
-export const makeTemporaryPresidentRequest = (gameId, player) => ({
-    type: MAKE_TEMPORARY_PRESIDENT_REQUEST,
-    gameId,
-    player
-});
-
-export const confirmPresidentRequest = gameId => ({
-    type: CONFIRM_PRESIDENT_REQUEST,
-    gameId
-});
-
-export const killPlayerRequest = (gameId, player) => ({
-    type: KILL_PLAYER_REQUEST,
-    gameId,
-    player
-});
-
-export const confirmKillPlayerRequest = gameId => ({
-    type: CONFIRM_KILL_PLAYER_REQUEST,
-    gameId
-});
-
-export const initiateVetoRequest = gameId => ({
-    type: INITIATE_VETO_REQUEST,
-    gameId
-});
-
-export const replyToVetoRequest = (gameId, isApprove) => ({
-    type: REPLY_TO_VETO_REQUEST,
-    gameId,
-    isApprove
-});
-
-export const closeLookAtTopThreeRequest = gameId => ({
-    type: CLOSE_LOOK_AT_TOP_THREE_REQUEST,
-    gameId
-});
-
-export const closeLookAtInvestigationRequest = (gameId, isFirst) => ({
-    type: CLOSE_LOOK_AT_INVESTIGATION_REQUEST,
-    gameId,
-    isFirst
-});
-
-export const editHitlerGameRequest = (gameId, numberOfPlayers) => ({
-    type: EDIT_HITLER_GAME_REQUEST,
-    gameId,
-    numberOfPlayers
-});
-
-export const editAvalonGameRequest = (gameId, numberOfPlayers, roles) => ({
-    type: EDIT_AVALON_GAME_REQUEST,
-    gameId,
-    numberOfPlayers,
-    roles
-});
-
-export const editWhoInHateGameRequest = (gameId, skippingRule,
-    isCustomNames, scoreCap, timePerRound) => ({
-    type: EDIT_WHO_IN_HAT_GAME_REQUEST,
-    gameId,
-    skippingRule,
-    isCustomNames,
-    scoreCap,
-    timePerRound
 });
 
 export const editDisplayName = (gameId, displayName) => ({
@@ -314,24 +82,8 @@ export const joinTeamRequest = (gameId, teamName) => ({
     teamName
 });
 
-export const addWordRequest = (gameId, word) => ({
-    type: ADD_WORD_REQUEST,
-    gameId,
-    word
-});
-
-export const startWhoInHatGameRequest = gameId => ({
-    type: START_WHO_IN_HAT_GAME_REQUEST,
-    gameId
-});
-
-export const startWhoInHatRoundRequest = gameId => ({
-    type: START_WHO_IN_HAT_ROUND_REQUEST,
-    gameId
-});
-
-export const gotWhoInHatWordRequest = (gameId, word) => ({
-    type: GOT_WHO_IN_HAT_WORD_REQUEST,
+export const gotWordRequest = (gameId, word) => ({
+    type: GOT_WORD_REQUEST,
     gameId,
     word
 });
@@ -348,11 +100,6 @@ export const trashWordRequest = (gameId, word) => ({
     word
 });
 
-export const loadScoreSummaryRequest = gameId => ({
-    type: LOAD_SCORE_SUMMARY_REQUEST,
-    gameId
-});
-
 export const setWordConfirmedRequest = (gameId, word, isConfirmed) => ({
     type: SET_WORD_CONFIRMED_REQUEST,
     gameId,
@@ -360,18 +107,13 @@ export const setWordConfirmedRequest = (gameId, word, isConfirmed) => ({
     isConfirmed
 });
 
-export const confirmScoreRequest = gameId => ({
-    type: CONFIRM_SCORE_REQUEST,
+export const leaveUnconstrainedGameRequest = gameId => ({
+    type: LEAVE_UNCONSTRAINED_GAME_REQUEST,
     gameId
 });
 
-export const leaveWhoInHatGameRequest = gameId => ({
-    type: LEAVE_WHO_IN_HAT_GAME_REQUEST,
-    gameId
-});
-
-export const joinWhoInHatTeamMidgameRequest = (gameId, teamName) => ({
-    type: JOIN_WHO_IN_HAT_TEAM_MIDGAME_REQUEST,
+export const joinTeamMidgameRequest = (gameId, teamName) => ({
+    type: JOIN_TEAM_MIDGAME_REQUEST,
     gameId,
     teamName
 });
@@ -380,73 +122,4 @@ export const randomiseTeamsRequest = (gameId, numberOfTeams) => ({
     type: RANDOMISE_TEAMS_REQUEST,
     gameId,
     numberOfTeams
-});
-
-export const editArticulateGameRequest = (gameId, skippingRule, timePerRound, scoreCap) => ({
-    type: EDIT_ARTICULATE_GAME_REQUEST,
-    gameId,
-    skippingRule,
-    timePerRound,
-    scoreCap
-});
-
-export const startArticulateGameRequest = gameId => ({
-    type: START_ARTICULATE_GAME_REQUEST,
-    gameId
-});
-
-export const startArticulateRoundRequest = gameId => ({
-    type: START_ARTICULATE_ROUND_REQUEST,
-    gameId
-});
-
-export const skipWordArticulateRequest = (gameId, word) => ({
-    type: SKIP_WORD_ARTICULATE_REQUEST,
-    gameId,
-    word
-});
-
-export const gotArticulateWordRequest = (gameId, word) => ({
-    type: GOT_ARTICULATE_WORD_REQUEST,
-    gameId,
-    word
-});
-
-export const trashArticulateWordRequest = (gameId, word) => ({
-    type: TRASH_ARTICULATE_WORD_REQUEST,
-    gameId,
-    word
-});
-
-export const loadArticulateSummaryRequest = gameId => ({
-    type: LOAD_ARTICULATE_SUMMARY_REQUEST,
-    gameId
-});
-
-export const setArticulateWordConfirmedRequest = (gameId, word, isConfirmed) => ({
-    type: SET_ARTICULATE_WORD_CONFIRMED_REQUEST,
-    gameId,
-    word,
-    isConfirmed
-});
-
-export const confirmArticulateScoreRequest = gameId => ({
-    type: CONFIRM_ARTICULATE_SCORE_REQUEST,
-    gameId
-});
-
-export const spadeRoundWinnerRequest = (gameId, name) => ({
-    type: SPADE_ROUND_WINNER_REQUEST,
-    gameId,
-    name
-});
-
-export const confirmArticulateWinner = gameId => ({
-    type: CONFIRM_ARTICULATE_WINNER,
-    gameId
-});
-
-export const leaveArticulateGameRequest = gameId => ({
-    type: LEAVE_ARTICULATE_GAME_REQUEST,
-    gameId
 });

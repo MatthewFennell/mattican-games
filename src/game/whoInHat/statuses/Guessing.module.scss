@@ -1,8 +1,4 @@
-@import "../../common/Styles.scss";
-
-.guessingWrapper {
-    margin-top: $spacing-large;
-}
+@import "../../../common/Styles.scss";
 
 .guessingHeader {
     text-align: center;
@@ -11,11 +7,9 @@
     color: $color-blue;
     margin-left: 10%;
     margin-right: 10%;
-    margin-top: $spacing-small;
 }
 
 .remainingTime {
-    margin-top: $spacing-small;
     text-align: center;
     color: crimson;
     font-size: 60px;
@@ -31,6 +25,7 @@
     border: 2px solid black;
     font-size: $font-size-large;
     border-radius: $spacing-average;
+    background-color: cornflowerblue;
 }
 
 .buttonOptions {
@@ -46,10 +41,11 @@
     text-align: center;
     margin: $spacing-large;
     padding: $spacing-small;
-    border: 2px solid $color-blue;
+    border: 2px solid $color-black;
     font-size: $font-size-medium;
     margin-top: $spacing-small;
     margin-bottom: $spacing-small;
+    background-color: aliceblue;
 }
 
 .swapBackMessage {
@@ -84,17 +80,11 @@
     justify-content: center;
 }
 
-.category, .activeTeam {
-    margin-top: $spacing-small;
-    text-align: center;
+.guessDescribedWord {
+    color: darkslategray;
     font-weight: bold;
-    font-size: $font-size-large;
-}
-
-.bonusRound {
     text-align: center;
-    color: $color-green;
-    font-weight: bold;
+    justify-content: center;
 }
 
 .viewOtherTeamWordWrapper {
@@ -106,18 +96,31 @@
     padding: $spacing-small;
 }
 
-.otherTeamGuessingMessage, .guessDescribedWord {
+.otherTeamGuessingMessage {
     color: darkslategray;
     font-weight: bold;
     text-align: center;
     justify-content: center;
 }
 
-.allPlayMessage {
-    color: darkslategray;
-    font-weight: bold;
+.otherCardsWrapper {
     text-align: center;
     justify-content: center;
+    color: $color-blue;
+}
+
+.textWrapper {
+    text-align: center;
+    color: $color-green;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    font-size: $font-size-medium;
+}
+
+.textValue {
+    color: $color-black;
+    margin-left: 4px;
 }
 
 .infoWrapper {
@@ -136,58 +139,4 @@
     padding: $spacing-small;
     background-color: burlywood;
     border-radius: $spacing-small;
-}
-
-.otherCardsWrapper {
-    color: $color-blue;
-}
-
-.spadeRoundCompleted {
-    * {
-        * {
-            width: 100%;
-        }
-    }
-}
-
-.textWrapper {
-    text-align: center;
-    color: $color-green;
-    font-weight: bold;
-    display: flex;
-    justify-content: center;
-    font-size: $font-size-medium;
-}
-
-.textValue {
-    color: $color-black;
-    margin-left: 4px;
-}
-
-.Object {
-    background-color: cornflowerblue;
-}
-
-.Action {
-    background-color: coral;
-}
-
-.Random {
-    background-color: indianred;
-}
-
-.Spade {
-    background-color: mediumpurple;
-}
-
-.World {
-    background-color: royalblue;
-}
-
-.Person {
-    background-color: yellow;
-}
-
-.Nature {
-    background-color: yellowgreen;
 }

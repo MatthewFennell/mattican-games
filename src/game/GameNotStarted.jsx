@@ -8,14 +8,19 @@ import { mapUserIdToName, gameHasSetNumberOfPlayers } from './helpers';
 import * as constants from '../constants';
 import StyledButton from '../common/StyledButton/StyledButton';
 import {
-    leaveGameRequest, readyUpRequest, startGameRequest, editArticulateGameRequest,
-    editHitlerGameRequest, gameError, editAvalonGameRequest, editWhoInHateGameRequest
+    leaveGameRequest, readyUpRequest, startAnyGameRequest,
+    gameError
 } from './actions';
 import Switch from '../common/Switch/Switch';
 import Fade from '../common/Fade/Fade';
 import TextInput from '../common/TextInput/TextInput';
 import { shouldBeDisabled } from '../overview/CreateGame';
 import Dropdown from '../common/dropdown/Dropdown';
+
+import { editGameRequest as editArticulateGameRequest } from './articulate/actions';
+import { editGameRequest as editWhoInHatGameRequest } from './whoInHat/actions';
+import { editGameRequest as editAvalonGameRequest } from './avalon/actions';
+import { editGameRequest as editHitlerGameRequest } from './hitler/actions';
 
 const canStartGame = game => {
     if (game.mode === constants.gameModes.Hitler || game.mode === constants.gameModes.Avalon) {
@@ -83,12 +88,14 @@ const GameNotStarted = props => {
             props.editAvalonGameRequest(props.currentGameId, numberOfPlayers, editedAvalonRoles);
         }
         if (props.currentGame.mode === constants.gameModes.WhosInTheHat) {
-            props.editWhoInHateGameRequest(props.currentGameId,
+            props.editWhoInHatGameRequest(props.currentGameId,
                 editedSkippingRule, editedIsCustomNames, scoreCap, timePerRound);
         }
         if (props.currentGame.mode === constants.gameModes.Articulate) {
-            props.editArticulateGameRequest(props.currentGameId, editedSkippingRule, timePerRound, scoreCap);
+            props.editArticulateGameRequest(props.currentGameId,
+                editedSkippingRule, timePerRound, scoreCap);
         }
+        setEditingGame(false);
         // eslint-disable-next-line
     }, [props.currentGame, numberOfPlayers, editedAvalonRoles, editedSkippingRule, editedIsCustomNames, scoreCap, timePerRound])
 
@@ -399,7 +406,7 @@ const GameNotStarted = props => {
                     <StyledButton
                         text="Start Game"
                         disabled={!canStartGame(props.currentGame)}
-                        onClick={() => props.startGameRequest(props.currentGameId,
+                        onClick={() => props.startAnyGameRequest(props.currentGameId,
                             props.currentGame.mode)}
                     />
                 </div>
@@ -498,9 +505,9 @@ GameNotStarted.propTypes = {
     readyUpRequest: PropTypes.func.isRequired,
     editHitlerGameRequest: PropTypes.func.isRequired,
     gameError: PropTypes.func.isRequired,
-    startGameRequest: PropTypes.func.isRequired,
+    startAnyGameRequest: PropTypes.func.isRequired,
     editAvalonGameRequest: PropTypes.func.isRequired,
-    editWhoInHateGameRequest: PropTypes.func.isRequired,
+    editWhoInHatGameRequest: PropTypes.func.isRequired,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})
 };
@@ -509,11 +516,11 @@ const mapDispatchToProps = {
     editArticulateGameRequest,
     leaveGameRequest,
     readyUpRequest,
-    startGameRequest,
+    startAnyGameRequest,
     gameError,
     editAvalonGameRequest,
     editHitlerGameRequest,
-    editWhoInHateGameRequest
+    editWhoInHatGameRequest
 };
 
 export default connect(null, mapDispatchToProps)(GameNotStarted);

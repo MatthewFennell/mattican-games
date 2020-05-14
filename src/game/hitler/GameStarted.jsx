@@ -14,11 +14,9 @@ import * as helpers from '../helpers';
 import * as constants from '../../constants';
 import CurrentGameStatus from './CurrentGameStatus';
 import {
-    nominateChancellorRequest, confirmChancellorRequest, leaveGameRequest,
-    destroyGameRequest, approveLeaveMidgameRequest, selectInvestigateRequest,
-    confirmInvesigationRequest, makeTemporaryPresidentRequest, confirmPresidentRequest,
-    gameError, killPlayerRequest, confirmKillPlayerRequest, closeLookAtTopThreeRequest,
-    closeLookAtInvestigationRequest
+    leaveGameRequest,
+    destroyGameRequest, approveLeaveMidgameRequest,
+    gameError
 } from '../actions';
 import StyledButton from '../../common/StyledButton/StyledButton';
 import Switch from '../../common/Switch/Switch';
@@ -27,6 +25,11 @@ import Skull from './Skull.png';
 import Bullet from './bullet.png';
 import History from './History';
 import Modals from './Modals';
+import {
+    nominateChancellorRequest, confirmChancellorRequest, selectInvestigateRequest,
+    confirmInvesigationRequest, makeTemporaryPresidentRequest, confirmPresidentRequest,
+    killPlayerRequest, confirmKillPlayerRequest, closeLookAtTopThreeRequest, closeLookAtInvestigationRequest
+} from './actions';
 
 const playerIsBad = (player, roles) => {
     const role = fp.get('role')(roles.find(x => x.player === player));

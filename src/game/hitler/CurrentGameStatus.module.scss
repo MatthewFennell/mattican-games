@@ -14,7 +14,8 @@
     padding: $spacing-small;
     margin-left: $spacing-small;
     margin-right: $spacing-small;
-    background-color: $color-amber  ;
+    background-color: $color-amber;
+    border-radius: $spacing-small;
 }
 
 .presidentDecidingWrapper {
@@ -111,6 +112,7 @@
     margin: $spacing-small;
     padding: $spacing-small;
     background-color: moccasin;
+    border-radius: $spacing-small;
 }
 
 .goodGuysWon {

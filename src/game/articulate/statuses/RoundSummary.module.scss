@@ -1,7 +1,6 @@
-@import "../../common/Styles.scss";
+@import "../../../common/Styles.scss";
 
 .timeUp {
-    margin-top: $spacing-small;
     font-size: $font-size-medium;
     color: crimson;
     font-weight: bold;
@@ -9,7 +8,6 @@
 }
 
 .confirmWords {
-    margin-top: $spacing-small;
     font-size: $font-size-medium;
     color: $color-green;
     font-weight: bold;
@@ -31,9 +29,18 @@
 .wordsGuessed {
     text-align: center;
     margin: $spacing-medium;
-    padding: $spacing-medium;
+    padding: $spacing-small;
     margin-top: $spacing-small;
     background-color: aquamarine;
+    border-radius: $spacing-small;
+}
+
+.headerWrapper {
+    margin: $spacing-medium;
+    margin-bottom: $spacing-small;
+    margin-top: $spacing-small;
+    padding: $spacing-small;
+    background-color: gold;
     border-radius: $spacing-small;
 }
 

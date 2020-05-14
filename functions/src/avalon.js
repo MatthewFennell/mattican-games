@@ -14,10 +14,6 @@ exports.createAvalonGame = functions
     .https.onCall((data, context) => {
         common.isAuthenticated(context);
 
-        if (!data.mode) {
-            throw new functions.https.HttpsError('invalid-argument', 'Must provide a game mode');
-        }
-
         if (!data.name) {
             throw new functions.https.HttpsError('invalid-argument', 'Must provide a game name');
         }
@@ -26,7 +22,7 @@ exports.createAvalonGame = functions
             throw new functions.https.HttpsError('invalid-argument', 'Game name too long. Max 32 characters');
         }
 
-        if (!common.validNumberOfPlayers(data.numberOfPlayers, data.mode)) {
+        if (!common.validNumberOfPlayers(data.numberOfPlayers, constants.gameModes.Avalon)) {
             throw new functions.https.HttpsError('invalid-argument', 'Invalid number of players');
         }
 
@@ -46,7 +42,7 @@ exports.createAvalonGame = functions
                         history: [],
                         host: context.auth.uid,
                         leader: null,
-                        mode: data.mode,
+                        mode: constants.gameModes.Avalon,
                         name: data.name,
                         numberOfPlayers: Math.min(data.numberOfPlayers, 10),
                         playersOnQuest: [],

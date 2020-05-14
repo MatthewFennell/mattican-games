@@ -14,10 +14,6 @@ exports.createHitlerGame = functions
     .https.onCall((data, context) => {
         common.isAuthenticated(context);
 
-        if (!data.mode) {
-            throw new functions.https.HttpsError('invalid-argument', 'Must provide a game mode');
-        }
-
         if (!data.name) {
             throw new functions.https.HttpsError('invalid-argument', 'Must provide a game name');
         }
@@ -26,7 +22,7 @@ exports.createHitlerGame = functions
             throw new functions.https.HttpsError('invalid-argument', 'Game name too long. Max 32 characters');
         }
 
-        if (!common.validNumberOfPlayers(data.numberOfPlayers, data.mode)) {
+        if (!common.validNumberOfPlayers(data.numberOfPlayers, constants.gameModes.Hitler)) {
             throw new functions.https.HttpsError('invalid-argument', 'Invalid number of players');
         }
 
@@ -60,7 +56,7 @@ exports.createHitlerGame = functions
                         history: [],
                         hitlerElected: false,
                         host: context.auth.uid,
-                        mode: data.mode,
+                        mode: constants.gameModes.Hitler,
                         name: data.name,
                         numberFascistPlayed: 0,
                         numberLiberalPlayed: 0,

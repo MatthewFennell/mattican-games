@@ -11,7 +11,7 @@ import * as helpers from '../helpers';
 import * as constants from '../../constants';
 import CurrentGameStatus from './CurrentGameStatus';
 import {
-    nominatePlayerForQuest, confirmNominationsRequest, guessMerlinRequest, leaveGameRequest,
+    leaveGameRequest,
     destroyGameRequest, approveLeaveMidgameRequest
 } from '../actions';
 import StyledButton from '../../common/StyledButton/StyledButton';
@@ -19,6 +19,8 @@ import Radio from '../../common/radio/RadioButton';
 import History from './History';
 import Switch from '../../common/Switch/Switch';
 import SuccessModal from '../../common/modal/SuccessModal';
+
+import { nominatePlayerForQuest, confirmNominationsRequest, guessMerlinRequest } from './actions';
 
 const GameStarted = props => {
     const [viewingRole, setViewingRole] = useState(false);
@@ -303,7 +305,7 @@ const GameStarted = props => {
                         [props.styles.isBad]: !helpers.isRoleGood(props.myRole)
                     })}
                     >
-                        {`Role: ${props.myRole}`}
+                        {`Role: ${props.myRole === constants.avalonRoles.RegularGood.name ? 'Regular Good' : props.myRole}`}
                     </div>
                     {generateSecretInfo(props.myRole)}
                 </div>
