@@ -10,7 +10,6 @@
 }
 
 .remainingTime {
-    margin-top: $spacing-medium;
     text-align: center;
     color: crimson;
     font-size: 60px;
@@ -82,12 +81,10 @@
 }
 
 .guessDescribedWord {
-    text-align: center;
+    color: darkslategray;
     font-weight: bold;
-    color: $color-blue;
-    font-size: $font-size-huge;
-    margin-left: 15%;
-    margin-right: 15%;
+    text-align: center;
+    justify-content: center;
 }
 
 .viewOtherTeamWordWrapper {

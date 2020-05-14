@@ -102,11 +102,14 @@ const GameStarted = props => {
             );
         }
 
-        return <div>hey</div>;
+        return <div>Error. Contact Matt</div>;
     };
 
     return (
         <>
+            <div className={props.styles.gameTitle}>
+                {constants.gameModes.WhosInTheHat}
+            </div>
             {generateComponent()}
             <JoinTeamModal
                 isOpen={props.currentGame.waitingToJoinTeam.includes(props.auth.uid)

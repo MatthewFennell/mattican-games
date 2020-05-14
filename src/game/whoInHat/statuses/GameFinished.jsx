@@ -11,11 +11,13 @@ const sortingMethod = (a, b) => (b.score - a.score !== 0
 
 const GameFinished = props => (
     <div className={props.styles.gameFinishedWrapper}>
-        <div className={props.styles.gameFinishedHeader}>
-            {props.currentGame.status === constants.whoInHatGameStatuses.ScoreCapReached ? 'Score cap reached!' : 'No cards remaining!'}
-        </div>
-        <div className={props.styles.winningTeam}>
-            {`Winning team - ${props.currentGame.winningTeam}`}
+        <div className={props.styles.infoWrapper}>
+            <div className={props.styles.gameFinishedHeader}>
+                {props.currentGame.status === constants.whoInHatGameStatuses.ScoreCapReached ? 'Score cap reached!' : 'No cards remaining!'}
+            </div>
+            <div className={props.styles.winningTeam}>
+                {`Winning team - ${props.currentGame.winningTeam}`}
+            </div>
         </div>
 
         <TeamsAndScore
