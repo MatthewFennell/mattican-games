@@ -280,7 +280,7 @@ export default compose(
         {
             collection: 'games'
         }
-    ]),
+    ])
 )(Overview);
 
 

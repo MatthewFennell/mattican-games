@@ -1,4 +1,4 @@
-const pre = 'GAME/';
+const pre = 'AVALON/';
 
 export const GAME_ERROR = `${pre}GAME_ERROR`;
 export const CLOSE_GAME_ERROR = `${pre}CLOSE_GAME_ERROR`;
