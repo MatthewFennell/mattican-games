@@ -94,7 +94,7 @@ const TopNavbar = props => {
                         </IconButton>
                     )}
                     <Typography variant="h6" className={classes.title}>
-                        The Mattican
+                        The Mattican test
                     </Typography>
                     <div>
                         <IconButton
@@ -167,19 +167,19 @@ const TopNavbar = props => {
                                     <MenuItem
                                         onClick={() => redirectOnClick(constants.URL.SIGN_IN)}
                                     >
-                                    Sign in
+                                        Sign in
                                     </MenuItem>
                                     <MenuItem onClick={() => redirectOnClick(
                                         constants.URL.SIGN_UP
                                     )}
                                     >
-                                    Sign up
+                                        Sign up
                                     </MenuItem>
                                     <MenuItem onClick={() => redirectOnClick(
                                         constants.URL.RESET_PASSWORD
                                     )}
                                     >
-                                    Forgot password?
+                                        Forgot password?
                                     </MenuItem>
                                 </div>
                             )}
