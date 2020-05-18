@@ -42,10 +42,6 @@ jobs:
         npm test
       env:
         CI: true
-    - name: Printing
-      run:
-        ls
-
     - name: Archive Production Artifact
       uses: actions/upload-artifact@master
       with:
@@ -65,17 +61,6 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Test
-      run: |
-        ls
-    # - name: Deploy Firebase Functions
-    #   run: |
-    #     cd functions
-    #     npm ci
-    #     npx firebase use ccafc-fantasy-football-dev
-    #     npx firebase deploy --only functions
-    #   env:
-    #     FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
     - name: Download Artifact
       uses: actions/download-artifact@master
       with:

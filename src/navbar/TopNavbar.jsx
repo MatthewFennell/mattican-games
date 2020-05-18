@@ -94,7 +94,7 @@ const TopNavbar = props => {
                         </IconButton>
                     )}
                     <Typography variant="h6" className={classes.title}>
-                        The Mattican test
+                        The Mattican
                     </Typography>
                     <div>
                         <IconButton
