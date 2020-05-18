@@ -75,7 +75,7 @@ const GameNotStarted = props => {
 
     const editGame = useCallback(() => {
         if (props.currentGame.mode === constants.gameModes.Hitler) {
-            if (props.currentGame.currentPlayers.length > numberOfPlayers) {
+            if (props.currentGame.currentPlayers.length > parseInt(numberOfPlayers, 10)) {
                 props.gameError({
                     code: 'invalid-argument',
                     message: 'You already have too many players for that'
@@ -85,7 +85,8 @@ const GameNotStarted = props => {
             }
         }
         if (props.currentGame.mode === constants.gameModes.Avalon) {
-            props.editAvalonGameRequest(props.currentGameId, numberOfPlayers, editedAvalonRoles);
+            props.editAvalonGameRequest(props.currentGameId,
+                parseInt(numberOfPlayers, 10), editedAvalonRoles);
         }
         if (props.currentGame.mode === constants.gameModes.WhosInTheHat) {
             props.editWhoInHatGameRequest(props.currentGameId,
@@ -277,8 +278,10 @@ const GameNotStarted = props => {
                                                     checked={editedAvalonRoles.includes(role.name)}
                                                     onChange={() => toggleRole(role.name)}
                                                     color="secondary"
-                                                    disabled={shouldBeDisabled(numberOfPlayers,
-                                                        editedAvalonRoles, role.name)}
+                                                    disabled={shouldBeDisabled(
+                                                        parseInt(numberOfPlayers,
+                                                            10), editedAvalonRoles, role.name
+                                                    )}
                                                 />
                                             </div>
                                         ))}
@@ -305,7 +308,7 @@ const GameNotStarted = props => {
                                 </div>
                                 <div>
                                     <div>
-                            Custom Names
+                                        Custom Names
                                     </div>
                                     <Switch
                                         checked={editedIsCustomNames}
@@ -372,8 +375,9 @@ const GameNotStarted = props => {
 
                         <div className={props.styles.confirmEditButton}>
                             <StyledButton
-                                disabled={(props.currentGame.numberOfPlayers === numberOfPlayers
-                                || numberOfPlayers < 5)
+                                disabled={(props.currentGame.numberOfPlayers
+                                    === parseInt(numberOfPlayers, 10)
+                                || parseInt(numberOfPlayers, 10) < 5)
                                 && !differenceInRoles(editedAvalonRoles, props.currentGame.roles)
                                 && props.currentGame.mode !== constants.gameModes.WhosInTheHat
                                 && props.currentGame.mode !== constants.gameModes.Articulate}
@@ -431,20 +435,20 @@ const GameNotStarted = props => {
             {props.currentGame.playersReady.length < props.currentGame.numberOfPlayers
             && props.currentGame.numberOfPlayers === props.currentGame.currentPlayers.length && (
                 <div className={props.styles.waitingForPlayersToReady}>
-                Waiting for players to ready up
+                    Waiting for players to ready up
                 </div>
             )}
 
             {props.currentGame.currentPlayers.length < props.currentGame.numberOfPlayers && (
                 <div className={props.styles.waitingForPlayersToJoin}>
-                Waiting for players to join the lobby
+                    Waiting for players to join the lobby
                 </div>
             )}
 
             {!props.currentGame.numberOfPlayers
             && props.currentGame.playersReady.length < props.currentGame.currentPlayers.length && (
                 <div className={props.styles.waitingForPlayersToReady}>
-                Waiting for players to ready up
+                    Waiting for players to ready up
                 </div>
             )}
 

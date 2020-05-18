@@ -84,7 +84,7 @@ const CurrentGameStatus = props => {
         if (!props.currentGame.playersOnQuest.includes(props.auth.uid)) {
             return (
                 <div className={props.styles.notOnQuestMessage}>
-                You are not on the quest
+                    Players are questing! You are not on the quest
                 </div>
             );
         }

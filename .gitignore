@@ -1,7 +1,12 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
-# config-file
+# data
+/imageRecognition/*.json
+/imageRecognition/*.jpg
+/imageRecognition/*.jpeg
+/imageRecognition/*.png
 
+# config-file
 # env
 .env.development
 .env.production
