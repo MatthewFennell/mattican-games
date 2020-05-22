@@ -211,7 +211,7 @@ exports.confirmScore = functions
             }
 
             const {
-                activeTeam, teams, confirmedWords, words, isCustomNames, scoreCap, skippedWords, trashedWords
+                activeTeam, teams, confirmedWords, words, isCustomNames, scoreCap
             } = doc.data();
 
             const nextTeam = common.findNextTeam(activeTeam, teams);
@@ -221,7 +221,7 @@ exports.confirmScore = functions
 
             const scoreCapReached = !isCustomNames && newScore >= scoreCap;
 
-            const newWords = words.filter(x => !confirmedWords.includes(x) && !skippedWords.includes(x) && !trashedWords.includes(x));
+            const newWords = words.filter(x => !confirmedWords.includes(x));
 
             let nextGameStatus = constants.whoInHatGameStatuses.PrepareToGuess;
             let winningTeam = null;
