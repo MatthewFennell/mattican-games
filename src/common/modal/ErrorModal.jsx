@@ -10,7 +10,7 @@ const ErrorModal = props => (
                 {`Code: ${props.errorCode}`}
             </div>
             <div>
-                {`Message: ${props.errorMessage}`}
+                {`Message: ${props.errorMessage === 'internal' ? 'internal - Try clearing your cache' : props.errorMessage}`}
             </div>
         </div>
     </>

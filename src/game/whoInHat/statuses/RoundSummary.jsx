@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { noop } from 'lodash';
 import classNames from 'classnames';
 import defaultStyles from './RoundSummary.module.scss';
+import * as helpers from '../../helpers';
 import StyledButton from '../../../common/StyledButton/StyledButton';
 import Switch from '../../../common/Switch/Switch';
 
@@ -17,47 +18,55 @@ const RoundSummary = props => {
         <div className={props.styles.roundSummaryWrapper}>
             <div className={props.styles.headerWrapper}>
                 <div className={props.styles.timeUp}>
-                    {'Time is up!'}
+                    Time is up!
                 </div>
                 <div className={props.styles.confirmWords}>
-                    {'Confirm the words you got'}
+                    {props.currentGame.activeExplainer === props.auth.uid ? 'Confirm the words you got'
+                        : `${helpers.mapUserIdToName(props.users, props.currentGame.activeExplainer)} is confirming the score`}
                 </div>
+
+                {props.auth.uid !== props.currentGame.activeExplainer && (
+                    <div className={props.styles.currentScore}>
+                        {`Current score: ${props.currentGame.confirmedWords.length}`}
+                    </div>
+                )}
             </div>
 
-            <div className={props.styles.wordsGuessed}>
-                <div className={props.styles.confirmedWrapper}>
-                    <div className={props.styles.confirmedWordsHeader}>
-                        {'Confirmed Words'}
-                    </div>
-                    {props.currentGame.wordsGuessed.map(word => (
-                        <div className={props.styles.wordRowWrapper} key={word}>
-                            <div className={classNames({
-                                [props.styles.word]: true,
-                                [props.styles.isConfirmedWord]: props.currentGame
-                                    .confirmedWords.includes(word),
-                                [props.styles.notConfirmed]: !props.currentGame
-                                    .confirmedWords.includes(word)
-                            })}
-                            >
-                                {word}
-                            </div>
-                            <div>
-                                <Switch
-                                    checked={props.currentGame.confirmedWords.includes(word)}
-                                    onChange={() => toggleWord(word)}
-                                    color="primary"
-                                />
-                            </div>
+            {props.currentGame.activeExplainer === props.auth.uid && (
+                <div className={props.styles.wordsGuessed}>
+                    <div className={props.styles.confirmedWrapper}>
+                        <div className={props.styles.confirmedWordsHeader}>
+                            Confirmed Words
                         </div>
-                    ))}
-                </div>
+                        {props.currentGame.wordsGuessed.map(word => (
+                            <div className={props.styles.wordRowWrapper} key={word}>
+                                <div className={classNames({
+                                    [props.styles.word]: true,
+                                    [props.styles.isConfirmedWord]: props.currentGame
+                                        .confirmedWords.includes(word),
+                                    [props.styles.notConfirmed]: !props.currentGame
+                                        .confirmedWords.includes(word)
+                                })}
+                                >
+                                    {word}
+                                </div>
+                                <div>
+                                    <Switch
+                                        checked={props.currentGame.confirmedWords.includes(word)}
+                                        onChange={() => toggleWord(word)}
+                                        color="primary"
+                                    />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
 
 
-                {props.currentGame.skippedWords.length > 0
+                    {props.currentGame.skippedWords.length > 0
                 && (
                     <div className={props.styles.skippedWraper}>
                         <div className={props.styles.skippedWordsHeader}>
-                            {'Skipped Words'}
+                            Skipped Words
                         </div>
                         {props.currentGame.skippedWords.map(word => (
                             <div className={props.styles.wordRowWrapper} key={word}>
@@ -84,11 +93,11 @@ const RoundSummary = props => {
                 ) }
 
 
-                {props.currentGame.trashedWords.length > 0
+                    {props.currentGame.trashedWords.length > 0
                 && (
                     <div className={props.styles.trashedWrapper}>
                         <div className={props.styles.trashedWordsHeader}>
-                            {'Trashed Words'}
+                            Trashed Words
                         </div>
                         {props.currentGame.trashedWords.map(word => (
                             <div className={props.styles.wordRowWrapper} key={word}>
@@ -114,12 +123,13 @@ const RoundSummary = props => {
                     </div>
                 ) }
 
-                <StyledButton
-                    onClick={() => props.confirmScoreRequest(props.currentGameId)}
-                    text={`Confirm score of ${props.currentGame.confirmedWords.length}`}
-                />
+                    <StyledButton
+                        onClick={() => props.confirmScoreRequest(props.currentGameId)}
+                        text={`Confirm score of ${props.currentGame.confirmedWords.length}`}
+                    />
 
-            </div>
+                </div>
+            )}
         </div>
     );
 };

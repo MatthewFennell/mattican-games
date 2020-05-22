@@ -223,7 +223,7 @@ exports.makeVote = functions
             const { votesFor, votesAgainst } = doc.data();
 
             if (votesFor.includes(context.auth.uid) || votesAgainst.includes(context.auth.uid)) {
-                throw new functions.https.HttpsError('invalid-argument', 'You have already voted');
+                return Promise.resolve();
             }
 
             if (data.vote) {

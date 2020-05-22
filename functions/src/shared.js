@@ -451,6 +451,10 @@ exports.joinTeamMidgame = functions
                 throw new functions.https.HttpsError('invalid-argument', 'There is no team with that name');
             }
 
+            if (teams.some(team => team.members.includes(context.auth.uid))) {
+                return Promise.resolve();
+            }
+
             const teamToBeAddedTo = teams.find(team => team.name === data.teamName);
             const previousIndex = teamToBeAddedTo.members.indexOf(teamToBeAddedTo.previousExplainer) || 0;
 

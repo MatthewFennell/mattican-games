@@ -102,12 +102,14 @@ const Guessing = props => {
         currentWordIndex, words, props.currentGameId]);
 
     const trashWord = useCallback(() => {
-        props.trashWordRequest(props.currentGameId, words[currentWordIndex]);
-        if (viewingSkippedWord) {
-            setViewingSkippedWord(false);
-            setSkippedWord('');
-        } else {
-            setCurrentWordIndex(currentWordIndex + 1);
+        if (words[currentWordIndex]) {
+            props.trashWordRequest(props.currentGameId, words[currentWordIndex]);
+            if (viewingSkippedWord) {
+                setViewingSkippedWord(false);
+                setSkippedWord('');
+            } else {
+                setCurrentWordIndex(currentWordIndex + 1);
+            }
         }
 
         // eslint-disable-next-line
@@ -165,7 +167,7 @@ const Guessing = props => {
 
                     {isActiveExplainerOnMyTeam(props.currentGame, props.auth.uid) && (
                         <div className={props.styles.guessDescribedWord}>
-                            {'Guess the word being described!'}
+                            Guess the word being described!
                         </div>
                     ) }
 
@@ -181,7 +183,7 @@ const Guessing = props => {
                  && props.auth.uid !== props.currentGame.activeExplainer
                  && (
                      <div className={props.styles.otherTeamGuessingMessage}>
-                         {'Shh! Other team is guessing'}
+                         Shh! Other team is guessing
                      </div>
                  )}
 
@@ -247,7 +249,7 @@ const Guessing = props => {
                                 >
                                     {viewingSkippedWord ? `Original word: ${words[currentWordIndex]}` : `Skipped word : ${skippedWord}`}
                                     <div className={props.styles.swapBackMessage}>
-                                    (Touch to swap)
+                                        (Touch to swap)
                                     </div>
                                 </div>
                             )}
