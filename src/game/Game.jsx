@@ -9,6 +9,7 @@ import GameNotStarted from './GameNotStarted';
 import AvalonGameStarted from './avalon/GameStarted';
 import HitlerGameStarted from './hitler/GameStarted';
 import WhoInHatGameStarted from './whoInHat/GameStarted';
+import OthelloGameStarted from './othello/GameStarted';
 import Articulate from './articulate/GameStarted';
 import ErrorModal from '../common/modal/ErrorModal';
 import { closeGameError } from './actions';
@@ -65,6 +66,17 @@ const Game = props => {
         if (props.currentGame.mode === constants.gameModes.Articulate) {
             return (
                 <Articulate
+                    auth={props.auth}
+                    currentGame={props.currentGame}
+                    currentGameId={props.currentGameId}
+                    users={props.users}
+                />
+            );
+        }
+
+        if (props.currentGame.mode === constants.gameModes.Othello) {
+            return (
+                <OthelloGameStarted
                     auth={props.auth}
                     currentGame={props.currentGame}
                     currentGameId={props.currentGameId}
@@ -153,7 +165,7 @@ export default withRouter(compose(
         {
             collection: 'games'
         }
-    ]),
+    ])
 )(Game));
 
 export { Game as GameUnconnected };

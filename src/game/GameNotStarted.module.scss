@@ -252,3 +252,13 @@
     margin-left: auto;
     margin-right: auto;
   }
+
+  .othelloDropdown {
+      text-align: center;
+      flex-wrap: wrap;
+      justify-content: space-evenly;
+  }
+
+  .doubleSelected {
+      display: flex;
+  }

@@ -8,6 +8,7 @@ import articulateSaga from './game/articulate/saga';
 import whoInHatSaga from './game/whoInHat/saga';
 import avalonSaga from './game/avalon/saga';
 import hitlerSaga from './game/hitler/saga';
+import othelloSaga from './game/othello/saga';
 
 export default function* rootSaga() {
     yield all([
@@ -16,6 +17,7 @@ export default function* rootSaga() {
         authSaga(),
         avalonSaga(),
         hitlerSaga(),
+        othelloSaga(),
         overviewSaga(),
         profileSaga(),
         gameSaga(),

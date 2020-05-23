@@ -249,7 +249,9 @@ module.exports.historyTypes = {
 
 module.exports.gameModes = {
     Avalon: 'Avalon',
-    Hitler: 'Hitler'
+    Hitler: 'Hitler',
+    Othello: 'Othello',
+    WhosInTheHat: 'Who\'s in the Hat'
 };
 
 const defaultTeamNames = {
@@ -297,3 +299,10 @@ module.exports.gameModes = {
 };
 
 module.exports.articulateMaxScore = 15;
+
+module.exports.othelloDifficulties = ['Easy', 'Medium', 'Hard', 'Extreme'];
+
+module.exports.othelloPlayerTypes = {
+    Human: 'Human',
+    Computer: 'Computer'
+};
