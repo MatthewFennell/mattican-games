@@ -31,14 +31,30 @@
     padding: 5px;
 }
 
+.isAvailableMove {
+    @include vertical-center-div();
+    height: 100%;
+}
+
+.availableDot {
+    border-radius: 50%;
+    background-color: $color-red;
+    height: 1vw;
+    width: 1vw;
+}
+
+.test {
+    padding: 200px;
+}
+
 .isBlack {
-    background-color: black;
+    background-color: $color-black;
 }
 
 .isWhite {
-    background-color: white;
+    background-color: $color-white;
 }
 
-.isEmpty {
-    // background-color: transparent;
+.cellWrapper:focus {
+    outline: 0;
 }

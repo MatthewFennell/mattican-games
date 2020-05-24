@@ -2,7 +2,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import * as constants from '../../constants';
 import defaultStyles from './GameStarted.module.scss';
 import GameActive from './statuses/GameActive';
 import GameFinished from './statuses/GameFinished';
@@ -32,9 +31,6 @@ const GameStarted = props => {
 
     return (
         <>
-            {/* <div className={props.styles.gameTitle}>
-                {constants.gameModes.Othello}
-            </div> */}
             {generateComponent()}
         </>
     );

@@ -63,14 +63,14 @@ exports.createOthelloGame = functions
                         throw new functions.https.HttpsError('already-exists', 'A game with that name already exists');
                     }
                     const initialBoard = {
+                        rowZero: [0, 0, 0, 0, 0, 0, 0, 0],
                         rowOne: [0, 0, 0, 0, 0, 0, 0, 0],
                         rowTwo: [0, 0, 0, 0, 0, 0, 0, 0],
-                        rowThree: [0, 0, 0, 0, 0, 0, 0, 0],
-                        rowFour: [0, 0, 0, 1, -1, 0, 0, 0],
-                        rowFive: [0, 0, 0, -1, 1, 0, 0, 0],
+                        rowThree: [0, 0, 0, 1, -1, 0, 0, 0],
+                        rowFour: [0, 0, 0, -1, 1, 0, 0, 0],
+                        rowFive: [0, 0, 0, 0, 0, 0, 0, 0],
                         rowSix: [0, 0, 0, 0, 0, 0, 0, 0],
-                        rowSeven: [0, 0, 0, 0, 0, 0, 0, 0],
-                        rowEight: [0, 0, 0, 0, 0, 0, 0, 0]
+                        rowSeven: [0, 0, 0, 0, 0, 0, 0, 0]
                     };
 
                     return db.collection('games').add({
@@ -144,16 +144,6 @@ exports.startGame = functions
             const players = fp.shuffle([constants.othelloPlayerTypes.Human, opponentType]);
 
             if (opponentType === constants.othelloPlayerTypes.Computer) {
-                console.log('Opponent is computer');
-
-                console.log('updated values', {
-                    playerBlack: players[0] === constants.othelloPlayerTypes.Human ? context.auth.uid : constants.othelloPlayerTypes.Computer,
-                    playerWhite: players[1] === constants.othelloPlayerTypes.Human ? context.auth.uid : constants.othelloPlayerTypes.Computer
-                });
-
-                console.log('other stuff', constants.othelloPlayerTypes);
-                console.log('');
-
                 return doc.ref.update({
                     activePlayer: -1,
                     hasStarted: true,
