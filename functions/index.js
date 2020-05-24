@@ -73,8 +73,6 @@ exports.createOthelloGame = functions
                         rowEight: [0, 0, 0, 0, 0, 0, 0, 0]
                     };
 
-                    // const players = fp.shuffle([constants.othelloPlayerTypes.Human, data.opponent]);
-
                     return db.collection('games').add({
                         activePlayer: -1,
                         board: initialBoard,
@@ -86,7 +84,7 @@ exports.createOthelloGame = functions
                         host: context.auth.uid,
                         mode: 'Othello',
                         name: data.name,
-                        opponentType: data.oppponent,
+                        opponentType: data.opponent,
                         playersReady: [],
                         usernameMappings: {
                             [context.auth.uid]: displayName
@@ -141,15 +139,36 @@ exports.startGame = functions
                 throw new functions.https.HttpsError('invalid-argument', 'Not everybody is ready');
             }
 
-            const { opponentType } = doc.data();
+            const { opponentType, currentPlayers } = doc.data();
 
             const players = fp.shuffle([constants.othelloPlayerTypes.Human, opponentType]);
+
+            if (opponentType === constants.othelloPlayerTypes.Computer) {
+                console.log('Opponent is computer');
+
+                console.log('updated values', {
+                    playerBlack: players[0] === constants.othelloPlayerTypes.Human ? context.auth.uid : constants.othelloPlayerTypes.Computer,
+                    playerWhite: players[1] === constants.othelloPlayerTypes.Human ? context.auth.uid : constants.othelloPlayerTypes.Computer
+                });
+
+                console.log('other stuff', constants.othelloPlayerTypes);
+                console.log('');
+
+                return doc.ref.update({
+                    activePlayer: -1,
+                    hasStarted: true,
+                    playerBlack: players[0] === constants.othelloPlayerTypes.Human ? context.auth.uid : constants.othelloPlayerTypes.Computer,
+                    playerWhite: players[1] === constants.othelloPlayerTypes.Human ? context.auth.uid : constants.othelloPlayerTypes.Computer
+                });
+            }
+
+            const randomPlayers = fp.shuffle(currentPlayers);
 
             return doc.ref.update({
                 activePlayer: -1,
                 hasStarted: true,
-                playerBlack: players[0],
-                playerWhite: players[1]
+                playerBlack: randomPlayers[0],
+                playerWhite: randomPlayers[1]
             });
         });
     });

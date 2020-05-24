@@ -12,7 +12,13 @@ const Cell = props => (
         [props.styles.right]: props.isRight
     })}
     >
-        <div className={props.styles.cellIcon} />
+        <div className={classNames({
+            [props.styles.cellIcon]: true,
+            [props.styles.isBlack]: props.value === -1,
+            [props.styles.isEmpty]: props.value === 0,
+            [props.styles.isWhite]: props.value === 1
+        })}
+        />
     </div>
 );
 
@@ -21,7 +27,8 @@ Cell.defaultProps = {
     isLeft: false,
     isRight: false,
     isTop: false,
-    styles: defaultStyles
+    styles: defaultStyles,
+    value: 0
 };
 
 Cell.propTypes = {
@@ -29,7 +36,8 @@ Cell.propTypes = {
     isLeft: PropTypes.bool,
     isRight: PropTypes.bool,
     isTop: PropTypes.bool,
-    styles: PropTypes.objectOf(PropTypes.string)
+    styles: PropTypes.objectOf(PropTypes.string),
+    value: PropTypes.number
 };
 
 export default Cell;

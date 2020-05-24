@@ -186,38 +186,38 @@ const Guessing = props => {
         || props.currentGame.isSpadeRound ? (
         // true ? (
             <>
-                {!props.currentGame.isSpadeRound && !props.currentGame.isFinalRound && (
-                    <div className={props.styles.remainingTime}>
-                        {Math.round(timeUntil)}
-                    </div>
-                )}
-                <div className={props.styles.infoWrapper}>
-                    <div className={props.styles.textWrapper}>
-                        <div>Team:</div>
-                        <div className={props.styles.textValue}>
-                            {props.currentGame.temporaryTeam || props.currentGame.activeTeam}
-                        </div>
-                    </div>
-
-                    <div className={props.styles.textWrapper}>
-                        <div>Category:</div>
-                        <div className={props.styles.textValue}>
-                            {props.currentGame.activeCategory}
-                        </div>
-                    </div>
-
-                    {props.currentGame.temporaryTeam && (
-                        <div className={props.styles.bonusRound}>
-                            {'Bonus round'}
+                    {!props.currentGame.isSpadeRound && !props.currentGame.isFinalRound && (
+                <div className={props.styles.remainingTime}>
+                            {Math.round(timeUntil)}
                         </div>
                     )}
+                    <div className={props.styles.infoWrapper}>
+                    <div className={props.styles.textWrapper}>
+                            <div>Team:</div>
+                            <div className={props.styles.textValue}>
+                            {props.currentGame.temporaryTeam || props.currentGame.activeTeam}
+                        </div>
+                        </div>
+
+                    <div className={props.styles.textWrapper}>
+                            <div>Category:</div>
+                            <div className={props.styles.textValue}>
+                            {props.currentGame.activeCategory}
+                        </div>
+                        </div>
+
+                    {props.currentGame.temporaryTeam && (
+                            <div className={props.styles.bonusRound}>
+                        Bonus round
+                            </div>
+                        )}
 
                     {!isActiveExplainerOnMyTeam(props.currentGame, props.auth.uid)
                  && props.auth.uid !== props.currentGame.activeExplainer
                  && !props.currentGame.isSpadeRound && !props.currentGame.isFinalRound
                  && (
                      <div className={props.styles.otherTeamGuessingMessage}>
-                         {'Shh! Other team is guessing'}
+                         Shh! Other team is guessing
                      </div>
                  )}
 
@@ -232,14 +232,14 @@ const Guessing = props => {
 
 
                     {(props.currentGame.isSpadeRound || props.currentGame.isFinalRound) && (
-                        <div className={props.styles.allPlayMessage}>
-                            {'This is an all play round!'}
-                        </div>
-                    )}
+                            <div className={props.styles.allPlayMessage}>
+                        This is an all play round!
+                            </div>
+                        )}
                 </div>
 
 
-                {!isActiveExplainerOnMyTeam(props.currentGame, props.auth.uid)
+                    {!isActiveExplainerOnMyTeam(props.currentGame, props.auth.uid)
                  && props.auth.uid !== props.currentGame.activeExplainer
                  && !props.currentGame.isSpadeRound && !props.currentGame.isFinalRound
                  && (
@@ -262,140 +262,140 @@ const Guessing = props => {
                      </div>
                  ) }
 
-                {props.auth.uid === props.currentGame.activeExplainer && (
-                    <div className={props.styles.describeWords}>
-                        <div className={classNames({
-                            [props.styles.wordToDescribe]: true,
-                            [props.styles[props.currentGame.activeCategory]]: true
-                        })}
-                        >
-                            {viewingSkippedWord ? skippedWord : fp.flow(
-                                fp.get(props.currentGame.activeCategory),
-                                fp.get(currentWordIndex)
-                            )(words) || 'No cards left'}
-                        </div>
-
-                        <div className={props.styles.allButtonsWrapper}>
-
-                            <div className={props.styles.buttonOptions}>
-                                <div className={props.styles.unlimitedSkip}>
-                                    <StyledButton
-                                        disabled={isSkippingDisabled(
-                                            props.currentGame.skippingRule, skippedWord
-                                        ) || props.currentGame.isSpadeRound
-                                        || props.currentGame.isFinalRound}
-                                        onClick={skipWord}
-                                        text="Skip word"
-                                    />
-                                </div>
-
-                                <div className={props.styles.trashWord}>
-                                    <StyledButton
-                                        onClick={trashWord}
-                                        text="Trash word"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className={props.styles.gotWord}>
-                                <StyledButton
-                                    onClick={gotWord}
-                                    text="Got it!"
-                                />
-                            </div>
-                        </div>
-
-                        {props.currentGame.skippingRule === constants.articulateSkipping.OneSkip.split(' ')
-                            .join('') && skippedWord && (
-                            <div
-                                className={props.styles.skippedWord}
-                                tabIndex={0}
-                                role="button"
-                                onClick={swapSkippedWord}
-                            >
-                                {viewingSkippedWord ? `Original word: ${fp.flow(
+                    {props.auth.uid === props.currentGame.activeExplainer && (
+                <div className={props.styles.describeWords}>
+                            <div className={classNames({
+                                [props.styles.wordToDescribe]: true,
+                                [props.styles[props.currentGame.activeCategory]]: true
+                            })}
+                    >
+                        {viewingSkippedWord ? skippedWord : fp.flow(
                                     fp.get(props.currentGame.activeCategory),
                                     fp.get(currentWordIndex)
-                                )(words)}` : `Skipped word : ${skippedWord}`}
-                                <div className={props.styles.swapBackMessage}>
-                                    (Touch to swap)
-                                </div>
-                            </div>
-                        )}
+                                )(words) || 'No cards left'}
                     </div>
-                ) }
-                <div className={props.styles.viewTeamsWrapper}>
+
+                            <div className={props.styles.allButtonsWrapper}>
+
+                        <div className={props.styles.buttonOptions}>
+                                    <div className={props.styles.unlimitedSkip}>
+                                <StyledButton
+                                            disabled={isSkippingDisabled(
+                                                props.currentGame.skippingRule, skippedWord
+                                            ) || props.currentGame.isSpadeRound
+                                        || props.currentGame.isFinalRound}
+                                            onClick={skipWord}
+                                            text="Skip word"
+                                />
+                            </div>
+
+                                    <div className={props.styles.trashWord}>
+                                <StyledButton
+                                            onClick={trashWord}
+                                            text="Trash word"
+                                />
+                            </div>
+                                </div>
+
+                        <div className={props.styles.gotWord}>
+                                    <StyledButton
+                                onClick={gotWord}
+                                text="Got it!"
+                                    />
+                                </div>
+                    </div>
+
+                            {props.currentGame.skippingRule === constants.articulateSkipping.OneSkip.split(' ')
+                                .join('') && skippedWord && (
+                                <div
+                                    className={props.styles.skippedWord}
+                                    tabIndex={0}
+                                    role="button"
+                                    onClick={swapSkippedWord}
+                                >
+                                    {viewingSkippedWord ? `Original word: ${fp.flow(
+                                        fp.get(props.currentGame.activeCategory),
+                                        fp.get(currentWordIndex)
+                                    )(words)}` : `Skipped word : ${skippedWord}`}
+                                    <div className={props.styles.swapBackMessage}>
+                                        (Touch to swap)
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    ) }
+                    <div className={props.styles.viewTeamsWrapper}>
                     <Fade
-                        checked={viewingTeams}
-                        onChange={toggleViewingTeams}
-                        includeCheckbox
-                        label="View teams"
+                            checked={viewingTeams}
+                            onChange={toggleViewingTeams}
+                            includeCheckbox
+                            label="View teams"
                     >
-                        <TeamsAndScore
+                            <TeamsAndScore
                             auth={props.auth}
                             currentGame={props.currentGame}
                             showScore
                             users={props.users}
                         />
-                    </Fade>
+                        </Fade>
                 </div>
-                <SuccessModal
+                    <SuccessModal
                     backdrop
                     closeModal={closeSpadeFinished}
                     error
                     isOpen={spadeRoundCompleted}
                     headerMessage="Select the winner"
-                >
+                    >
                     <div className={props.styles.spadeRoundCompleted}>
-                        <Dropdown
+                            <Dropdown
                             title="Choose a team"
                             value={winningSpadeTeam}
                             onChange={setWinningSpadeTeam}
                             options={props.currentGame.teams.map(team => ({
-                                id: team.name,
-                                value: team.name,
-                                text: team.name
-                            }))}
+                                    id: team.name,
+                                    value: team.name,
+                                    text: team.name
+                                }))}
                         />
 
-                        <div className={props.styles.confirmButtons}>
+                            <div className={props.styles.confirmButtons}>
                             <StyledButton
-                                disabled={!winningSpadeTeam}
-                                text="Confirm"
-                                onClick={confirmSpadeWinner}
-                            />
+                                    disabled={!winningSpadeTeam}
+                                    text="Confirm"
+                                    onClick={confirmSpadeWinner}
+                                />
                         </div>
-                    </div>
+                        </div>
                 </SuccessModal>
-                <SuccessModal
+                    <SuccessModal
                     backdrop
                     closeModal={closeFinalRound}
                     error
                     isOpen={finalRoundCompleted}
                     headerMessage="Select the winner"
-                >
+                    >
                     <div className={props.styles.spadeRoundCompleted}>
-                        <Dropdown
+                            <Dropdown
                             title="Choose a team"
                             value={winningFinalTeam}
                             onChange={setWinningFinalTeam}
                             options={props.currentGame.teams.map(team => ({
-                                id: team.name,
-                                value: team.name,
-                                text: team.name
-                            }))}
+                                    id: team.name,
+                                    value: team.name,
+                                    text: team.name
+                                }))}
                         />
 
-                        <div className={props.styles.confirmButtons}>
+                            <div className={props.styles.confirmButtons}>
                             <StyledButton
-                                disabled={!winningFinalTeam}
-                                text="Confirm"
-                                onClick={confirmFinalWinner}
-                            />
+                                    disabled={!winningFinalTeam}
+                                    text="Confirm"
+                                    onClick={confirmFinalWinner}
+                                />
                         </div>
-                    </div>
+                        </div>
                 </SuccessModal>
-            </>
+                </>
             ) : (
                 <div className={props.styles.loadingWrapper}>
                     <div>Loading score</div>

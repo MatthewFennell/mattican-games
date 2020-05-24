@@ -12,14 +12,14 @@ const Row = props => (
         [props.styles.bottom]: props.isBottom
     })}
     >
-        <Cell isTop={props.isTop} isBottom={props.isBottom} isLeft />
-        <Cell isTop={props.isTop} isBottom={props.isBottom} />
-        <Cell isTop={props.isTop} isBottom={props.isBottom} />
-        <Cell isTop={props.isTop} isBottom={props.isBottom} />
-        <Cell isTop={props.isTop} isBottom={props.isBottom} />
-        <Cell isTop={props.isTop} isBottom={props.isBottom} />
-        <Cell isTop={props.isTop} isBottom={props.isBottom} />
-        <Cell isTop={props.isTop} isBottom={props.isBottom} isRight />
+        <Cell value={props.row[0]} isTop={props.isTop} isBottom={props.isBottom} isLeft />
+        <Cell value={props.row[1]} isTop={props.isTop} isBottom={props.isBottom} />
+        <Cell value={props.row[2]} isTop={props.isTop} isBottom={props.isBottom} />
+        <Cell value={props.row[3]} isTop={props.isTop} isBottom={props.isBottom} />
+        <Cell value={props.row[4]} isTop={props.isTop} isBottom={props.isBottom} />
+        <Cell value={props.row[5]} isTop={props.isTop} isBottom={props.isBottom} />
+        <Cell value={props.row[6]} isTop={props.isTop} isBottom={props.isBottom} />
+        <Cell value={props.row[7]} isTop={props.isTop} isBottom={props.isBottom} isRight />
     </div>
 );
 
@@ -27,6 +27,7 @@ Row.defaultProps = {
     isBottom: false,
     isMiddle: false,
     isTop: false,
+    row: [0, 0, 0, 0, 0, 0, 0],
     styles: defaultStyles
 };
 
@@ -34,6 +35,7 @@ Row.propTypes = {
     isBottom: PropTypes.bool,
     isMiddle: PropTypes.bool,
     isTop: PropTypes.bool,
+    row: PropTypes.arrayOf(PropTypes.number),
     styles: PropTypes.objectOf(PropTypes.string)
 };
 

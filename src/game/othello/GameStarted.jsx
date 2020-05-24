@@ -32,9 +32,9 @@ const GameStarted = props => {
 
     return (
         <>
-            <div className={props.styles.gameTitle}>
+            {/* <div className={props.styles.gameTitle}>
                 {constants.gameModes.Othello}
-            </div>
+            </div> */}
             {generateComponent()}
         </>
     );
