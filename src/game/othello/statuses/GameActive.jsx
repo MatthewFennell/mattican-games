@@ -8,7 +8,7 @@ import * as queries from '../queries';
 const GameActive = props => {
     const onCellClick = useCallback((x, y) => {
         console.log('x', x, ` y, ${y}`);
-        // queries.getAvailableMoves(props.currentGame.board, props.currentGame.activePlayer);
+        queries.placeDisc(props.currentGame.board, y, x, props.currentGame.activePlayer);
     }, []);
 
     return (
