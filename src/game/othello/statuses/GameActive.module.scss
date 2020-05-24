@@ -1,1 +1,13 @@
 @import "../../../common/Styles.scss";
+
+.rowWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: $color-green;
+    justify-content: space-evenly;
+    padding: $spacing-tiny;
+}
+
+.boardWrapper {
+    padding: $spacing-small;
+}

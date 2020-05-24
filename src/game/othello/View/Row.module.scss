@@ -1,0 +1,15 @@
+@import "../../../common/Styles.scss";
+
+.rowWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.bottom {
+    padding-bottom: $spacing-medium;
+}
+
+.top {
+    padding-top: $spacing-medium;
+}
