@@ -15,7 +15,8 @@ const Cell = props => (
         })}
         tabIndex={0}
         role="button"
-        onClick={() => props.onCellClick(props.x, props.y)}
+        onClick={() => props.onCellClick(props.y, props.x)}
+        onMouseEnter={() => props.onMouseEnter(props.y, props.x)}
     >
         <div className={classNames({
             [props.styles.cellIcon]: true,
@@ -35,6 +36,7 @@ const Cell = props => (
 Cell.defaultProps = {
     isAvailableMove: false,
     onCellClick: noop,
+    onMouseEnter: noop,
     styles: defaultStyles,
     value: 0,
     x: -1,
@@ -44,6 +46,7 @@ Cell.defaultProps = {
 Cell.propTypes = {
     isAvailableMove: PropTypes.bool,
     onCellClick: PropTypes.func,
+    onMouseEnter: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),
     value: PropTypes.number,
     x: PropTypes.number,

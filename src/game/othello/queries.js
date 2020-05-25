@@ -11,6 +11,17 @@ const convertBoard = board => [
     board.rowSeven
 ];
 
+const unconvertBoard = board => ({
+    rowZero: board[0],
+    rowOne: board[1],
+    rowTwo: board[2],
+    rowThree: board[3],
+    rowFour: board[4],
+    rowFive: board[5],
+    rowSix: board[6],
+    rowSeven: board[7]
+});
+
 // When placing a disc at [row][column], how many discs flip above the clicked cell
 const discsFlippedAbove = (board, row, column, playerNumber, flipping) => {
     let numberOfDiscsFlipped = 0;
@@ -73,7 +84,7 @@ const discsFlippedBelow = (board, row, column, playerNumber, flipping) => {
         for (let x = row + 1; x < rowBelow; x += 1) {
             numberOfDiscsFlipped += 1;
             if (flipping) {
-                boardCopy[row][x] = playerNumber;
+                boardCopy[x][column] = playerNumber;
             }
         }
     }
@@ -109,7 +120,7 @@ const discsFlippedLeft = (board, row, column, playerNumber, flipping) => {
         for (let x = columnLeft + 1; x < column; x += 1) {
             numberOfDiscsFlipped += 1;
             if (flipping) {
-                boardCopy[row][columnLeft] = playerNumber;
+                boardCopy[row][x] = playerNumber;
             }
         }
     }
@@ -133,7 +144,7 @@ const discsFlippedRight = (board, row, column, playerNumber, flipping) => {
     let columnRight = column;
     const boardCopy = _.cloneDeep(board);
 
-    while (!foundDiscRight && columnRight > 0 && !gapRight) {
+    while (!foundDiscRight && columnRight < 7 && !gapRight) {
         columnRight += 1;
         if (board[row][columnRight] === playerNumber) {
             foundDiscRight = true;
@@ -222,7 +233,7 @@ const discsFlippedLeftDown = (board, row, column, playerNumber, flipping) => {
     if (foundDiscLeftDown) {
         while (columnLeft < column - 1 && rowBelow > row + 1) {
             columnLeft += 1;
-            rowBelow += 1;
+            rowBelow -= 1;
             numberOfDiscsFlipped += 1;
             if (flipping) {
                 boardCopy[rowBelow][columnLeft] = playerNumber;
@@ -355,9 +366,10 @@ export const placeDisc = (board, row, column, playerNumber) => {
         updatedBoard = discsFlippedLeftDown(updatedBoard, row, column, playerNumber, true);
         updatedBoard = discsFlippedRightUp(updatedBoard, row, column, playerNumber, true);
         updatedBoard = discsFlippedRightDown(updatedBoard, row, column, playerNumber, true);
-        return updatedBoard;
+        updatedBoard[row][column] = playerNumber;
+        return unconvertBoard(updatedBoard);
     }
-    console.log('Cannot place disc there');
+    return board;
 };
 
 
