@@ -48,10 +48,23 @@ export function* start(api, action) {
     }
 }
 
+export function* placeDisc(api, action) {
+    try {
+        yield call(api.placeDisc, ({
+            gameId: action.gameId,
+            row: action.row,
+            column: action.column
+        }));
+    } catch (error) {
+        yield put(commonActions.gameError(error, 'Place Disc error'));
+    }
+}
+
 export default function* othelloSaga() {
     yield all([
         takeEvery(overviewActions.CREATE_GAME_REQUEST, createGame, othelloApi),
         takeEvery(actions.EDIT_GAME_REQUEST, editGame, othelloApi),
-        takeEvery(commonActions.START_ANY_GAME_REQUEST, start, othelloApi)
+        takeEvery(commonActions.START_ANY_GAME_REQUEST, start, othelloApi),
+        takeEvery(actions.PLACE_DISC_REQUEST, placeDisc, othelloApi)
     ]);
 }

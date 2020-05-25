@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
+import { noop } from 'lodash';
 import defaultStyles from './GameActive.module.scss';
 import Board from '../View/Board';
 import GameInfo from './GameInfo';
@@ -10,8 +11,10 @@ const GameActive = props => {
     const [hoverY, setHoverY] = useState(-1);
 
     const onCellClick = useCallback((row, col) => {
-        queries.placeDisc(props.currentGame.board, row, col, props.currentGame.activePlayer);
-    }, [props.currentGame.board, props.currentGame.activePlayer]);
+        props.placeDiscRequest(props.currentGameId, row, col);
+
+        // eslint-disable-next-line
+    }, [props.currentGame.board, props.currentGame.activePlayer, props.currentGameId]);
 
     const onMouseEnter = useCallback((row, col) => {
         setHoverY(row);
@@ -30,6 +33,7 @@ const GameActive = props => {
     return (
         <div className={props.styles.gameActiveWrapper}>
             <GameInfo
+                auth={props.auth}
                 currentGame={props.currentGame}
                 users={props.users}
             />
@@ -65,6 +69,7 @@ GameActive.defaultProps = {
         playerWhite: ''
     },
     currentGameId: '',
+    placeDiscRequest: noop,
     styles: defaultStyles,
     users: {}
 };
@@ -89,6 +94,7 @@ GameActive.propTypes = {
         playerWhite: PropTypes.string
     }),
     currentGameId: PropTypes.string,
+    placeDiscRequest: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})
 };

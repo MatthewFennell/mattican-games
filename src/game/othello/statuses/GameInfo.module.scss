@@ -1,9 +1,12 @@
 @import "../../../common/Styles.scss";
 
 .gameInfo {
-    padding-top: $spacing-small;
     display: flex;
     justify-content: space-evenly;
+}
+
+.paddingTopGameInfo {
+    padding-top: $spacing-small;
 }
 
 .textWrapper {
@@ -68,4 +71,23 @@
     border-radius: 50%;
     padding: 5px;
     background-color: white;  
+}
+
+.gameFinishedWrapper {
+    text-align: center;
+    margin-top: $spacing-small;
+    font-weight: bold;
+    color: $color-blue;
+    font-size: $font-size-large;
+}
+
+.gameFinishedWrapper {
+    .textWrapper {
+        font-size: $font-size-large;
+    }
+    
+    .textValue {
+        font-size: $font-size-large;
+        color: $color-red;
+    }
 }

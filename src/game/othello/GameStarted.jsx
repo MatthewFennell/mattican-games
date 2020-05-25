@@ -4,30 +4,18 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import defaultStyles from './GameStarted.module.scss';
 import GameActive from './statuses/GameActive';
-import GameFinished from './statuses/GameFinished';
+import { placeDiscRequest } from './actions';
 
 const GameStarted = props => {
-    const generateComponent = () => {
-        if (!props.currentGame.hasFinished) {
-            return (
-                <GameActive
-                    auth={props.auth}
-                    currentGame={props.currentGame}
-                    currentGameId={props.currentGameId}
-                    users={props.users}
-                />
-            );
-        }
-
-        return (
-            <GameFinished
-                auth={props.auth}
-                currentGame={props.currentGame}
-                currentGameId={props.currentGameId}
-                users={props.users}
-            />
-        );
-    };
+    const generateComponent = () => (
+        <GameActive
+            auth={props.auth}
+            currentGame={props.currentGame}
+            currentGameId={props.currentGameId}
+            placeDiscRequest={props.placeDiscRequest}
+            users={props.users}
+        />
+    );
 
     return (
         <>
@@ -41,7 +29,6 @@ GameStarted.defaultProps = {
         uid: ''
     },
     currentGame: {
-        hasFinished: false
     },
     currentGameId: '',
     users: {},
@@ -49,19 +36,19 @@ GameStarted.defaultProps = {
 };
 
 GameStarted.propTypes = {
-
     auth: PropTypes.shape({
         uid: PropTypes.string
     }),
     currentGame: PropTypes.shape({
-        hasFinished: PropTypes.bool
     }),
     currentGameId: PropTypes.string,
+    placeDiscRequest: PropTypes.func.isRequired,
     users: PropTypes.shape({}),
     styles: PropTypes.objectOf(PropTypes.string)
 };
 
 const mapDispatchToProps = {
+    placeDiscRequest
 };
 
 export default connect(null, mapDispatchToProps)(GameStarted);

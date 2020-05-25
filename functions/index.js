@@ -5,6 +5,7 @@ const fp = require('lodash/fp');
 const lodash = require('lodash');
 const constants = require('./src/constants');
 const common = require('./src/common');
+const queries = require('./src/othelloLogic/queries');
 
 admin.initializeApp(functions.config().firebase);
 
@@ -159,6 +160,80 @@ exports.startGame = functions
                 hasStarted: true,
                 playerBlack: randomPlayers[0],
                 playerWhite: randomPlayers[1]
+            });
+        });
+    });
+
+const runtimeOpts = {
+    timeoutSeconds: 30,
+    memory: '128MB'
+};
+
+exports.placeDisc = functions
+    .runWith(runtimeOpts)
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            const {
+                activePlayer, board, playerBlack, playerWhite
+            } = doc.data();
+
+            if (activePlayer === 1 && context.auth.uid !== playerWhite) {
+                throw new functions.https.HttpsError('invalid-argument', 'It is not your turn');
+            }
+
+            if (activePlayer === -1 && context.auth.uid !== playerBlack) {
+                throw new functions.https.HttpsError('invalid-argument', 'It is not your turn');
+            }
+
+            if (data.row < 0 || data.row > 7 || !common.isNumber(data.row)) {
+                throw new functions.https.HttpsError('invalid-argument', 'Invalid row');
+            }
+
+            if (data.column < 0 || data.column > 7 || !common.isNumber(data.column)) {
+                throw new functions.https.HttpsError('invalid-argument', 'Invalid row');
+            }
+
+            if (!queries.placeDisc(board, data.row, data.column, activePlayer)) {
+                throw new functions.https.HttpsError('invalid-argument', 'That is not a valid move');
+            }
+
+            const newBoard = queries.placeDisc(board, data.row, data.column, activePlayer);
+
+            const availableMovesWhite = queries.getAvailableMoves(newBoard, 1);
+            const availableMovesBlack = queries.getAvailableMoves(newBoard, -1);
+
+            if (availableMovesWhite.length === 0 && availableMovesBlack.length === 0) {
+                return doc.ref.update({
+                    board: newBoard,
+                    hasFinished: true
+                });
+            }
+
+            let nextPlayer = activePlayer * -1;
+
+
+            // If black has no moves available, then White must have moves available since we know one of them does
+            // Therefore the next player must be white
+            if (availableMovesBlack.length === 0) {
+                nextPlayer = 1;
+                console.log('FORCING NEXT PLAYER TO BE WHITE');
+            }
+
+            // Vice versa
+            if (availableMovesWhite.length === 0) {
+                console.log('FORCING NEXT PLAYER TO BE BLACK');
+                nextPlayer = -1;
+            }
+
+            return doc.ref.update({
+                activePlayer: nextPlayer,
+                board: newBoard
             });
         });
     });

@@ -1,4 +1,4 @@
-import _ from 'lodash';
+const _ = require('lodash');
 
 const convertBoard = board => [
     board.rowZero,
@@ -355,10 +355,7 @@ const canPlaceDisc = (board, row, column, playerNumber) => {
     return false;
 };
 
-// Takes a move from a player
-// If that results in flips, returns the new board
-// Otherwise returns the old board
-export const placeDisc = (board, row, column, playerNumber) => {
+module.exports.placeDisc = (board, row, column, playerNumber) => {
     const transformedBoard = convertBoard(board);
     if (canPlaceDisc(transformedBoard, row, column, playerNumber)) {
         let updatedBoard = discsFlippedAbove(transformedBoard, row, column, playerNumber, true);
@@ -373,15 +370,10 @@ export const placeDisc = (board, row, column, playerNumber) => {
         updatedBoard[row][column] = playerNumber;
         return unconvertBoard(updatedBoard);
     }
-    return board;
+    return false;
 };
 
-/* Gets all available moves for a given player
-        [
-            [row, column], ...[row,column]
-        ]
-*/
-export const getAvailableMoves = (board, activePlayer) => {
+module.exports.getAvailableMoves = (board, activePlayer) => {
     const formattedBoard = convertBoard(board);
     const availableMoves = [];
     for (let row = 0; row <= 7; row += 1) {

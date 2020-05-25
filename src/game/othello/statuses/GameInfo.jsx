@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
+import Fade from '../../../common/Fade/Fade';
 import defaultStyles from './GameInfo.module.scss';
 import * as constants from '../../../constants';
 import * as helpers from '../../helpers';
@@ -16,51 +18,91 @@ const getActivePlayerName = (game, users) => {
         ? 'Computer' : helpers.mapUserIdToName(users, game.playerWhite);
 };
 
+const getPlayerName = (game, users, player, myId) => {
+    const name = player === 1 ? game.playerWhite : game.playerBlack;
+    if (name === constants.othelloPlayerTypes.Computer) {
+        return 'Computer';
+    }
+    return (helpers.mapUserIdToName(users, name)) + (name === myId ? ' (you)' : '');
+};
+
+const getWinner = (game, users) => {
+    const whiteScore = calculateScore(game.board, 1);
+    const blackScore = calculateScore(game.board, -1);
+
+    if (whiteScore > blackScore) {
+        return helpers.mapUserIdToName(users, game.playerWhite);
+    }
+    if (blackScore > whiteScore) {
+        return helpers.mapUserIdToName(users, game.playerBlack);
+    }
+    return 'No Winners! It was a draw';
+};
+
 const GameInfo = props => (
-    <div className={props.styles.gameInfo}>
-
-        <div className={props.styles.scoreBlack}>
-            <div className={props.styles.blackScore}>
-                {calculateScore(props.currentGame.board, -1)}
-            </div>
-            <div className={props.styles.blackIcon} />
-        </div>
-
-        <div className={props.styles.centerInfo}>
-            <div>
+    <>
+        <Fade
+            checked={props.currentGame.hasFinished}
+        >
+            <div className={props.styles.gameFinishedWrapper}>
+                Game Finished
                 <div className={props.styles.textWrapper}>
-                    <div>Black player:</div>
+                    <div>Winner:</div>
                     <div className={props.styles.textValue}>
-                        {props.currentGame.playerBlack === constants.othelloPlayerTypes.Computer
-                            ? 'Computer' : helpers.mapUserIdToName(props.users, props.currentGame.playerBlack)}
-                    </div>
-                </div>
-                <div className={props.styles.textWrapper}>
-                    <div>White player:</div>
-                    <div className={props.styles.textValue}>
-                        {props.currentGame.playerWhite === constants.othelloPlayerTypes.Computer
-                            ? 'Computer' : helpers.mapUserIdToName(props.users, props.currentGame.playerWhite)}
-                    </div>
-                </div>
-                <div className={props.styles.textWrapper}>
-                    <div>Active player:</div>
-                    <div className={props.styles.textValue}>
-                        {getActivePlayerName(props.currentGame, props.users)}
+                        {getWinner(props.currentGame, props.users)}
                     </div>
                 </div>
             </div>
-        </div>
+        </Fade>
+        <div className={classNames({
+            [props.styles.gameInfo]: true,
+            [props.styles.paddingTopGameInfo]: !props.currentGame.hasFinished
+        })}
+        >
+            <div className={props.styles.scoreBlack}>
+                <div className={props.styles.blackScore}>
+                    {calculateScore(props.currentGame.board, -1)}
+                </div>
+                <div className={props.styles.blackIcon} />
+            </div>
 
-        <div className={props.styles.scoreWhite}>
-            <div className={props.styles.whiteIcon} />
-            <div className={props.styles.whiteScore}>
-                {calculateScore(props.currentGame.board, 1)}
+            <div className={props.styles.centerInfo}>
+                <div>
+                    <div className={props.styles.textWrapper}>
+                        <div>Black player:</div>
+                        <div className={props.styles.textValue}>
+                            {getPlayerName(props.currentGame, props.users, -1, props.auth.uid)}
+                        </div>
+                    </div>
+                    <div className={props.styles.textWrapper}>
+                        <div>White player:</div>
+                        <div className={props.styles.textValue}>
+                            {getPlayerName(props.currentGame, props.users, 1, props.auth.uid)}
+                        </div>
+                    </div>
+                    <div className={props.styles.textWrapper}>
+                        <div>Active player:</div>
+                        <div className={props.styles.textValue}>
+                            {getActivePlayerName(props.currentGame, props.users)}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className={props.styles.scoreWhite}>
+                <div className={props.styles.whiteIcon} />
+                <div className={props.styles.whiteScore}>
+                    {calculateScore(props.currentGame.board, 1)}
+                </div>
             </div>
         </div>
-    </div>
+    </>
 );
 
 GameInfo.defaultProps = {
+    auth: {
+        uid: ''
+    },
     currentGame: {
         activePlayer: 1,
         board: {
@@ -73,6 +115,7 @@ GameInfo.defaultProps = {
             rowSix: [],
             rowSeven: []
         },
+        hasFinished: false,
         playerBlack: '',
         playerWhite: ''
     },
@@ -81,6 +124,9 @@ GameInfo.defaultProps = {
 };
 
 GameInfo.propTypes = {
+    auth: PropTypes.shape({
+        uid: PropTypes.string
+    }),
     currentGame: PropTypes.shape({
         activePlayer: PropTypes.number,
         board: PropTypes.shape({
@@ -93,6 +139,7 @@ GameInfo.propTypes = {
             rowSix: PropTypes.arrayOf(PropTypes.number),
             rowSeven: PropTypes.arrayOf(PropTypes.number)
         }),
+        hasFinished: PropTypes.bool,
         playerBlack: PropTypes.string,
         playerWhite: PropTypes.string
     }),
