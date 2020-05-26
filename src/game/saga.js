@@ -46,6 +46,8 @@ export function* leaveMidgame(api, action) {
             yield call(api.sharedLeaveMidgame, ({
                 gameId: action.gameId
             }));
+        } else if (action.mode === constants.gameModes.Othello) {
+            // pass
         } else {
             yield call(api.leaveMidgame, ({
                 gameId: action.gameId

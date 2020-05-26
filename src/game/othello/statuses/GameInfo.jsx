@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import { noop } from 'lodash';
 import Fade from '../../../common/Fade/Fade';
 import GameFinished from './GameFinished';
@@ -56,12 +55,7 @@ const GameInfo = props => (
                 </div>
             </div>
         </Fade>
-        <div className={classNames({
-            [props.styles.gameInfo]: true,
-            [props.styles.paddingTopGameInfo]: !props.currentGame.hasFinished
-        })}
-        >
-            {' '}
+        <div className={props.styles.gameInfo}>
             <div className={props.styles.centerInfo}>
                 <div>
                     <div className={props.styles.scoreWrapper}>
@@ -101,10 +95,10 @@ const GameInfo = props => (
         </div>
 
         <div>
-            {props.currentGame.hasFinished && (
+            {(props.currentGame.hasFinished || props.currentGame.hasResigned) && (
                 <GameFinished
+                    hasResigned={props.currentGame.hasResigned}
                     leaveGameRequest={props.leaveGameRequest}
-                    rematchRequest={props.rematchRequest}
                 />
             )}
         </div>
@@ -128,11 +122,11 @@ GameInfo.defaultProps = {
             rowSeven: []
         },
         hasFinished: false,
+        hasResigned: false,
         playerBlack: '',
         playerWhite: ''
     },
     leaveGameRequest: noop,
-    rematchRequest: noop,
     styles: defaultStyles,
     users: {}
 };
@@ -154,11 +148,11 @@ GameInfo.propTypes = {
             rowSeven: PropTypes.arrayOf(PropTypes.number)
         }),
         hasFinished: PropTypes.bool,
+        hasResigned: PropTypes.bool,
         playerBlack: PropTypes.string,
         playerWhite: PropTypes.string
     }),
     leaveGameRequest: PropTypes.func,
-    rematchRequest: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})
 };

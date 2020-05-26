@@ -70,12 +70,23 @@ export function* leaveGame(api, action) {
     }
 }
 
+export function* resign(api, action) {
+    try {
+        yield call(api.resign, ({
+            gameId: action.gameId
+        }));
+    } catch (error) {
+        yield put(commonActions.gameError(error, 'Resign error'));
+    }
+}
+
 export default function* othelloSaga() {
     yield all([
         takeEvery(overviewActions.CREATE_GAME_REQUEST, createGame, othelloApi),
         takeEvery(actions.EDIT_GAME_REQUEST, editGame, othelloApi),
         takeEvery(commonActions.START_ANY_GAME_REQUEST, start, othelloApi),
         takeEvery(actions.PLACE_DISC_REQUEST, placeDisc, othelloApi),
-        takeEvery(actions.LEAVE_GAME_REQUEST, leaveGame, othelloApi)
+        takeEvery(actions.LEAVE_GAME_REQUEST, leaveGame, othelloApi),
+        takeEvery(commonActions.LEAVE_MIDGAME_REQUEST, resign, othelloApi)
     ]);
 }

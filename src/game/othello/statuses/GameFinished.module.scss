@@ -1,11 +1,13 @@
 @import "../../../common/Styles.scss";
 
-.gameFinishedWrapper {
-    display: flex;
-    justify-content: space-evenly;
-}
-
 .leaveButton {
     text-align: center;
     justify-content: center;
+}
+
+.opponentResigned {
+    text-align: center;
+    font-weight: bold;
+    color: $color-red;
+    font-size: $font-size-medium;
 }

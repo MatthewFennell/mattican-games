@@ -44,7 +44,6 @@ const GameActive = props => {
                 auth={props.auth}
                 currentGame={props.currentGame}
                 leaveGameRequest={props.leaveGameRequest}
-                rematchRequest={props.rematchRequest}
                 users={props.users}
             />
         </div>
@@ -74,7 +73,6 @@ GameActive.defaultProps = {
     currentGameId: '',
     leaveGameRequest: noop,
     placeDiscRequest: noop,
-    rematchRequest: noop,
     styles: defaultStyles,
     users: {}
 };
@@ -102,7 +100,6 @@ GameActive.propTypes = {
     currentGameId: PropTypes.string,
     leaveGameRequest: PropTypes.func,
     placeDiscRequest: PropTypes.func,
-    rematchRequest: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})
 };

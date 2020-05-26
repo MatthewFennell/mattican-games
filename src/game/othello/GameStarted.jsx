@@ -30,6 +30,7 @@ GameStarted.defaultProps = {
         uid: ''
     },
     currentGame: {
+        hasResigned: false
     },
     currentGameId: '',
     users: {},
@@ -41,6 +42,7 @@ GameStarted.propTypes = {
         uid: PropTypes.string
     }),
     currentGame: PropTypes.shape({
+        hasResigned: PropTypes.bool
     }),
     currentGameId: PropTypes.string,
     leaveGameRequest: PropTypes.func.isRequired,

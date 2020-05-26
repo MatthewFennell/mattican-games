@@ -80,6 +80,7 @@ exports.createOthelloGame = functions
                         currentPlayers: [context.auth.uid],
                         difficulty: data.difficulty ? data.difficulty : 'N/A',
                         hasFinished: false,
+                        hasResigned: false,
                         hasStarted: false,
                         history: [],
                         host: context.auth.uid,
@@ -255,6 +256,22 @@ exports.leaveGame = functions
             }
 
             return doc.ref.update({
+                currentPlayers: operations.arrayRemove(context.auth.uid)
+            });
+        });
+    });
+
+exports.resign = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            return doc.ref.update({
+                hasResigned: true,
                 currentPlayers: operations.arrayRemove(context.auth.uid)
             });
         });
