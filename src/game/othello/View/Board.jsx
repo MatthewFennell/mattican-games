@@ -5,7 +5,10 @@ import defaultStyles from './Board.module.scss';
 import Row from './Row';
 
 const Board = props => (
-    <div className={props.styles.boardWrapper}>
+    <div
+        className={props.styles.boardWrapper}
+        onMouseLeave={() => props.onMouseEnter(-1, -1)}
+    >
         <Row
             availableMoves={props.availableMoves.filter(move => move[0] === 0)}
             onCellClick={props.onCellClick}

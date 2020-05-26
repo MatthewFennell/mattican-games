@@ -4,7 +4,6 @@ import { noop } from 'lodash';
 import defaultStyles from './GameActive.module.scss';
 import Board from '../View/Board';
 import GameInfo from './GameInfo';
-import GameFinished from './GameFinished';
 import * as queries from '../queries';
 
 const GameActive = props => {
@@ -33,12 +32,6 @@ const GameActive = props => {
 
     return (
         <div className={props.styles.gameActiveWrapper}>
-            <GameInfo
-                auth={props.auth}
-                currentGame={props.currentGame}
-                users={props.users}
-            />
-
             <Board
                 availableMoves={queries.getAvailableMoves(props.currentGame.board,
                     props.currentGame.activePlayer)}
@@ -46,11 +39,14 @@ const GameActive = props => {
                 onCellClick={onCellClick}
                 onMouseEnter={onMouseEnter}
             />
-            {props.currentGame.hasFinished && (
-                <GameFinished
-                    leaveGameRequest={props.leaveGameRequest}
-                />
-            )}
+
+            <GameInfo
+                auth={props.auth}
+                currentGame={props.currentGame}
+                leaveGameRequest={props.leaveGameRequest}
+                rematchRequest={props.rematchRequest}
+                users={props.users}
+            />
         </div>
     );
 };
@@ -78,6 +74,7 @@ GameActive.defaultProps = {
     currentGameId: '',
     leaveGameRequest: noop,
     placeDiscRequest: noop,
+    rematchRequest: noop,
     styles: defaultStyles,
     users: {}
 };
@@ -105,6 +102,7 @@ GameActive.propTypes = {
     currentGameId: PropTypes.string,
     leaveGameRequest: PropTypes.func,
     placeDiscRequest: PropTypes.func,
+    rematchRequest: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})
 };

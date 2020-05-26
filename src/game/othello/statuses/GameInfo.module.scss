@@ -30,15 +30,15 @@
 .scoreBlack {
     display: flex;
     margin-left: auto;
-    margin-right: $spacing-medium;
     @include vertical-center-div();
+    padding: $spacing-tiny;
 }
 
 .scoreWhite {
     display: flex;
     margin-right: auto;
-    margin-left: $spacing-medium;
     @include vertical-center-div();
+    padding: $spacing-tiny;
 }
 
 .blackScore {
@@ -75,7 +75,6 @@
 
 .gameFinishedWrapper {
     text-align: center;
-    margin-top: $spacing-small;
     font-weight: bold;
     color: $color-blue;
     font-size: $font-size-large;
@@ -90,4 +89,26 @@
         font-size: $font-size-large;
         color: $color-red;
     }
+}
+
+.gameInfoWrapper {
+    margin-top: $spacing-gigantic;
+    height: max-content;
+    background-color: lightblue;
+    padding: $spacing-medium;
+    border-radius: 10%;
+}
+
+.scoreWrapper {
+    display: flex;
+}
+
+@media only screen and (max-width: 1200px) {
+    .gameInfoWrapper {
+        margin-top: $spacing-small;
+        padding: $spacing-average;
+        width: fit-content;
+        margin-left: auto;        
+        margin-right: auto;        
+    }    
 }
