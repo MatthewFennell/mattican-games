@@ -237,3 +237,25 @@ exports.placeDisc = functions
             });
         });
     });
+
+
+exports.leaveGame = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            const { currentPlayers } = doc.data();
+
+            if (currentPlayers.length === 1) {
+                return doc.ref.delete();
+            }
+
+            return doc.ref.update({
+                currentPlayers: operations.arrayRemove(context.auth.uid)
+            });
+        });
+    });

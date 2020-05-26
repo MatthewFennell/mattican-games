@@ -171,7 +171,6 @@ exports.joinGame = functions
                 throw new functions.https.HttpsError('invalid-argument', 'That game has already started');
             }
 
-            console.log('doc.data', doc.data());
             if (doc.data().mode === 'Othello') {
                 if (doc.data().opponentType === constants.othelloPlayerTypes.Computer) {
                     throw new functions.https.HttpsError('invalid-argument', 'They are playing vs AI');

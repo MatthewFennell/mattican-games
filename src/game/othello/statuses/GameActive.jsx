@@ -4,6 +4,7 @@ import { noop } from 'lodash';
 import defaultStyles from './GameActive.module.scss';
 import Board from '../View/Board';
 import GameInfo from './GameInfo';
+import GameFinished from './GameFinished';
 import * as queries from '../queries';
 
 const GameActive = props => {
@@ -45,6 +46,11 @@ const GameActive = props => {
                 onCellClick={onCellClick}
                 onMouseEnter={onMouseEnter}
             />
+            {props.currentGame.hasFinished && (
+                <GameFinished
+                    leaveGameRequest={props.leaveGameRequest}
+                />
+            )}
         </div>
     );
 };
@@ -65,10 +71,12 @@ GameActive.defaultProps = {
             rowSix: [],
             rowSeven: []
         },
+        hasFinished: false,
         playerBlack: '',
         playerWhite: ''
     },
     currentGameId: '',
+    leaveGameRequest: noop,
     placeDiscRequest: noop,
     styles: defaultStyles,
     users: {}
@@ -90,10 +98,12 @@ GameActive.propTypes = {
             rowSix: PropTypes.arrayOf(PropTypes.number),
             rowSeven: PropTypes.arrayOf(PropTypes.number)
         }),
+        hasFinished: PropTypes.bool,
         playerBlack: PropTypes.string,
         playerWhite: PropTypes.string
     }),
     currentGameId: PropTypes.string,
+    leaveGameRequest: PropTypes.func,
     placeDiscRequest: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})

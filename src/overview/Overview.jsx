@@ -218,6 +218,7 @@ const Overview = props => {
                             {game.hasStarted && (
                                 <div className={props.styles.alreadyStarted}>
                                     {game.status === constants.hitlerGameStatuses.Finished
+                                    || game.hasFinished
                                         ? 'Game has finished' : 'Game has already started'}
                                 </div>
                             )}
@@ -233,7 +234,7 @@ const Overview = props => {
 
                             {game.mode === constants.gameModes.Othello && game.opponentType
                             === constants.othelloPlayerTypes.Human
-                            && game.currentPlayers.length === 1 && (
+                            && game.currentPlayers.length === 1 && !game.hasFinished && (
                                 <div className={props.styles.textWrapper}>
                                     <div className={props.styles.textValue}>
                                         Looking for human opponent

@@ -8,9 +8,9 @@ import Cell from './Cell';
 const Row = props => (
     <div className={classNames({
         [props.styles.rowWrapper]: true,
-        [props.styles.top]: props.y === 0,
-        [props.styles.middle]: props.y > 0 && props.y < 7,
-        [props.styles.bottom]: props.y === 7
+        [props.styles.top]: props.y === 0
+        // [props.styles.middle]: props.y > 0 && props.y < 7,
+        // [props.styles.bottom]: props.y === 7
     })}
     >
         <Cell

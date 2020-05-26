@@ -69,19 +69,19 @@ const GameInfo = props => (
             <div className={props.styles.centerInfo}>
                 <div>
                     <div className={props.styles.textWrapper}>
-                        <div>Black player:</div>
+                        <div>Black:</div>
                         <div className={props.styles.textValue}>
                             {getPlayerName(props.currentGame, props.users, -1, props.auth.uid)}
                         </div>
                     </div>
                     <div className={props.styles.textWrapper}>
-                        <div>White player:</div>
+                        <div>White:</div>
                         <div className={props.styles.textValue}>
                             {getPlayerName(props.currentGame, props.users, 1, props.auth.uid)}
                         </div>
                     </div>
                     <div className={props.styles.textWrapper}>
-                        <div>Active player:</div>
+                        <div>Active:</div>
                         <div className={props.styles.textValue}>
                             {getActivePlayerName(props.currentGame, props.users)}
                         </div>
