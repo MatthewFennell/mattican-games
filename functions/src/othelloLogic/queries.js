@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const constants = require('../constants');
 
 const convertBoard = board => [
     board.rowZero,
@@ -373,7 +374,7 @@ module.exports.placeDisc = (board, row, column, playerNumber) => {
     return false;
 };
 
-module.exports.getAvailableMoves = (board, activePlayer) => {
+const getAvailableMoves = (board, activePlayer) => {
     const formattedBoard = convertBoard(board);
     const availableMoves = [];
     for (let row = 0; row <= 7; row += 1) {
@@ -384,4 +385,31 @@ module.exports.getAvailableMoves = (board, activePlayer) => {
         }
     }
     return availableMoves;
+};
+
+module.exports.getAvailableMoves = getAvailableMoves;
+
+// Takes non converted board
+const getRandomMove = (board, activePlayer) => {
+    const availableMoves = getAvailableMoves(board, activePlayer);
+    const randomMove = _.sample(availableMoves);
+    return {
+        row: randomMove[0],
+        column: randomMove[1]
+    };
+};
+
+
+module.exports.getComputerMove = (board, activePlayer, difficulty) => {
+    if (difficulty === constants.othelloAIDifficulties.Easy) {
+        return getRandomMove(board, activePlayer);
+    }
+    if (difficulty === constants.othelloAIDifficulties.Medium) {
+        return getRandomMove(board, activePlayer);
+    }
+    if (difficulty === constants.othelloAIDifficulties.Hard) {
+        return getRandomMove(board, activePlayer);
+    }
+    console.log('Extreme difficulty');
+    return getRandomMove(board, activePlayer);
 };

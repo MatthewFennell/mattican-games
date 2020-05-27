@@ -122,21 +122,18 @@ const GameNotStarted = props => {
             </div>
 
             <div className={props.styles.currentPlayersWrapper}>
-                <div className={props.styles.gameInfo}>
-                    <div className={props.styles.hostWrapper}>
-                        <div>Host:</div>
-
-                        <div className={props.styles.hostValue}>
-                            <div>{mapUserIdToName(props.users, props.currentGame.host)}</div>
-                            <div>{props.currentGame.host === props.auth.uid && ' (you)'}</div>
-                        </div>
+                <div className={props.styles.timePerRoundWrapper}>
+                    <div>Host:</div>
+                    <div className={props.styles.timePerRoundValue}>
+                        {mapUserIdToName(props.users, props.currentGame.host) + (props.currentGame.host === props.auth.uid && ' (you)')}
                     </div>
+                </div>
 
-                    <div className={props.styles.gameModeText}>
-                        <div>Mode:</div>
-                        <div className={props.styles.gameModeValue}>
-                            {props.currentGame.mode}
-                        </div>
+                <div className={props.styles.timePerRoundWrapper}>
+                    <div>Mode:</div>
+
+                    <div className={props.styles.timePerRoundValue}>
+                        <div>{props.currentGame.mode}</div>
                     </div>
                 </div>
 
@@ -243,18 +240,21 @@ const GameNotStarted = props => {
             </div>
 
             {props.currentGame.host === props.auth.uid
-
             && (
                 <div className={props.styles.editGame}>
                     <div className={props.styles.readyUp}>
-                        <div>
-                            <div>Ready Up</div>
-                            <Switch
-                                checked={props.isReady}
-                                onChange={() => props.readyUpRequest(props.currentGameId,
-                                    !props.isReady)}
-                            />
-                        </div>
+                        {!(props.currentGame.mode === constants.gameModes.Othello
+                        && props.currentGame.opponentType === constants.othelloPlayerTypes.Computer)
+                        && (
+                            <div>
+                                <div>Ready Up</div>
+                                <Switch
+                                    checked={props.isReady}
+                                    onChange={() => props.readyUpRequest(props.currentGameId,
+                                        !props.isReady)}
+                                />
+                            </div>
+                        )}
                         <div>
                             <div>Edit game</div>
                             <Switch

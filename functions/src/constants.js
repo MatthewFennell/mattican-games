@@ -300,7 +300,21 @@ module.exports.gameModes = {
 
 module.exports.articulateMaxScore = 15;
 
-module.exports.othelloDifficulties = ['Easy', 'Medium', 'Hard', 'Extreme'];
+const othelloAIDifficulties = {
+    Easy: 'Easy',
+    Medium: 'Medium',
+    Hard: 'Hard',
+    Extreme: 'Extreme'
+};
+
+module.exports.othelloAIDifficulties = othelloAIDifficulties;
+
+module.exports.othelloDifficulties = [
+    othelloAIDifficulties.Easy,
+    othelloAIDifficulties.Medium,
+    othelloAIDifficulties.Hard,
+    othelloAIDifficulties.Extreme
+];
 
 module.exports.othelloPlayerTypes = {
     Human: 'Human',

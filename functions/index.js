@@ -137,7 +137,8 @@ exports.startGame = functions
                 throw new functions.https.HttpsError('invalid-argument', 'You are not the host');
             }
 
-            if (doc.data().playersReady.length !== doc.data().currentPlayers.length) {
+            if (doc.data().playersReady.length !== doc.data().currentPlayers.length
+            && doc.data().opponentType === constants.othelloPlayerTypes.Human) {
                 throw new functions.https.HttpsError('invalid-argument', 'Not everybody is ready');
             }
 
@@ -218,7 +219,6 @@ exports.placeDisc = functions
 
             let nextPlayer = activePlayer * -1;
 
-
             // If black has no moves available, then White must have moves available since we know one of them does
             // Therefore the next player must be white
             if (availableMovesBlack.length === 0) {
@@ -236,7 +236,39 @@ exports.placeDisc = functions
                 activePlayer: nextPlayer,
                 board: newBoard
             });
-        });
+        })
+            .then(() => db.collection('games').doc(data.gameId).get().then(doc => {
+                const {
+                    activePlayer, board, difficulty, playerBlack, playerWhite
+                } = doc.data();
+
+                if ((activePlayer === 1 && playerWhite === constants.othelloPlayerTypes.Human)
+                || (activePlayer === -1 && playerBlack === constants.othelloPlayerTypes.Human)) {
+                    console.log('next player is a human');
+                    return Promise.resolve();
+                }
+
+                // At this point we can assume that they have available moves
+                // If they had no moves available, it wouldn't be their turn
+
+                const computerMove = queries.getComputerMove(board, activePlayer, difficulty);
+                const newBoard = queries.placeDisc(board, computerMove.row, computerMove.column, activePlayer);
+
+                const availableMovesWhite = queries.getAvailableMoves(newBoard, 1);
+                const availableMovesBlack = queries.getAvailableMoves(newBoard, -1);
+
+                if (availableMovesWhite.length === 0 && availableMovesBlack.length === 0) {
+                    return doc.ref.update({
+                        board: newBoard,
+                        hasFinished: true
+                    });
+                }
+
+                return doc.ref.update({
+                    activePlayer: activePlayer * -1,
+                    board: newBoard
+                });
+            }));
     });
 
 
@@ -268,6 +300,10 @@ exports.resign = functions
         return db.collection('games').doc(data.gameId).get().then(doc => {
             if (!doc.exists) {
                 throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            if (doc.data().currentPlayers.length === 1) {
+                return doc.ref.delete();
             }
 
             return doc.ref.update({

@@ -393,3 +393,13 @@ export const getAvailableMoves = (board, activePlayer) => {
     }
     return availableMoves;
 };
+
+// Takes non converted board
+export const getRandomMove = (board, activePlayer) => {
+    const availableMoves = getAvailableMoves(board, activePlayer);
+    const randomMove = _.sample(availableMoves);
+    return {
+        row: randomMove[0],
+        column: randomMove[1]
+    };
+};
