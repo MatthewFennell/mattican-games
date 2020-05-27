@@ -163,7 +163,33 @@ exports.startGame = functions
                 playerBlack: randomPlayers[0],
                 playerWhite: randomPlayers[1]
             });
-        });
+        })
+            .then(() => db.collection('games').doc(data.gameId).get().then(doc => {
+                const {
+                    activePlayer, board, difficulty, playerBlack, playerWhite
+                } = doc.data();
+
+                if ((activePlayer === 1 && playerWhite === constants.othelloPlayerTypes.Human)
+            || (activePlayer === -1 && playerBlack === constants.othelloPlayerTypes.Human)) {
+                    console.log('next player is a human');
+                    return Promise.resolve();
+                }
+
+                console.log('board before', board);
+
+                // Do the first computer turn
+                const computerMove = queries.getComputerMove(board, activePlayer, difficulty);
+                console.log('computer move', computerMove);
+                const newBoard = queries.placeDisc(board, computerMove.row, computerMove.column, activePlayer);
+
+                console.log('new board', newBoard);
+
+                // It must always end with it becoming the other players turn (or the game ending above)
+                return doc.ref.update({
+                    activePlayer: activePlayer * -1,
+                    board: newBoard
+                });
+            }));
     });
 
 const runtimeOpts = {
