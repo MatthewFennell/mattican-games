@@ -252,7 +252,7 @@ exports.placeDisc = functions
                 // If they had no moves available, it wouldn't be their turn
 
                 const computerMove = queries.getComputerMove(board, activePlayer, difficulty);
-                const newBoard = queries.placeDisc(board, computerMove.row, computerMove.column, activePlayer);
+                let newBoard = queries.placeDisc(board, computerMove.row, computerMove.column, activePlayer);
 
                 const availableMovesWhite = queries.getAvailableMoves(newBoard, 1);
                 const availableMovesBlack = queries.getAvailableMoves(newBoard, -1);
@@ -264,6 +264,18 @@ exports.placeDisc = functions
                     });
                 }
 
+                // This is after the computer has played and we know that at least one player can go
+                // It should keep making moves whilst the human has no available moves
+
+                while (queries.getNumberOfAvailableMoves(newBoard, activePlayer * -1) === 0) {
+                    console.log('Generating a new computer move', newBoard);
+                    console.log('new board', newBoard);
+                    const nextComputerMove = queries.getComputerMove(board, activePlayer, difficulty);
+                    newBoard = queries.placeDisc(board, nextComputerMove.row, nextComputerMove.column, activePlayer);
+                }
+
+
+                // It must always end with it becoming the other players turn (or the game ending above)
                 return doc.ref.update({
                     activePlayer: activePlayer * -1,
                     board: newBoard

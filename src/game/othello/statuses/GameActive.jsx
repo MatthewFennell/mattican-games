@@ -30,8 +30,6 @@ const GameActive = props => {
         return props.currentGame.board;
     }, [hoverX, hoverY, props.currentGame]);
 
-    console.log('random move', queries.getRandomMove(props.currentGame.board, props.currentGame.activePlayer));
-
     return (
         <div className={props.styles.gameActiveWrapper}>
             <Board

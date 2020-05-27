@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 const _ = require('lodash');
 const constants = require('../constants');
 
@@ -413,3 +414,7 @@ module.exports.getComputerMove = (board, activePlayer, difficulty) => {
     console.log('Extreme difficulty');
     return getRandomMove(board, activePlayer);
 };
+
+const getNumberOfAvailableMoves = (board, activePlayer) => getAvailableMoves(board, activePlayer).length;
+
+module.exports.getNumberOfAvailableMoves = getNumberOfAvailableMoves;

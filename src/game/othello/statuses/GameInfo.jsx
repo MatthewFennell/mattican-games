@@ -32,9 +32,15 @@ const getWinner = (game, users) => {
     const blackScore = calculateScore(game.board, -1);
 
     if (whiteScore > blackScore) {
+        if (game.playerWhite === constants.othelloPlayerTypes.Computer) {
+            return constants.othelloPlayerTypes.Computer;
+        }
         return helpers.mapUserIdToName(users, game.playerWhite);
     }
     if (blackScore > whiteScore) {
+        if (game.playerBlack === constants.othelloPlayerTypes.Computer) {
+            return constants.othelloPlayerTypes.Computer;
+        }
         return helpers.mapUserIdToName(users, game.playerBlack);
     }
     return 'No Winners! It was a draw';
@@ -84,12 +90,14 @@ const GameInfo = props => (
                             {getPlayerName(props.currentGame, props.users, 1, props.auth.uid)}
                         </div>
                     </div>
-                    <div className={props.styles.textWrapper}>
-                        <div>Active:</div>
-                        <div className={props.styles.textValue}>
-                            {getActivePlayerName(props.currentGame, props.users)}
+                    {!props.currentGame.hasFinished && (
+                        <div className={props.styles.textWrapper}>
+                            <div>Active:</div>
+                            <div className={props.styles.textValue}>
+                                {getActivePlayerName(props.currentGame, props.users)}
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             </div>
         </div>
