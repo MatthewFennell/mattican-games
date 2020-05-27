@@ -35,6 +35,7 @@ export const gameModes = {
     Articulate: 'Articulate',
     Avalon: 'Avalon',
     Hitler: 'Hitler',
+    Othello: 'Othello',
     WhosInTheHat: 'Who\'s in the Hat?'
 };
 
@@ -214,3 +215,10 @@ export const articulateCategories = {
 };
 
 export const articulateMaxScore = 50;
+
+export const othelloPlayerTypes = {
+    Human: 'Human',
+    Computer: 'Computer'
+};
+
+export const othelloDifficulties = ['Easy', 'Medium', 'Hard', 'Extreme'];

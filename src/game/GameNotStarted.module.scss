@@ -8,7 +8,7 @@
     margin-top: $spacing-small;
 }
 
-.currentPlayersMessage, .gameModeText, .hostWrapper {
+.currentPlayersMessage, .gameModeText {
     text-align: center;
     color: $color-green;
     font-weight: bold;
@@ -40,14 +40,6 @@
 .gameModeValue, .timePerRoundValue, .currentPlayersValue {
     color: $color-black;
     margin-left: 4px;
-}
-
-.hostWrapper {
-    display: flex;
-    justify-content: space-evenly;
-    > div {
-        @include vertical-center-div();
-    }
 }
 
 .timePerRound {
@@ -116,11 +108,6 @@
     }
 }
 
-.gameInfo {
-    display: flex;
-    justify-content: space-evenly;
-    margin-bottom: $spacing-tiny;
-}
 
 .editNumberOfPlayers {
     width: 50%;
@@ -251,4 +238,14 @@
     width: 80%;
     margin-left: auto;
     margin-right: auto;
+  }
+
+  .othelloDropdown {
+      text-align: center;
+      flex-wrap: wrap;
+      justify-content: space-evenly;
+  }
+
+  .doubleSelected {
+      display: flex;
   }

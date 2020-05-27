@@ -50,6 +50,9 @@ const getMessage = mode => {
     if (mode === constants.gameModes.WhosInTheHat || mode === constants.gameModes.Articulate) {
         return 'Leave Game';
     }
+    if (mode === constants.gameModes.Othello) {
+        return 'Resign';
+    }
     return 'End Game';
 };
 
@@ -81,6 +84,15 @@ const TopNavbar = props => {
         props.redirect(val);
         // eslint-disable-next-line
     }, [props.redirect, setAnchorEl, anchorEl]);
+
+    const handleClick = useCallback(() => {
+        handleClose();
+        props.leaveMidgameRequest(
+            props.currentGameId,
+            fp.get('mode')(props.currentGame)
+        );
+        // eslint-disable-next-line
+    }, [props.currentGameId, props.currentGame]);
 
     return (
         <>
@@ -135,13 +147,7 @@ const TopNavbar = props => {
                                             Edit Display Name
                                         </MenuItem>
                                         <MenuItem
-                                            onClick={() => {
-                                                handleClose();
-                                                props.leaveMidgameRequest(
-                                                    props.currentGameId,
-                                                    fp.get('mode')(props.currentGame)
-                                                );
-                                            }}
+                                            onClick={handleClick}
                                         >
                                             {getMessage(fp.get('mode')(props.currentGame))}
                                         </MenuItem>

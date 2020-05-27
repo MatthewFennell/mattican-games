@@ -1,0 +1,110 @@
+@import "../../../common/Styles.scss";
+
+.gameInfo {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.textWrapper {
+    text-align: center;
+    color: $color-green;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    font-size: $font-size-medium;
+}
+
+.textValue {
+    color: $color-black;
+    margin-left: 4px;
+}
+
+.centerInfo {
+    @include vertical-center-div();
+}
+
+.scoreBlack {
+    display: flex;
+    margin-left: auto;
+    @include vertical-center-div();
+    padding: $spacing-tiny;
+}
+
+.scoreWhite {
+    display: flex;
+    margin-right: auto;
+    @include vertical-center-div();
+    padding: $spacing-tiny;
+}
+
+.blackScore {
+    font-size: $font-size-large;
+    font-weight: bold;
+    margin-right: $spacing-tiny;
+}
+
+.blackIcon {
+    width: 6vw;
+    height: 6vw;
+    max-height: 50px;
+    max-width: 50px;
+    border-radius: 50%;
+    padding: 5px;
+    background-color: black;
+}
+
+.whiteScore {
+    font-size: $font-size-large;
+    font-weight: bold;
+    margin-left: $spacing-tiny;
+}
+
+.whiteIcon {
+    width: 6vw;
+    height: 6vw;
+    max-height: 50px;
+    max-width: 50px;
+    border-radius: 50%;
+    padding: 5px;
+    background-color: white;  
+}
+
+.gameFinishedWrapper {
+    text-align: center;
+    font-weight: bold;
+    color: $color-blue;
+    font-size: $font-size-large;
+}
+
+.gameFinishedWrapper {
+    .textWrapper {
+        font-size: $font-size-large;
+    }
+    
+    .textValue {
+        font-size: $font-size-large;
+        color: $color-red;
+    }
+}
+
+.gameInfoWrapper {
+    margin-top: $spacing-gigantic;
+    height: max-content;
+    background-color: lightblue;
+    padding: $spacing-medium;
+    border-radius: 10%;
+}
+
+.scoreWrapper {
+    display: flex;
+}
+
+@media only screen and (max-width: 1200px) {
+    .gameInfoWrapper {
+        margin-top: $spacing-small;
+        padding: $spacing-average;
+        width: fit-content;
+        margin-left: auto;        
+        margin-right: auto;        
+    }    
+}

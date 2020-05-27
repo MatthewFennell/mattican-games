@@ -171,6 +171,15 @@ exports.joinGame = functions
                 throw new functions.https.HttpsError('invalid-argument', 'That game has already started');
             }
 
+            if (doc.data().mode === 'Othello') {
+                if (doc.data().opponentType === constants.othelloPlayerTypes.Computer) {
+                    throw new functions.https.HttpsError('invalid-argument', 'They are playing vs AI');
+                }
+                if (doc.data().currentPlayers.length === 2) {
+                    throw new functions.https.HttpsError('invalid-argument', 'That game is full');
+                }
+            }
+
             return db.collection('users').doc(context.auth.uid).get().then(response => {
                 const { displayName } = response.data();
                 if (!displayName) {

@@ -53,3 +53,11 @@
     margin-left: auto;
     margin-right: auto;
   }
+
+  .createOthelloGame {
+    * {
+      * {
+        width: 100%;
+      }
+    }
+  }

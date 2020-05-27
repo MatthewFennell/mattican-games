@@ -1,0 +1,18 @@
+@import "../../../common/Styles.scss";
+
+.gameActiveWrapper {
+    background-color: khaki;
+    padding-bottom: $spacing-large  ;
+    display: flex;
+    justify-content: space-evenly;
+
+    > div {
+        justify-content: center;
+    }
+}
+
+@media only screen and (max-width: 1200px) {
+    .gameActiveWrapper {
+        flex-direction: column-reverse;
+    }    
+}

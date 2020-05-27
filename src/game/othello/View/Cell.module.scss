@@ -1,0 +1,60 @@
+@import "../../../common/Styles.scss";
+
+.cellWrapper {
+    border: 1.5px solid black;
+    padding: 3px;
+    background-color: $color-green;
+}
+
+.top {
+    border-top: 4px solid black;
+}
+
+.bottom {
+    border-bottom: 4px solid black;
+}
+
+.left {
+    border-left: 4px solid black;
+}
+
+.right {
+    border-right: 4px solid black;
+}
+
+.cellIcon {
+    width: 9vw;
+    height: 9vw;
+    max-height: 75px;
+    max-width: 75px;
+    border-radius: 50%;
+    padding: 5px;
+}
+
+.isAvailableMove {
+    @include vertical-center-div();
+    height: 100%;
+}
+
+.availableDot {
+    border-radius: 50%;
+    background-color: $color-red;
+    height: 1vw;
+    width: 1vw;
+}
+
+.test {
+    padding: 200px;
+}
+
+.isBlack {
+    background-color: $color-black;
+}
+
+.isWhite {
+    background-color: $color-white;
+}
+
+.cellWrapper:focus {
+    outline: 0;
+}

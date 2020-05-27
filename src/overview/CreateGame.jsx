@@ -147,7 +147,7 @@ const CreateGame = props => (
             <Fade checked={props.gameMode === constants.gameModes.Avalon} label="Test">
                 <div>
                     <div className={props.styles.avalonRolesMessage}>
-                Roles
+                        Roles
                     </div>
                     <div className={props.styles.goodGuyRoles}>
                         {Object.values(constants.avalonRoles)
@@ -186,6 +186,35 @@ const CreateGame = props => (
                     </div>
                 </div>
             </Fade>
+
+            <Fade checked={props.gameMode === constants.gameModes.Othello} label="Test">
+                <div className={props.styles.createOthelloGame}>
+                    <Dropdown
+                        options={Object.keys(constants.othelloPlayerTypes).map(type => ({
+                            id: type,
+                            value: type,
+                            text: constants.othelloPlayerTypes[type]
+                        }))}
+                        value={props.othelloPlayerType}
+                        onChange={props.setOthelloPlayerType}
+                        title="Opponent Type"
+                    />
+
+                    <Fade checked={props.othelloPlayerType === constants.othelloPlayerTypes.Computer} label="Test">
+                        <Dropdown
+                            options={constants.othelloDifficulties.map(difficulty => ({
+                                id: difficulty,
+                                value: difficulty,
+                                text: difficulty
+                            }))}
+                            value={props.othelloDifficulty}
+                            onChange={props.setOthelloDifficulty}
+                            title="Difficulty"
+                        />
+                    </Fade>
+                </div>
+            </Fade>
+
             <div className={props.styles.createGameWrapper}>
                 <StyledButton text="Create Game" onClick={props.createGame} />
             </div>
@@ -210,10 +239,14 @@ CreateGame.defaultProps = {
     isCustomNames: false,
     numberOfPlayers: 0,
     makingGame: false,
+    othelloDifficulty: '',
+    othelloPlayerType: '',
     scoreCap: 0,
     setGameMode: noop,
     setGameName: noop,
     setMakingGame: noop,
+    setOthelloDifficulty: noop,
+    setOthelloPlayerType: noop,
     setScoreCap: noop,
     setSkippingRule: noop,
     setTimePerRound: noop,
@@ -237,6 +270,8 @@ CreateGame.propTypes = {
         PropTypes.string
     ]),
     makingGame: PropTypes.bool,
+    othelloDifficulty: PropTypes.string,
+    othelloPlayerType: PropTypes.string,
     scoreCap: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.number
@@ -244,6 +279,8 @@ CreateGame.propTypes = {
     setGameMode: PropTypes.func,
     setGameName: PropTypes.func,
     setMakingGame: PropTypes.func,
+    setOthelloDifficulty: PropTypes.func,
+    setOthelloPlayerType: PropTypes.func,
     setScoreCap: PropTypes.func,
     setSkippingRule: PropTypes.func,
     setTimePerRound: PropTypes.func,

@@ -43,6 +43,9 @@ const Overview = props => {
     const [scoreCap, setScoreCap] = useState(50);
     const [timePerRound, setTimePerRound] = useState(60);
 
+    const [othelloPlayerType, setOthelloPlayerType] = useState('');
+    const [othelloDifficulty, setOthelloDifficulty] = useState('');
+
     const toggleRole = useCallback(role => {
         if (activeAvalonRoles.includes(role)) {
             setActiveAvalonRoles(activeAvalonRoles.filter(x => x !== role));
@@ -90,11 +93,19 @@ const Overview = props => {
                 timePerRound: parseInt(timePerRound, 10)
             });
         }
+        if (gameMode === constants.gameModes.Othello) {
+            props.createGameRequest(gameMode,
+                {
+                    name: gameName,
+                    opponent: othelloPlayerType,
+                    difficulty: othelloDifficulty
+                });
+        }
         setMakingGame(false);
 
         // eslint-disable-next-line
     }, [activeAvalonRoles, gameName, gameMode, numberOfPlayers, isCustomNames, skippingRule,
-        scoreCap, timePerRound]);
+        scoreCap, timePerRound, othelloDifficulty, othelloPlayerType]);
     // ------------------------------------------------------------------------ //
 
     const [gameToJoin, setGameToJoin] = useState('');
@@ -141,10 +152,14 @@ const Overview = props => {
                     isCustomNames={isCustomNames}
                     makingGame={makingGame}
                     numberOfPlayers={numberOfPlayers}
+                    othelloDifficulty={othelloDifficulty}
+                    othelloPlayerType={othelloPlayerType}
                     scoreCap={scoreCap}
                     setGameMode={setGameMode}
                     setGameName={setGameName}
                     setMakingGame={setMakingGame}
+                    setOthelloDifficulty={setOthelloDifficulty}
+                    setOthelloPlayerType={setOthelloPlayerType}
                     setScoreCap={setScoreCap}
                     setSkippingRule={setSkippingRule}
                     setTimePerRound={setTimePerRound}
@@ -188,6 +203,8 @@ const Overview = props => {
                                     {game.mode}
                                 </div>
                             </div>
+
+
                             {game.currentPlayers
                         && (
                             <div className={props.styles.textWrapper}>
@@ -201,7 +218,27 @@ const Overview = props => {
                             {game.hasStarted && (
                                 <div className={props.styles.alreadyStarted}>
                                     {game.status === constants.hitlerGameStatuses.Finished
+                                    || game.hasFinished
                                         ? 'Game has finished' : 'Game has already started'}
+                                </div>
+                            )}
+
+                            {game.mode === constants.gameModes.Othello && game.opponentType
+                            === constants.othelloPlayerTypes.Computer && (
+                                <div className={props.styles.textWrapper}>
+                                    <div className={props.styles.textValue}>
+                                        Playing against AI
+                                    </div>
+                                </div>
+                            )}
+
+                            {game.mode === constants.gameModes.Othello && game.opponentType
+                            === constants.othelloPlayerTypes.Human
+                            && game.currentPlayers.length === 1 && !game.hasFinished && (
+                                <div className={props.styles.textWrapper}>
+                                    <div className={props.styles.textValue}>
+                                        Looking for human opponent
+                                    </div>
                                 </div>
                             )}
                         </div>

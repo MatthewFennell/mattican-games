@@ -21,6 +21,7 @@ import { editGameRequest as editArticulateGameRequest } from './articulate/actio
 import { editGameRequest as editWhoInHatGameRequest } from './whoInHat/actions';
 import { editGameRequest as editAvalonGameRequest } from './avalon/actions';
 import { editGameRequest as editHitlerGameRequest } from './hitler/actions';
+import { editGameRequest as editOthelloGameRequest } from './othello/actions';
 
 const canStartGame = game => {
     if (game.mode === constants.gameModes.Hitler || game.mode === constants.gameModes.Avalon) {
@@ -33,6 +34,13 @@ const canStartGame = game => {
     if (game.mode === constants.gameModes.Articulate) {
         return game.currentPlayers.length === game.playersReady.length;
     }
+    if (game.mode === constants.gameModes.Othello) {
+        if (game.opponentType === constants.othelloPlayerTypes.Computer) {
+            return true;
+        }
+        return game.currentPlayers.length === game.playersReady.length
+        && game.currentPlayers.length === 2;
+    }
     return false;
 };
 
@@ -44,6 +52,9 @@ const GameNotStarted = props => {
     const [editedSkippingRule, setEditedSkippingRule] = useState(props.currentGame.skippingRule);
     const [scoreCap, setScoreCap] = useState(props.currentGame.scoreCap || 20);
     const [timePerRound, setTimePerRound] = useState(props.currentGame.timePerRound || 60);
+
+    const [othelloPlayerType, setOthelloPlayerType] = useState(props.currentGame.opponentType);
+    const [othelloDifficulty, setOthelloDifficulty] = useState(props.currentGame.difficulty);
 
     const toggleEditedCustomNames = useCallback(() => {
         setIsEditedCustomNames(!editedIsCustomNames);
@@ -96,9 +107,13 @@ const GameNotStarted = props => {
             props.editArticulateGameRequest(props.currentGameId,
                 editedSkippingRule, timePerRound, scoreCap);
         }
+        if (props.currentGame.mode === constants.gameModes.Othello) {
+            props.editOthelloGameRequest(props.currentGameId, othelloPlayerType, othelloDifficulty);
+        }
         setEditingGame(false);
         // eslint-disable-next-line
-    }, [props.currentGame, numberOfPlayers, editedAvalonRoles, editedSkippingRule, editedIsCustomNames, scoreCap, timePerRound])
+    }, [props.currentGame, numberOfPlayers, editedAvalonRoles, editedSkippingRule, editedIsCustomNames, scoreCap, timePerRound,
+        othelloPlayerType, othelloDifficulty]);
 
     return (
         <div className={props.styles.gameNotStartedWrapper}>
@@ -107,23 +122,45 @@ const GameNotStarted = props => {
             </div>
 
             <div className={props.styles.currentPlayersWrapper}>
-                <div className={props.styles.gameInfo}>
-                    <div className={props.styles.hostWrapper}>
-                        <div>Host:</div>
-
-                        <div className={props.styles.hostValue}>
-                            <div>{mapUserIdToName(props.users, props.currentGame.host)}</div>
-                            <div>{props.currentGame.host === props.auth.uid && ' (you)'}</div>
-                        </div>
-                    </div>
-
-                    <div className={props.styles.gameModeText}>
-                        <div>Mode:</div>
-                        <div className={props.styles.gameModeValue}>
-                            {props.currentGame.mode}
-                        </div>
+                <div className={props.styles.timePerRoundWrapper}>
+                    <div>Host:</div>
+                    <div className={props.styles.timePerRoundValue}>
+                        {mapUserIdToName(props.users, props.currentGame.host) + (props.currentGame.host === props.auth.uid && ' (you)')}
                     </div>
                 </div>
+
+                <div className={props.styles.timePerRoundWrapper}>
+                    <div>Mode:</div>
+
+                    <div className={props.styles.timePerRoundValue}>
+                        <div>{props.currentGame.mode}</div>
+                    </div>
+                </div>
+
+                {props.currentGame.mode === constants.gameModes.Othello && (
+                    <>
+                        <div className={props.styles.timePerRoundWrapper}>
+                            <div>Opponent:</div>
+
+                            <div className={props.styles.timePerRoundValue}>
+                                <div>{`${props.currentGame.opponentType}`}</div>
+                            </div>
+                        </div>
+
+                        <Fade checked={props.currentGame.opponentType
+                        === constants.othelloPlayerTypes.Computer}
+                        >
+                            <div className={props.styles.timePerRoundWrapper}>
+                                <div>Difficulty:</div>
+
+                                <div className={props.styles.timePerRoundValue}>
+                                    <div>{`${props.currentGame.difficulty}`}</div>
+                                </div>
+                            </div>
+                        </Fade>
+
+                    </>
+                )}
 
                 {(props.currentGame.mode === constants.gameModes.Articulate
                 || props.currentGame.mode === constants.gameModes.WhosInTheHat) && (
@@ -203,18 +240,21 @@ const GameNotStarted = props => {
             </div>
 
             {props.currentGame.host === props.auth.uid
-
             && (
                 <div className={props.styles.editGame}>
                     <div className={props.styles.readyUp}>
-                        <div>
-                            <div>Ready Up</div>
-                            <Switch
-                                checked={props.isReady}
-                                onChange={() => props.readyUpRequest(props.currentGameId,
-                                    !props.isReady)}
-                            />
-                        </div>
+                        {!(props.currentGame.mode === constants.gameModes.Othello
+                        && props.currentGame.opponentType === constants.othelloPlayerTypes.Computer)
+                        && (
+                            <div>
+                                <div>Ready Up</div>
+                                <Switch
+                                    checked={props.isReady}
+                                    onChange={() => props.readyUpRequest(props.currentGameId,
+                                        !props.isReady)}
+                                />
+                            </div>
+                        )}
                         <div>
                             <div>Edit game</div>
                             <Switch
@@ -373,6 +413,45 @@ const GameNotStarted = props => {
                         </div>
                     )}
 
+                        {props.currentGame.mode === constants.gameModes.Othello
+                    && (
+                        <div className={classNames({
+                            [props.styles.othelloDropdown]: true,
+                            [props.styles.doubleSelected]: othelloPlayerType
+                            === constants.othelloPlayerTypes.Computer
+                        })}
+                        >
+                            <Dropdown
+                                options={Object.keys(constants.othelloPlayerTypes)
+                                    .map(playerType => ({
+                                        id: playerType,
+                                        value: playerType,
+                                        text: playerType
+                                    }))}
+                                value={othelloPlayerType}
+                                onChange={setOthelloPlayerType}
+                                title="Player Type"
+                            />
+
+                            {othelloPlayerType === constants.othelloPlayerTypes.Computer && (
+                                <div className={props.styles.othelloDropdown}>
+
+                                    <Dropdown
+                                        options={constants.othelloDifficulties
+                                            .map(difficulty => ({
+                                                id: difficulty,
+                                                value: difficulty,
+                                                text: difficulty
+                                            }))}
+                                        value={othelloDifficulty}
+                                        onChange={setOthelloDifficulty}
+                                        title="Difficulty"
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    )}
+
                         <div className={props.styles.confirmEditButton}>
                             <StyledButton
                                 disabled={(props.currentGame.numberOfPlayers
@@ -470,10 +549,12 @@ GameNotStarted.defaultProps = {
     },
     currentGame: {
         currentPlayers: [],
+        difficulty: '',
         host: '',
         isCustomNames: false,
         mode: '',
         numberOfPlayers: 0,
+        opponentType: '',
         roles: [],
         scoreCap: 0,
         skippingRule: '',
@@ -492,39 +573,43 @@ GameNotStarted.propTypes = {
     }),
     currentGame: PropTypes.shape({
         currentPlayers: PropTypes.arrayOf(PropTypes.string),
+        difficulty: PropTypes.string,
         host: PropTypes.string,
         isCustomNames: PropTypes.bool,
         mode: PropTypes.string,
         numberOfPlayers: PropTypes.number,
         roles: PropTypes.arrayOf(PropTypes.string),
+        opponentType: PropTypes.string,
         scoreCap: PropTypes.number,
         skippingRule: PropTypes.string,
         timePerRound: PropTypes.number,
         playersReady: PropTypes.arrayOf(PropTypes.string)
     }),
     currentGameId: PropTypes.string,
+    editAvalonGameRequest: PropTypes.func.isRequired,
     editArticulateGameRequest: PropTypes.func.isRequired,
+    editOthelloGameRequest: PropTypes.func.isRequired,
+    editWhoInHatGameRequest: PropTypes.func.isRequired,
     isReady: PropTypes.bool,
     leaveGameRequest: PropTypes.func.isRequired,
     readyUpRequest: PropTypes.func.isRequired,
     editHitlerGameRequest: PropTypes.func.isRequired,
     gameError: PropTypes.func.isRequired,
     startAnyGameRequest: PropTypes.func.isRequired,
-    editAvalonGameRequest: PropTypes.func.isRequired,
-    editWhoInHatGameRequest: PropTypes.func.isRequired,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})
 };
 
 const mapDispatchToProps = {
     editArticulateGameRequest,
+    editAvalonGameRequest,
+    editHitlerGameRequest,
+    editOthelloGameRequest,
+    editWhoInHatGameRequest,
     leaveGameRequest,
     readyUpRequest,
     startAnyGameRequest,
-    gameError,
-    editAvalonGameRequest,
-    editHitlerGameRequest,
-    editWhoInHatGameRequest
+    gameError
 };
 
 export default connect(null, mapDispatchToProps)(GameNotStarted);
