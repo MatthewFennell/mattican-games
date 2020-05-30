@@ -169,8 +169,8 @@ exports.startGame = functions
                     activePlayer, board, difficulty, playerBlack, playerWhite
                 } = doc.data();
 
-                if ((activePlayer === 1 && playerWhite === constants.othelloPlayerTypes.Human)
-            || (activePlayer === -1 && playerBlack === constants.othelloPlayerTypes.Human)) {
+                if ((activePlayer === 1 && playerWhite !== constants.othelloPlayerTypes.Computer)
+            || (activePlayer === -1 && playerBlack !== constants.othelloPlayerTypes.Computer)) {
                     console.log('next player is a human');
                     return Promise.resolve();
                 }
@@ -268,8 +268,8 @@ exports.placeDisc = functions
                     activePlayer, board, difficulty, playerBlack, playerWhite
                 } = doc.data();
 
-                if ((activePlayer === 1 && playerWhite === constants.othelloPlayerTypes.Human)
-                || (activePlayer === -1 && playerBlack === constants.othelloPlayerTypes.Human)) {
+                if ((activePlayer === 1 && playerWhite !== constants.othelloPlayerTypes.Computer)
+                || (activePlayer === -1 && playerBlack !== constants.othelloPlayerTypes.Computer)) {
                     console.log('next player is a human');
                     return Promise.resolve();
                 }

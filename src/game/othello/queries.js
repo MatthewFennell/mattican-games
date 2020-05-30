@@ -1,6 +1,9 @@
+/* eslint-disable max-len */
+/* eslint-disable no-param-reassign */
 import _ from 'lodash';
+import fp from 'lodash/fp';
 
-const convertBoard = board => [
+export const convertBoard = board => [
     board.rowZero,
     board.rowOne,
     board.rowTwo,
@@ -394,6 +397,7 @@ export const getAvailableMoves = (board, activePlayer) => {
     return availableMoves;
 };
 
+
 // Takes non converted board
 export const getRandomMove = (board, activePlayer) => {
     const availableMoves = getAvailableMoves(board, activePlayer);
@@ -402,4 +406,521 @@ export const getRandomMove = (board, activePlayer) => {
         row: randomMove[0],
         column: randomMove[1]
     };
+};
+
+// Takes history of moves
+// Returns the board after all of the moves have been applied
+// Does not need to take transformed board
+export const getBoardFromHistory = (board, history) => history.reduce((prev, cur) => placeDisc(prev,
+    cur.row, cur.column, cur.player), _.cloneDeep(board));
+
+const makeNode = (playerNumber, selectedMove, history, maximisingPlayerNumber, depth) => ({
+    playerNumber,
+    selectedMove,
+    maximisingPlayerNumber,
+    history,
+    children: [],
+    depth
+});
+
+export const alphaBeta = (root, depth, alpha, beta, maximisingPlayer) => {
+    if (depth === 0) {
+        return root.evaluatePosition();
+    }
+    if (maximisingPlayer) {
+        let v = Number.MAX_SAFE_INTEGER * -1;
+        for (let x = 0; x < root.children.length; x += 1) {
+            v = Math.max(v, alphaBeta(root.children[x], depth - 1, alpha, beta, false));
+            alpha = Math.max(alpha, v);
+            root.value = v;
+            if (beta <= alpha) {
+                break;
+            }
+        }
+        return v;
+    }
+    let v = Number.MAX_SAFE_INTEGER;
+    for (let x = 0; x < root.children.length; x += 1) {
+        v = Math.min(v, alphaBeta(root.children[x], depth - 1, alpha, beta, true));
+        beta = Math.min(beta, v);
+        root.value = v;
+        if (beta <= alpha) {
+            break;
+        }
+    }
+    return v;
+};
+
+const hasPlayerWon = (board, availableMovesBlack, availableMovesWhite) => {
+    if (availableMovesBlack.length === 0 && availableMovesWhite.length === 0) {
+        const flattenedBoard = Object.values(board).flat();
+        const sum = flattenedBoard.reduce((acc, cur) => acc + cur, 0);
+
+        // If the sum of the discs > 0, then playerWhite has more discs
+        // Otherwise black
+        if (sum > 0) {
+            return 1;
+        }
+        // If less than 0, playerBlack has more
+        if (sum < 0) {
+            return -1;
+        }
+    }
+    return 0;
+};
+
+const isHorizontallyStable = (board, row, column, stableDiscs) => {
+    // If it is in either the far left or far right column, it it horizontally stable
+    if (column === 0 || column === 7) {
+        return true;
+    }
+
+    const emptyCellInRow = board[row].some(cell => cell === 0);
+
+    // If the row is entirely full, then it is horizontally stable
+    if (!emptyCellInRow) {
+        return true;
+    }
+
+    // Check adjacent discs of same color
+    if (stableDiscs[row][column - 1] && board[row][column - 1] === board[row][column]) {
+        return true;
+    }
+
+    if (stableDiscs[row][column + 1] && board[row][column + 1] === board[row][column]) {
+        return true;
+    }
+
+    return false;
+};
+
+const isVerticallyStable = (board, row, column, stableDiscs) => {
+    // If it is in either the top or bottom row, it it vertically stable
+    if (row === 0 || row === 7) {
+        return true;
+    }
+
+    let emptyCellInRow = false;
+    for (let x = 0; x < 7; x += 1) {
+        if (board[x][column] === 0) {
+            emptyCellInRow = true;
+        }
+    }
+
+    // If the column is entirely full, then it is vertically stable
+    if (!emptyCellInRow) {
+        return true;
+    }
+
+    // Check adjacent discs of same color
+    if (stableDiscs[row - 1][column] && board[row - 1][column] === board[row][column]) {
+        return true;
+    }
+
+    if (stableDiscs[row + 1][column] && board[row + 1][column] === board[row][column]) {
+        return true;
+    }
+
+    return false;
+};
+
+const isRightDownStable = (board, row, column, stableDiscs) => {
+    // If it is either the top row, bottom row, left column, right column then it is right down stable
+    if (row === 0 || row === 7 || column === 0 || column === 7) {
+        return true;
+    }
+
+
+    // Extrapolate back to their earliest point, then loop as far as it can go without overflowing board
+    // Don't need to start at the first one - that is covered above
+    let currentRow = row - Math.min(row, column);
+    let currentColumn = column - Math.min(row, column);
+    let emptyCellRightDown = false;
+
+    while (currentRow <= 7 && currentColumn <= 7) {
+        if (board[currentRow][currentColumn] === 0) {
+            emptyCellRightDown = true;
+            break;
+        }
+        currentRow += 1;
+        currentColumn += 1;
+    }
+
+    if (!emptyCellRightDown) {
+        return true;
+    }
+
+    // If up and left is stable and same color
+    if (stableDiscs[row - 1][column - 1] && board[row - 1][column - 1] === board[row][column]) {
+        return true;
+    }
+
+    // If down and right is stable and same color
+    if (stableDiscs[row + 1][column + 1] && board[row + 1][column + 1] === board[row][column]) {
+        return true;
+    }
+
+    return false;
+};
+
+const isRightUpStable = (board, row, column, stableDiscs) => {
+    // If it is either the top row, bottom row, left column, right column then it is right down stable
+    if (row === 0 || row === 7 || column === 0 || column === 7) {
+        return true;
+    }
+
+    // Cool logic
+    // Goes up and right up until the edge of the board
+    // Don't need to start at the first one - that is covered above
+    let currentRow = row - Math.min(row, 7 - column);
+    let currentColumn = column + Math.min(row, 7 - column);
+    let emptyCellRightUp = false;
+
+    while (currentRow <= 7 && currentColumn >= 0) {
+        if (board[currentRow][currentColumn] === 0) {
+            emptyCellRightUp = true;
+            break;
+        }
+        currentRow += 1;
+        currentColumn -= 1;
+    }
+
+    if (!emptyCellRightUp) {
+        return true;
+    }
+
+    // If up and right is stable and same color
+    if (stableDiscs[row - 1][column + 1] && board[row - 1][column + 1] === board[row][column]) {
+        return true;
+    }
+
+    // If down and left is stable and same color
+    if (stableDiscs[row + 1][column - 1] && board[row + 1][column - 1] === board[row][column]) {
+        return true;
+    }
+
+    return false;
+};
+
+const isDiscStable = (board, row, column, stableDiscs) => {
+    if (board[row][column] === 0) {
+        return false;
+    }
+    const horizontalStability = isHorizontallyStable(board, row, column, stableDiscs);
+    const verticalStability = isVerticallyStable(board, row, column, stableDiscs);
+    const rightUpStability = isRightUpStable(board, row, column, stableDiscs);
+    const rightDownStability = isRightDownStable(board, row, column, stableDiscs);
+
+    return horizontalStability && verticalStability && rightUpStability && rightDownStability;
+};
+
+const findStableDiscs = board => {
+    const stableDiscs = [];
+    for (let x = 0; x < 8; x += 1) {
+        stableDiscs.push([false, false, false, false, false, false, false, false]);
+    }
+
+    stableDiscs[0][0] = isDiscStable(board, 0, 0, stableDiscs);
+    stableDiscs[0][7] = isDiscStable(board, 0, 7, stableDiscs);
+    stableDiscs[7][0] = isDiscStable(board, 7, 0, stableDiscs);
+    stableDiscs[7][7] = isDiscStable(board, 7, 7, stableDiscs);
+
+    // Loop down the leftmost and rightmost column
+    for (let row = 1; row < 7; row += 1) {
+        if (isDiscStable(board, row, 0, stableDiscs)) {
+            stableDiscs[row][0] = true;
+        }
+        if (isDiscStable(board, row, 7, stableDiscs)) {
+            stableDiscs[row][7] = true;
+        }
+    }
+
+    // Loop up the leftmost and rightmost column
+    for (let row = 6; row > 0; row -= 1) {
+        if (isDiscStable(board, row, 0, stableDiscs)) {
+            stableDiscs[row][0] = true;
+        }
+        if (isDiscStable(board, row, 7, stableDiscs)) {
+            stableDiscs[row][7] = true;
+        }
+    }
+
+    // Loop right across the top and bottom column
+    for (let column = 1; column < 7; column += 1) {
+        if (isDiscStable(board, 0, column, stableDiscs)) {
+            stableDiscs[0][column] = true;
+        }
+        if (isDiscStable(board, 7, column, stableDiscs)) {
+            stableDiscs[7][column] = true;
+        }
+    }
+
+    // Loop left across the top and bottom column
+    for (let column = 6; column > 0; column -= 1) {
+        if (isDiscStable(board, 0, column, stableDiscs)) {
+            stableDiscs[0][column] = true;
+        }
+        if (isDiscStable(board, 7, column, stableDiscs)) {
+            stableDiscs[7][column] = true;
+        }
+    }
+
+    for (let row = 1; row < 7; row += 1) {
+        for (let column = 1; column < 6; column += 1) {
+            if (isDiscStable(board, row, column, stableDiscs)) {
+                stableDiscs[row][column] = true;
+            }
+        }
+    }
+
+    return stableDiscs;
+};
+
+const checkCellDifferenceForApposingPlayerCell = (board, row, column, maxPlayer) => {
+    if (board[row][column] === maxPlayer * -1) {
+        return 1;
+    }
+    return 0;
+};
+
+const getPotentialMobilityForSquare = (board, row, column, maxPlayer) => {
+    let potentialMobility = 0;
+
+    if (board[row][column] !== 0) {
+        return 0;
+    }
+
+    // Above - not on top row
+    // Below - not on bottom row
+    // Right - not on right column
+    // Left - not on left column
+
+    // Right up - not on right column or top row
+    // Right down - not on right column or bottom row
+    // Left up - not on left column or top row
+    // Left down - not on left column or bottom row
+
+    // Check above
+    if (row !== 0) {
+        potentialMobility += checkCellDifferenceForApposingPlayerCell(board, row - 1, column, maxPlayer);
+    }
+
+    // Check below
+    if (row !== 7) {
+        potentialMobility += checkCellDifferenceForApposingPlayerCell(board, row + 1, column, maxPlayer);
+    }
+
+    // Check left
+    if (column !== 0) {
+        potentialMobility += checkCellDifferenceForApposingPlayerCell(board, row, column - 1, maxPlayer);
+    }
+
+    // Check right
+    if (column !== 7) {
+        potentialMobility += checkCellDifferenceForApposingPlayerCell(board, row, column + 1, maxPlayer);
+    }
+
+    // Check right up
+    if (row !== 0 && column !== 7) {
+        potentialMobility += checkCellDifferenceForApposingPlayerCell(board, row - 1, column + 1, maxPlayer);
+    }
+
+    // Check right down
+    if (row !== 7 && column !== 7) {
+        potentialMobility += checkCellDifferenceForApposingPlayerCell(board, row + 1, column + 1, maxPlayer);
+    }
+
+    // Check left up
+    if (row !== 0 && column !== 0) {
+        potentialMobility += checkCellDifferenceForApposingPlayerCell(board, row - 1, column - 1, maxPlayer);
+    }
+
+    // Check left down
+    if (row !== 7 && column !== 0) {
+        potentialMobility += checkCellDifferenceForApposingPlayerCell(board, row + 1, column - 1, maxPlayer);
+    }
+    return potentialMobility;
+};
+
+export const calculatePotentialMobility = (board, maximisingPlayer) => {
+    console.log('board', board);
+    let potentialMobility = 0;
+    for (let row = 0; row < 8; row += 1) {
+        for (let column = 0; column < 8; column += 1) {
+            potentialMobility += getPotentialMobilityForSquare(board, row, column, maximisingPlayer);
+        }
+    }
+    return potentialMobility;
+};
+
+const isCorner = (row, column) => (row === 0 && column === 0) || (row === 0 && column === 7) || (row === 7 && column === 0) || (row === 7 && column === 7);
+
+const isAdjacentToCorner = (row, column) => (row === 0 && column === 1)
+                                         || (row === 1 && column === 0)
+                                         || (row === 0 && column === 6)
+                                         || (row === 1 && column === 7)
+                                         || (row === 6 && column === 0)
+                                         || (row === 1 && column === 7)
+                                         || (row === 7 && column === 6)
+                                         || (row === 6 && column === 7);
+
+const isEdgeCell = (row, column) => (row === 0 || row === 7 || column === 0 || column === 7);
+
+const getStableDiscValue = (board, row, column, maximisingPlayer) => {
+    // if corner
+    // if adjacent to corner
+    // if edge row
+    // if center square
+
+    const cornerWeight = 5000;
+    const adjacentToCornerWeight = 10000;
+    const edgeWeight = 2000;
+    const internalWeight = 500;
+
+    if (isCorner(row, column)) {
+        return board[row][column] === maximisingPlayer ? cornerWeight : cornerWeight * -1;
+    }
+    if (isAdjacentToCorner(row, column)) {
+        return board[row][column] === maximisingPlayer ? adjacentToCornerWeight : adjacentToCornerWeight * -1;
+    }
+    if (isEdgeCell(row, column)) {
+        return board[row][column] === maximisingPlayer ? edgeWeight : edgeWeight * -1;
+    }
+    return board[row][column] === maximisingPlayer ? internalWeight : internalWeight * -1;
+};
+
+const getStableDiscsScore = (board, stableDiscs, maximisingPlayer) => {
+    let score = 0;
+    for (let row = 0; row < 8; row += 1) {
+        for (let column = 0; column < 8; column += 1) {
+            if (stableDiscs[row][column]) {
+                score += getStableDiscValue(board, row, column, maximisingPlayer);
+            }
+        }
+    }
+    return score;
+};
+
+const getMobilityDifference = (movesBlack, movesWhite, maxPlayer) => {
+    if (maxPlayer === 1) {
+        return movesWhite.length - movesBlack.length;
+    }
+    return movesBlack.length - movesWhite.length;
+};
+
+const evaluatePosition = (board, history, maximisingPlayerNumber, move) => {
+    const transformedBoard = getBoardFromHistory(board, history);
+    const convertedBoard = convertBoard(transformedBoard);
+
+    const availableMovesWhite = getAvailableMoves(transformedBoard, 1);
+    const availableMovesBlack = getAvailableMoves(transformedBoard, -1);
+    const stableDics = findStableDiscs(convertedBoard);
+
+    const winner = hasPlayerWon(transformedBoard, availableMovesBlack, availableMovesWhite);
+    const differenceInMobility = getMobilityDifference(availableMovesBlack, availableMovesWhite, maximisingPlayerNumber);
+
+
+    const potentialMobility = calculatePotentialMobility(convertedBoard, maximisingPlayerNumber);
+    const stableScore = getStableDiscsScore(board, stableDics, maximisingPlayerNumber);
+
+    const mobilityMultiplier = 1000;
+    const potentialMultiplier = 200;
+
+    if (winner === maximisingPlayerNumber) {
+        return Number.MAX_SAFE_INTEGER;
+    }
+    if (winner === maximisingPlayerNumber * -1) {
+        return Number.MAX_SAFE_INTEGER * -1;
+    }
+
+    const evaluation = differenceInMobility * mobilityMultiplier + potentialMobility * potentialMultiplier + stableScore;
+    console.log('evaluation', evaluation);
+    console.log('move', move);
+    return evaluation;
+};
+
+// This takes a node and generates all of the child moves for it
+// It takes the current player - tries all of their available moves first
+// If they have no moves available, then it will try it for the other player
+const expandNode = (node, moveHistory, currentPlayer, originalBoard, maximisingPlayerNumber, depth) => {
+    const newBoard = getBoardFromHistory(originalBoard, moveHistory);
+    const availableMoves = getAvailableMoves(newBoard, currentPlayer);
+    if (availableMoves.length) {
+        node.children = [];
+        availableMoves.forEach((move, index) => {
+            node.children[index] = makeNode(
+                currentPlayer * -1,
+                move,
+                [...moveHistory, { row: move[0], column: move[1], player: currentPlayer }],
+                maximisingPlayerNumber,
+                depth + 1
+            );
+            // node.evaluatePosition = () => evaluatePosition(newBoard, node.history, maximisingPlayerNumber);
+        });
+        // In this case, they will get to play two turns in a row
+    } else {
+        const availableMovesOtherPlayer = getAvailableMoves(newBoard, currentPlayer * -1);
+        if (availableMovesOtherPlayer.length) {
+            node.playerNumber *= -1;
+            node.children = [];
+            availableMovesOtherPlayer.forEach((move, index) => {
+                node.children[index] = makeNode(
+                    currentPlayer,
+                    move,
+                    [...moveHistory, { row: move[0], column: move[1], player: currentPlayer * -1 }],
+                    maximisingPlayerNumber,
+                    depth + 1
+                );
+                // node.evaluatePosition = () => evaluatePosition(newBoard, node.history, maximisingPlayerNumber);
+            });
+        } else {
+            // If no moves for either player, must be a leaf node - needs evaluation function
+            node.evaluatePosition = () => evaluatePosition(newBoard, node.history, maximisingPlayerNumber);
+        }
+    }
+};
+
+// When you expand yourself, the first thing you do is EXPAND_NODE
+const expandSelf = (nodeToExpand, playerNumber, depth, maxDepth, originalBoard, history, maximisingPlayerNumber) => {
+    if (depth < maxDepth) {
+        expandNode(nodeToExpand, history, playerNumber, originalBoard, maximisingPlayerNumber, depth);
+
+        // After expanding the node, if they have any child nodes, expand them
+        // The child nodes know which player they belong to
+        // The maximising player number always stays the same
+        if (nodeToExpand.children.length) {
+            nodeToExpand.children.forEach(child => {
+                expandSelf(child, child.playerNumber, depth + 1, maxDepth, originalBoard, child.history, maximisingPlayerNumber);
+            });
+        }
+
+        // If we reach the max depth, the node needs to know its evaluation function
+        // It needs the original board and history of moves to know the current board state
+    } else if (depth === maxDepth) {
+        nodeToExpand.evaluatePosition = () => evaluatePosition(originalBoard, nodeToExpand.history, maximisingPlayerNumber);
+    }
+};
+
+// May not guarantee max depth, but it's good enough for speed
+const findRoughMaxDepthOfTree = (node, depth) => {
+    if (node.children.length === 0) {
+        return depth;
+    }
+    return findRoughMaxDepthOfTree(node.children[0], depth + 1);
+};
+
+export const generateGameTree = (board, currentPlayer, maxDepth) => {
+    const rootNode = makeNode(currentPlayer, null, [], currentPlayer, 0);
+
+    expandSelf(rootNode, currentPlayer, 0, maxDepth, board, [], currentPlayer);
+    console.log('root node', rootNode);
+
+    const maxDepthOfTree = findRoughMaxDepthOfTree(rootNode, 0);
+
+    console.log('searching to depth', Math.min(maxDepth, maxDepthOfTree));
+
+    // The max depth must not be larger than the depth of the tree
+    const result = alphaBeta(rootNode, Math.min(maxDepth, maxDepthOfTree), -999999, 999999, true);
+
+    console.log('result', result);
 };
