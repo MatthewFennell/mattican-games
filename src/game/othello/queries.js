@@ -743,7 +743,6 @@ const getPotentialMobilityForSquare = (board, row, column, maxPlayer) => {
 };
 
 export const calculatePotentialMobility = (board, maximisingPlayer) => {
-    console.log('board', board);
     let potentialMobility = 0;
     for (let row = 0; row < 8; row += 1) {
         for (let column = 0; column < 8; column += 1) {
@@ -772,7 +771,7 @@ const getStableDiscValue = (board, row, column, maximisingPlayer) => {
     // if edge row
     // if center square
 
-    const cornerWeight = 5000;
+    const cornerWeight = 50000;
     const adjacentToCornerWeight = 10000;
     const edgeWeight = 2000;
     const internalWeight = 500;
@@ -808,7 +807,47 @@ const getMobilityDifference = (movesBlack, movesWhite, maxPlayer) => {
     return movesBlack.length - movesWhite.length;
 };
 
-const evaluatePosition = (board, history, maximisingPlayerNumber, move) => {
+const getXSquares = (board, maxPlayer, stableDics) => {
+    let score = 0;
+    if (!stableDics[1][1]) {
+        if (board[1][1] === maxPlayer) {
+            score -= 1;
+        }
+        if (board[1][1] === maxPlayer * -1) {
+            score += 1;
+        }
+    }
+
+    if (!stableDics[1][6]) {
+        if (board[1][6] === maxPlayer) {
+            score -= 1;
+        }
+        if (board[1][6] === maxPlayer * -1) {
+            score += 1;
+        }
+    }
+
+    if (!stableDics[6][1]) {
+        if (board[6][1] === maxPlayer) {
+            score -= 1;
+        }
+        if (board[6][1] === maxPlayer * -1) {
+            score += 1;
+        }
+    }
+
+    if (!stableDics[6][6]) {
+        if (board[6][6] === maxPlayer) {
+            score -= 1;
+        }
+        if (board[6][6] === maxPlayer * -1) {
+            score += 1;
+        }
+    }
+    return score;
+};
+
+const evaluatePosition = (board, history, maximisingPlayerNumber) => {
     const transformedBoard = getBoardFromHistory(board, history);
     const convertedBoard = convertBoard(transformedBoard);
 
@@ -821,10 +860,13 @@ const evaluatePosition = (board, history, maximisingPlayerNumber, move) => {
 
 
     const potentialMobility = calculatePotentialMobility(convertedBoard, maximisingPlayerNumber);
-    const stableScore = getStableDiscsScore(board, stableDics, maximisingPlayerNumber);
+    const stableScore = getStableDiscsScore(convertedBoard, stableDics, maximisingPlayerNumber);
 
-    const mobilityMultiplier = 1000;
+    const mobilityMultiplier = 10000;
     const potentialMultiplier = 200;
+    const xSquareMultiplier = 15000;
+
+    const xSquareScore = getXSquares(convertedBoard, maximisingPlayerNumber, stableDics) * xSquareMultiplier;
 
     if (winner === maximisingPlayerNumber) {
         return Number.MAX_SAFE_INTEGER;
@@ -833,9 +875,7 @@ const evaluatePosition = (board, history, maximisingPlayerNumber, move) => {
         return Number.MAX_SAFE_INTEGER * -1;
     }
 
-    const evaluation = differenceInMobility * mobilityMultiplier + potentialMobility * potentialMultiplier + stableScore;
-    console.log('evaluation', evaluation);
-    console.log('move', move);
+    const evaluation = differenceInMobility * mobilityMultiplier + potentialMobility * potentialMultiplier + stableScore + xSquareScore;
     return evaluation;
 };
 
@@ -913,14 +953,21 @@ export const generateGameTree = (board, currentPlayer, maxDepth) => {
     const rootNode = makeNode(currentPlayer, null, [], currentPlayer, 0);
 
     expandSelf(rootNode, currentPlayer, 0, maxDepth, board, [], currentPlayer);
-    console.log('root node', rootNode);
 
     const maxDepthOfTree = findRoughMaxDepthOfTree(rootNode, 0);
 
-    console.log('searching to depth', Math.min(maxDepth, maxDepthOfTree));
 
     // The max depth must not be larger than the depth of the tree
     const result = alphaBeta(rootNode, Math.min(maxDepth, maxDepthOfTree), -999999, 999999, true);
 
+    let move = null;
+
+    rootNode.children.forEach(child => {
+        if (child.value === result) {
+            move = child.selectedMove;
+        }
+    });
+
+    console.log('selected move', move);
     console.log('result', result);
 };

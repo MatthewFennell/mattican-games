@@ -11,16 +11,14 @@ const GameActive = props => {
     const [hoverY, setHoverY] = useState(-1);
 
     const onCellClick = useCallback((row, col) => {
-        queries.generateGameTree(props.currentGame.board, props.currentGame.activePlayer, 2);
-        queries.calculatePotentialMobility(queries.convertBoard(props.currentGame.board), props.currentGame.activePlayer);
-        // props.placeDiscRequest(props.currentGameId, row, col);
+        props.placeDiscRequest(props.currentGameId, row, col);
 
         // eslint-disable-next-line
     }, [props.currentGame.board, props.currentGame.activePlayer, props.currentGameId]);
 
     const onMouseEnter = useCallback((row, col) => {
-        setHoverY(row);
-        setHoverX(col);
+        // setHoverY(row);
+        // setHoverX(col);
     }, [setHoverX, setHoverY]);
 
     const generateVisibleBoard = useCallback(() => {
@@ -30,6 +28,8 @@ const GameActive = props => {
         }
         return props.currentGame.board;
     }, [hoverX, hoverY, props.currentGame]);
+
+    queries.generateGameTree(props.currentGame.board, props.currentGame.activePlayer, 3);
 
     return (
         <div className={props.styles.gameActiveWrapper}>
