@@ -21,7 +21,6 @@ const GameActive = props => {
         setHoverX(col);
     }, [setHoverX, setHoverY]);
 
-
     const generateVisibleBoard = useCallback(() => {
         if (hoverX >= 0 && hoverX <= 7 && hoverY >= 0 && hoverY <= 7) {
             return queries.placeDisc(props.currentGame.board, hoverY,

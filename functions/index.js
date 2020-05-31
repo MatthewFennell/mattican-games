@@ -169,20 +169,14 @@ exports.startGame = functions
                     activePlayer, board, difficulty, playerBlack, playerWhite
                 } = doc.data();
 
-                if ((activePlayer === 1 && playerWhite === constants.othelloPlayerTypes.Human)
-            || (activePlayer === -1 && playerBlack === constants.othelloPlayerTypes.Human)) {
-                    console.log('next player is a human');
+                if ((activePlayer === 1 && playerWhite !== constants.othelloPlayerTypes.Computer)
+            || (activePlayer === -1 && playerBlack !== constants.othelloPlayerTypes.Computer)) {
                     return Promise.resolve();
                 }
-
-                console.log('board before', board);
-
                 // Do the first computer turn
                 const computerMove = queries.getComputerMove(board, activePlayer, difficulty);
-                console.log('computer move', computerMove);
                 const newBoard = queries.placeDisc(board, computerMove.row, computerMove.column, activePlayer);
 
-                console.log('new board', newBoard);
 
                 // It must always end with it becoming the other players turn (or the game ending above)
                 return doc.ref.update({
@@ -193,8 +187,8 @@ exports.startGame = functions
     });
 
 const runtimeOpts = {
-    timeoutSeconds: 30,
-    memory: '128MB'
+    timeoutSeconds: 120,
+    memory: '2GB'
 };
 
 exports.placeDisc = functions
@@ -249,12 +243,10 @@ exports.placeDisc = functions
             // Therefore the next player must be white
             if (availableMovesBlack.length === 0) {
                 nextPlayer = 1;
-                console.log('FORCING NEXT PLAYER TO BE WHITE');
             }
 
             // Vice versa
             if (availableMovesWhite.length === 0) {
-                console.log('FORCING NEXT PLAYER TO BE BLACK');
                 nextPlayer = -1;
             }
 
@@ -268,9 +260,8 @@ exports.placeDisc = functions
                     activePlayer, board, difficulty, playerBlack, playerWhite
                 } = doc.data();
 
-                if ((activePlayer === 1 && playerWhite === constants.othelloPlayerTypes.Human)
-                || (activePlayer === -1 && playerBlack === constants.othelloPlayerTypes.Human)) {
-                    console.log('next player is a human');
+                if ((activePlayer === 1 && playerWhite !== constants.othelloPlayerTypes.Computer)
+                || (activePlayer === -1 && playerBlack !== constants.othelloPlayerTypes.Computer)) {
                     return Promise.resolve();
                 }
 
@@ -292,10 +283,15 @@ exports.placeDisc = functions
 
                 // This is after the computer has played and we know that at least one player can go
                 // It should keep making moves whilst the human has no available moves
-
                 while (queries.getNumberOfAvailableMoves(newBoard, activePlayer * -1) === 0) {
-                    console.log('Generating a new computer move', newBoard);
-                    console.log('new board', newBoard);
+                    // It may be the case after placing their second move that now neither player have any moves available
+                    if (queries.getNumberOfAvailableMoves(newBoard, activePlayer) === 0) {
+                        return doc.ref.update({
+                            board: newBoard,
+                            hasFinished: true
+                        });
+                    }
+
                     const nextComputerMove = queries.getComputerMove(board, activePlayer, difficulty);
                     newBoard = queries.placeDisc(board, nextComputerMove.row, nextComputerMove.column, activePlayer);
                 }
