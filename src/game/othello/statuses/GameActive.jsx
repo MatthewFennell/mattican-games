@@ -29,8 +29,6 @@ const GameActive = props => {
         return props.currentGame.board;
     }, [hoverX, hoverY, props.currentGame]);
 
-    // queries.getMinimaxMove(props.currentGame.board, props.currentGame.activePlayer, 4);
-
     return (
         <div className={props.styles.gameActiveWrapper}>
             <Board

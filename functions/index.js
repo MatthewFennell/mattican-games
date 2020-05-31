@@ -173,9 +173,6 @@ exports.startGame = functions
             || (activePlayer === -1 && playerBlack !== constants.othelloPlayerTypes.Computer)) {
                     return Promise.resolve();
                 }
-
-                console.log('board before', board);
-
                 // Do the first computer turn
                 const computerMove = queries.getComputerMove(board, activePlayer, difficulty);
                 const newBoard = queries.placeDisc(board, computerMove.row, computerMove.column, activePlayer);
@@ -190,7 +187,7 @@ exports.startGame = functions
     });
 
 const runtimeOpts = {
-    timeoutSeconds: 30,
+    timeoutSeconds: 120,
     memory: '2GB'
 };
 
@@ -246,12 +243,10 @@ exports.placeDisc = functions
             // Therefore the next player must be white
             if (availableMovesBlack.length === 0) {
                 nextPlayer = 1;
-                console.log('FORCING NEXT PLAYER TO BE WHITE');
             }
 
             // Vice versa
             if (availableMovesWhite.length === 0) {
-                console.log('FORCING NEXT PLAYER TO BE BLACK');
                 nextPlayer = -1;
             }
 
@@ -267,20 +262,13 @@ exports.placeDisc = functions
 
                 if ((activePlayer === 1 && playerWhite !== constants.othelloPlayerTypes.Computer)
                 || (activePlayer === -1 && playerBlack !== constants.othelloPlayerTypes.Computer)) {
-                    console.log('next player is a human');
                     return Promise.resolve();
                 }
-
-                console.log('getting computer move');
 
                 // At this point we can assume that they have available moves
                 // If they had no moves available, it wouldn't be their turn
 
-                console.log('get computer move with params board = ', board);
-                console.log('active player', activePlayer);
-                console.log('board', board);
                 const computerMove = queries.getComputerMove(board, activePlayer, difficulty);
-                console.log('got computer move', computerMove);
                 let newBoard = queries.placeDisc(board, computerMove.row, computerMove.column, activePlayer);
 
                 const availableMovesWhite = queries.getAvailableMoves(newBoard, 1);
@@ -292,12 +280,9 @@ exports.placeDisc = functions
                         hasFinished: true
                     });
                 }
-                console.log('about to start looping');
-                console.log('new board = ', newBoard);
 
                 // This is after the computer has played and we know that at least one player can go
                 // It should keep making moves whilst the human has no available moves
-
                 while (queries.getNumberOfAvailableMoves(newBoard, activePlayer * -1) === 0) {
                     // It may be the case after placing their second move that now neither player have any moves available
                     if (queries.getNumberOfAvailableMoves(newBoard, activePlayer) === 0) {

@@ -454,7 +454,7 @@ export const alphaBeta = (root, depth, alpha, beta, maximisingPlayer) => {
 
 const hasPlayerWon = (board, availableMovesBlack, availableMovesWhite) => {
     if (availableMovesBlack.length === 0 && availableMovesWhite.length === 0) {
-        const flattenedBoard = Object.values(board).flat();
+        const flattenedBoard = _.flatten(board);
         const sum = flattenedBoard.reduce((acc, cur) => acc + cur, 0);
 
         // If the sum of the discs > 0, then playerWhite has more discs
@@ -502,7 +502,7 @@ const isVerticallyStable = (board, row, column, stableDiscs) => {
     }
 
     let emptyCellInRow = false;
-    for (let x = 0; x < 7; x += 1) {
+    for (let x = 0; x < 8; x += 1) {
         if (board[x][column] === 0) {
             emptyCellInRow = true;
         }
@@ -615,7 +615,7 @@ const isDiscStable = (board, row, column, stableDiscs) => {
     return horizontalStability && verticalStability && rightUpStability && rightDownStability;
 };
 
-const findStableDiscs = board => {
+export const findStableDiscs = board => {
     const stableDiscs = [];
     for (let x = 0; x < 8; x += 1) {
         stableDiscs.push([false, false, false, false, false, false, false, false]);
@@ -760,7 +760,7 @@ const isAdjacentToCorner = (row, column) => (row === 0 && column === 1)
                                          || (row === 0 && column === 6)
                                          || (row === 1 && column === 7)
                                          || (row === 6 && column === 0)
-                                         || (row === 1 && column === 7)
+                                         || (row === 7 && column === 1)
                                          || (row === 7 && column === 6)
                                          || (row === 6 && column === 7);
 
@@ -772,10 +772,10 @@ const getStableDiscValue = (board, row, column, maximisingPlayer) => {
     // if edge row
     // if center square
 
-    const cornerWeight = 50000;
-    const adjacentToCornerWeight = 10000;
-    const edgeWeight = 2000;
-    const internalWeight = 500;
+    const cornerWeight = 10241;
+    const adjacentToCornerWeight = 19975;
+    const edgeWeight = 1958;
+    const internalWeight = 2497;
 
     if (isCorner(row, column)) {
         return board[row][column] === maximisingPlayer ? cornerWeight : cornerWeight * -1;
@@ -808,9 +808,9 @@ const getMobilityDifference = (movesBlack, movesWhite, maxPlayer) => {
     return movesBlack.length - movesWhite.length;
 };
 
-const getXSquares = (board, maxPlayer, stableDics) => {
+const getXSquares = (board, maxPlayer, stableDiscs) => {
     let score = 0;
-    if (!stableDics[1][1]) {
+    if (!stableDiscs[1][1] && board[0][0] === 0) {
         if (board[1][1] === maxPlayer) {
             score -= 1;
         }
@@ -819,7 +819,7 @@ const getXSquares = (board, maxPlayer, stableDics) => {
         }
     }
 
-    if (!stableDics[1][6]) {
+    if (!stableDiscs[1][6] && board[0][7] === 0) {
         if (board[1][6] === maxPlayer) {
             score -= 1;
         }
@@ -828,7 +828,7 @@ const getXSquares = (board, maxPlayer, stableDics) => {
         }
     }
 
-    if (!stableDics[6][1]) {
+    if (!stableDiscs[6][1] && board[7][0] === 0) {
         if (board[6][1] === maxPlayer) {
             score -= 1;
         }
@@ -837,7 +837,7 @@ const getXSquares = (board, maxPlayer, stableDics) => {
         }
     }
 
-    if (!stableDics[6][6]) {
+    if (!stableDiscs[6][6] && board[7][7] === 0) {
         if (board[6][6] === maxPlayer) {
             score -= 1;
         }
@@ -854,20 +854,31 @@ const evaluatePosition = (board, history, maximisingPlayerNumber) => {
 
     const availableMovesWhite = getAvailableMoves(transformedBoard, 1);
     const availableMovesBlack = getAvailableMoves(transformedBoard, -1);
-    const stableDics = findStableDiscs(convertedBoard);
+    const stableDiscs = findStableDiscs(convertedBoard);
+
+    // for (let x = 0; x < 8; x += 1) {
+    //     for (let y = 0; y < 8; y += 1) {
+    //         if (stableDics[x][y]) {
+    //             console.log(`disc at row ${x}, column ${y} is stable`);
+    //         }
+    //     }
+    // }
 
     const winner = hasPlayerWon(transformedBoard, availableMovesBlack, availableMovesWhite);
     const differenceInMobility = getMobilityDifference(availableMovesBlack, availableMovesWhite, maximisingPlayerNumber);
 
-
     const potentialMobility = calculatePotentialMobility(convertedBoard, maximisingPlayerNumber);
-    const stableScore = getStableDiscsScore(convertedBoard, stableDics, maximisingPlayerNumber);
+    const enemyPotentialMobility = calculatePotentialMobility(convertedBoard, maximisingPlayerNumber * -1);
+    const stableScore = getStableDiscsScore(convertedBoard, stableDiscs, maximisingPlayerNumber);
 
-    const mobilityMultiplier = 10000;
-    const potentialMultiplier = 200;
-    const xSquareMultiplier = 15000;
+    const mobilityMultiplier = 921;
+    const potentialMultiplier = 522;
+    const xSquareMultiplier = 10000;
 
-    const xSquareScore = getXSquares(convertedBoard, maximisingPlayerNumber, stableDics) * xSquareMultiplier;
+    const xSquareScore = getXSquares(convertedBoard, maximisingPlayerNumber, stableDiscs) * xSquareMultiplier;
+
+    const potMob = (potentialMobility - enemyPotentialMobility) * potentialMultiplier;
+
 
     if (winner === maximisingPlayerNumber) {
         return Number.MAX_SAFE_INTEGER;
@@ -876,7 +887,8 @@ const evaluatePosition = (board, history, maximisingPlayerNumber) => {
         return Number.MAX_SAFE_INTEGER * -1;
     }
 
-    const evaluation = differenceInMobility * mobilityMultiplier + potentialMobility * potentialMultiplier + stableScore + xSquareScore;
+
+    const evaluation = differenceInMobility * mobilityMultiplier + potMob + stableScore + xSquareScore;
     return evaluation;
 };
 
@@ -953,14 +965,12 @@ const findRoughMaxDepthOfTree = (node, depth) => {
 export const getMinimaxMove = (board, currentPlayer, maxDepth) => {
     const rootNode = makeNode(currentPlayer, null, [], currentPlayer, 0);
 
-    console.log('root node', rootNode);
-
     expandSelf(rootNode, currentPlayer, 0, maxDepth, board, [], currentPlayer);
 
     const maxDepthOfTree = findRoughMaxDepthOfTree(rootNode, 0);
 
     // The max depth must not be larger than the depth of the tree
-    const result = alphaBeta(rootNode, Math.min(maxDepth, maxDepthOfTree), -999999, 999999, true);
+    const result = alphaBeta(rootNode, Math.min(maxDepth, maxDepthOfTree), Number.MAX_SAFE_INTEGER * -1, Number.MAX_SAFE_INTEGER, true);
 
     let move = null;
 
@@ -970,29 +980,8 @@ export const getMinimaxMove = (board, currentPlayer, maxDepth) => {
         }
     });
 
-    console.log('selected move', move);
-    console.log('result', result);
-
     return {
         row: move[0],
         column: move[1]
     };
 };
-
-const testBoard = {
-    rowSeven: [1, 1, 1, 1, 1, 1, -1, 0],
-    rowSix: [1, 1, -1, -1, -1, -1, -1, -1],
-    rowFive: [1, 1, 1, -1, 1, 1, -1, 1],
-    rowFour: [1, -1, 1, 1, 1, -1, -1, 1],
-    rowThree: [1, -1, 1, 1, 1, 1, -1, 1],
-    rowTwo: [1, 1, -1, -1, 1, 1, -1, 1],
-    rowOne: [1, -1, 1, -1, -1, 1, 1, 1],
-    rowZero: [-1, 1, 1, 1, 1, 1, 1, 1]
-};
-
-
-const playerNumber = 1;
-
-const depth = 4;
-
-// const testResult = getMinimaxMove(testBoard, playerNumber, depth);

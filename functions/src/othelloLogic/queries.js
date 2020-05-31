@@ -452,7 +452,7 @@ const isVerticallyStable = (board, row, column, stableDiscs) => {
     }
 
     let emptyCellInRow = false;
-    for (let x = 0; x < 7; x += 1) {
+    for (let x = 0; x < 8; x += 1) {
         if (board[x][column] === 0) {
             emptyCellInRow = true;
         }
@@ -653,9 +653,9 @@ const getMobilityDifference = (movesBlack, movesWhite, maxPlayer) => {
     return movesBlack.length - movesWhite.length;
 };
 
-const getXSquares = (board, maxPlayer, stableDics) => {
+const getXSquares = (board, maxPlayer, stableDiscs) => {
     let score = 0;
-    if (!stableDics[1][1]) {
+    if (!stableDiscs[1][1] && board[0][0] === 0) {
         if (board[1][1] === maxPlayer) {
             score -= 1;
         }
@@ -664,7 +664,7 @@ const getXSquares = (board, maxPlayer, stableDics) => {
         }
     }
 
-    if (!stableDics[1][6]) {
+    if (!stableDiscs[1][6] && board[0][7] === 0) {
         if (board[1][6] === maxPlayer) {
             score -= 1;
         }
@@ -673,7 +673,7 @@ const getXSquares = (board, maxPlayer, stableDics) => {
         }
     }
 
-    if (!stableDics[6][1]) {
+    if (!stableDiscs[6][1] && board[7][0] === 0) {
         if (board[6][1] === maxPlayer) {
             score -= 1;
         }
@@ -682,7 +682,7 @@ const getXSquares = (board, maxPlayer, stableDics) => {
         }
     }
 
-    if (!stableDics[6][6]) {
+    if (!stableDiscs[6][6] && board[7][7] === 0) {
         if (board[6][6] === maxPlayer) {
             score -= 1;
         }
@@ -776,7 +776,7 @@ const isAdjacentToCorner = (row, column) => (row === 0 && column === 1)
                                          || (row === 0 && column === 6)
                                          || (row === 1 && column === 7)
                                          || (row === 6 && column === 0)
-                                         || (row === 1 && column === 7)
+                                         || (row === 7 && column === 1)
                                          || (row === 7 && column === 6)
                                          || (row === 6 && column === 7);
 
@@ -788,10 +788,10 @@ const getStableDiscValue = (board, row, column, maximisingPlayer) => {
     // if edge row
     // if center square
 
-    const cornerWeight = 50000;
-    const adjacentToCornerWeight = 10000;
-    const edgeWeight = 2000;
-    const internalWeight = 500;
+    const cornerWeight = 10241;
+    const adjacentToCornerWeight = 19975;
+    const edgeWeight = 1958;
+    const internalWeight = 2497;
 
     if (isCorner(row, column)) {
         return board[row][column] === maximisingPlayer ? cornerWeight : cornerWeight * -1;
@@ -824,20 +824,23 @@ const evaluatePosition = (board, history, maximisingPlayerNumber) => {
 
     const availableMovesWhite = getAvailableMoves(transformedBoard, 1);
     const availableMovesBlack = getAvailableMoves(transformedBoard, -1);
-    const stableDics = findStableDiscs(convertedBoard);
+    const stableDiscs = findStableDiscs(convertedBoard);
 
     const winner = hasPlayerWon(transformedBoard, availableMovesBlack, availableMovesWhite);
     const differenceInMobility = getMobilityDifference(availableMovesBlack, availableMovesWhite, maximisingPlayerNumber);
 
-
     const potentialMobility = calculatePotentialMobility(convertedBoard, maximisingPlayerNumber);
-    const stableScore = getStableDiscsScore(convertedBoard, stableDics, maximisingPlayerNumber);
+    const enemyPotentialMobility = calculatePotentialMobility(convertedBoard, maximisingPlayerNumber * -1);
+    const stableScore = getStableDiscsScore(convertedBoard, stableDiscs, maximisingPlayerNumber);
 
-    const mobilityMultiplier = 10000;
-    const potentialMultiplier = 200;
-    const xSquareMultiplier = 15000;
+    const mobilityMultiplier = 921;
+    const potentialMultiplier = 522;
+    const xSquareMultiplier = 10000;
 
-    const xSquareScore = getXSquares(convertedBoard, maximisingPlayerNumber, stableDics) * xSquareMultiplier;
+    const xSquareScore = getXSquares(convertedBoard, maximisingPlayerNumber, stableDiscs) * xSquareMultiplier;
+
+    const potMob = (potentialMobility - enemyPotentialMobility) * potentialMultiplier;
+
 
     if (winner === maximisingPlayerNumber) {
         return Number.MAX_SAFE_INTEGER;
@@ -846,7 +849,8 @@ const evaluatePosition = (board, history, maximisingPlayerNumber) => {
         return Number.MAX_SAFE_INTEGER * -1;
     }
 
-    const evaluation = differenceInMobility * mobilityMultiplier + potentialMobility * potentialMultiplier + stableScore + xSquareScore;
+
+    const evaluation = differenceInMobility * mobilityMultiplier + potMob + stableScore + xSquareScore;
     return evaluation;
 };
 
