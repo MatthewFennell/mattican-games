@@ -88,6 +88,7 @@
 }
 
 .gameInfoWrapper {
+    width: 30%;
     margin-top: $spacing-gigantic;
     height: max-content;
     background-color: lightblue;
@@ -101,9 +102,9 @@
 
 @media only screen and (max-width: 1200px) {
     .gameInfoWrapper {
+        width: 90%;
         margin-top: $spacing-small;
         padding: $spacing-average;
-        width: fit-content;
         margin-left: auto;        
         margin-right: auto;        
     }    

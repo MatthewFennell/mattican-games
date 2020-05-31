@@ -28,7 +28,7 @@ const HeuristicInfo = props => {
                         Corners
                     </div>
                     <div>
-                        Adj. to Corner
+                        Adj Corner
                     </div>
                     <div>
                         Edges

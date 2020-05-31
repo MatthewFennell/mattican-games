@@ -1,53 +1,26 @@
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
 import defaultStyles from './GameActive.module.scss';
-import Board from '../View/Board';
 import GameInfo from './GameInfo';
-import * as queries from '../queries';
+import PreboardLogic from './PreboardLogic';
 
-const GameActive = props => {
-    const [hoverX, setHoverX] = useState(-1);
-    const [hoverY, setHoverY] = useState(-1);
+const GameActive = props => (
+    <div className={props.styles.gameActiveWrapper}>
+        <PreboardLogic
+            currentGame={props.currentGame}
+            currentGameId={props.currentGameId}
+            placeDiscRequest={props.placeDiscRequest}
+        />
 
-    const onCellClick = useCallback((row, col) => {
-        props.placeDiscRequest(props.currentGameId, row, col);
-
-        // eslint-disable-next-line
-    }, [props.currentGame.board, props.currentGame.activePlayer, props.currentGameId]);
-
-    const onMouseEnter = useCallback((row, col) => {
-        setHoverY(row);
-        setHoverX(col);
-    }, [setHoverX, setHoverY]);
-
-    const generateVisibleBoard = useCallback(() => {
-        if (hoverX >= 0 && hoverX <= 7 && hoverY >= 0 && hoverY <= 7) {
-            return queries.placeDisc(props.currentGame.board, hoverY,
-                hoverX, props.currentGame.activePlayer);
-        }
-        return props.currentGame.board;
-    }, [hoverX, hoverY, props.currentGame]);
-
-    return (
-        <div className={props.styles.gameActiveWrapper}>
-            <Board
-                availableMoves={queries.getAvailableMoves(props.currentGame.board,
-                    props.currentGame.activePlayer)}
-                board={generateVisibleBoard()}
-                onCellClick={onCellClick}
-                onMouseEnter={onMouseEnter}
-            />
-
-            <GameInfo
-                auth={props.auth}
-                currentGame={props.currentGame}
-                leaveGameRequest={props.leaveGameRequest}
-                users={props.users}
-            />
-        </div>
-    );
-};
+        <GameInfo
+            auth={props.auth}
+            currentGame={props.currentGame}
+            leaveGameRequest={props.leaveGameRequest}
+            users={props.users}
+        />
+    </div>
+);
 
 GameActive.defaultProps = {
     auth: {
