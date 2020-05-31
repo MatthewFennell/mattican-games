@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 /* eslint-disable no-param-reassign */
 import _ from 'lodash';
-import fp from 'lodash/fp';
 
 export const convertBoard = board => [
     board.rowZero,
@@ -425,7 +424,9 @@ const makeNode = (playerNumber, selectedMove, history, maximisingPlayerNumber, d
 
 export const alphaBeta = (root, depth, alpha, beta, maximisingPlayer) => {
     if (depth === 0) {
-        return root.evaluatePosition();
+        const result = root.evaluatePosition();
+        root.value = result;
+        return result;
     }
     if (maximisingPlayer) {
         let v = Number.MAX_SAFE_INTEGER * -1;
@@ -911,7 +912,6 @@ const expandNode = (node, moveHistory, currentPlayer, originalBoard, maximisingP
                     maximisingPlayerNumber,
                     depth + 1
                 );
-                // node.evaluatePosition = () => evaluatePosition(newBoard, node.history, maximisingPlayerNumber);
             });
         } else {
             // If no moves for either player, must be a leaf node - needs evaluation function
@@ -944,18 +944,20 @@ const expandSelf = (nodeToExpand, playerNumber, depth, maxDepth, originalBoard, 
 // May not guarantee max depth, but it's good enough for speed
 const findRoughMaxDepthOfTree = (node, depth) => {
     if (node.children.length === 0) {
-        return depth;
+        return node.depth;
     }
     return findRoughMaxDepthOfTree(node.children[0], depth + 1);
 };
 
-export const generateGameTree = (board, currentPlayer, maxDepth) => {
+
+export const getMinimaxMove = (board, currentPlayer, maxDepth) => {
     const rootNode = makeNode(currentPlayer, null, [], currentPlayer, 0);
+
+    console.log('root node', rootNode);
 
     expandSelf(rootNode, currentPlayer, 0, maxDepth, board, [], currentPlayer);
 
     const maxDepthOfTree = findRoughMaxDepthOfTree(rootNode, 0);
-
 
     // The max depth must not be larger than the depth of the tree
     const result = alphaBeta(rootNode, Math.min(maxDepth, maxDepthOfTree), -999999, 999999, true);
@@ -970,4 +972,27 @@ export const generateGameTree = (board, currentPlayer, maxDepth) => {
 
     console.log('selected move', move);
     console.log('result', result);
+
+    return {
+        row: move[0],
+        column: move[1]
+    };
 };
+
+const testBoard = {
+    rowSeven: [1, 1, 1, 1, 1, 1, -1, 0],
+    rowSix: [1, 1, -1, -1, -1, -1, -1, -1],
+    rowFive: [1, 1, 1, -1, 1, 1, -1, 1],
+    rowFour: [1, -1, 1, 1, 1, -1, -1, 1],
+    rowThree: [1, -1, 1, 1, 1, 1, -1, 1],
+    rowTwo: [1, 1, -1, -1, 1, 1, -1, 1],
+    rowOne: [1, -1, 1, -1, -1, 1, 1, 1],
+    rowZero: [-1, 1, 1, 1, 1, 1, 1, 1]
+};
+
+
+const playerNumber = 1;
+
+const depth = 4;
+
+// const testResult = getMinimaxMove(testBoard, playerNumber, depth);

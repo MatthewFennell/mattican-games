@@ -17,8 +17,8 @@ const GameActive = props => {
     }, [props.currentGame.board, props.currentGame.activePlayer, props.currentGameId]);
 
     const onMouseEnter = useCallback((row, col) => {
-        // setHoverY(row);
-        // setHoverX(col);
+        setHoverY(row);
+        setHoverX(col);
     }, [setHoverX, setHoverY]);
 
     const generateVisibleBoard = useCallback(() => {
@@ -29,7 +29,7 @@ const GameActive = props => {
         return props.currentGame.board;
     }, [hoverX, hoverY, props.currentGame]);
 
-    queries.generateGameTree(props.currentGame.board, props.currentGame.activePlayer, 3);
+    // queries.getMinimaxMove(props.currentGame.board, props.currentGame.activePlayer, 4);
 
     return (
         <div className={props.styles.gameActiveWrapper}>
