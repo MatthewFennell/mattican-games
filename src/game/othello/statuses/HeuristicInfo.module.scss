@@ -1,0 +1,34 @@
+@import "../../../common/Styles.scss";
+
+.heuristicInfoWrapper {
+    text-align: center;
+    font-weight: bold;
+    margin-top: $spacing-small;
+}
+
+.heuristicTitle {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.heuristicScoreText {
+    @include vertical-center-div();
+}
+
+.invisible {
+    color: lightblue;
+}
+
+.heuristicScores {
+    display: flex;
+    > div {
+        width: 33%
+    }
+
+    .columnTwo {
+        text-align: center;
+    }
+    .columnThree {
+        text-align: center;
+    }
+}

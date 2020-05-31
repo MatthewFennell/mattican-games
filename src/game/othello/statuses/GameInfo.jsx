@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { noop } from 'lodash';
 import Fade from '../../../common/Fade/Fade';
 import GameFinished from './GameFinished';
+import HeuristicInfo from './HeuristicInfo';
 import defaultStyles from './GameInfo.module.scss';
 import * as constants from '../../../constants';
 import * as helpers from '../../helpers';
@@ -102,6 +103,12 @@ const GameInfo = props => (
             </div>
         </div>
 
+        {props.currentGame.opponentType === constants.othelloPlayerTypes.Computer && (
+            <HeuristicInfo
+                currentGame={props.currentGame}
+            />
+        )}
+
         <div>
             {(props.currentGame.hasFinished || props.currentGame.hasResigned) && (
                 <GameFinished
@@ -131,6 +138,7 @@ GameInfo.defaultProps = {
         },
         hasFinished: false,
         hasResigned: false,
+        opponentType: constants.othelloPlayerTypes.Human,
         playerBlack: '',
         playerWhite: ''
     },
@@ -157,6 +165,7 @@ GameInfo.propTypes = {
         }),
         hasFinished: PropTypes.bool,
         hasResigned: PropTypes.bool,
+        opponentType: PropTypes.string,
         playerBlack: PropTypes.string,
         playerWhite: PropTypes.string
     }),
