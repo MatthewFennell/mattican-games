@@ -221,7 +221,7 @@ exports.placeDisc = functions
                 throw new functions.https.HttpsError('invalid-argument', 'Invalid row');
             }
 
-            if (!queries.placeDisc(board, data.row, data.column, activePlayer)) {
+            if (!queries.canPlaceDisc(queries.convertBoard(board), data.row, data.column, activePlayer)) {
                 throw new functions.https.HttpsError('invalid-argument', 'That is not a valid move');
             }
 
@@ -233,7 +233,8 @@ exports.placeDisc = functions
             if (availableMovesWhite.length === 0 && availableMovesBlack.length === 0) {
                 return doc.ref.update({
                     board: newBoard,
-                    hasFinished: true
+                    hasFinished: true,
+                    aiError: false
                 });
             }
 
@@ -252,7 +253,8 @@ exports.placeDisc = functions
 
             return doc.ref.update({
                 activePlayer: nextPlayer,
-                board: newBoard
+                board: newBoard,
+                aiError: false
             });
         })
             .then(() => db.collection('games').doc(data.gameId).get().then(doc => {
@@ -277,7 +279,8 @@ exports.placeDisc = functions
                 if (availableMovesWhite.length === 0 && availableMovesBlack.length === 0) {
                     return doc.ref.update({
                         board: newBoard,
-                        hasFinished: true
+                        hasFinished: true,
+                        aiError: false
                     });
                 }
 
@@ -288,19 +291,21 @@ exports.placeDisc = functions
                     if (queries.getNumberOfAvailableMoves(newBoard, activePlayer) === 0) {
                         return doc.ref.update({
                             board: newBoard,
-                            hasFinished: true
+                            hasFinished: true,
+                            aiError: false
                         });
                     }
 
-                    const nextComputerMove = queries.getComputerMove(board, activePlayer, difficulty);
-                    newBoard = queries.placeDisc(board, nextComputerMove.row, nextComputerMove.column, activePlayer);
+                    const nextComputerMove = queries.getComputerMove(newBoard, activePlayer, difficulty);
+                    newBoard = queries.placeDisc(newBoard, nextComputerMove.row, nextComputerMove.column, activePlayer);
                 }
 
 
                 // It must always end with it becoming the other players turn (or the game ending above)
                 return doc.ref.update({
                     activePlayer: activePlayer * -1,
-                    board: newBoard
+                    board: newBoard,
+                    aiError: false
                 });
             }));
     });
@@ -343,6 +348,82 @@ exports.resign = functions
             return doc.ref.update({
                 hasResigned: true,
                 currentPlayers: operations.arrayRemove(context.auth.uid)
+            });
+        });
+    });
+
+
+exports.regenerateComputerMove = functions
+    .runWith(runtimeOpts)
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            const {
+                activePlayer, board, playerBlack, playerWhite
+            } = doc.data();
+
+            if ((activePlayer === 1 && playerWhite !== constants.othelloPlayerTypes.Computer)
+                || (activePlayer === -1 && playerBlack !== constants.othelloPlayerTypes.Computer)) {
+                return Promise.resolve();
+            }
+
+            // At this point we can assume that they have available moves
+            // If they had no moves available, it wouldn't be their turn
+            console.log('getting computer move');
+            const computerMove = queries.getComputerMove(board, activePlayer, constants.othelloAIDifficulties.Hard);
+            let newBoard = queries.placeDisc(board, computerMove.row, computerMove.column, activePlayer);
+
+            const availableMovesWhite = queries.getAvailableMoves(newBoard, 1);
+            const availableMovesBlack = queries.getAvailableMoves(newBoard, -1);
+
+            if (availableMovesWhite.length === 0 && availableMovesBlack.length === 0) {
+                return doc.ref.update({
+                    board: newBoard,
+                    hasFinished: true,
+                    aiError: false
+                });
+            }
+
+            // This is after the computer has played and we know that at least one player can go
+            // It should keep making moves whilst the human has no available moves
+            while (queries.getNumberOfAvailableMoves(newBoard, activePlayer * -1) === 0) {
+                console.log('looping');
+                // It may be the case after placing their second move that now neither player have any moves available
+                if (queries.getNumberOfAvailableMoves(newBoard, activePlayer) === 0) {
+                    return doc.ref.update({
+                        board: newBoard,
+                        hasFinished: true,
+                        aiError: false
+                    });
+                }
+
+                const nextComputerMove = queries.getComputerMove(newBoard, activePlayer, constants.othelloAIDifficulties.Hard);
+                newBoard = queries.placeDisc(newBoard, nextComputerMove.row, nextComputerMove.column, activePlayer);
+            }
+
+
+            // It must always end with it becoming the other players turn (or the game ending above)
+            return doc.ref.update({
+                activePlayer: activePlayer * -1,
+                board: newBoard,
+                aiError: false
+            });
+        });
+    });
+
+
+exports.setAiError = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            return doc.ref.update({
+                aiError: data.isAiError
             });
         });
     });

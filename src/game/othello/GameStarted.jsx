@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import defaultStyles from './GameStarted.module.scss';
 import GameActive from './statuses/GameActive';
-import { placeDiscRequest, leaveGameRequest } from './actions';
+import { placeDiscRequest, leaveGameRequest, regenerateComputerMove } from './actions';
 
 const GameStarted = props => {
     const generateComponent = () => (
@@ -12,8 +12,10 @@ const GameStarted = props => {
             auth={props.auth}
             currentGame={props.currentGame}
             currentGameId={props.currentGameId}
+            generatingMove={props.generatingMove}
             leaveGameRequest={() => props.leaveGameRequest(props.currentGameId)}
             placeDiscRequest={props.placeDiscRequest}
+            regenerateComputerMove={props.regenerateComputerMove}
             users={props.users}
         />
     );
@@ -33,6 +35,7 @@ GameStarted.defaultProps = {
         hasResigned: false
     },
     currentGameId: '',
+    generatingMove: false,
     users: {},
     styles: defaultStyles
 };
@@ -45,17 +48,24 @@ GameStarted.propTypes = {
         hasResigned: PropTypes.bool
     }),
     currentGameId: PropTypes.string,
+    generatingMove: PropTypes.bool,
     leaveGameRequest: PropTypes.func.isRequired,
     placeDiscRequest: PropTypes.func.isRequired,
+    regenerateComputerMove: PropTypes.func.isRequired,
     users: PropTypes.shape({}),
     styles: PropTypes.objectOf(PropTypes.string)
 };
 
 const mapDispatchToProps = {
     leaveGameRequest,
-    placeDiscRequest
+    placeDiscRequest,
+    regenerateComputerMove
 };
 
-export default connect(null, mapDispatchToProps)(GameStarted);
+const mapStateToProps = state => ({
+    generatingMove: state.othello.generatingMove
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(GameStarted);
 
 export { GameStarted as GameStartedUnconnected };

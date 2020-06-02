@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { noop } from 'lodash';
 import Board from '../View/Board';
 import * as queries from '../queries';
+import LoadingDiv from '../../../common/loadingDiv/LoadingDiv';
 
 const PreboardLogic = props => {
     const [hoverX, setHoverX] = useState(-1);
@@ -28,13 +29,15 @@ const PreboardLogic = props => {
     }, [hoverX, hoverY, props.currentGame]);
 
     return (
-        <Board
-            availableMoves={queries.getAvailableMoves(props.currentGame.board,
-                props.currentGame.activePlayer)}
-            board={generateVisibleBoard()}
-            onCellClick={onCellClick}
-            onMouseEnter={onMouseEnter}
-        />
+        <LoadingDiv isLoading={props.generatingMove}>
+            <Board
+                availableMoves={queries.getAvailableMoves(props.currentGame.board,
+                    props.currentGame.activePlayer)}
+                board={generateVisibleBoard()}
+                onCellClick={onCellClick}
+                onMouseEnter={onMouseEnter}
+            />
+        </LoadingDiv>
     );
 };
 
@@ -54,9 +57,12 @@ PreboardLogic.defaultProps = {
             rowSix: [],
             rowSeven: []
         },
-        hasFinished: false
+        hasFinished: false,
+        playerBlack: '',
+        playerWhite: ''
     },
     currentGameId: '',
+    generatingMove: false,
     placeDiscRequest: noop
 };
 
@@ -76,9 +82,12 @@ PreboardLogic.propTypes = {
             rowSix: PropTypes.arrayOf(PropTypes.number),
             rowSeven: PropTypes.arrayOf(PropTypes.number)
         }),
-        hasFinished: PropTypes.bool
+        hasFinished: PropTypes.bool,
+        playerBlack: PropTypes.string,
+        playerWhite: PropTypes.string
     }),
     currentGameId: PropTypes.string,
+    generatingMove: PropTypes.bool,
     placeDiscRequest: PropTypes.func
 };
 

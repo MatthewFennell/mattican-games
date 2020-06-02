@@ -50,12 +50,39 @@ export function* start(api, action) {
 
 export function* placeDisc(api, action) {
     try {
+        yield put(actions.setGeneratingMove(true));
         yield call(api.placeDisc, ({
             gameId: action.gameId,
             row: action.row,
             column: action.column
         }));
+        yield put(actions.setGeneratingMove(false));
     } catch (error) {
+        yield put(actions.setGeneratingMove(false));
+        if (error.code === 'invalid-argument') {
+            yield put(commonActions.gameError(error, 'Place Disc error'));
+        } else {
+            yield call(api.setAiError, ({
+                gameId: action.gameId,
+                isAiError: true
+            }));
+            yield put(commonActions.gameError({
+                code: 'AI'
+
+            }, 'Make AI move error'));
+        }
+    }
+}
+
+export function* regenerateComputerMove(api, action) {
+    try {
+        yield put(actions.setGeneratingMove(true));
+        yield call(api.regenerateComputerMove, ({
+            gameId: action.gameId
+        }));
+        yield put(actions.setGeneratingMove(false));
+    } catch (error) {
+        yield put(actions.setGeneratingMove(false));
         yield put(commonActions.gameError(error, 'Place Disc error'));
     }
 }
@@ -87,6 +114,7 @@ export default function* othelloSaga() {
         takeEvery(commonActions.START_ANY_GAME_REQUEST, start, othelloApi),
         takeEvery(actions.PLACE_DISC_REQUEST, placeDisc, othelloApi),
         takeEvery(actions.LEAVE_GAME_REQUEST, leaveGame, othelloApi),
-        takeEvery(commonActions.LEAVE_MIDGAME_REQUEST, resign, othelloApi)
+        takeEvery(commonActions.LEAVE_MIDGAME_REQUEST, resign, othelloApi),
+        takeEvery(actions.REGENERATE_COMPUTER_MOVE, regenerateComputerMove, othelloApi)
     ]);
 }

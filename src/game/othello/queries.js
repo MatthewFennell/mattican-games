@@ -919,17 +919,12 @@ export const getCornerScore = (board, maximisingPlayer, stableDiscs) => {
 };
 
 export const getHeuristicBreakdown = (board, maximisingPlayer) => {
-    const cornerWeight = 10241;
-    const adjacentToCornerWeight = 19975;
-    const edgeWeight = 1958;
-    const internalWeight = 2497;
-
     const convertedBoard = convertBoard(board);
     const stableDiscs = findStableDiscs(convertedBoard);
-    const cornerScore = getCornerScore(convertedBoard, maximisingPlayer, stableDiscs) * cornerWeight;
-    const adjacentToCornerScore = getAdjacentToCornerScore(convertedBoard, maximisingPlayer, stableDiscs) * adjacentToCornerWeight;
-    const edgeScore = getEdgeScore(convertedBoard, maximisingPlayer, stableDiscs) * edgeWeight;
-    const centerScore = getCenterScore(convertedBoard, maximisingPlayer, stableDiscs) * internalWeight;
+    const cornerScore = getCornerScore(convertedBoard, maximisingPlayer, stableDiscs);
+    const adjacentToCornerScore = getAdjacentToCornerScore(convertedBoard, maximisingPlayer, stableDiscs);
+    const edgeScore = getEdgeScore(convertedBoard, maximisingPlayer, stableDiscs);
+    const centerScore = getCenterScore(convertedBoard, maximisingPlayer, stableDiscs);
 
     const availableMovesWhite = getAvailableMoves(board, 1);
     const availableMovesBlack = getAvailableMoves(board, -1);

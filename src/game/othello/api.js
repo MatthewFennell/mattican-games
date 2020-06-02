@@ -6,3 +6,5 @@ export const startGame = request => functionToCall('startGame')(request);
 export const placeDisc = request => functionToCall('placeDisc')(request);
 export const leaveGame = request => functionToCall('leaveGame')(request);
 export const resign = request => functionToCall('resign')(request);
+export const regenerateComputerMove = request => functionToCall('regenerateComputerMove')(request);
+export const setAiError = request => functionToCall('setAiError')(request);

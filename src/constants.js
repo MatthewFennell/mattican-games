@@ -224,13 +224,11 @@ export const othelloPlayerTypes = {
 export const othelloAIDifficulties = {
     Easy: 'Easy',
     Medium: 'Medium',
-    Hard: 'Hard',
-    Extreme: 'Extreme'
+    Hard: 'Hard'
 };
 
 export const othelloDifficulties = [
     othelloAIDifficulties.Easy,
     othelloAIDifficulties.Medium,
-    othelloAIDifficulties.Hard,
-    othelloAIDifficulties.Extreme
+    othelloAIDifficulties.Hard
 ];

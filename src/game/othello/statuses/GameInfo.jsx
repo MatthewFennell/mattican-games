@@ -7,6 +7,7 @@ import HeuristicInfo from './HeuristicInfo';
 import defaultStyles from './GameInfo.module.scss';
 import * as constants from '../../../constants';
 import * as helpers from '../../helpers';
+import StyledButton from '../../../common/StyledButton/StyledButton';
 
 const calculateScore = (board, player) => Object.values(board).flat()
     .filter(x => x === player).length;
@@ -109,6 +110,15 @@ const GameInfo = props => (
             />
         )}
 
+        {props.currentGame.aiError && (
+            <div className={props.styles.buttonWrapper}>
+                <StyledButton
+                    text="Regenerate AI move"
+                    onClick={() => props.regenerateComputerMove(props.currentGameId)}
+                />
+            </div>
+        )}
+
         <div>
             {(props.currentGame.hasFinished || props.currentGame.hasResigned) && (
                 <GameFinished
@@ -126,6 +136,7 @@ GameInfo.defaultProps = {
     },
     currentGame: {
         activePlayer: 1,
+        aiError: false,
         board: {
             rowZero: [],
             rowOne: [],
@@ -142,7 +153,9 @@ GameInfo.defaultProps = {
         playerBlack: '',
         playerWhite: ''
     },
+    currentGameId: '',
     leaveGameRequest: noop,
+    regenerateComputerMove: noop,
     styles: defaultStyles,
     users: {}
 };
@@ -153,6 +166,7 @@ GameInfo.propTypes = {
     }),
     currentGame: PropTypes.shape({
         activePlayer: PropTypes.number,
+        aiError: PropTypes.bool,
         board: PropTypes.shape({
             rowZero: PropTypes.arrayOf(PropTypes.number),
             rowOne: PropTypes.arrayOf(PropTypes.number),
@@ -169,7 +183,9 @@ GameInfo.propTypes = {
         playerBlack: PropTypes.string,
         playerWhite: PropTypes.string
     }),
+    currentGameId: PropTypes.string,
     leaveGameRequest: PropTypes.func,
+    regenerateComputerMove: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})
 };

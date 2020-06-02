@@ -7,16 +7,21 @@ import PreboardLogic from './PreboardLogic';
 
 const GameActive = props => (
     <div className={props.styles.gameActiveWrapper}>
-        <PreboardLogic
-            currentGame={props.currentGame}
-            currentGameId={props.currentGameId}
-            placeDiscRequest={props.placeDiscRequest}
-        />
+        <div className={props.styles.boardSpacing}>
+            <PreboardLogic
+                currentGame={props.currentGame}
+                currentGameId={props.currentGameId}
+                generatingMove={props.generatingMove}
+                placeDiscRequest={props.placeDiscRequest}
+            />
+        </div>
 
         <GameInfo
             auth={props.auth}
             currentGame={props.currentGame}
+            currentGameId={props.currentGameId}
             leaveGameRequest={props.leaveGameRequest}
+            regenerateComputerMove={props.regenerateComputerMove}
             users={props.users}
         />
     </div>
@@ -43,8 +48,10 @@ GameActive.defaultProps = {
         playerWhite: ''
     },
     currentGameId: '',
+    generatingMove: false,
     leaveGameRequest: noop,
     placeDiscRequest: noop,
+    regenerateComputerMove: noop,
     styles: defaultStyles,
     users: {}
 };
@@ -70,8 +77,10 @@ GameActive.propTypes = {
         playerWhite: PropTypes.string
     }),
     currentGameId: PropTypes.string,
+    generatingMove: PropTypes.bool,
     leaveGameRequest: PropTypes.func,
     placeDiscRequest: PropTypes.func,
+    regenerateComputerMove: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})
 };
