@@ -1,53 +1,31 @@
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
 import defaultStyles from './GameActive.module.scss';
-import Board from '../View/Board';
 import GameInfo from './GameInfo';
-import * as queries from '../queries';
+import PreboardLogic from './PreboardLogic';
 
-const GameActive = props => {
-    const [hoverX, setHoverX] = useState(-1);
-    const [hoverY, setHoverY] = useState(-1);
-
-    const onCellClick = useCallback((row, col) => {
-        props.placeDiscRequest(props.currentGameId, row, col);
-
-        // eslint-disable-next-line
-    }, [props.currentGame.board, props.currentGame.activePlayer, props.currentGameId]);
-
-    const onMouseEnter = useCallback((row, col) => {
-        setHoverY(row);
-        setHoverX(col);
-    }, [setHoverX, setHoverY]);
-
-    const generateVisibleBoard = useCallback(() => {
-        if (hoverX >= 0 && hoverX <= 7 && hoverY >= 0 && hoverY <= 7) {
-            return queries.placeDisc(props.currentGame.board, hoverY,
-                hoverX, props.currentGame.activePlayer);
-        }
-        return props.currentGame.board;
-    }, [hoverX, hoverY, props.currentGame]);
-
-    return (
-        <div className={props.styles.gameActiveWrapper}>
-            <Board
-                availableMoves={queries.getAvailableMoves(props.currentGame.board,
-                    props.currentGame.activePlayer)}
-                board={generateVisibleBoard()}
-                onCellClick={onCellClick}
-                onMouseEnter={onMouseEnter}
-            />
-
-            <GameInfo
-                auth={props.auth}
+const GameActive = props => (
+    <div className={props.styles.gameActiveWrapper}>
+        <div className={props.styles.boardSpacing}>
+            <PreboardLogic
                 currentGame={props.currentGame}
-                leaveGameRequest={props.leaveGameRequest}
-                users={props.users}
+                currentGameId={props.currentGameId}
+                generatingMove={props.generatingMove}
+                placeDiscRequest={props.placeDiscRequest}
             />
         </div>
-    );
-};
+
+        <GameInfo
+            auth={props.auth}
+            currentGame={props.currentGame}
+            currentGameId={props.currentGameId}
+            leaveGameRequest={props.leaveGameRequest}
+            regenerateComputerMove={props.regenerateComputerMove}
+            users={props.users}
+        />
+    </div>
+);
 
 GameActive.defaultProps = {
     auth: {
@@ -70,8 +48,10 @@ GameActive.defaultProps = {
         playerWhite: ''
     },
     currentGameId: '',
+    generatingMove: false,
     leaveGameRequest: noop,
     placeDiscRequest: noop,
+    regenerateComputerMove: noop,
     styles: defaultStyles,
     users: {}
 };
@@ -97,8 +77,10 @@ GameActive.propTypes = {
         playerWhite: PropTypes.string
     }),
     currentGameId: PropTypes.string,
+    generatingMove: PropTypes.bool,
     leaveGameRequest: PropTypes.func,
     placeDiscRequest: PropTypes.func,
+    regenerateComputerMove: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})
 };

@@ -221,4 +221,14 @@ export const othelloPlayerTypes = {
     Computer: 'Computer'
 };
 
-export const othelloDifficulties = ['Easy', 'Medium', 'Hard', 'Extreme'];
+export const othelloAIDifficulties = {
+    Easy: 'Easy',
+    Medium: 'Medium',
+    Hard: 'Hard'
+};
+
+export const othelloDifficulties = [
+    othelloAIDifficulties.Easy,
+    othelloAIDifficulties.Medium,
+    othelloAIDifficulties.Hard
+];

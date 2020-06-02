@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 import { noop } from 'lodash';
 import Fade from '../../../common/Fade/Fade';
 import GameFinished from './GameFinished';
+import HeuristicInfo from './HeuristicInfo';
 import defaultStyles from './GameInfo.module.scss';
 import * as constants from '../../../constants';
 import * as helpers from '../../helpers';
+import StyledButton from '../../../common/StyledButton/StyledButton';
 
 const calculateScore = (board, player) => Object.values(board).flat()
     .filter(x => x === player).length;
@@ -102,6 +104,21 @@ const GameInfo = props => (
             </div>
         </div>
 
+        {props.currentGame.opponentType === constants.othelloPlayerTypes.Computer && (
+            <HeuristicInfo
+                currentGame={props.currentGame}
+            />
+        )}
+
+        {props.currentGame.aiError && (
+            <div className={props.styles.buttonWrapper}>
+                <StyledButton
+                    text="Regenerate AI move"
+                    onClick={() => props.regenerateComputerMove(props.currentGameId)}
+                />
+            </div>
+        )}
+
         <div>
             {(props.currentGame.hasFinished || props.currentGame.hasResigned) && (
                 <GameFinished
@@ -119,6 +136,7 @@ GameInfo.defaultProps = {
     },
     currentGame: {
         activePlayer: 1,
+        aiError: false,
         board: {
             rowZero: [],
             rowOne: [],
@@ -131,10 +149,13 @@ GameInfo.defaultProps = {
         },
         hasFinished: false,
         hasResigned: false,
+        opponentType: constants.othelloPlayerTypes.Human,
         playerBlack: '',
         playerWhite: ''
     },
+    currentGameId: '',
     leaveGameRequest: noop,
+    regenerateComputerMove: noop,
     styles: defaultStyles,
     users: {}
 };
@@ -145,6 +166,7 @@ GameInfo.propTypes = {
     }),
     currentGame: PropTypes.shape({
         activePlayer: PropTypes.number,
+        aiError: PropTypes.bool,
         board: PropTypes.shape({
             rowZero: PropTypes.arrayOf(PropTypes.number),
             rowOne: PropTypes.arrayOf(PropTypes.number),
@@ -157,10 +179,13 @@ GameInfo.propTypes = {
         }),
         hasFinished: PropTypes.bool,
         hasResigned: PropTypes.bool,
+        opponentType: PropTypes.string,
         playerBlack: PropTypes.string,
         playerWhite: PropTypes.string
     }),
+    currentGameId: PropTypes.string,
     leaveGameRequest: PropTypes.func,
+    regenerateComputerMove: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})
 };

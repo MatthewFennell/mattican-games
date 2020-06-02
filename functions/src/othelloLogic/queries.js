@@ -14,6 +14,8 @@ const convertBoard = board => [
     board.rowSeven
 ];
 
+module.exports.convertBoard = convertBoard;
+
 const unconvertBoard = board => ({
     rowZero: board[0],
     rowOne: board[1],
@@ -358,7 +360,9 @@ const canPlaceDisc = (board, row, column, playerNumber) => {
     return false;
 };
 
-
+// Takes a move from a player
+// If that results in flips, returns the new board
+// Otherwise returns the old board
 const placeDisc = (board, row, column, playerNumber) => {
     const transformedBoard = convertBoard(board);
     if (canPlaceDisc(transformedBoard, row, column, playerNumber)) {
@@ -379,6 +383,11 @@ const placeDisc = (board, row, column, playerNumber) => {
 
 module.exports.placeDisc = placeDisc;
 
+/* Gets all available moves for a given player
+        [
+            [row, column], ...[row,column]
+        ]
+*/
 const getAvailableMoves = (board, activePlayer) => {
     const formattedBoard = convertBoard(board);
     const availableMoves = [];
@@ -393,16 +402,17 @@ const getAvailableMoves = (board, activePlayer) => {
 };
 
 module.exports.getAvailableMoves = getAvailableMoves;
+module.exports.canPlaceDisc = canPlaceDisc;
 
 // Takes non converted board
-const getRandomMove = (board, activePlayer) => {
-    const availableMoves = getAvailableMoves(board, activePlayer);
-    const randomMove = _.sample(availableMoves);
-    return {
-        row: randomMove[0],
-        column: randomMove[1]
-    };
-};
+// const getRandomMove = (board, activePlayer) => {
+//     const availableMoves = getAvailableMoves(board, activePlayer);
+//     const randomMove = _.sample(availableMoves);
+//     return {
+//         row: randomMove[0],
+//         column: randomMove[1]
+//     };
+// };
 
 
 const makeNode = (playerNumber, selectedMove, history, maximisingPlayerNumber, depth) => ({
@@ -553,7 +563,6 @@ const isRightUpStable = (board, row, column, stableDiscs) => {
     return false;
 };
 
-
 const isDiscStable = (board, row, column, stableDiscs) => {
     if (board[row][column] === 0) {
         return false;
@@ -647,13 +656,15 @@ const hasPlayerWon = (board, availableMovesBlack, availableMovesWhite) => {
 };
 
 const getMobilityDifference = (movesBlack, movesWhite, maxPlayer) => {
+    const mobilityMultiplier = 921;
     if (maxPlayer === 1) {
-        return movesWhite.length - movesBlack.length;
+        return (movesWhite.length - movesBlack.length) * mobilityMultiplier;
     }
-    return movesBlack.length - movesWhite.length;
+    return (movesBlack.length - movesWhite.length) * mobilityMultiplier;
 };
 
 const getXSquares = (board, maxPlayer, stableDiscs) => {
+    const xSquareMultiplier = 10000;
     let score = 0;
     if (!stableDiscs[1][1] && board[0][0] === 0) {
         if (board[1][1] === maxPlayer) {
@@ -690,7 +701,7 @@ const getXSquares = (board, maxPlayer, stableDiscs) => {
             score += 1;
         }
     }
-    return score;
+    return score * xSquareMultiplier;
 };
 
 const checkCellDifferenceForApposingPlayerCell = (board, row, column, maxPlayer) => {
@@ -760,13 +771,15 @@ const getPotentialMobilityForSquare = (board, row, column, maxPlayer) => {
 };
 
 const calculatePotentialMobility = (board, maximisingPlayer) => {
+    const potentialMultiplier = 522;
     let potentialMobility = 0;
     for (let row = 0; row < 8; row += 1) {
         for (let column = 0; column < 8; column += 1) {
             potentialMobility += getPotentialMobilityForSquare(board, row, column, maximisingPlayer);
+            potentialMobility -= getPotentialMobilityForSquare(board, row, column, maximisingPlayer * -1);
         }
     }
-    return potentialMobility;
+    return potentialMobility * potentialMultiplier;
 };
 
 const isCorner = (row, column) => (row === 0 && column === 0) || (row === 0 && column === 7) || (row === 7 && column === 0) || (row === 7 && column === 7);
@@ -780,7 +793,12 @@ const isAdjacentToCorner = (row, column) => (row === 0 && column === 1)
                                          || (row === 7 && column === 6)
                                          || (row === 6 && column === 7);
 
-const isEdgeCell = (row, column) => (row === 0 || row === 7 || column === 0 || column === 7);
+const isEdgeCell = (row, column) => {
+    if (isCorner(row, column) || isAdjacentToCorner(row, column)) {
+        return false;
+    }
+    return (row === 0 || row === 7 || column === 0 || column === 7);
+};
 
 const getStableDiscValue = (board, row, column, maximisingPlayer) => {
     // if corner
@@ -817,7 +835,6 @@ const getStableDiscsScore = (board, stableDiscs, maximisingPlayer) => {
     return score;
 };
 
-
 const evaluatePosition = (board, history, maximisingPlayerNumber) => {
     const transformedBoard = getBoardFromHistory(board, history);
     const convertedBoard = convertBoard(transformedBoard);
@@ -826,20 +843,15 @@ const evaluatePosition = (board, history, maximisingPlayerNumber) => {
     const availableMovesBlack = getAvailableMoves(transformedBoard, -1);
     const stableDiscs = findStableDiscs(convertedBoard);
 
+
     const winner = hasPlayerWon(transformedBoard, availableMovesBlack, availableMovesWhite);
     const differenceInMobility = getMobilityDifference(availableMovesBlack, availableMovesWhite, maximisingPlayerNumber);
 
+
     const potentialMobility = calculatePotentialMobility(convertedBoard, maximisingPlayerNumber);
-    const enemyPotentialMobility = calculatePotentialMobility(convertedBoard, maximisingPlayerNumber * -1);
     const stableScore = getStableDiscsScore(convertedBoard, stableDiscs, maximisingPlayerNumber);
 
-    const mobilityMultiplier = 921;
-    const potentialMultiplier = 522;
-    const xSquareMultiplier = 10000;
-
-    const xSquareScore = getXSquares(convertedBoard, maximisingPlayerNumber, stableDiscs) * xSquareMultiplier;
-
-    const potMob = (potentialMobility - enemyPotentialMobility) * potentialMultiplier;
+    const xSquareScore = getXSquares(convertedBoard, maximisingPlayerNumber, stableDiscs);
 
 
     if (winner === maximisingPlayerNumber) {
@@ -850,7 +862,7 @@ const evaluatePosition = (board, history, maximisingPlayerNumber) => {
     }
 
 
-    const evaluation = differenceInMobility * mobilityMultiplier + potMob + stableScore + xSquareScore;
+    const evaluation = differenceInMobility + potentialMobility + stableScore + xSquareScore;
     return evaluation;
 };
 
@@ -893,7 +905,6 @@ const expandNode = (node, moveHistory, currentPlayer, originalBoard, maximisingP
         }
     }
 };
-
 
 // When you expand yourself, the first thing you do is EXPAND_NODE
 const expandSelf = (nodeToExpand, playerNumber, depth, maxDepth, originalBoard, history, maximisingPlayerNumber) => {
@@ -962,7 +973,7 @@ const getMinimaxMove = (board, currentPlayer, maxDepth) => {
     const maxDepthOfTree = findRoughMaxDepthOfTree(rootNode, 0);
 
     // The max depth must not be larger than the depth of the tree
-    const result = alphaBeta(rootNode, Math.min(maxDepth, maxDepthOfTree), -999999, 999999, true);
+    const result = alphaBeta(rootNode, Math.min(maxDepth, maxDepthOfTree), Number.MAX_SAFE_INTEGER * -1, Number.MAX_SAFE_INTEGER, true);
 
     let move = null;
 
@@ -978,15 +989,11 @@ const getMinimaxMove = (board, currentPlayer, maxDepth) => {
     };
 };
 
-
 module.exports.getComputerMove = (board, activePlayer, difficulty) => {
     if (difficulty === constants.othelloAIDifficulties.Easy) {
-        return getRandomMove(board, activePlayer);
-    }
-    if (difficulty === constants.othelloAIDifficulties.Medium) {
         return getMinimaxMove(board, activePlayer, 2);
     }
-    if (difficulty === constants.othelloAIDifficulties.Hard) {
+    if (difficulty === constants.othelloAIDifficulties.Medium) {
         return getMinimaxMove(board, activePlayer, 3);
     }
     return getMinimaxMove(board, activePlayer, 4);

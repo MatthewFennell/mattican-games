@@ -8,11 +8,13 @@ import overviewReducer from './overview/reducer';
 import * as authActions from './auth/actions';
 import profileReducer from './profile/reducer';
 import avalon from './game/reducer';
+import othello from './game/othello/reducer';
 
 const appReducer = history => combineReducers({
     admin: adminReducer,
     auth: authReducer,
     avalon,
+    othello,
     firestore: firestoreReducer,
     firebase: firebaseReducer,
     overview: overviewReducer,

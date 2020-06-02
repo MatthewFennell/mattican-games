@@ -744,13 +744,15 @@ const getPotentialMobilityForSquare = (board, row, column, maxPlayer) => {
 };
 
 export const calculatePotentialMobility = (board, maximisingPlayer) => {
+    const potentialMultiplier = 522;
     let potentialMobility = 0;
     for (let row = 0; row < 8; row += 1) {
         for (let column = 0; column < 8; column += 1) {
             potentialMobility += getPotentialMobilityForSquare(board, row, column, maximisingPlayer);
+            potentialMobility -= getPotentialMobilityForSquare(board, row, column, maximisingPlayer * -1);
         }
     }
-    return potentialMobility;
+    return potentialMobility * potentialMultiplier;
 };
 
 const isCorner = (row, column) => (row === 0 && column === 0) || (row === 0 && column === 7) || (row === 7 && column === 0) || (row === 7 && column === 7);
@@ -764,7 +766,20 @@ const isAdjacentToCorner = (row, column) => (row === 0 && column === 1)
                                          || (row === 7 && column === 6)
                                          || (row === 6 && column === 7);
 
-const isEdgeCell = (row, column) => (row === 0 || row === 7 || column === 0 || column === 7);
+
+const isEdgeCell = (row, column) => {
+    if (isCorner(row, column) || isAdjacentToCorner(row, column)) {
+        return false;
+    }
+    return (row === 0 || row === 7 || column === 0 || column === 7);
+};
+
+const isCenterSquare = (row, column) => {
+    if (isCorner(row, column) || isAdjacentToCorner(row, column) || isEdgeCell(row, column)) {
+        return false;
+    }
+    return true;
+};
 
 const getStableDiscValue = (board, row, column, maximisingPlayer) => {
     // if corner
@@ -802,13 +817,15 @@ const getStableDiscsScore = (board, stableDiscs, maximisingPlayer) => {
 };
 
 const getMobilityDifference = (movesBlack, movesWhite, maxPlayer) => {
+    const mobilityMultiplier = 921;
     if (maxPlayer === 1) {
-        return movesWhite.length - movesBlack.length;
+        return (movesWhite.length - movesBlack.length) * mobilityMultiplier;
     }
-    return movesBlack.length - movesWhite.length;
+    return (movesBlack.length - movesWhite.length) * mobilityMultiplier;
 };
 
 const getXSquares = (board, maxPlayer, stableDiscs) => {
+    const xSquareMultiplier = 10000;
     let score = 0;
     if (!stableDiscs[1][1] && board[0][0] === 0) {
         if (board[1][1] === maxPlayer) {
@@ -845,10 +862,88 @@ const getXSquares = (board, maxPlayer, stableDiscs) => {
             score += 1;
         }
     }
+    return score * xSquareMultiplier;
+};
+
+export const getCenterScore = (board, maximisingPlayer, stableDiscs) => {
+    let score = 0;
+    for (let row = 0; row < 8; row += 1) {
+        for (let column = 0; column < 8; column += 1) {
+            if (stableDiscs[row][column] && isCenterSquare(row, column)) {
+                score += getStableDiscValue(board, row, column, maximisingPlayer);
+            }
+        }
+    }
     return score;
 };
 
-const evaluatePosition = (board, history, maximisingPlayerNumber) => {
+export const getEdgeScore = (board, maximisingPlayer, stableDiscs) => {
+    let score = 0;
+    for (let row = 0; row < 8; row += 1) {
+        for (let column = 0; column < 8; column += 1) {
+            if (stableDiscs[row][column] && isEdgeCell(row, column)) {
+                score += getStableDiscValue(board, row, column, maximisingPlayer);
+            }
+        }
+    }
+    return score;
+};
+
+export const getAdjacentToCornerScore = (board, maximisingPlayer, stableDiscs) => {
+    let score = 0;
+    for (let row = 0; row < 8; row += 1) {
+        for (let column = 0; column < 8; column += 1) {
+            if (stableDiscs[row][column] && isAdjacentToCorner(row, column)) {
+                score += getStableDiscValue(board, row, column, maximisingPlayer);
+            }
+        }
+    }
+    return score;
+};
+
+export const getCornerScore = (board, maximisingPlayer, stableDiscs) => {
+    let score = 0;
+    if (stableDiscs[0][0]) {
+        score += getStableDiscValue(board, 0, 0, maximisingPlayer);
+    }
+    if (stableDiscs[7][0]) {
+        score += getStableDiscValue(board, 7, 0, maximisingPlayer);
+    }
+    if (stableDiscs[0][7]) {
+        score += getStableDiscValue(board, 0, 7, maximisingPlayer);
+    }
+    if (stableDiscs[7][7]) {
+        score += getStableDiscValue(board, 7, 7, maximisingPlayer);
+    }
+    return score;
+};
+
+export const getHeuristicBreakdown = (board, maximisingPlayer) => {
+    const convertedBoard = convertBoard(board);
+    const stableDiscs = findStableDiscs(convertedBoard);
+    const cornerScore = getCornerScore(convertedBoard, maximisingPlayer, stableDiscs);
+    const adjacentToCornerScore = getAdjacentToCornerScore(convertedBoard, maximisingPlayer, stableDiscs);
+    const edgeScore = getEdgeScore(convertedBoard, maximisingPlayer, stableDiscs);
+    const centerScore = getCenterScore(convertedBoard, maximisingPlayer, stableDiscs);
+
+    const availableMovesWhite = getAvailableMoves(board, 1);
+    const availableMovesBlack = getAvailableMoves(board, -1);
+    const differenceInMobility = getMobilityDifference(availableMovesBlack, availableMovesWhite, maximisingPlayer);
+    const potentialMobility = calculatePotentialMobility(convertedBoard, maximisingPlayer);
+    const xSquareScore = getXSquares(convertedBoard, maximisingPlayer, stableDiscs);
+
+    return {
+        corners: cornerScore,
+        adjacent: adjacentToCornerScore,
+        edges: edgeScore,
+        center: centerScore,
+        immediateMobility: differenceInMobility,
+        potentialMobility,
+        xSquare: xSquareScore
+    };
+};
+
+export const evaluatePosition = (board, history, maximisingPlayerNumber) => {
     const transformedBoard = getBoardFromHistory(board, history);
     const convertedBoard = convertBoard(transformedBoard);
 
@@ -856,28 +951,15 @@ const evaluatePosition = (board, history, maximisingPlayerNumber) => {
     const availableMovesBlack = getAvailableMoves(transformedBoard, -1);
     const stableDiscs = findStableDiscs(convertedBoard);
 
-    // for (let x = 0; x < 8; x += 1) {
-    //     for (let y = 0; y < 8; y += 1) {
-    //         if (stableDics[x][y]) {
-    //             console.log(`disc at row ${x}, column ${y} is stable`);
-    //         }
-    //     }
-    // }
 
     const winner = hasPlayerWon(transformedBoard, availableMovesBlack, availableMovesWhite);
     const differenceInMobility = getMobilityDifference(availableMovesBlack, availableMovesWhite, maximisingPlayerNumber);
 
+
     const potentialMobility = calculatePotentialMobility(convertedBoard, maximisingPlayerNumber);
-    const enemyPotentialMobility = calculatePotentialMobility(convertedBoard, maximisingPlayerNumber * -1);
     const stableScore = getStableDiscsScore(convertedBoard, stableDiscs, maximisingPlayerNumber);
 
-    const mobilityMultiplier = 921;
-    const potentialMultiplier = 522;
-    const xSquareMultiplier = 10000;
-
-    const xSquareScore = getXSquares(convertedBoard, maximisingPlayerNumber, stableDiscs) * xSquareMultiplier;
-
-    const potMob = (potentialMobility - enemyPotentialMobility) * potentialMultiplier;
+    const xSquareScore = getXSquares(convertedBoard, maximisingPlayerNumber, stableDiscs);
 
 
     if (winner === maximisingPlayerNumber) {
@@ -888,7 +970,7 @@ const evaluatePosition = (board, history, maximisingPlayerNumber) => {
     }
 
 
-    const evaluation = differenceInMobility * mobilityMultiplier + potMob + stableScore + xSquareScore;
+    const evaluation = differenceInMobility + potentialMobility + stableScore + xSquareScore;
     return evaluation;
 };
 

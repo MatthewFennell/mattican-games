@@ -44,7 +44,8 @@ const Overview = props => {
     const [timePerRound, setTimePerRound] = useState(60);
 
     const [othelloPlayerType, setOthelloPlayerType] = useState('');
-    const [othelloDifficulty, setOthelloDifficulty] = useState('');
+    const [othelloDifficulty, setOthelloDifficulty] = useState(constants
+        .othelloAIDifficulties.Easy);
 
     const toggleRole = useCallback(role => {
         if (activeAvalonRoles.includes(role)) {
