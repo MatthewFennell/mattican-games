@@ -52,18 +52,23 @@ const CreateGame = props => (
             </div>
             {gameHasSetNumberOfPlayers(props.gameMode)
             && (
-                <TextInput
-                    onChange={props.changeNumberOfPlayers}
-                    value={props.numberOfPlayers}
-                    type="number"
-                    label="Number of players (5-10)"
-                />
+
+                <div className={props.styles.numberOfPlayersWrapper}>
+                    <TextInput
+                        onChange={props.changeNumberOfPlayers}
+                        value={props.numberOfPlayers}
+                        type="number"
+                        label="Number of players (5-10)"
+                    />
+                </div>
             )}
-            <TextInput
-                onChange={props.setGameName}
-                value={props.gameName}
-                label="Game Name"
-            />
+            <div className={props.styles.gameNameWrapper}>
+                <TextInput
+                    onChange={props.setGameName}
+                    value={props.gameName}
+                    label="Game Name"
+                />
+            </div>
 
             <Fade checked={props.gameMode === constants.gameModes.WhosInTheHat} label="WhosInHat">
                 <div className={props.styles.skippingRules}>

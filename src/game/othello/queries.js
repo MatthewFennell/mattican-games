@@ -2,6 +2,14 @@
 /* eslint-disable no-param-reassign */
 import _ from 'lodash';
 
+const potentialMultiplier = 100;
+const mobilityMultiplier = 1000;
+const cornerWeight = 75000;
+const adjacentToCornerWeight = 25000;
+const edgeWeight = 2000;
+const internalWeight = 500;
+const xSquareMultiplier = 20000;
+
 export const convertBoard = board => [
     board.rowZero,
     board.rowOne,
@@ -744,7 +752,6 @@ const getPotentialMobilityForSquare = (board, row, column, maxPlayer) => {
 };
 
 export const calculatePotentialMobility = (board, maximisingPlayer) => {
-    const potentialMultiplier = 522;
     let potentialMobility = 0;
     for (let row = 0; row < 8; row += 1) {
         for (let column = 0; column < 8; column += 1) {
@@ -787,11 +794,6 @@ const getStableDiscValue = (board, row, column, maximisingPlayer) => {
     // if edge row
     // if center square
 
-    const cornerWeight = 10241;
-    const adjacentToCornerWeight = 19975;
-    const edgeWeight = 1958;
-    const internalWeight = 2497;
-
     if (isCorner(row, column)) {
         return board[row][column] === maximisingPlayer ? cornerWeight : cornerWeight * -1;
     }
@@ -817,7 +819,6 @@ const getStableDiscsScore = (board, stableDiscs, maximisingPlayer) => {
 };
 
 const getMobilityDifference = (movesBlack, movesWhite, maxPlayer) => {
-    const mobilityMultiplier = 921;
     if (maxPlayer === 1) {
         return (movesWhite.length - movesBlack.length) * mobilityMultiplier;
     }
@@ -825,7 +826,6 @@ const getMobilityDifference = (movesBlack, movesWhite, maxPlayer) => {
 };
 
 const getXSquares = (board, maxPlayer, stableDiscs) => {
-    const xSquareMultiplier = 10000;
     let score = 0;
     if (!stableDiscs[1][1] && board[0][0] === 0) {
         if (board[1][1] === maxPlayer) {

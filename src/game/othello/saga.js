@@ -99,9 +99,11 @@ export function* leaveGame(api, action) {
 
 export function* resign(api, action) {
     try {
-        yield call(api.resign, ({
-            gameId: action.gameId
-        }));
+        if (action.mode === constants.gameModes.Othello) {
+            yield call(api.resign, ({
+                gameId: action.gameId
+            }));
+        }
     } catch (error) {
         yield put(commonActions.gameError(error, 'Resign error'));
     }
