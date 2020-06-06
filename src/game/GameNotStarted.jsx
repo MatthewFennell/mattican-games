@@ -22,6 +22,7 @@ import { editGameRequest as editWhoInHatGameRequest } from './whoInHat/actions';
 import { editGameRequest as editAvalonGameRequest } from './avalon/actions';
 import { editGameRequest as editHitlerGameRequest } from './hitler/actions';
 import { editGameRequest as editOthelloGameRequest } from './othello/actions';
+import Spinner from '../common/spinner/Spinner';
 
 const canStartGame = game => {
     if (game.mode === constants.gameModes.Hitler || game.mode === constants.gameModes.Avalon) {
@@ -55,6 +56,8 @@ const GameNotStarted = props => {
 
     const [othelloPlayerType, setOthelloPlayerType] = useState(props.currentGame.opponentType);
     const [othelloDifficulty, setOthelloDifficulty] = useState(props.currentGame.difficulty);
+
+    const [isStartingGame, setIsStartingGame] = useState(false);
 
     const toggleEditedCustomNames = useCallback(() => {
         setIsEditedCustomNames(!editedIsCustomNames);
@@ -114,6 +117,35 @@ const GameNotStarted = props => {
         // eslint-disable-next-line
     }, [props.currentGame, numberOfPlayers, editedAvalonRoles, editedSkippingRule, editedIsCustomNames, scoreCap, timePerRound,
         othelloPlayerType, othelloDifficulty]);
+
+    const [isLocalReady, setIsLocalReady] = useState(props.isReady);
+
+    const newReadyUp = useCallback(() => {
+        setIsLocalReady(!isLocalReady);
+        props.readyUpRequest(props.currentGameId,
+            !isLocalReady);
+
+        // eslint-disable-next-line
+    }, [setIsLocalReady, isLocalReady]);
+
+    const isPlayerReady = useCallback(player => {
+        if (player === props.auth.uid) {
+            return isLocalReady;
+        }
+        return props.currentGame.playersReady.includes(player);
+    }, [isLocalReady, props.currentGame.playersReady, props.auth.uid]);
+
+    const startGame = useCallback(() => {
+        setIsStartingGame(true);
+        props.startAnyGameRequest(props.currentGameId,
+            props.currentGame.mode);
+
+        setTimeout(() => {
+            setIsStartingGame(false);
+        }, 10000);
+
+        // eslint-disable-next-line
+    }, [props.currentGameId, props.currentGame])
 
     return (
         <div className={props.styles.gameNotStartedWrapper}>
@@ -205,9 +237,8 @@ const GameNotStarted = props => {
                         </div>
                         <div className={classNames({
                             [props.styles.status]: true,
-                            [props.styles.ready]: props.currentGame.playersReady.includes(player),
-                            [props.styles.notReady]: !props.currentGame
-                                .playersReady.includes(player)
+                            [props.styles.ready]: isPlayerReady(player),
+                            [props.styles.notReady]: !isPlayerReady(player)
                         })}
                         >
                             <FiberManualRecordIcon fontSize="small" />
@@ -249,9 +280,8 @@ const GameNotStarted = props => {
                             <div>
                                 <div>Ready Up</div>
                                 <Switch
-                                    checked={props.isReady}
-                                    onChange={() => props.readyUpRequest(props.currentGameId,
-                                        !props.isReady)}
+                                    checked={isLocalReady}
+                                    onChange={newReadyUp}
                                 />
                             </div>
                         )}
@@ -475,9 +505,8 @@ const GameNotStarted = props => {
                     <div>
                         <div>Ready Up</div>
                         <Switch
-                            checked={props.isReady}
-                            onChange={() => props.readyUpRequest(props.currentGameId,
-                                !props.isReady)}
+                            checked={isLocalReady}
+                            onChange={newReadyUp}
                         />
                     </div>
                 ) }
@@ -489,8 +518,7 @@ const GameNotStarted = props => {
                     <StyledButton
                         text="Start Game"
                         disabled={!canStartGame(props.currentGame)}
-                        onClick={() => props.startAnyGameRequest(props.currentGameId,
-                            props.currentGame.mode)}
+                        onClick={startGame}
                     />
                 </div>
             )}
@@ -537,6 +565,12 @@ const GameNotStarted = props => {
                 <div className={props.styles.waitingForHost}>
                     {`Waiting for ${mapUserIdToName(props.users,
                         props.currentGame.host)} to start the game`}
+                </div>
+            )}
+
+            {isStartingGame && (
+                <div className={props.styles.startingGameLoader}>
+                    <Spinner />
                 </div>
             )}
         </div>

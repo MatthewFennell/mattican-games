@@ -1,5 +1,6 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
+import { noop } from 'lodash';
 import { connect } from 'react-redux';
 import defaultStyles from './CurrentGameStatus.module.scss';
 import * as helpers from '../helpers';
@@ -9,15 +10,24 @@ import GameFinished from './GameFinished';
 import { makeVoteRequest, makeQuestRequest } from './actions';
 
 const CurrentGameStatus = props => {
+    const [localVoteValue, setLocalVoteValue] = useState(false);
+
+    const [hasLocalPlayedSucceed, setHasLocalPlayedSucceed] = useState(props.currentGame
+        .questSuccesses.includes(props.auth.uid));
+
     const makeQuest = useCallback(succeed => {
         props.makeQuestRequest(props.currentGameId, succeed);
+        props.setHasLocalPlayed(true);
+        setHasLocalPlayedSucceed(succeed);
         // eslint-disable-next-line
-    }, [props.currentGameId]);
+    }, [props.currentGameId, setHasLocalPlayedSucceed, props.setHasLocalPlayed]);
 
     const placeVote = useCallback(vote => {
         props.makeVoteRequest(props.currentGameId, vote);
+        props.setHasLocalVoted(true);
+        setLocalVoteValue(vote);
         // eslint-disable-next-line
-    }, [props.currentGameId])
+    }, [props.currentGameId, props.setHasLocalVoted, props.setLocalVoteValue])
 
     if (props.currentGame.status === constants.avalonGameStatuses.Nominating) {
         return (
@@ -28,13 +38,15 @@ const CurrentGameStatus = props => {
         );
     }
 
+
     if (props.currentGame.status === constants.avalonGameStatuses.Voting) {
         return (
             <div className={props.styles.votingWrapper}>
                 <div className={props.styles.votingButtons}>
                     {props.currentGame.votesAgainst.includes(props.auth.uid)
                         || props.currentGame.votesFor.includes(props.auth.uid)
-                        ? <StyledButton text={`Voted ${props.currentGame.votesFor.includes(props.auth.uid) ? 'Yes' : 'No'}`} disabled /> : (
+                        || props.hasLocalVoted
+                        ? <StyledButton text={`Voted ${(props.currentGame.votesFor.includes(props.auth.uid) || localVoteValue) ? 'Yes' : 'No'}`} disabled /> : (
                             <>
                                 <StyledButton text="Vote Yes" onClick={() => placeVote(true)} />
                                 <StyledButton text="Vote No" color="secondary" onClick={() => placeVote(false)} />
@@ -94,7 +106,8 @@ const CurrentGameStatus = props => {
                 <div className={props.styles.questButtons}>
                     {props.currentGame.questSuccesses.includes(props.auth.uid)
                         || props.currentGame.questFails.includes(props.auth.uid)
-                        ? <StyledButton text={`Played ${props.currentGame.questSuccesses.includes(props.auth.uid) ? 'Succeed' : 'Fail'}`} disabled /> : (
+                        || props.hasLocalPlayed
+                        ? <StyledButton text={`Played ${(props.currentGame.questSuccesses.includes(props.auth.uid) || hasLocalPlayedSucceed) ? 'Succeed' : 'Fail'}`} disabled /> : (
                             <>
                                 <StyledButton
                                     text="Play Succeed"
@@ -146,7 +159,11 @@ CurrentGameStatus.defaultProps = {
         votesFor: []
     },
     currentGameId: '',
+    hasLocalPlayed: false,
+    hasLocalVoted: false,
     myRole: '',
+    setHasLocalPlayed: noop,
+    setHasLocalVoted: noop,
     styles: defaultStyles,
     users: {}
 };
@@ -178,9 +195,13 @@ CurrentGameStatus.propTypes = {
         status: PropTypes.string
     }),
     currentGameId: PropTypes.string,
+    hasLocalPlayed: PropTypes.bool,
+    hasLocalVoted: PropTypes.bool,
     makeVoteRequest: PropTypes.func.isRequired,
     makeQuestRequest: PropTypes.func.isRequired,
     myRole: PropTypes.string,
+    setHasLocalPlayed: PropTypes.func,
+    setHasLocalVoted: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})
 };
