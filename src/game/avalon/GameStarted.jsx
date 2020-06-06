@@ -1,9 +1,10 @@
-import React, { useState, useCallback } from 'react';
+/* eslint-disable max-len */
+import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
-import { noop } from 'lodash';
+import _, { noop } from 'lodash';
 import fp from 'lodash/fp';
 import defaultStyles from './GameStarted.module.scss';
 import Fade from '../../common/Fade/Fade';
@@ -28,6 +29,20 @@ const GameStarted = props => {
     const [merlinGuess, setMerlinGuess] = useState('');
     const [showingHistory, setShowingHistory] = useState(false);
 
+    const [localOnQuest, setLocalOnQuest] = useState(_.union([...props.currentGame.questNominations, ...props.currentGame.playersOnQuest]));
+
+    const toggleLocalOnQuest = useCallback(player => {
+        const { numberOfPlayers, round } = props.currentGame;
+        const maxNumberOfPlayersOnQuest = constants.avalonRounds[numberOfPlayers][round];
+
+        if (localOnQuest.includes(player)) {
+            setLocalOnQuest(localOnQuest.filter(x => x !== player));
+        } else if (localOnQuest.length < maxNumberOfPlayersOnQuest) {
+            setLocalOnQuest([...localOnQuest, player]);
+        }
+    }, [localOnQuest, setLocalOnQuest, props.currentGame]);
+
+
     const [guessingMerlin, setGuessingMerlin] = useState(false);
     const toggleGuessingMerlin = useCallback(() => {
         setGuessingMerlin(!guessingMerlin);
@@ -45,6 +60,12 @@ const GameStarted = props => {
         props.confirmNominationsRequest(props.currentGameId, props.currentGame.questNominations);
         // eslint-disable-next-line
     }, [props.currentGame])
+
+    useEffect(() => {
+        if (props.auth.uid !== props.currentGame.leader) {
+            setLocalOnQuest([]);
+        }
+    }, [setLocalOnQuest, props.auth.uid, props.currentGame.leader]);
 
     const generateSecretInfo = role => {
         if (role === constants.avalonRoles.Merlin.name) {
@@ -93,10 +114,11 @@ const GameStarted = props => {
             if (props.currentGame.leader === props.auth.uid) {
                 const playerAlreadyOnMission = props.currentGame.questNominations.includes(player);
                 props.nominatePlayerForQuest(props.currentGameId, player, !playerAlreadyOnMission);
+                toggleLocalOnQuest(player);
             }
         }
         // eslint-disable-next-line
-    }, [props.currentGame, props.auth.uid]);
+    }, [props.currentGame, props.auth.uid, localOnQuest, setLocalOnQuest]);
 
     const generateResultIcon = (result, round) => {
         if (result === 1) {
@@ -129,6 +151,39 @@ const GameStarted = props => {
         );
     };
 
+
+    const isPlayerOnQuest = useCallback(player => {
+        if (props.currentGame.leader === props.auth.uid) {
+            return localOnQuest.includes(player);
+        }
+        return props.currentGame.questNominations.includes(player) || props.currentGame.playersOnQuest.includes(player);
+    }, [props.currentGame, props.auth.uid, localOnQuest]);
+
+    const [hasLocalVoted, setHasLocalVoted] = useState(props.currentGame.votesFor.includes(props.auth.uid) || props.currentGame.votesAgainst.includes(props.auth.uid));
+
+    const [hasLocalPlayed, setHasLocalPlayed] = useState(props.currentGame.questSuccesses.includes(props.auth.uid)
+    || props.currentGame.questFails.includes(props.auth.uid));
+
+    useEffect(() => {
+        setHasLocalVoted(false);
+        setHasLocalPlayed(false);
+    }, [setHasLocalVoted, props.auth.uid, props.currentGame.round, props.currentGame.consecutiveRejections,
+        setHasLocalPlayed]);
+
+    const hasPlayerVoted = useCallback(player => {
+        if (player === props.auth.uid) {
+            return hasLocalVoted;
+        }
+        return props.currentGame.votesFor.includes(player) || props.currentGame.votesAgainst.includes(player);
+    }, [props.auth.uid, props.currentGame, hasLocalVoted]);
+
+    const hasPlayedPlayedCard = useCallback(player => {
+        if (player === props.auth.uid) {
+            return hasLocalPlayed;
+        }
+        return props.currentGame.questSuccesses.includes(player) || props.currentGame.questFails.includes(player);
+    }, [hasLocalPlayed, props.currentGame, props.auth.uid]);
+
     return (
         <div className={props.styles.gameStartedWrapper}>
             {props.currentGame.status === constants.avalonGameStatuses.Finished
@@ -150,7 +205,11 @@ const GameStarted = props => {
                 auth={props.auth}
                 currentGame={props.currentGame}
                 currentGameId={props.currentGameId}
+                hasLocalPlayed={hasLocalPlayed}
+                hasLocalVoted={hasLocalVoted}
                 myRole={props.myRole}
+                setHasLocalVoted={setHasLocalVoted}
+                setHasLocalPlayed={setHasLocalPlayed}
                 users={props.users}
             />
 
@@ -190,9 +249,7 @@ const GameStarted = props => {
                         className={classNames({
                             [props.styles.playerWrapper]: true,
                             [props.styles.isActivePlayer]: player === props.currentGame.leader,
-                            [props.styles.isOnQuest]: props.currentGame
-                                .questNominations.includes(player)
-                                || props.currentGame.playersOnQuest.includes(player)
+                            [props.styles.isOnQuest]: isPlayerOnQuest(player)
                         })}
                         role="button"
                         tabIndex={0}
@@ -216,14 +273,8 @@ const GameStarted = props => {
                         && (
                             <div className={classNames({
                                 [props.styles.votingStage]: true,
-                                [props.styles.haveVoted]: props.currentGame
-                                    .votesFor.includes(player)
-                                || props.currentGame
-                                    .votesAgainst.includes(player),
-                                [props.styles.notVoted]: !props.currentGame
-                                    .votesFor.includes(player)
-                            && !props.currentGame
-                                .votesAgainst.includes(player)
+                                [props.styles.haveVoted]: hasPlayerVoted(player),
+                                [props.styles.notVoted]: !hasPlayerVoted(player)
                             })}
                             >
                                 <FiberManualRecordIcon fontSize="small" />
@@ -234,14 +285,8 @@ const GameStarted = props => {
                         && props.currentGame.playersOnQuest.includes(player) && (
                             <div className={classNames({
                                 [props.styles.questingStage]: true,
-                                [props.styles.haveVoted]: props.currentGame
-                                    .questSuccesses.includes(player)
-                                || props.currentGame
-                                    .questFails.includes(player),
-                                [props.styles.notVoted]: !props.currentGame
-                                    .questSuccesses.includes(player)
-                            && !props.currentGame
-                                .questFails.includes(player)
+                                [props.styles.haveVoted]: hasPlayedPlayedCard(player),
+                                [props.styles.notVoted]: !hasPlayedPlayedCard(player)
                             })}
                             >
                                 <FiberManualRecordIcon fontSize="small" />
@@ -329,13 +374,13 @@ const GameStarted = props => {
                             {props.currentGame.consecutiveRejections === 3
                 && (
                     <div className={props.styles.noVoting}>
-                    No voting will ococur next round if this is rejected
+                        No voting will ococur next round if this is rejected
                     </div>
                 )}
                             {props.currentGame.consecutiveRejections === 4
                 && (
                     <div className={props.styles.noVoting}>
-                    No voting will occur this round
+                        No voting will occur this round
                     </div>
                 )}
                         </div>
@@ -343,7 +388,7 @@ const GameStarted = props => {
 
                         {props.currentGame.numberOfPlayers >= 7 && (
                             <div className={props.styles.specialRoundMessage}>
-                The 4th mission requires 2 fails for it to fail
+                                The 4th mission requires 2 fails for it to fail
                             </div>
                         )}
                     </div>
