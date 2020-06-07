@@ -21,7 +21,10 @@ import History from './History';
 import Switch from '../../common/Switch/Switch';
 import SuccessModal from '../../common/modal/SuccessModal';
 
-import { nominatePlayerForQuest, confirmNominationsRequest, guessMerlinRequest } from './actions';
+import {
+    nominatePlayerForQuest, confirmNominationsRequest, guessMerlinRequest,
+    realignQuestNominations
+} from './actions';
 
 const GameStarted = props => {
     const [viewingRole, setViewingRole] = useState(false);
@@ -57,9 +60,9 @@ const GameStarted = props => {
     }, [merlinGuess, props.currentGame])
 
     const submitNominations = useCallback(() => {
-        props.confirmNominationsRequest(props.currentGameId, props.currentGame.questNominations);
+        props.confirmNominationsRequest(props.currentGameId, localOnQuest);
         // eslint-disable-next-line
-    }, [props.currentGame])
+    }, [props.currentGameId, localOnQuest])
 
     useEffect(() => {
         if (props.auth.uid !== props.currentGame.leader) {
@@ -165,10 +168,17 @@ const GameStarted = props => {
     || props.currentGame.questFails.includes(props.auth.uid));
 
     useEffect(() => {
-        setHasLocalVoted(false);
         setHasLocalPlayed(false);
-    }, [setHasLocalVoted, props.auth.uid, props.currentGame.round, props.currentGame.consecutiveRejections,
+    }, [props.auth.uid, props.currentGame.round, props.currentGame.consecutiveRejections,
         setHasLocalPlayed]);
+
+    useEffect(() => {
+        if (props.currentGame.votesFor.includes(props.auth.uid) || props.currentGame.votesAgainst.includes(props.auth.uid)) {
+            setHasLocalVoted(true);
+        } else {
+            setHasLocalVoted(false);
+        }
+    }, [setHasLocalVoted, props.auth.uid, props.currentGame.votesFor, props.currentGame.votesAgainst]);
 
     const hasPlayerVoted = useCallback(player => {
         if (player === props.auth.uid) {
@@ -183,6 +193,21 @@ const GameStarted = props => {
         }
         return props.currentGame.questSuccesses.includes(player) || props.currentGame.questFails.includes(player);
     }, [hasLocalPlayed, props.currentGame, props.auth.uid]);
+
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (props.currentGame.leader === props.auth.uid) {
+                const nominationsConsistent = _.isEqual(_.sortBy(localOnQuest), _.sortBy(props.currentGame.questNominations));
+                if (!nominationsConsistent) {
+                    props.realignQuestNominations(props.currentGameId, localOnQuest);
+                }
+            }
+        }, 4000);
+        return () => clearInterval(interval);
+
+        // eslint-disable-next-line
+    }, [props.currentGame.leader, props.auth.uid, props.currentGameId, localOnQuest, props.currentGame.questNominations]);
 
     return (
         <div className={props.styles.gameStartedWrapper}>
@@ -304,7 +329,7 @@ const GameStarted = props => {
                     <StyledButton
                         text="Confirm Nominations"
                         onClick={submitNominations}
-                        disabled={props.currentGame.questNominations.length
+                        disabled={localOnQuest.length
                             < constants.avalonRounds[props
                                 .currentGame.numberOfPlayers][props.currentGame.round]}
                     />
@@ -521,6 +546,7 @@ GameStarted.propTypes = {
     guessMerlinRequest: PropTypes.func.isRequired,
     nominatePlayerForQuest: PropTypes.func.isRequired,
     approveLeaveMidgameRequest: PropTypes.func.isRequired,
+    realignQuestNominations: PropTypes.func.isRequired,
     currentGameId: PropTypes.string,
     myRole: PropTypes.string,
     styles: PropTypes.objectOf(PropTypes.string),
@@ -533,7 +559,8 @@ const mapDispatchToProps = {
     leaveGameRequest,
     guessMerlinRequest,
     nominatePlayerForQuest,
-    approveLeaveMidgameRequest
+    approveLeaveMidgameRequest,
+    realignQuestNominations
 };
 
 export default connect(null, mapDispatchToProps)(GameStarted);

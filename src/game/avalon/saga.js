@@ -108,6 +108,17 @@ export function* createGame(api, action) {
     }
 }
 
+export function* realignQuestNominations(api, action) {
+    try {
+        yield call(api.realignQuestNominations, ({
+            gameId: action.gameId,
+            nominations: action.nominations
+        }));
+    } catch (error) {
+        yield put(commonActions.gameError(error, 'Realign Nominations Error'));
+    }
+}
+
 export default function* whoInHatSaga() {
     yield all([
         takeEvery(actions.EDIT_GAME_REQUEST, editGameAvalon, avalonApi),
@@ -116,6 +127,7 @@ export default function* whoInHatSaga() {
         takeEvery(actions.MAKE_AVALON_VOTE_REQUEST, makeVote, avalonApi),
         takeEvery(actions.GUESS_MERLIN_REQUEST, guessMerlin, avalonApi),
         takeEvery(actions.MAKE_QUEST_REQUEST, goOnQuest, avalonApi),
+        takeEvery(actions.REALIGN_QUEST_NOMINATIONS, realignQuestNominations, avalonApi),
         takeEvery(commonActions.START_ANY_GAME_REQUEST, startGame, avalonApi),
         takeEvery(overviewActions.CREATE_GAME_REQUEST, createGame, avalonApi)
     ]);

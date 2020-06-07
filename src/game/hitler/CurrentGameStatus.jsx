@@ -3,6 +3,7 @@
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { noop } from 'lodash';
 import classNames from 'classnames';
 import defaultStyles from './CurrentGameStatus.module.scss';
 import * as helpers from '../helpers';
@@ -15,20 +16,20 @@ import {
 } from './actions';
 
 const CurrentGameStatus = props => {
+    const [localVote, setLocalVote] = useState(false);
+
+
     const placeVote = useCallback(vote => {
         props.makeVoteRequest(props.currentGameId, vote);
+        props.setHasLocalVoted(true);
+        setLocalVote(vote);
         // eslint-disable-next-line
-    }, [props.currentGameId])
+    }, [props.currentGameId, props.setHasLocalVoted, setLocalVote])
 
     // Done via index of currentGame.presidentCards
     const [selectedPresidentCards, setSelectedPresidentCards] = useState([]);
 
     const [selectedChancellorCard, setSelectedChancellorCard] = useState('');
-    const [selectingChancellorCard, setSelectingChancellorCard] = useState(false);
-
-    const toggleChancellorSelectingCards = useCallback(() => {
-        setSelectingChancellorCard(!selectingChancellorCard);
-    }, [selectingChancellorCard, setSelectingChancellorCard]);
 
 
     const [selectingVeto, setSelectingVeto] = useState(false);
@@ -77,11 +78,6 @@ const CurrentGameStatus = props => {
     }, [setSelectedPresidentCards, selectedPresidentCards, props.currentGame]);
 
 
-    const [selectingPresidentCards, setSelectingPresidentCards] = useState(false);
-    const toggleSelectingPresident = useCallback(() => {
-        setSelectingPresidentCards(!selectingPresidentCards);
-    }, [selectingPresidentCards, setSelectingPresidentCards]);
-
     const giveCardsToChancellor = useCallback(() => {
         const { presidentCards } = props.currentGame;
         if (selectedPresidentCards.length === 2) {
@@ -89,10 +85,9 @@ const CurrentGameStatus = props => {
             const cardTwo = presidentCards[selectedPresidentCards[1]];
             props.giveCardsToChancellorRequest(props.currentGameId, [cardOne, cardTwo]);
             setSelectedPresidentCards([]);
-            setSelectingPresidentCards(false);
         }
         // eslint-disable-next-line
-    }, [props.currentGame, selectedPresidentCards, setSelectedPresidentCards, setSelectingPresidentCards]);
+    }, [props.currentGame, selectedPresidentCards, setSelectedPresidentCards]);
 
     const playChancellorCard = useCallback(() => {
         const { chancellorCards } = props.currentGame;
@@ -100,10 +95,9 @@ const CurrentGameStatus = props => {
             const card = chancellorCards[selectedChancellorCard];
             props.playChancellorCardRequest(props.currentGameId, card);
             setSelectedChancellorCard('');
-            setSelectingChancellorCard(false);
         }
         // eslint-disable-next-line
-    }, [props.currentGame, selectedChancellorCard, setSelectedChancellorCard, setSelectingChancellorCard])
+    }, [props.currentGame, selectedChancellorCard, setSelectedChancellorCard])
 
     const makeVetoRequest = useCallback(() => {
         props.initiateVetoRequest(props.currentGameId);
@@ -158,37 +152,30 @@ const CurrentGameStatus = props => {
 
         return (
             <div className={props.styles.presidentDecidingWrapper}>
-                <Fade
-                    checked={selectingPresidentCards}
-                    onChange={toggleSelectingPresident}
-                    includeCheckbox
-                    label="Select cards"
-                >
-                    <div className={props.styles.allPresidentCards}>
-                        {presidentCards.map((card, index) => (
-                            <div
-                                className={classNames({
-                                    [props.styles.fascistCard]: card === -1,
-                                    [props.styles.liberalCard]: card === 1,
-                                    [props.styles.selected]: selectedPresidentCards.includes(index)
-                                })}
-                                role="button"
-                                tabIndex={0}
-                                onClick={() => onClickPresidentCard(index)}
-                                key={`Card-${card}-${index}`}
-                            >
-                                {card === 1 ? 'Liberal' : 'Fascist'}
-                            </div>
-                        ))}
-                    </div>
-                    <div className={props.styles.confirmChancellorCards}>
-                        <StyledButton
-                            onClick={giveCardsToChancellor}
-                            disabled={selectedPresidentCards.length < 2}
-                            text="Confirm cards"
-                        />
-                    </div>
-                </Fade>
+                <div className={props.styles.allPresidentCards}>
+                    {presidentCards.map((card, index) => (
+                        <div
+                            className={classNames({
+                                [props.styles.fascistCard]: card === -1,
+                                [props.styles.liberalCard]: card === 1,
+                                [props.styles.selected]: selectedPresidentCards.includes(index)
+                            })}
+                            role="button"
+                            tabIndex={0}
+                            onClick={() => onClickPresidentCard(index)}
+                            key={`Card-${card}-${index}`}
+                        >
+                            {card === 1 ? 'Liberal' : 'Fascist'}
+                        </div>
+                    ))}
+                </div>
+                <div className={props.styles.confirmChancellorCards}>
+                    <StyledButton
+                        onClick={giveCardsToChancellor}
+                        disabled={selectedPresidentCards.length < 2}
+                        text="Confirm cards"
+                    />
+                </div>
             </div>
         );
     }
@@ -203,8 +190,8 @@ const CurrentGameStatus = props => {
                 </div>
                 <div className={props.styles.votingButtons}>
                     {props.currentGame.votesAgainst.includes(props.auth.uid)
-                        || props.currentGame.votesFor.includes(props.auth.uid)
-                        ? <StyledButton text={`Voted ${props.currentGame.votesFor.includes(props.auth.uid) ? 'Yes' : 'No'}`} disabled /> : (
+                        || props.currentGame.votesFor.includes(props.auth.uid) || props.hasLocalVoted
+                        ? <StyledButton text={`Voted ${(props.currentGame.votesFor.includes(props.auth.uid) || localVote) ? 'Yes' : 'No'}`} disabled /> : (
                             <>
                                 <StyledButton text="Vote Yes" onClick={() => placeVote(true)} />
                                 <StyledButton text="Vote No" color="secondary" onClick={() => placeVote(false)} />
@@ -265,38 +252,31 @@ const CurrentGameStatus = props => {
         return (
             <>
                 <div className={props.styles.presidentDecidingWrapper}>
-                    <Fade
-                        checked={selectingChancellorCard}
-                        onChange={toggleChancellorSelectingCards}
-                        includeCheckbox
-                        label="Select card"
-                    >
-                        <div className={props.styles.allPresidentCards}>
-                            {chancellorCards.map((card, index) => (
-                                <div
-                                    className={classNames({
-                                        [props.styles.fascistCard]: card === -1,
-                                        [props.styles.liberalCard]: card === 1,
-                                        [props.styles.selected]: selectedChancellorCard === index
-                                    })}
-                                    role="button"
-                                    tabIndex={0}
-                                    onClick={() => onClickChancellorCard(index)}
-                                    key={`card-${card}-${index}`}
-                                >
-                                    {card === 1 ? 'Liberal' : 'Fascist'}
-                                </div>
-                            ))}
-                        </div>
-                        <div className={props.styles.confirmChancellorCards}>
-                            <StyledButton
-                                onClick={playChancellorCard}
-                                disabled={selectedChancellorCard !== 0
+                    <div className={props.styles.allPresidentCards}>
+                        {chancellorCards.map((card, index) => (
+                            <div
+                                className={classNames({
+                                    [props.styles.fascistCard]: card === -1,
+                                    [props.styles.liberalCard]: card === 1,
+                                    [props.styles.selected]: selectedChancellorCard === index
+                                })}
+                                role="button"
+                                tabIndex={0}
+                                onClick={() => onClickChancellorCard(index)}
+                                key={`card-${card}-${index}`}
+                            >
+                                {card === 1 ? 'Liberal' : 'Fascist'}
+                            </div>
+                        ))}
+                    </div>
+                    <div className={props.styles.confirmChancellorCards}>
+                        <StyledButton
+                            onClick={playChancellorCard}
+                            disabled={selectedChancellorCard !== 0
                                     && selectedChancellorCard !== 1}
-                                text="Confirm card"
-                            />
-                        </div>
-                    </Fade>
+                            text="Confirm card"
+                        />
+                    </div>
                 </div>
                 {props.currentGame.numberFascistPlayed === 5
                 && !props.currentGame.vetoRejected && (
@@ -425,6 +405,8 @@ CurrentGameStatus.defaultProps = {
         vetoRejected: false
     },
     currentGameId: '',
+    hasLocalVoted: false,
+    setHasLocalVoted: noop,
     styles: defaultStyles,
     users: {}
 };
@@ -465,10 +447,12 @@ CurrentGameStatus.propTypes = {
     }),
     currentGameId: PropTypes.string,
     giveCardsToChancellorRequest: PropTypes.func.isRequired,
+    hasLocalVoted: PropTypes.bool,
     initiateVetoRequest: PropTypes.func.isRequired,
     makeVoteRequest: PropTypes.func.isRequired,
     replyToVetoRequest: PropTypes.func.isRequired,
     playChancellorCardRequest: PropTypes.func.isRequired,
+    setHasLocalVoted: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})
 };

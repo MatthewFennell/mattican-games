@@ -21,7 +21,8 @@ export function* nominateChancellor(api, action) {
 export function* confirmChancellor(api, action) {
     try {
         yield call(api.confirmChancellor, ({
-            gameId: action.gameId
+            gameId: action.gameId,
+            chancellor: action.chancellor
         }));
     } catch (error) {
         yield put(commonActions.gameError(error, 'Confirm Chancellor Error'));

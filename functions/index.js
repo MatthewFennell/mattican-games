@@ -24,3 +24,35 @@ const operations = admin.firestore.FieldValue;
 // currently at v8.13.0 for node
 
 // // https://firebase.google.com/docs/reference/js/firebase.functions.html#functionserrorcod
+
+exports.realignQuestNominations = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+            if (context.auth.uid !== doc.data().leader) {
+                return Promise.resolve();
+            }
+            if (!doc.data().status === constants.avalonGameStatuses.Nominating) {
+                return Promise.resolve();
+            }
+
+            if (!data.nominations) {
+                return Promise.resolve();
+            }
+
+            const { round, numberOfPlayers } = doc.data();
+
+            const maxNumberOfPlayersOnQuest = constants.avalonRounds[numberOfPlayers][round];
+
+            if (data.nominations.length <= maxNumberOfPlayersOnQuest) {
+                return doc.ref.update({
+                    questNominations: data.nominations
+                });
+            }
+            return Promise.resolve();
+        });
+    });
