@@ -197,11 +197,21 @@ exports.confirmChancellor = functions
                 throw new functions.https.HttpsError('invalid-argument', 'You are not the President');
             }
 
-            if (!doc.data().chancellor) {
-                throw new functions.https.HttpsError('invalid-argument', 'No chancellor set');
+            if (!data.chancellor) {
+                throw new functions.https.HttpsError('invalid-argument', 'Must provide a valid chancellor');
+            }
+            if (data.chancellor === context.auth.uid) {
+                throw new functions.https.HttpsError('invalid-argument', 'Cannot nominate yourself');
+            }
+            if (doc.data().deadPlayers.includes(data.chancellor)) {
+                throw new functions.https.HttpsError('invalid-argument', 'Cannot nominate a dead player');
+            }
+            if (!common.canNominatePlayer(data.chancellor, doc.data())) {
+                throw new functions.https.HttpsError('invalid-argument', 'Invalid chancellor candidate');
             }
 
             return doc.ref.update({
+                chancellor: data.chancellor,
                 status: constants.hitlerGameStatuses.Voting
             });
         });

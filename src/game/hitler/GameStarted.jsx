@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable max-len */
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
@@ -54,10 +54,32 @@ const GameStarted = props => {
     const [viewingBoard, setViewingBoard] = useState(false);
     const [showingHistory, setShowingHistory] = useState(false);
 
+    const [hasLocalVoted, setHasLocalVoted] = useState(props.currentGame.votesFor.includes(props.auth.uid) || props.currentGame.votesAgainst.includes(props.auth.uid));
+
+
+    const [localChancellor, setLocalChancellor] = useState(props.currentGame.chancellor);
+
+    const hasPlayerVoted = useCallback(player => {
+        if (player === props.auth.uid) {
+            return hasLocalVoted;
+        }
+        return props.currentGame.votesFor.includes(player) || props.currentGame.votesAgainst.includes(player);
+    }, [props.auth.uid, props.currentGame, hasLocalVoted]);
+
+    const shouldShowChancellor = useCallback(player => {
+        if (props.currentGame.temporaryPresident === props.auth.uid || (props.currentGame.president === props.auth.uid
+            && !props.currentGame.temporaryPresident)) {
+            return player === localChancellor;
+        }
+        return props.currentGame.chancellor === player;
+    }, [props.auth.uid, props.currentGame.chancellor, localChancellor,
+        props.currentGame.president, props.currentGame.temporaryPresident]);
+
+
     const submitNominations = useCallback(() => {
-        props.confirmChancellorRequest(props.currentGameId);
+        props.confirmChancellorRequest(props.currentGameId, localChancellor);
         // eslint-disable-next-line
-    }, [props.currentGame])
+    }, [props.currentGame, localChancellor])
 
     const generateHiddenInfo = () => {
         const items = props.currentGame.hiddenInfo.filter(x => x.president === props.auth.uid);
@@ -177,6 +199,7 @@ const GameStarted = props => {
                     }, 'Nominate error');
                 } else {
                     props.nominateChancellorRequest(props.currentGameId, player);
+                    setLocalChancellor(player);
                 }
             }
         }
@@ -235,6 +258,42 @@ const GameStarted = props => {
         // eslint-disable-next-line
     }, [props.currentGame, props.auth.uid]);   
 
+    useEffect(() => {
+        if (props.currentGame.votesFor.includes(props.auth.uid) || props.currentGame.votesAgainst.includes(props.auth.uid)) {
+            setHasLocalVoted(true);
+        } else {
+            setHasLocalVoted(false);
+        }
+    }, [setHasLocalVoted, props.auth.uid, props.currentGame.votesFor, props.currentGame.votesAgainst]);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (props.currentGame.status === TemporaryPresident) {
+                if (props.currentGame.temporaryPresident === props.auth.uid && localChancellor) {
+                    if (props.currentGame.chancellor !== localChancellor) {
+                        props.nominateChancellorRequest(props.currentGameId, localChancellor);
+                    }
+                }
+            }
+            if (props.currentGame.status === Nominating) {
+                if (props.currentGame.president === props.auth.uid && localChancellor) {
+                    if (props.currentGame.chancellor !== localChancellor) {
+                        props.nominateChancellorRequest(props.currentGameId, localChancellor);
+                    }
+                }
+            }
+        }, 2000);
+        return () => clearInterval(interval);
+
+        // eslint-disable-next-line
+    }, [props.currentGame, Nominating, TemporaryPresident, localChancellor, props.auth.uid, props.currentGameId]);
+
+    useEffect(() => {
+        if (props.auth.uid !== props.currentGame.president) {
+            setLocalChancellor('');
+        }
+    }, [props.currentGame.president, props.currentGame.temporaryPresident, props.auth.uid]);
+
     return (
         <>
             <div className={props.styles.gameStartedWrapper}>
@@ -244,19 +303,13 @@ const GameStarted = props => {
                             {`Round: ${props.currentGame.round}`}
                         </div>
                     )}
-
-                {/* {props.currentGame.status !== Finished
-            && (
-                <div className={props.styles.currentLeaderWrapper}>
-                    {`The current President is ${helpers.mapUserIdToName(props.users, props.currentGame.temporaryPresident || props.currentGame.president)}`}
-                </div>
-            )} */}
                 <CurrentGameStatus
                     auth={props.auth}
                     currentGame={props.currentGame}
                     currentGameId={props.currentGameId}
+                    hasLocalVoted={hasLocalVoted}
+                    setHasLocalVoted={setHasLocalVoted}
                     users={props.users}
-
                 />
 
                 <div className={props.styles.playerOrder}>
@@ -264,11 +317,10 @@ const GameStarted = props => {
                         <div
                             className={classNames({
                                 [props.styles.playerWrapper]: true,
-                                [props.styles.nominatedChancellor]: (props.currentGame
-                                    .chancellor === player && props.currentGame.status
-                                === Nominating) || (props.currentGame.chancellor === player
+                                [props.styles.nominatedChancellor]: (shouldShowChancellor(player) && props.currentGame.status
+                                === Nominating) || (shouldShowChancellor(player)
                                     && props.currentGame.status === Voting)
-                                    || (props.currentGame.chancellor === player
+                                    || (shouldShowChancellor(player)
                                         && props.currentGame.status === TemporaryPresident),
                                 [props.styles.isActivePlayer]: (player === props.currentGame.president
                             && props.currentGame.status !== TemporaryPresident)
@@ -303,7 +355,7 @@ const GameStarted = props => {
                             || (props.currentGame.president === player
                                 && props.currentGame.status === Transfer))
                             && <div className={props.styles.currentPresident}>(President)</div>}
-                                {props.currentGame.chancellor === player
+                                {shouldShowChancellor(player)
                             && <div className={props.styles.currentChancellor}>(Chancellor)</div>}
                                 {props.currentGame.temporaryPresident === player
                             && props.currentGame.temporaryPresident
@@ -324,14 +376,8 @@ const GameStarted = props => {
                         && (
                             <div className={classNames({
                                 [props.styles.votingStage]: true,
-                                [props.styles.haveVoted]: props.currentGame
-                                    .votesFor.includes(player)
-                                || props.currentGame
-                                    .votesAgainst.includes(player),
-                                [props.styles.notVoted]: !props.currentGame
-                                    .votesFor.includes(player)
-                            && !props.currentGame
-                                .votesAgainst.includes(player)
+                                [props.styles.haveVoted]: hasPlayerVoted(player),
+                                [props.styles.notVoted]: !hasPlayerVoted(player)
                             })}
                             >
                                 <FiberManualRecordIcon fontSize="small" />
@@ -373,7 +419,7 @@ const GameStarted = props => {
                     <StyledButton
                         text="Confirm Nomination"
                         onClick={submitNominations}
-                        disabled={!props.currentGame.chancellor}
+                        disabled={!localChancellor}
                     />
                 </div>
             ) }

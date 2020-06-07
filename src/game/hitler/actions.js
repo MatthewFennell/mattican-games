@@ -23,9 +23,10 @@ export const nominateChancellorRequest = (gameId, chancellor) => ({
     chancellor
 });
 
-export const confirmChancellorRequest = gameId => ({
+export const confirmChancellorRequest = (gameId, chancellor) => ({
     type: CONFIRM_CHANCELLOR_REQUEST,
-    gameId
+    gameId,
+    chancellor
 });
 
 export const makeVoteRequest = (gameId, vote) => ({

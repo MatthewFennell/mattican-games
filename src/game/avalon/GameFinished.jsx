@@ -13,7 +13,7 @@ const GameFinished = props => {
             return (
                 <div className={props.styles.resultWrapper}>
                     <div className={props.styles.guessedMerlin}>
-                   The Bad Guys Guessed Merlin Correctly
+                        The Bad Guys Guessed Merlin Correctly
                     </div>
                     <div className={props.styles.allRolesWrapper}>
                         {props.currentGame.playerRoles.map(r => (

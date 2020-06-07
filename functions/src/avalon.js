@@ -174,7 +174,7 @@ exports.confirmNominations = functions
             }
 
             const {
-                numberOfPlayers, round, consecutiveRejections, questNominations
+                numberOfPlayers, round, consecutiveRejections
             } = doc.data();
 
             if (data.nominations.length !== constants.avalonRounds[numberOfPlayers][round]) {
@@ -187,7 +187,7 @@ exports.confirmNominations = functions
                     questNominations: [],
                     votesAgainst: [],
                     votesFor: [],
-                    playersOnQuest: questNominations,
+                    playersOnQuest: data.nominations,
                     consecutiveRejections: 0,
                     history: [{
                         type: constants.historyTypes.Vote,
@@ -196,13 +196,14 @@ exports.confirmNominations = functions
                         votesYes: [],
                         votesNo: [],
                         round: doc.data().round,
-                        nominated: questNominations
+                        nominated: data.nominations
                     },
                     ...doc.data().history]
                 });
             }
 
             return doc.ref.update({
+                questNominations: data.nominations,
                 status: constants.avalonGameStatuses.Voting
             });
         });
