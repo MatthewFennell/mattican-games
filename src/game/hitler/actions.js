@@ -65,9 +65,10 @@ export const makeTemporaryPresidentRequest = (gameId, player) => ({
     player
 });
 
-export const confirmPresidentRequest = gameId => ({
+export const confirmPresidentRequest = (gameId, tempPresident) => ({
     type: CONFIRM_PRESIDENT_REQUEST,
-    gameId
+    gameId,
+    tempPresident
 });
 
 export const killPlayerRequest = (gameId, player) => ({

@@ -827,14 +827,17 @@ exports.confirmTemporaryPresident = functions
             if (!doc.data().status === constants.hitlerGameStatuses.Investigate) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not selecting that currently');
             }
-            if (!doc.data().temporaryPresident) {
+
+            const { tempPresident } = data;
+
+            if (!tempPresident) {
                 throw new functions.https.HttpsError('invalid-argument', 'No player selected');
             }
 
             const alreadyAdded = doc.data().history.some(x => x.type === constants.historyTypes.TransferPresident);
 
             return doc.ref.update({
-                temporaryPresident: doc.data().temporaryPresident,
+                temporaryPresident: tempPresident,
                 status: constants.hitlerGameStatuses.TemporaryPresident,
                 previousPresident: doc.data().president,
                 round: operations.increment(1),
@@ -842,7 +845,7 @@ exports.confirmTemporaryPresident = functions
                     {
                         type: constants.historyTypes.TransferPresident,
                         president: doc.data().president,
-                        temporaryPresident: doc.data().temporaryPresident,
+                        temporaryPresident: tempPresident,
                         round: doc.data().round
                     }, ...doc.data().history
                 ]

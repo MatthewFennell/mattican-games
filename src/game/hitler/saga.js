@@ -100,7 +100,8 @@ export function* makeTemporaryPresidentRequest(api, action) {
 export function* confirmPresident(api, action) {
     try {
         yield call(api.confirmPresident, ({
-            gameId: action.gameId
+            gameId: action.gameId,
+            tempPresident: action.tempPresident
         }));
     } catch (error) {
         yield put(commonActions.gameError(error, 'Confirm President error'));

@@ -59,8 +59,9 @@ const GameStarted = props => {
 
     const [localPlayerToKill, setLocalPlayerToKill] = useState(props.currentGame.playerToKill);
 
-
     const [localInvestigate, setLocalInvestigate] = useState(props.currentGame.playerToInvestigate);
+
+    const [localTempPresident, setLocalTempPresident] = useState(props.currentGame.temporaryPresident);
 
     const [localChancellor, setLocalChancellor] = useState(props.currentGame.chancellor);
 
@@ -131,6 +132,7 @@ const GameStarted = props => {
         }
         return props.currentGame.president === player;
     };
+
 
     const generateSecretInfo = role => {
         if (props.currentGame.numberOfPlayers <= 6) {
@@ -241,6 +243,7 @@ const GameStarted = props => {
                         message: 'You cannot nominate yourself'
                     }, 'Transfer Presidency error');
                 } else {
+                    setLocalTempPresident(player);
                     props.makeTemporaryPresidentRequest(props.currentGameId, player);
                 }
             }
@@ -270,7 +273,7 @@ const GameStarted = props => {
             }
         }
         // eslint-disable-next-line
-    }, [props.currentGame, props.auth.uid, setLocalPlayerToKill, setLocalInvestigate]);   
+    }, [props.currentGame, props.auth.uid, setLocalPlayerToKill, setLocalInvestigate, setLocalTempPresident]);   
 
     const isPlayerToKill = useCallback(player => {
         if (props.currentGame.temporaryPresident === props.auth.uid) {
@@ -288,6 +291,13 @@ const GameStarted = props => {
         }
         return props.currentGame.playerToInvestigate === player;
     }, [props.currentGame.president, localInvestigate, props.auth.uid, props.currentGame.playerToInvestigate]);
+
+    const isTemporaryPresident = useCallback(player => {
+        if (props.currentGame.president === props.auth.uid) {
+            return localTempPresident === player;
+        }
+        return props.currentGame.temporaryPresident === player;
+    }, [props.currentGame.president, props.auth.uid, localTempPresident, props.currentGame.temporaryPresident]);
 
     useEffect(() => {
         if (props.currentGame.votesFor.includes(props.auth.uid) || props.currentGame.votesAgainst.includes(props.auth.uid)) {
@@ -360,6 +370,25 @@ const GameStarted = props => {
     }, [props.currentGame, Nominating, TemporaryPresident, localChancellor, props.auth.uid, props.currentGameId]);
 
     useEffect(() => {
+        const interval = setInterval(() => {
+            if (props.currentGame.status === Transfer) {
+                if (isPresident(props.auth.uid)) {
+                    if (props.currentGame.temporaryPresident !== localTempPresident) {
+                        props.makeTemporaryPresidentRequest(props.currentGameId, localTempPresident);
+                    }
+                }
+            } else {
+                setLocalTempPresident('');
+            }
+        }, 5000);
+        return () => clearInterval(interval);
+
+
+        // eslint-disable-next-line
+        }, [props.currentGame.temporaryPresident, props.currentGame.president, props.auth.uid, localTempPresident,
+        props.currentGame.status, isPresident, props.currentGameId, setLocalTempPresident]);
+
+    useEffect(() => {
         if (props.auth.uid !== props.currentGame.president) {
             setLocalChancellor('');
         }
@@ -411,7 +440,7 @@ const GameStarted = props => {
                             && isPlayerToInvestigate(player),
                                 [props.styles.potentialTempPres]: props.currentGame.status
                             === Transfer
-                            && props.currentGame.temporaryPresident === player,
+                            && isTemporaryPresident(player),
                                 [props.styles.potentialKill]: props.currentGame.status
                             === Kill && isPlayerToKill(player),
                                 [props.styles.deadPlayer]: props.currentGame
@@ -441,7 +470,7 @@ const GameStarted = props => {
                             <div className={classNames({
                                 [props.styles.playerName]: true,
                                 [props.styles.activePlayer]: (player === props.currentGame.president && !props.currentGame.temporaryPresident)
-                             || (props.currentGame.temporaryPresident === player)
+                             || (isTemporaryPresident(player))
                             })}
                             >
                                 {helpers.mapUserIdToName(props.users, player)}
@@ -476,7 +505,7 @@ const GameStarted = props => {
 
                             {props.currentGame.status
                             === Transfer
-                            && props.currentGame.temporaryPresident === player && (
+                            && isTemporaryPresident(player) && (
                                 <div className={props.styles.temporarySearch}>
                                     <StarHalfIcon />
                                 </div>
@@ -506,7 +535,7 @@ const GameStarted = props => {
                 <div className={props.styles.confirmNominationWrapper}>
                     <StyledButton
                         text="Confirm President"
-                        onClick={() => props.confirmPresidentRequest(props.currentGameId)}
+                        onClick={() => props.confirmPresidentRequest(props.currentGameId, localTempPresident)}
                         disabled={!props.currentGame.temporaryPresident}
                     />
                 </div>
