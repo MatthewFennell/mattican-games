@@ -75,9 +75,10 @@ export const killPlayerRequest = (gameId, player) => ({
     player
 });
 
-export const confirmKillPlayerRequest = gameId => ({
+export const confirmKillPlayerRequest = (gameId, playerToKill) => ({
     type: CONFIRM_KILL_PLAYER_REQUEST,
-    gameId
+    gameId,
+    playerToKill
 });
 
 export const initiateVetoRequest = gameId => ({

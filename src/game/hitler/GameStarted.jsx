@@ -57,6 +57,8 @@ const GameStarted = props => {
     const [hasLocalVoted, setHasLocalVoted] = useState(props.currentGame.votesFor.includes(props.auth.uid) || props.currentGame.votesAgainst.includes(props.auth.uid));
 
 
+    const [localPlayerToKill, setLocalPlayerToKill] = useState(props.currentGame.playerToKill);
+
     const [localChancellor, setLocalChancellor] = useState(props.currentGame.chancellor);
 
     const hasPlayerVoted = useCallback(player => {
@@ -118,6 +120,13 @@ const GameStarted = props => {
             }
         }
         return null;
+    };
+
+    const isPresident = player => {
+        if (props.currentGame.temporaryPresident) {
+            return player === props.currentGame.temporaryPresident;
+        }
+        return props.currentGame.president === player;
     };
 
     const generateSecretInfo = role => {
@@ -251,12 +260,23 @@ const GameStarted = props => {
                         message: 'You can\'t kill yourself'
                     }, 'Killing error');
                 } else {
+                    setLocalPlayerToKill(player);
                     props.killPlayerRequest(props.currentGameId, player);
                 }
             }
         }
         // eslint-disable-next-line
-    }, [props.currentGame, props.auth.uid]);   
+    }, [props.currentGame, props.auth.uid, setLocalPlayerToKill]);   
+
+    const isPlayerToKill = useCallback(player => {
+        if (props.currentGame.temporaryPresident === props.auth.uid) {
+            return localPlayerToKill === player;
+        } if (props.currentGame.president === props.auth.uid && !props.currentGame.temporaryPresident) {
+            return localPlayerToKill === player;
+        }
+        return props.currentGame.playerToKill === player;
+    }, [props.currentGame.temporaryPresident, props.currentGame.president, props.auth.uid,
+        localPlayerToKill, props.currentGame.playerToKill]);
 
     useEffect(() => {
         if (props.currentGame.votesFor.includes(props.auth.uid) || props.currentGame.votesAgainst.includes(props.auth.uid)) {
@@ -265,6 +285,25 @@ const GameStarted = props => {
             setHasLocalVoted(false);
         }
     }, [setHasLocalVoted, props.auth.uid, props.currentGame.votesFor, props.currentGame.votesAgainst]);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (props.currentGame.status === constants.hitlerGameStatuses.Kill) {
+                if (isPresident(props.auth.uid)) {
+                    if (props.currentGame.playerToKill !== localPlayerToKill) {
+                        props.killPlayerRequest(props.currentGameId, localPlayerToKill);
+                    }
+                }
+            } else {
+                setLocalPlayerToKill('');
+            }
+        }, 5000);
+        return () => clearInterval(interval);
+
+
+        // eslint-disable-next-line
+    }, [props.currentGame.temporaryPresident, props.currentGame.president, props.auth.uid, localPlayerToKill,
+        props.currentGame.status, isPresident, props.currentGameId, setLocalPlayerToKill]);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -293,6 +332,11 @@ const GameStarted = props => {
             setLocalChancellor('');
         }
     }, [props.currentGame.president, props.currentGame.temporaryPresident, props.auth.uid]);
+
+    const confirmKillPlayer = useCallback(() => {
+        props.confirmKillPlayerRequest(props.currentGameId, localPlayerToKill);
+        // eslint-disable-next-line
+    }, [props.auth.uid, props.currentGameId, localPlayerToKill]);
 
     return (
         <>
@@ -337,7 +381,7 @@ const GameStarted = props => {
                             === Transfer
                             && props.currentGame.temporaryPresident === player,
                                 [props.styles.potentialKill]: props.currentGame.status
-                            === Kill && props.currentGame.playerToKill === player,
+                            === Kill && isPlayerToKill(player),
                                 [props.styles.deadPlayer]: props.currentGame
                                     .deadPlayers.includes(player),
                                 [props.styles.fascistRevealed]: props.currentGame.status === constants.hitlerGameStatuses.Finished
@@ -388,7 +432,7 @@ const GameStarted = props => {
                                 <img src={Skull} className={props.styles.skullImage} alt="Skull" />
                             )}
 
-                            {props.currentGame.playerToKill === player && (
+                            {isPlayerToKill(player) && (
                                 <img src={Bullet} className={props.styles.tempBullet} alt="Bullet" />
                             )}
 
@@ -454,8 +498,8 @@ const GameStarted = props => {
                 <div className={props.styles.confirmNominationWrapper}>
                     <StyledButton
                         text="Confirm Kill"
-                        onClick={() => props.confirmKillPlayerRequest(props.currentGameId)}
-                        disabled={!props.currentGame.playerToKill}
+                        onClick={confirmKillPlayer}
+                        disabled={!localPlayerToKill}
                     />
                 </div>
             ) }

@@ -120,7 +120,8 @@ export function* killPlayer(api, action) {
 export function* confirmKillPlayer(api, action) {
     try {
         yield call(api.confirmKillPlayer, ({
-            gameId: action.gameId
+            gameId: action.gameId,
+            playerToKill: action.playerToKill
         }));
     } catch (error) {
         yield put(commonActions.gameError(error, 'Confirm Kill Player error'));

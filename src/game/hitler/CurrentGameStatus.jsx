@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable max-len */
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { noop } from 'lodash';
@@ -94,7 +94,6 @@ const CurrentGameStatus = props => {
         if (selectedChancellorCard === 0 || selectedChancellorCard === 1) {
             const card = chancellorCards[selectedChancellorCard];
             props.playChancellorCardRequest(props.currentGameId, card);
-            setSelectedChancellorCard('');
         }
         // eslint-disable-next-line
     }, [props.currentGame, selectedChancellorCard, setSelectedChancellorCard])
@@ -105,6 +104,11 @@ const CurrentGameStatus = props => {
         // eslint-disable-next-line
     }, [setSelectingVeto, props.currentGameId])
 
+    useEffect(() => {
+        if (props.auth.uid !== props.currentGame.chancellor) {
+            setSelectedChancellorCard('');
+        }
+    }, [props.currentGame.chancellor, setSelectedChancellorCard, props.auth.uid]);
 
     if (props.currentGame.status === constants.hitlerGameStatuses.Nominating) {
         return (

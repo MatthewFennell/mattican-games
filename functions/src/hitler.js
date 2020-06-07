@@ -898,17 +898,19 @@ exports.confirmKillPlayer = functions
             if (!doc.data().status === constants.hitlerGameStatuses.Kill) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not killing currently');
             }
-            if (!doc.data().playerToKill) {
+            if (!data.playerToKill) {
                 throw new functions.https.HttpsError('invalid-argument', 'No player selected');
             }
-            if (doc.data().deadPlayers.includes(doc.data().playerToKill)) {
+            if (doc.data().deadPlayers.includes(data.playerToKill)) {
                 throw new functions.https.HttpsError('invalid-argument', 'That player is already dead');
             }
 
             const {
-                president, currentPlayers, playerRoles, playerToKill, deadPlayers, temporaryPresident,
+                president, currentPlayers, playerRoles, deadPlayers, temporaryPresident,
                 history
             } = doc.data();
+
+            const { playerToKill } = data;
 
             const role = fp.get('role')(playerRoles.find(x => x.player === playerToKill));
 
