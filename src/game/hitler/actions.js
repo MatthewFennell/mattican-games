@@ -53,9 +53,10 @@ export const selectInvestigateRequest = (gameId, player) => ({
     player
 });
 
-export const confirmInvesigationRequest = gameId => ({
+export const confirmInvesigationRequest = (gameId, playerToInvestigate) => ({
     type: CONFIRM_INVESIGATION_REQUEST,
-    gameId
+    gameId,
+    playerToInvestigate
 });
 
 export const makeTemporaryPresidentRequest = (gameId, player) => ({

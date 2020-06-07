@@ -59,6 +59,9 @@ const GameStarted = props => {
 
     const [localPlayerToKill, setLocalPlayerToKill] = useState(props.currentGame.playerToKill);
 
+
+    const [localInvestigate, setLocalInvestigate] = useState(props.currentGame.playerToInvestigate);
+
     const [localChancellor, setLocalChancellor] = useState(props.currentGame.chancellor);
 
     const hasPlayerVoted = useCallback(player => {
@@ -225,6 +228,7 @@ const GameStarted = props => {
                         message: 'You cannot investigate yourself'
                     }, 'Investigation error');
                 } else {
+                    setLocalInvestigate(player);
                     props.selectInvestigateRequest(props.currentGameId, player);
                 }
             }
@@ -266,7 +270,7 @@ const GameStarted = props => {
             }
         }
         // eslint-disable-next-line
-    }, [props.currentGame, props.auth.uid, setLocalPlayerToKill]);   
+    }, [props.currentGame, props.auth.uid, setLocalPlayerToKill, setLocalInvestigate]);   
 
     const isPlayerToKill = useCallback(player => {
         if (props.currentGame.temporaryPresident === props.auth.uid) {
@@ -277,6 +281,13 @@ const GameStarted = props => {
         return props.currentGame.playerToKill === player;
     }, [props.currentGame.temporaryPresident, props.currentGame.president, props.auth.uid,
         localPlayerToKill, props.currentGame.playerToKill]);
+
+    const isPlayerToInvestigate = useCallback(player => {
+        if (props.currentGame.president === props.auth.uid) {
+            return localInvestigate === player;
+        }
+        return props.currentGame.playerToInvestigate === player;
+    }, [props.currentGame.president, localInvestigate, props.auth.uid, props.currentGame.playerToInvestigate]);
 
     useEffect(() => {
         if (props.currentGame.votesFor.includes(props.auth.uid) || props.currentGame.votesAgainst.includes(props.auth.uid)) {
@@ -304,6 +315,27 @@ const GameStarted = props => {
         // eslint-disable-next-line
     }, [props.currentGame.temporaryPresident, props.currentGame.president, props.auth.uid, localPlayerToKill,
         props.currentGame.status, isPresident, props.currentGameId, setLocalPlayerToKill]);
+
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (props.currentGame.status === constants.hitlerGameStatuses.Investigate) {
+                if (isPresident(props.auth.uid)) {
+                    if (props.currentGame.playerToInvestigate !== localInvestigate) {
+                        props.selectInvestigateRequest(props.currentGameId, localInvestigate);
+                    }
+                }
+            } else {
+                setLocalInvestigate('');
+            }
+        }, 5000);
+        return () => clearInterval(interval);
+
+
+        // eslint-disable-next-line
+        }, [props.currentGame.temporaryPresident, props.currentGame.president, props.auth.uid, localInvestigate,
+        props.currentGame.status, isPresident, props.currentGameId, setLocalInvestigate]);
+
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -376,7 +408,7 @@ const GameStarted = props => {
                                 && props.currentGame.chancellor === player,
                                 [props.styles.potentialInvestigation]: props.currentGame.status
                             === Investigate
-                            && props.currentGame.playerToInvestigate === player,
+                            && isPlayerToInvestigate(player),
                                 [props.styles.potentialTempPres]: props.currentGame.status
                             === Transfer
                             && props.currentGame.temporaryPresident === player,
@@ -436,7 +468,7 @@ const GameStarted = props => {
                                 <img src={Bullet} className={props.styles.tempBullet} alt="Bullet" />
                             )}
 
-                            {props.currentGame.playerToInvestigate === player && (
+                            {isPlayerToInvestigate(player) && (
                                 <div className={props.styles.temporarySearch}>
                                     <SearchIcon />
                                 </div>
@@ -486,8 +518,8 @@ const GameStarted = props => {
                 <div className={props.styles.confirmNominationWrapper}>
                     <StyledButton
                         text="Confirm Investigation"
-                        onClick={() => props.confirmInvesigationRequest(props.currentGameId)}
-                        disabled={!props.currentGame.playerToInvestigate}
+                        onClick={() => props.confirmInvesigationRequest(props.currentGameId, localInvestigate)}
+                        disabled={!localInvestigate}
                     />
                 </div>
             ) }

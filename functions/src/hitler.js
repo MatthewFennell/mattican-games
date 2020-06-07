@@ -733,12 +733,15 @@ exports.confirmInvestigation = functions
             if (!doc.data().status === constants.hitlerGameStatuses.Investigate) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not investigating currently');
             }
-            if (!doc.data().playerToInvestigate) {
+
+            const { playerToInvestigate } = data;
+
+            if (!playerToInvestigate) {
                 throw new functions.https.HttpsError('invalid-argument', 'No player selected to investigate');
             }
 
             const {
-                playerToInvestigate, president, currentPlayers, deadPlayers, history, numberFascistPlayed,
+                president, currentPlayers, deadPlayers, history, numberFascistPlayed,
                 firstInvestigation, secondInvestigation, playerRoles
             } = doc.data();
 
