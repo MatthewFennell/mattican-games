@@ -18,6 +18,9 @@ import {
 const CurrentGameStatus = props => {
     const [localVote, setLocalVote] = useState(false);
 
+    const [confirmCardsDisabled, setConfirmCardsDisabled] = useState(false);
+    const [confirmCardDisabled, setConfirmCardDisabled] = useState(false);
+
 
     const placeVote = useCallback(vote => {
         props.makeVoteRequest(props.currentGameId, vote);
@@ -84,19 +87,20 @@ const CurrentGameStatus = props => {
             const cardOne = presidentCards[selectedPresidentCards[0]];
             const cardTwo = presidentCards[selectedPresidentCards[1]];
             props.giveCardsToChancellorRequest(props.currentGameId, [cardOne, cardTwo]);
-            setSelectedPresidentCards([]);
+            setConfirmCardsDisabled(true);
         }
         // eslint-disable-next-line
-    }, [props.currentGame, selectedPresidentCards, setSelectedPresidentCards]);
+    }, [props.currentGame, selectedPresidentCards, setSelectedPresidentCards, setConfirmCardsDisabled]);
 
     const playChancellorCard = useCallback(() => {
         const { chancellorCards } = props.currentGame;
         if (selectedChancellorCard === 0 || selectedChancellorCard === 1) {
             const card = chancellorCards[selectedChancellorCard];
             props.playChancellorCardRequest(props.currentGameId, card);
+            setConfirmCardDisabled(true);
         }
         // eslint-disable-next-line
-    }, [props.currentGame, selectedChancellorCard, setSelectedChancellorCard])
+    }, [props.currentGame, selectedChancellorCard, setSelectedChancellorCard, setConfirmCardDisabled])
 
     const makeVetoRequest = useCallback(() => {
         props.initiateVetoRequest(props.currentGameId);
@@ -107,8 +111,12 @@ const CurrentGameStatus = props => {
     useEffect(() => {
         if (props.auth.uid !== props.currentGame.chancellor) {
             setSelectedChancellorCard('');
+            setConfirmCardsDisabled(false);
+            setConfirmCardDisabled(false);
         }
-    }, [props.currentGame.chancellor, setSelectedChancellorCard, props.auth.uid]);
+    }, [props.currentGame.chancellor, setSelectedChancellorCard, props.auth.uid, setConfirmCardDisabled,
+        setConfirmCardsDisabled]);
+
 
     if (props.currentGame.status === constants.hitlerGameStatuses.Nominating) {
         return (
@@ -176,7 +184,7 @@ const CurrentGameStatus = props => {
                 <div className={props.styles.confirmChancellorCards}>
                     <StyledButton
                         onClick={giveCardsToChancellor}
-                        disabled={selectedPresidentCards.length < 2}
+                        disabled={selectedPresidentCards.length < 2 || confirmCardsDisabled}
                         text="Confirm cards"
                     />
                 </div>
@@ -276,8 +284,8 @@ const CurrentGameStatus = props => {
                     <div className={props.styles.confirmChancellorCards}>
                         <StyledButton
                             onClick={playChancellorCard}
-                            disabled={selectedChancellorCard !== 0
-                                    && selectedChancellorCard !== 1}
+                            disabled={(selectedChancellorCard !== 0
+                                    && selectedChancellorCard !== 1) || confirmCardDisabled}
                             text="Confirm card"
                         />
                     </div>

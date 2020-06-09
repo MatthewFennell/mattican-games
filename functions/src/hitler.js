@@ -862,10 +862,10 @@ exports.killPlayer = functions
                 throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
             }
             if (context.auth.uid !== doc.data().president && !doc.data().temporaryPresident) {
-                throw new functions.https.HttpsError('invalid-argument', 'You are not the President');
+                return Promise.resolve();
             }
             if (doc.data().temporaryPresident && context.auth.uid !== doc.data().temporaryPresident) {
-                throw new functions.https.HttpsError('invalid-argument', 'You are not the Prestident');
+                return Promise.resolve();
             }
             if (!doc.data().status === constants.hitlerGameStatuses.Kill) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not killing currently');

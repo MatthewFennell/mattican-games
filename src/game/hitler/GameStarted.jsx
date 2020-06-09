@@ -56,7 +56,6 @@ const GameStarted = props => {
 
     const [hasLocalVoted, setHasLocalVoted] = useState(props.currentGame.votesFor.includes(props.auth.uid) || props.currentGame.votesAgainst.includes(props.auth.uid));
 
-
     const [localPlayerToKill, setLocalPlayerToKill] = useState(props.currentGame.playerToKill);
 
     const [localInvestigate, setLocalInvestigate] = useState(props.currentGame.playerToInvestigate);
@@ -250,6 +249,7 @@ const GameStarted = props => {
         }
         if (props.currentGame.status === TemporaryPresident) {
             if (props.currentGame.temporaryPresident === props.auth.uid) {
+                setLocalChancellor(player);
                 props.nominateChancellorRequest(props.currentGameId, player);
             }
         }
@@ -300,12 +300,8 @@ const GameStarted = props => {
     }, [props.currentGame.president, props.auth.uid, localTempPresident, props.currentGame.temporaryPresident]);
 
     useEffect(() => {
-        if (props.currentGame.votesFor.includes(props.auth.uid) || props.currentGame.votesAgainst.includes(props.auth.uid)) {
-            setHasLocalVoted(true);
-        } else {
-            setHasLocalVoted(false);
-        }
-    }, [setHasLocalVoted, props.auth.uid, props.currentGame.votesFor, props.currentGame.votesAgainst]);
+        setHasLocalVoted(false);
+    }, [props.auth.uid, props.currentGame.president, props.currentGame.round, setHasLocalVoted]);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -536,7 +532,7 @@ const GameStarted = props => {
                     <StyledButton
                         text="Confirm President"
                         onClick={() => props.confirmPresidentRequest(props.currentGameId, localTempPresident)}
-                        disabled={!props.currentGame.temporaryPresident}
+                        disabled={!localTempPresident}
                     />
                 </div>
             ) }
@@ -554,7 +550,8 @@ const GameStarted = props => {
             ) }
 
                 {((props.currentGame.president === props.auth.uid
-            && props.currentGame.status === Kill && !props.currentGame.temporaryPresident) || (props.currentGame.temporaryPresident === props.auth.uid))
+            && props.currentGame.status === Kill && !props.currentGame.temporaryPresident)
+            || (props.currentGame.temporaryPresident === props.auth.uid && props.currentGame.status === Kill))
             && (
                 <div className={props.styles.confirmNominationWrapper}>
                     <StyledButton

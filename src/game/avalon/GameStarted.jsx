@@ -159,8 +159,13 @@ const GameStarted = props => {
         if (props.currentGame.leader === props.auth.uid) {
             return localOnQuest.includes(player);
         }
-        return props.currentGame.questNominations.includes(player) || props.currentGame.playersOnQuest.includes(player);
-    }, [props.currentGame, props.auth.uid, localOnQuest]);
+        if (props.currentGame.status === constants.avalonGameStatuses.Nominating) {
+            return props.currentGame.questNominations.includes(player);
+        }
+        return props.currentGame.playersOnQuest.includes(player);
+        // eslint-disable-next-line
+    }, [props.currentGame, props.auth.uid, localOnQuest, props.currentGame.questNominations, props.currentGame.playersOnQuest,
+        props.currentGame.status]);
 
     const [hasLocalVoted, setHasLocalVoted] = useState(props.currentGame.votesFor.includes(props.auth.uid) || props.currentGame.votesAgainst.includes(props.auth.uid));
 
@@ -173,12 +178,8 @@ const GameStarted = props => {
         setHasLocalPlayed]);
 
     useEffect(() => {
-        if (props.currentGame.votesFor.includes(props.auth.uid) || props.currentGame.votesAgainst.includes(props.auth.uid)) {
-            setHasLocalVoted(true);
-        } else {
-            setHasLocalVoted(false);
-        }
-    }, [setHasLocalVoted, props.auth.uid, props.currentGame.votesFor, props.currentGame.votesAgainst]);
+        setHasLocalVoted(false);
+    }, [props.auth.uid, props.currentGame.leader, props.currentGame.round, setHasLocalVoted]);
 
     const hasPlayerVoted = useCallback(player => {
         if (player === props.auth.uid) {
