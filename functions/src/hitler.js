@@ -733,12 +733,15 @@ exports.confirmInvestigation = functions
             if (!doc.data().status === constants.hitlerGameStatuses.Investigate) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not investigating currently');
             }
-            if (!doc.data().playerToInvestigate) {
+
+            const { playerToInvestigate } = data;
+
+            if (!playerToInvestigate) {
                 throw new functions.https.HttpsError('invalid-argument', 'No player selected to investigate');
             }
 
             const {
-                playerToInvestigate, president, currentPlayers, deadPlayers, history, numberFascistPlayed,
+                president, currentPlayers, deadPlayers, history, numberFascistPlayed,
                 firstInvestigation, secondInvestigation, playerRoles
             } = doc.data();
 
@@ -824,14 +827,17 @@ exports.confirmTemporaryPresident = functions
             if (!doc.data().status === constants.hitlerGameStatuses.Investigate) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not selecting that currently');
             }
-            if (!doc.data().temporaryPresident) {
+
+            const { tempPresident } = data;
+
+            if (!tempPresident) {
                 throw new functions.https.HttpsError('invalid-argument', 'No player selected');
             }
 
             const alreadyAdded = doc.data().history.some(x => x.type === constants.historyTypes.TransferPresident);
 
             return doc.ref.update({
-                temporaryPresident: doc.data().temporaryPresident,
+                temporaryPresident: tempPresident,
                 status: constants.hitlerGameStatuses.TemporaryPresident,
                 previousPresident: doc.data().president,
                 round: operations.increment(1),
@@ -839,7 +845,7 @@ exports.confirmTemporaryPresident = functions
                     {
                         type: constants.historyTypes.TransferPresident,
                         president: doc.data().president,
-                        temporaryPresident: doc.data().temporaryPresident,
+                        temporaryPresident: tempPresident,
                         round: doc.data().round
                     }, ...doc.data().history
                 ]
@@ -856,10 +862,10 @@ exports.killPlayer = functions
                 throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
             }
             if (context.auth.uid !== doc.data().president && !doc.data().temporaryPresident) {
-                throw new functions.https.HttpsError('invalid-argument', 'You are not the President');
+                return Promise.resolve();
             }
             if (doc.data().temporaryPresident && context.auth.uid !== doc.data().temporaryPresident) {
-                throw new functions.https.HttpsError('invalid-argument', 'You are not the Prestident');
+                return Promise.resolve();
             }
             if (!doc.data().status === constants.hitlerGameStatuses.Kill) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not killing currently');
@@ -898,17 +904,19 @@ exports.confirmKillPlayer = functions
             if (!doc.data().status === constants.hitlerGameStatuses.Kill) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not killing currently');
             }
-            if (!doc.data().playerToKill) {
+            if (!data.playerToKill) {
                 throw new functions.https.HttpsError('invalid-argument', 'No player selected');
             }
-            if (doc.data().deadPlayers.includes(doc.data().playerToKill)) {
+            if (doc.data().deadPlayers.includes(data.playerToKill)) {
                 throw new functions.https.HttpsError('invalid-argument', 'That player is already dead');
             }
 
             const {
-                president, currentPlayers, playerRoles, playerToKill, deadPlayers, temporaryPresident,
+                president, currentPlayers, playerRoles, deadPlayers, temporaryPresident,
                 history
             } = doc.data();
+
+            const { playerToKill } = data;
 
             const role = fp.get('role')(playerRoles.find(x => x.player === playerToKill));
 

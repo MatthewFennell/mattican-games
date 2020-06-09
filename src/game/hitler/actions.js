@@ -53,9 +53,10 @@ export const selectInvestigateRequest = (gameId, player) => ({
     player
 });
 
-export const confirmInvesigationRequest = gameId => ({
+export const confirmInvesigationRequest = (gameId, playerToInvestigate) => ({
     type: CONFIRM_INVESIGATION_REQUEST,
-    gameId
+    gameId,
+    playerToInvestigate
 });
 
 export const makeTemporaryPresidentRequest = (gameId, player) => ({
@@ -64,9 +65,10 @@ export const makeTemporaryPresidentRequest = (gameId, player) => ({
     player
 });
 
-export const confirmPresidentRequest = gameId => ({
+export const confirmPresidentRequest = (gameId, tempPresident) => ({
     type: CONFIRM_PRESIDENT_REQUEST,
-    gameId
+    gameId,
+    tempPresident
 });
 
 export const killPlayerRequest = (gameId, player) => ({
@@ -75,9 +77,10 @@ export const killPlayerRequest = (gameId, player) => ({
     player
 });
 
-export const confirmKillPlayerRequest = gameId => ({
+export const confirmKillPlayerRequest = (gameId, playerToKill) => ({
     type: CONFIRM_KILL_PLAYER_REQUEST,
-    gameId
+    gameId,
+    playerToKill
 });
 
 export const initiateVetoRequest = gameId => ({

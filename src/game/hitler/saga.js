@@ -78,7 +78,8 @@ export function* selectInvestigateRequest(api, action) {
 export function* confirmInvestigation(api, action) {
     try {
         yield call(api.confirmInvestigation, ({
-            gameId: action.gameId
+            gameId: action.gameId,
+            playerToInvestigate: action.playerToInvestigate
         }));
     } catch (error) {
         yield put(commonActions.gameError(error, 'Confirm Investigation error'));
@@ -99,7 +100,8 @@ export function* makeTemporaryPresidentRequest(api, action) {
 export function* confirmPresident(api, action) {
     try {
         yield call(api.confirmPresident, ({
-            gameId: action.gameId
+            gameId: action.gameId,
+            tempPresident: action.tempPresident
         }));
     } catch (error) {
         yield put(commonActions.gameError(error, 'Confirm President error'));
@@ -120,7 +122,8 @@ export function* killPlayer(api, action) {
 export function* confirmKillPlayer(api, action) {
     try {
         yield call(api.confirmKillPlayer, ({
-            gameId: action.gameId
+            gameId: action.gameId,
+            playerToKill: action.playerToKill
         }));
     } catch (error) {
         yield put(commonActions.gameError(error, 'Confirm Kill Player error'));

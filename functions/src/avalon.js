@@ -358,6 +358,7 @@ exports.goOnQuest = functions
                         leader: common.findNextUser(leader, currentPlayers),
                         round: operations.increment(1),
                         status: nextStatus,
+                        questNominations: [],
                         questSuccesses: [],
                         questFails: [],
                         playerToGuessMerlin: randomBadGuyToGuessMerlin,
