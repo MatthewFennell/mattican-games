@@ -137,8 +137,8 @@ exports.nominatePlayer = functions
             if (context.auth.uid !== doc.data().leader) {
                 throw new functions.https.HttpsError('invalid-argument', 'You are not the leader');
             }
-            if (!doc.data().status === constants.avalonGameStatuses.Nominating) {
-                throw new functions.https.HttpsError('invalid-argument', 'We are not nominating currently');
+            if (doc.data().status !== constants.avalonGameStatuses.Nominating) {
+                return Promise.resolve();
             }
             if (data.isOnQuest) {
                 const { round, numberOfPlayers, questNominations } = doc.data();
@@ -169,7 +169,7 @@ exports.confirmNominations = functions
             if (context.auth.uid !== doc.data().leader) {
                 throw new functions.https.HttpsError('invalid-argument', 'You are not the leader');
             }
-            if (!doc.data().status === constants.avalonGameStatuses.Nominating) {
+            if (doc.data().status !== constants.avalonGameStatuses.Nominating) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not nominating currently');
             }
 
@@ -217,7 +217,7 @@ exports.makeVote = functions
             if (!doc.exists) {
                 throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
             }
-            if (!doc.data().status === constants.avalonGameStatuses.Voting) {
+            if (doc.data().status !== constants.avalonGameStatuses.Voting) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not voting currently');
             }
 
@@ -238,9 +238,10 @@ exports.makeVote = functions
         })
             .then(() => db.collection('games').doc(data.gameId).get().then(doc => {
                 const {
-                    votesFor, votesAgainst, numberOfPlayers, questNominations,
-                    leader, currentPlayers, history
+                    votesFor, votesAgainst, numberOfPlayers,
+                    leader, currentPlayers, history, questNominations
                 } = doc.data();
+
 
                 if (votesFor.length + votesAgainst.length === numberOfPlayers) {
                     if (votesFor.length > votesAgainst.length) {
@@ -249,7 +250,7 @@ exports.makeVote = functions
                             status: constants.avalonGameStatuses.Questing,
                             votesAgainst: [],
                             votesFor: [],
-                            playersOnQuest: questNominations,
+                            playersOnQuest: doc.data().questNominations,
                             consecutiveRejections: 0,
                             history: [
                                 {
@@ -259,7 +260,7 @@ exports.makeVote = functions
                                     round: doc.data().round,
                                     votesYes: votesFor,
                                     votesNo: votesAgainst,
-                                    nominated: questNominations
+                                    nominated: doc.data().questNominations
                                 }, ...history
                             ]
                         });
@@ -296,7 +297,7 @@ exports.goOnQuest = functions
             if (!doc.exists) {
                 throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
             }
-            if (!doc.data().status === constants.avalonGameStatuses.Questing) {
+            if (doc.data().status !== constants.avalonGameStatuses.Questing) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not questing currently');
             }
 

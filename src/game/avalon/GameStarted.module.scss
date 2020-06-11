@@ -214,6 +214,11 @@
     font-weight: bold;
 }
 
+.endGameWrapper {
+    display: flex;
+    justify-content: space-evenly;
+}
+
 .consecutiveRejections {
     color: $color-blue;
     text-align: center;
@@ -223,8 +228,6 @@
 .guessingMerlinWrapper {
     text-align: center;
     background-color: aquamarine;
-    margin: $spacing-small;
-    padding: $spacing-small;
     border-radius: $spacing-small;
 }
 

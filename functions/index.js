@@ -36,7 +36,7 @@ exports.realignQuestNominations = functions
             if (context.auth.uid !== doc.data().leader) {
                 return Promise.resolve();
             }
-            if (!doc.data().status === constants.avalonGameStatuses.Nominating) {
+            if (doc.data().status !== constants.avalonGameStatuses.Nominating) {
                 return Promise.resolve();
             }
 

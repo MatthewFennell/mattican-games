@@ -22,7 +22,7 @@ import { editGameRequest as editWhoInHatGameRequest } from './whoInHat/actions';
 import { editGameRequest as editAvalonGameRequest } from './avalon/actions';
 import { editGameRequest as editHitlerGameRequest } from './hitler/actions';
 import { editGameRequest as editOthelloGameRequest } from './othello/actions';
-import Spinner from '../common/spinner/Spinner';
+import LoadingDiv from '../common/loadingDiv/LoadingDiv';
 
 const canStartGame = game => {
     if (game.mode === constants.gameModes.Hitler || game.mode === constants.gameModes.Avalon) {
@@ -57,7 +57,7 @@ const GameNotStarted = props => {
     const [othelloPlayerType, setOthelloPlayerType] = useState(props.currentGame.opponentType);
     const [othelloDifficulty, setOthelloDifficulty] = useState(props.currentGame.difficulty);
 
-    const [isStartingGame, setIsStartingGame] = useState(false);
+    const [isStartingOrLeavingGame, setIsStartingOrLeavingGame] = useState(false);
 
     const toggleEditedCustomNames = useCallback(() => {
         setIsEditedCustomNames(!editedIsCustomNames);
@@ -136,16 +136,18 @@ const GameNotStarted = props => {
     }, [isLocalReady, props.currentGame.playersReady, props.auth.uid]);
 
     const startGame = useCallback(() => {
-        setIsStartingGame(true);
+        setIsStartingOrLeavingGame(true);
         props.startAnyGameRequest(props.currentGameId,
             props.currentGame.mode);
+        // eslint-disable-next-line
+    }, [props.currentGameId, props.currentGame.mode, setIsStartingOrLeavingGame]);
 
-        setTimeout(() => {
-            setIsStartingGame(false);
-        }, 10000);
+    const leaveGame = useCallback(() => {
+        setIsStartingOrLeavingGame(true);
+        props.leaveGameRequest(props.currentGameId);
 
         // eslint-disable-next-line
-    }, [props.currentGameId, props.currentGame])
+    }, [setIsStartingOrLeavingGame, props.currentGameId])
 
     return (
         <div className={props.styles.gameNotStartedWrapper}>
@@ -157,7 +159,7 @@ const GameNotStarted = props => {
                 <div className={props.styles.timePerRoundWrapper}>
                     <div>Host:</div>
                     <div className={props.styles.timePerRoundValue}>
-                        {mapUserIdToName(props.users, props.currentGame.host) + (props.currentGame.host === props.auth.uid && ' (you)')}
+                        {mapUserIdToName(props.users, props.currentGame.host) + (props.currentGame.host === props.auth.uid ? ' (you)' : '')}
                     </div>
                 </div>
 
@@ -499,8 +501,9 @@ const GameNotStarted = props => {
             )}
 
 
-            <div className={props.styles.startAndLeave}>
-                {props.currentGame.host !== props.auth.uid
+            <LoadingDiv isMargin isLoading={isStartingOrLeavingGame} isBorderRadius>
+                <div className={props.styles.startAndLeave}>
+                    {props.currentGame.host !== props.auth.uid
                 && (
                     <div>
                         <div>Ready Up</div>
@@ -510,26 +513,28 @@ const GameNotStarted = props => {
                         />
                     </div>
                 ) }
-                {props.currentGame.host === props.auth.uid
+                    {props.currentGame.host === props.auth.uid
             && (
                 <div
                     className={props.styles.startGameWrapper}
                 >
                     <StyledButton
                         text="Start Game"
-                        disabled={!canStartGame(props.currentGame)}
+                        disabled={!canStartGame(props.currentGame) || isStartingOrLeavingGame}
                         onClick={startGame}
                     />
                 </div>
             )}
-                <div className={props.styles.leaveGameWrapper}>
-                    <StyledButton
-                        text="Leave Game"
-                        color="secondary"
-                        onClick={() => props.leaveGameRequest(props.currentGameId)}
-                    />
+                    <div className={props.styles.leaveGameWrapper}>
+                        <StyledButton
+                            text="Leave Game"
+                            color="secondary"
+                            onClick={leaveGame}
+                            disabled={isStartingOrLeavingGame}
+                        />
+                    </div>
                 </div>
-            </div>
+            </LoadingDiv>
 
             {props.currentGame.playersReady.length === props.currentGame.numberOfPlayers
             && props.currentGame.host !== props.auth.uid && (
@@ -565,12 +570,6 @@ const GameNotStarted = props => {
                 <div className={props.styles.waitingForHost}>
                     {`Waiting for ${mapUserIdToName(props.users,
                         props.currentGame.host)} to start the game`}
-                </div>
-            )}
-
-            {isStartingGame && (
-                <div className={props.styles.startingGameLoader}>
-                    <Spinner />
                 </div>
             )}
         </div>

@@ -20,6 +20,7 @@ import Radio from '../../common/radio/RadioButton';
 import History from './History';
 import Switch from '../../common/Switch/Switch';
 import SuccessModal from '../../common/modal/SuccessModal';
+import LoadingDiv from '../../common/loadingDiv/LoadingDiv';
 
 import {
     nominatePlayerForQuest, confirmNominationsRequest, guessMerlinRequest,
@@ -31,8 +32,22 @@ const GameStarted = props => {
     const [viewingBoard, setViewingBoard] = useState(false);
     const [merlinGuess, setMerlinGuess] = useState('');
     const [showingHistory, setShowingHistory] = useState(false);
-
     const [localOnQuest, setLocalOnQuest] = useState(_.union([...props.currentGame.questNominations, ...props.currentGame.playersOnQuest]));
+    const [hasSentNominations, setHasSentNominations] = useState(false);
+    const [hasGuessedMerlin, setHasGuessedMerlin] = useState(false);
+    const [isLeavingOrDestroyingGame, setIsLeavingOrDestroyingGame] = useState(false);
+
+    const destroyGame = useCallback(() => {
+        setIsLeavingOrDestroyingGame(true);
+        props.destroyGameRequest(props.currentGameId);
+        // eslint-disable-next-line
+    }, [setIsLeavingOrDestroyingGame, props.currentGameId])
+
+    const leaveGame = useCallback(() => {
+        setIsLeavingOrDestroyingGame(true);
+        props.leaveGameRequest(props.currentGameId);
+        // eslint-disable-next-line
+    }, [setIsLeavingOrDestroyingGame, props.currentGameId])
 
     const toggleLocalOnQuest = useCallback(player => {
         const { numberOfPlayers, round } = props.currentGame;
@@ -55,20 +70,23 @@ const GameStarted = props => {
     const makeMerlinGuess = useCallback(() => {
         if (merlinGuess) {
             props.guessMerlinRequest(props.currentGameId, merlinGuess);
+            setHasGuessedMerlin(true);
         }
         // eslint-disable-next-line
-    }, [merlinGuess, props.currentGame])
+    }, [merlinGuess, props, setHasGuessedMerlin])
 
     const submitNominations = useCallback(() => {
         props.confirmNominationsRequest(props.currentGameId, localOnQuest);
+        setHasSentNominations(true);
         // eslint-disable-next-line
-    }, [props.currentGameId, localOnQuest])
+    }, [props.currentGameId, localOnQuest, setHasSentNominations])
 
     useEffect(() => {
         if (props.auth.uid !== props.currentGame.leader) {
             setLocalOnQuest([]);
+            setHasSentNominations(false);
         }
-    }, [setLocalOnQuest, props.auth.uid, props.currentGame.leader]);
+    }, [setLocalOnQuest, props.auth.uid, props.currentGame.leader, setHasSentNominations]);
 
     const generateSecretInfo = role => {
         if (role === constants.avalonRoles.Merlin.name) {
@@ -159,10 +177,10 @@ const GameStarted = props => {
         if (props.currentGame.leader === props.auth.uid) {
             return localOnQuest.includes(player);
         }
-        if (props.currentGame.status === constants.avalonGameStatuses.Nominating) {
-            return props.currentGame.questNominations.includes(player);
+        if (props.currentGame.status === constants.avalonGameStatuses.Questing) {
+            return props.currentGame.playersOnQuest.includes(player);
         }
-        return props.currentGame.playersOnQuest.includes(player);
+        return props.currentGame.questNominations.includes(player);
         // eslint-disable-next-line
     }, [props.currentGame, props.auth.uid, localOnQuest, props.currentGame.questNominations, props.currentGame.playersOnQuest,
         props.currentGame.status]);
@@ -199,16 +217,21 @@ const GameStarted = props => {
     useEffect(() => {
         const interval = setInterval(() => {
             if (props.currentGame.leader === props.auth.uid) {
-                const nominationsConsistent = _.isEqual(_.sortBy(localOnQuest), _.sortBy(props.currentGame.questNominations));
-                if (!nominationsConsistent) {
-                    props.realignQuestNominations(props.currentGameId, localOnQuest);
+                if (props.currentGame.status === constants.avalonGameStatuses.Nominating) {
+                    if (!hasSentNominations) {
+                        const nominationsConsistent = _.isEqual(_.sortBy(localOnQuest), _.sortBy(props.currentGame.questNominations));
+                        if (!nominationsConsistent) {
+                            props.realignQuestNominations(props.currentGameId, localOnQuest);
+                        }
+                    }
                 }
             }
         }, 4000);
         return () => clearInterval(interval);
 
         // eslint-disable-next-line
-    }, [props.currentGame.leader, props.auth.uid, props.currentGameId, localOnQuest, props.currentGame.questNominations]);
+    }, [props.currentGame.leader, props.auth.uid, props.currentGameId, localOnQuest, props.currentGame.questNominations,
+        hasSentNominations]);
 
     return (
         <div className={props.styles.gameStartedWrapper}>
@@ -242,31 +265,34 @@ const GameStarted = props => {
             {props.currentGame.status === constants.avalonGameStatuses.GuessingMerlin
             && props.currentGame
                 .playerToGuessMerlin === props.auth.uid && (
-                <div className={props.styles.guessingMerlinWrapper}>
-                    <Fade
-                        includeCheckbox
-                        label="Guess Merlin"
-                        checked={guessingMerlin}
-                        onChange={toggleGuessingMerlin}
-                    >
-                        <Radio
-                            onChange={setMerlinGuess}
-                            value={merlinGuess}
-                            options={props.currentGame.playerRoles
-                                .filter(r => constants.avalonRoles[r.role].isGood)
-                                .map(r => ({
-                                    text: helpers.mapUserIdToName(props.users, r.player),
-                                    value: r.player
-                                }))}
-                        />
-                        <div className={props.styles.submitMerlinGuessWrapper}>
-                            <StyledButton
-                                text="Confirm Guess"
-                                onClick={makeMerlinGuess}
+                <LoadingDiv isLoading={hasGuessedMerlin} isMargin>
+                    <div className={props.styles.guessingMerlinWrapper}>
+                        <Fade
+                            includeCheckbox
+                            label="Guess Merlin"
+                            checked={guessingMerlin}
+                            onChange={toggleGuessingMerlin}
+                        >
+                            <Radio
+                                onChange={setMerlinGuess}
+                                value={merlinGuess}
+                                options={props.currentGame.playerRoles
+                                    .filter(r => constants.avalonRoles[r.role].isGood)
+                                    .map(r => ({
+                                        text: helpers.mapUserIdToName(props.users, r.player),
+                                        value: r.player
+                                    }))}
                             />
-                        </div>
-                    </Fade>
-                </div>
+                            <div className={props.styles.submitMerlinGuessWrapper}>
+                                <StyledButton
+                                    text="Confirm Guess"
+                                    onClick={makeMerlinGuess}
+                                    disabled={hasGuessedMerlin}
+                                />
+                            </div>
+                        </Fade>
+                    </div>
+                </LoadingDiv>
             )}
 
             <div className={props.styles.playerOrder}>
@@ -326,28 +352,42 @@ const GameStarted = props => {
             {props.currentGame.leader === props.auth.uid
             && props.currentGame.status === constants.avalonGameStatuses.Nominating
             && (
-                <div className={props.styles.confirmNominationWrapper}>
-                    <StyledButton
-                        text="Confirm Nominations"
-                        onClick={submitNominations}
-                        disabled={localOnQuest.length
+                <LoadingDiv isMargin isLoading={hasSentNominations} isFitContent>
+                    <div className={props.styles.confirmNominationWrapper}>
+                        <StyledButton
+                            text="Confirm Nominations"
+                            onClick={submitNominations}
+                            disabled={(localOnQuest.length
                             < constants.avalonRounds[props
-                                .currentGame.numberOfPlayers][props.currentGame.round]}
-                    />
-                </div>
+                                .currentGame.numberOfPlayers][props.currentGame.round]) || hasSentNominations}
+                        />
+                    </div>
+                </LoadingDiv>
             ) }
 
             {props.currentGame.status === constants.avalonGameStatuses.Finished && (
-                <div className={props.styles.leaveGameButton}>
-                    <StyledButton text="Leave Game" color="secondary" onClick={() => props.leaveGameRequest(props.currentGameId)} />
-                </div>
-            )}
-
-            {props.currentGame.status === constants.avalonGameStatuses.Finished
-            && props.currentGame.host === props.auth.uid && (
-                <div className={props.styles.destroyGameButton}>
-                    <StyledButton text="Destroy Game" color="secondary" onClick={() => props.destroyGameRequest(props.currentGameId)} />
-                </div>
+                <LoadingDiv isMargin isFitContent isLoading={isLeavingOrDestroyingGame}>
+                    <div className={props.styles.endGameWrapper}>
+                        {props.currentGame.host === props.auth.uid && (
+                            <div className={props.styles.destroyGameButton}>
+                                <StyledButton
+                                    text="Destroy Game"
+                                    color="secondary"
+                                    onClick={destroyGame}
+                                    disabled={isLeavingOrDestroyingGame}
+                                />
+                            </div>
+                        )}
+                        <div className={props.styles.leaveGameButton}>
+                            <StyledButton
+                                text="Leave Game"
+                                color="secondary"
+                                onClick={leaveGame}
+                                disabled={isLeavingOrDestroyingGame}
+                            />
+                        </div>
+                    </div>
+                </LoadingDiv>
             )}
 
             <div className={props.styles.toggleWrappers}>

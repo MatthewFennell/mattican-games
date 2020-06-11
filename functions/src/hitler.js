@@ -142,8 +142,8 @@ exports.nominateChancellor = functions
             if (!doc.exists) {
                 throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
             }
-            if (!doc.data().status === constants.hitlerGameStatuses.Nominating
-            && !doc.data().status === constants.hitlerGameStatuses.TemporaryPresident) {
+            if (doc.data().status !== constants.hitlerGameStatuses.Nominating
+            && doc.data().status !== constants.hitlerGameStatuses.TemporaryPresident) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not nominating currently');
             }
 
@@ -184,8 +184,8 @@ exports.confirmChancellor = functions
             if (!doc.exists) {
                 throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
             }
-            if (!doc.data().status === constants.hitlerGameStatuses.Nominating
-            && !doc.data().status === constants.hitlerGameStatuses.TemporaryPresident) {
+            if (doc.data().status !== constants.hitlerGameStatuses.Nominating
+            && doc.data().status !== constants.hitlerGameStatuses.TemporaryPresident) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not nominating currently');
             }
 
@@ -225,7 +225,7 @@ exports.makeVote = functions
             if (!doc.exists) {
                 throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
             }
-            if (!doc.data().status === constants.hitlerGameStatuses.Voting) {
+            if (doc.data().status !== constants.hitlerGameStatuses.Voting) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not voting currently');
             }
             if (doc.data().deadPlayers.includes(context.auth.uid)) {
@@ -398,9 +398,6 @@ exports.giveCardsToChancellor = functions
             if (!doc.exists) {
                 throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
             }
-            if (!doc.data().status === constants.hitlerGameStatuses.PresidentDecidingCards) {
-                throw new functions.https.HttpsError('invalid-argument', 'We are not deciding cards');
-            }
             if ((doc.data().temporaryPresident && context.auth.uid !== doc.data().temporaryPresident)
             && (context.auth.uid !== doc.data().president)) {
                 throw new functions.https.HttpsError('invalid-argument', 'You are not the President');
@@ -444,7 +441,7 @@ exports.playChancellorCard = functions
             if (context.auth.uid !== doc.data().chancellor) {
                 throw new functions.https.HttpsError('invalid-argument', 'You are not the Chancellor');
             }
-            if (!doc.data().status === constants.hitlerGameStatuses.ChancellorDecidingCards) {
+            if (doc.data().status !== constants.hitlerGameStatuses.ChancellorDecidingCards) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not playing cards now');
             }
             if (data.card !== 1 && data.card !== -1) {
@@ -698,7 +695,7 @@ exports.investigatePlayer = functions
             if (context.auth.uid !== doc.data().president) {
                 throw new functions.https.HttpsError('invalid-argument', 'You are not the President');
             }
-            if (!doc.data().status === constants.hitlerGameStatuses.Investigate) {
+            if (doc.data().status !== constants.hitlerGameStatuses.Investigate) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not investigating currently');
             }
             if (data.player === doc.data().playerInvestigated) {
@@ -730,7 +727,7 @@ exports.confirmInvestigation = functions
             if (context.auth.uid !== doc.data().president) {
                 throw new functions.https.HttpsError('invalid-argument', 'You are not the President');
             }
-            if (!doc.data().status === constants.hitlerGameStatuses.Investigate) {
+            if (doc.data().status !== constants.hitlerGameStatuses.Investigate) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not investigating currently');
             }
 
@@ -797,7 +794,7 @@ exports.temporaryPresident = functions
             if (context.auth.uid !== doc.data().president) {
                 throw new functions.https.HttpsError('invalid-argument', 'You are not the President');
             }
-            if (!doc.data().status === constants.hitlerGameStatuses.Transfer) {
+            if (doc.data().status !== constants.hitlerGameStatuses.Transfer) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not selecting that currently');
             }
             if (context.auth.uid === data.player) {
@@ -824,7 +821,7 @@ exports.confirmTemporaryPresident = functions
             if (context.auth.uid !== doc.data().president) {
                 throw new functions.https.HttpsError('invalid-argument', 'You are not the President');
             }
-            if (!doc.data().status === constants.hitlerGameStatuses.Investigate) {
+            if (doc.data().status !== constants.hitlerGameStatuses.Investigate) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not selecting that currently');
             }
 
@@ -867,7 +864,7 @@ exports.killPlayer = functions
             if (doc.data().temporaryPresident && context.auth.uid !== doc.data().temporaryPresident) {
                 return Promise.resolve();
             }
-            if (!doc.data().status === constants.hitlerGameStatuses.Kill) {
+            if (doc.data().status !== constants.hitlerGameStatuses.Kill) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not killing currently');
             }
 
@@ -901,7 +898,7 @@ exports.confirmKillPlayer = functions
             if (doc.data().temporaryPresident && context.auth.uid !== doc.data().temporaryPresident) {
                 throw new functions.https.HttpsError('invalid-argument', 'You are not the Prestident');
             }
-            if (!doc.data().status === constants.hitlerGameStatuses.Kill) {
+            if (doc.data().status !== constants.hitlerGameStatuses.Kill) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not killing currently');
             }
             if (!data.playerToKill) {
@@ -972,7 +969,7 @@ exports.initiateVeto = functions
             if (context.auth.uid !== doc.data().chancellor) {
                 throw new functions.https.HttpsError('invalid-argument', 'You are not the Chancellor');
             }
-            if (!doc.data().status === constants.hitlerGameStatuses.ChancellorDecidingCards) {
+            if (doc.data().status !== constants.hitlerGameStatuses.ChancellorDecidingCards) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not selecting that currently');
             }
             if (doc.data().requestingVeto) {
@@ -999,7 +996,7 @@ exports.replyToVeto = functions
             if (context.auth.uid !== doc.data().president) {
                 throw new functions.https.HttpsError('invalid-argument', 'You are not the President');
             }
-            if (!doc.data().status === constants.hitlerGameStatuses.ChancellorDecidingCards) {
+            if (doc.data().status !== constants.hitlerGameStatuses.ChancellorDecidingCards) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not selecting that currently');
             }
             if (!doc.data().requestingVeto) {

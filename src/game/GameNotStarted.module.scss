@@ -196,10 +196,9 @@
     justify-content: space-evenly;
     text-align: center;
     padding: $spacing-small;
-    margin: $spacing-small;
-    background-color: cadetblue;
+    background-color: khaki;
     border-radius: $spacing-small;
-    margin-bottom: $spacing-medium;
+    color: $color-black;
 }
 
 .goodGuyRoles, .badGuyRoles {
@@ -248,8 +247,4 @@
 
   .doubleSelected {
       display: flex;
-  }
-
-  .startingGameLoader {
-      text-align: center;
   }
