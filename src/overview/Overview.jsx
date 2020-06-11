@@ -14,9 +14,9 @@ import CreateGame from './CreateGame';
 import * as selectors from './selectors';
 import ConfirmModal from '../common/modal/ConfirmModal';
 import { mapUserIdToName } from '../game/helpers';
-import Spinner from '../common/spinner/Spinner';
 import ErrorModal from '../common/modal/ErrorModal';
 import { closeGameError } from '../game/actions';
+import LoadingDiv from '../common/loadingDiv/LoadingDiv';
 
 const convertToString = items => {
     let string = '';
@@ -46,6 +46,8 @@ const Overview = props => {
     const [othelloPlayerType, setOthelloPlayerType] = useState('');
     const [othelloDifficulty, setOthelloDifficulty] = useState(constants
         .othelloAIDifficulties.Easy);
+
+    const [joiningId, setJoiningId] = useState('');
 
     const toggleRole = useCallback(role => {
         if (activeAvalonRoles.includes(role)) {
@@ -132,6 +134,7 @@ const Overview = props => {
             props.joinGameRequest(gameToJoin, gameModeToJoin);
         }
         setGameToJoin('');
+        setJoiningId(gameToJoin);
         // eslint-disable-next-line
     }, [gameToJoin, setGameToJoin, gameModeToJoin, gameModeToJoin])
     // ------------------------------------------------------------------------ //
@@ -175,38 +178,39 @@ const Overview = props => {
                 </div>
 
                 {props.allGames.map(game => (
-                    <div
-                        className={props.styles.gameWrapper}
-                        onClick={() => clickOnGameToJoin(game)}
-                        role="button"
-                        tabIndex={0}
-                        key={game.name}
-                    >
-                        <div className={props.styles.gameName}>
-                            <div className={props.styles.textWrapper}>
-                                <div>Name:</div>
-                                <div className={props.styles.textValue}>
-                                    {game.name}
-                                </div>
-                            </div>
-                            {game.currentPlayers && game.numberOfPlayers && (
+                    <LoadingDiv isMargin isLoading={game.id === joiningId} isBorderRadius>
+                        <div
+                            className={props.styles.gameWrapper}
+                            onClick={() => clickOnGameToJoin(game)}
+                            role="button"
+                            tabIndex={0}
+                            key={game.name}
+                        >
+                            <div className={props.styles.gameName}>
                                 <div className={props.styles.textWrapper}>
-                                    <div>Number of players:</div>
+                                    <div>Name:</div>
                                     <div className={props.styles.textValue}>
-                                        {`${game.currentPlayers.length}/${game.numberOfPlayers}`}
+                                        {game.name}
                                     </div>
                                 </div>
-                            )}
+                                {game.currentPlayers && game.numberOfPlayers && (
+                                    <div className={props.styles.textWrapper}>
+                                        <div>Number of players:</div>
+                                        <div className={props.styles.textValue}>
+                                            {`${game.currentPlayers.length}/${game.numberOfPlayers}`}
+                                        </div>
+                                    </div>
+                                )}
 
-                            <div className={props.styles.textWrapper}>
-                                <div>Game Mode:</div>
-                                <div className={props.styles.textValue}>
-                                    {game.mode}
+                                <div className={props.styles.textWrapper}>
+                                    <div>Game Mode:</div>
+                                    <div className={props.styles.textValue}>
+                                        {game.mode}
+                                    </div>
                                 </div>
-                            </div>
 
 
-                            {game.currentPlayers
+                                {game.currentPlayers
                         && (
                             <div className={props.styles.textWrapper}>
                                 <div>Current players:</div>
@@ -216,16 +220,17 @@ const Overview = props => {
                                 </div>
                             </div>
                         ) }
-                            {game.hasStarted && (
-                                <div className={props.styles.alreadyStarted}>
-                                    {game.status === constants.hitlerGameStatuses.Finished
+                                {game.hasStarted && (
+                                    <div className={props.styles.alreadyStarted}>
+                                        {game.status === constants.hitlerGameStatuses.Finished
                                     || game.hasFinished
-                                        ? 'Game has finished' : 'Game has already started'}
-                                </div>
-                            )}
+                                            ? 'Game has finished' : 'Game has already started'}
+                                    </div>
+                                )}
 
-                            {game.mode === constants.gameModes.Othello && game.opponentType
-                            === constants.othelloPlayerTypes.Computer && (
+                                {game.mode === constants.gameModes.Othello && game.opponentType
+                            === constants.othelloPlayerTypes.Computer
+                            && (
                                 <div className={props.styles.textWrapper}>
                                     <div className={props.styles.textValue}>
                                         Playing against AI
@@ -233,17 +238,19 @@ const Overview = props => {
                                 </div>
                             )}
 
-                            {game.mode === constants.gameModes.Othello && game.opponentType
+                                {game.mode === constants.gameModes.Othello && game.opponentType
                             === constants.othelloPlayerTypes.Human
-                            && game.currentPlayers.length === 1 && !game.hasFinished && (
+                            && game.currentPlayers.length === 1 && !game.hasFinished
+                            && (
                                 <div className={props.styles.textWrapper}>
                                     <div className={props.styles.textValue}>
                                         Looking for human opponent
                                     </div>
                                 </div>
                             )}
+                            </div>
                         </div>
-                    </div>
+                    </LoadingDiv>
                 ))}
 
                 <ConfirmModal
@@ -253,12 +260,6 @@ const Overview = props => {
                     isOpen={Boolean(gameToJoin)}
                     text="Are you sure you want to join this game?"
                 />
-
-                {props.joiningGame && (
-                    <div className={props.styles.joiningGame}>
-                        <Spinner color="secondary" />
-                    </div>
-                )}
 
             </div>
             <ErrorModal
@@ -275,7 +276,6 @@ const Overview = props => {
 Overview.defaultProps = {
     allGames: [],
     creatingGame: false,
-    joiningGame: false,
     styles: defaultStyles,
     errorHeader: '',
     errorMessage: '',
@@ -288,7 +288,6 @@ Overview.propTypes = {
     createGameRequest: PropTypes.func.isRequired,
     joinTeamMidgameRequest: PropTypes.func.isRequired,
     creatingGame: PropTypes.bool,
-    joiningGame: PropTypes.bool,
     joinGameRequest: PropTypes.func.isRequired,
     styles: PropTypes.objectOf(PropTypes.string),
     errorHeader: PropTypes.string,
@@ -306,7 +305,6 @@ const mapDispatchToProps = {
 const mapStateToProps = state => ({
     allGames: selectors.getGames(state),
     creatingGame: state.overview.creatingGame,
-    joiningGame: state.overview.joiningGame,
     errorHeader: state.avalon.errorHeader,
     errorMessage: state.avalon.errorMessage,
     errorCode: state.avalon.errorCode

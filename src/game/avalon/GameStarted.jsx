@@ -352,7 +352,7 @@ const GameStarted = props => {
             {props.currentGame.leader === props.auth.uid
             && props.currentGame.status === constants.avalonGameStatuses.Nominating
             && (
-                <LoadingDiv isMargin isLoading={hasSentNominations} isFitContent>
+                <LoadingDiv isMargin isLoading={hasSentNominations} isFitContent isRed isBorderRadius>
                     <div className={props.styles.confirmNominationWrapper}>
                         <StyledButton
                             text="Confirm Nominations"

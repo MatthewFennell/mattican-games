@@ -13,22 +13,26 @@ const LoadingDiv = props => (
     >
         <span className={classNames({
             [props.styles.firstSpan]: true,
-            [props.styles.firstSpanLoading]: props.isLoading
+            [props.styles.firstSpanLoading]: props.isLoading,
+            [props.styles.isRed]: props.isRed && props.isLoading
         })}
         />
         <span className={classNames({
             [props.styles.secondSpan]: true,
-            [props.styles.secondSpanLoading]: props.isLoading
+            [props.styles.secondSpanLoading]: props.isLoading,
+            [props.styles.isRed]: props.isRed && props.isLoading
         })}
         />
         <span className={classNames({
             [props.styles.thirdSpan]: true,
-            [props.styles.thirdSpanLoading]: props.isLoading
+            [props.styles.thirdSpanLoading]: props.isLoading,
+            [props.styles.isRed]: props.isRed && props.isLoading
         })}
         />
         <span className={classNames({
             [props.styles.fourthSpan]: true,
-            [props.styles.fourthSpanLoading]: props.isLoading
+            [props.styles.fourthSpanLoading]: props.isLoading,
+            [props.styles.isRed]: props.isRed && props.isLoading
         })}
         />
         {props.children}
@@ -42,6 +46,7 @@ LoadingDiv.defaultProps = {
     isFitContent: false,
     isLoading: false,
     isMargin: false,
+    isRed: false,
     styles: defaultStyles
 };
 
@@ -54,6 +59,7 @@ LoadingDiv.propTypes = {
     isFitContent: PropTypes.bool,
     isLoading: PropTypes.bool,
     isMargin: PropTypes.bool,
+    isRed: PropTypes.bool,
     styles: PropTypes.objectOf(PropTypes.string)
 };
 

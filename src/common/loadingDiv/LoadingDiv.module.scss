@@ -75,6 +75,10 @@
     animation-delay: 1s;
 }
 
+.isRed {
+  background: linear-gradient(to right,$color-light-gray,$color-red);
+}
+
   @keyframes animate1
   {
    0%

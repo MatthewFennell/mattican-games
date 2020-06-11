@@ -9,8 +9,8 @@ import TextInput from '../common/TextInput/TextInput';
 import Fade from '../common/Fade/Fade';
 import Switch from '../common/Switch/Switch';
 import * as constants from '../constants';
-import Spinner from '../common/spinner/Spinner';
 import { gameHasSetNumberOfPlayers } from '../game/helpers';
+import LoadingDiv from '../common/loadingDiv/LoadingDiv';
 
 export const shouldBeDisabled = (numberOfPlayers, activeAvalonRoles, role) => {
     if (numberOfPlayers > 6) {
@@ -30,9 +30,11 @@ export const shouldBeDisabled = (numberOfPlayers, activeAvalonRoles, role) => {
 
 const CreateGame = props => (
     <>
-        <div className={props.styles.createGameWrapper}>
-            <StyledButton text="Create Game" onClick={() => props.setMakingGame(true)} />
-        </div>
+        <LoadingDiv isLoading={props.creatingGame} isFitContent isBorderRadius isRed>
+            <div className={props.styles.createGameWrapper}>
+                <StyledButton text="Create Game" onClick={() => props.setMakingGame(true)} />
+            </div>
+        </LoadingDiv>
         <SuccessModal
             closeModal={() => props.setMakingGame(false)}
             isOpen={props.makingGame}
@@ -204,7 +206,6 @@ const CreateGame = props => (
                         onChange={props.setOthelloPlayerType}
                         title="Opponent Type"
                     />
-
                     <Fade checked={props.othelloPlayerType === constants.othelloPlayerTypes.Computer} label="Test">
                         <Dropdown
                             options={constants.othelloDifficulties.map(difficulty => ({
@@ -221,16 +222,13 @@ const CreateGame = props => (
             </Fade>
 
             <div className={props.styles.createGameWrapper}>
-                <StyledButton text="Create Game" onClick={props.createGame} />
+                <StyledButton
+                    text="Create Game"
+                    onClick={props.createGame}
+                    disabled={props.creatingGame}
+                />
             </div>
-
         </SuccessModal>
-
-        {props.creatingGame && (
-            <div className={props.styles.spinnerWrapper}>
-                <Spinner color="secondary" />
-            </div>
-        )}
     </>
 );
 
