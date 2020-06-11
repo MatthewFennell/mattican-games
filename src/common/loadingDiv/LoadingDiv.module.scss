@@ -30,7 +30,7 @@
   }
 
   .firstSpanLoading {
-    background: linear-gradient(to right,#0c002b,#1779ff);
+    background: linear-gradient(to right,$color-light-gray,#1779ff);
     animation: animate1 2s linear infinite;
   }
   
@@ -43,7 +43,7 @@
   }
 
   .secondSpanLoading {
-    background: linear-gradient(to bottom,#0c002b,#1779ff);
+    background: linear-gradient(to bottom,$color-light-gray,#1779ff);
     animation: animate2 2s linear infinite;
     animation-delay: 1s;
   }
@@ -57,7 +57,7 @@
   }
 
   .thirdSpanLoading {
-    background: linear-gradient(to left,#0c002b,#1779ff);
+    background: linear-gradient(to left,$color-light-gray,#1779ff);
     animation: animate3 2s linear infinite;
   }
   
@@ -70,13 +70,17 @@
   }
   
 .fourthSpanLoading {
-    background: linear-gradient(to top,#0c002b,#1779ff);
+    background: linear-gradient(to top,$color-light-gray,#1779ff);
     animation: animate4 2s linear infinite;
     animation-delay: 1s;
 }
 
 .isRed {
   background: linear-gradient(to right,$color-light-gray,$color-red);
+}
+
+.isBlack  {
+  background: linear-gradient(to right,$color-dark-gray,$color-black);
 }
 
   @keyframes animate1

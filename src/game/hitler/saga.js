@@ -132,9 +132,11 @@ export function* confirmKillPlayer(api, action) {
 
 export function* initiateVeto(api, action) {
     try {
+        yield put(actions.setHasRequestedVeto(true));
         yield call(api.initiateVeto, ({
             gameId: action.gameId
         }));
+        yield put(actions.setHasRequestedVeto(false));
     } catch (error) {
         yield put(commonActions.gameError(error, 'Request Veto error'));
     }
@@ -142,10 +144,12 @@ export function* initiateVeto(api, action) {
 
 export function* replyToVeto(api, action) {
     try {
+        yield put(actions.setHasRepliedToVeto(true));
         yield call(api.replyToVeto, ({
             gameId: action.gameId,
             isApprove: action.isApprove
         }));
+        yield put(actions.setHasRepliedToVeto(false));
     } catch (error) {
         yield put(commonActions.gameError(error, 'Reply to Veto error'));
     }

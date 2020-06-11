@@ -14,13 +14,13 @@ import {
     giveCardsToChancellorRequest, makeVoteRequest, playChancellorCardRequest,
     initiateVetoRequest, replyToVetoRequest
 } from './actions';
+import LoadingDiv from '../../common/loadingDiv/LoadingDiv';
 
 const CurrentGameStatus = props => {
     const [localVote, setLocalVote] = useState(false);
 
     const [confirmCardsDisabled, setConfirmCardsDisabled] = useState(false);
     const [confirmCardDisabled, setConfirmCardDisabled] = useState(false);
-
 
     const placeVote = useCallback(vote => {
         props.makeVoteRequest(props.currentGameId, vote);
@@ -104,7 +104,7 @@ const CurrentGameStatus = props => {
 
     const makeVetoRequest = useCallback(() => {
         props.initiateVetoRequest(props.currentGameId);
-        setSelectingVeto(false);
+        // setSelectingVeto(false);
         // eslint-disable-next-line
     }, [setSelectingVeto, props.currentGameId])
 
@@ -181,13 +181,15 @@ const CurrentGameStatus = props => {
                         </div>
                     ))}
                 </div>
-                <div className={props.styles.confirmChancellorCards}>
-                    <StyledButton
-                        onClick={giveCardsToChancellor}
-                        disabled={selectedPresidentCards.length < 2 || confirmCardsDisabled}
-                        text="Confirm cards"
-                    />
-                </div>
+                <LoadingDiv isFitContent isBorderRadius isLoading={confirmCardsDisabled} isBlack>
+                    <div className={props.styles.confirmChancellorCards}>
+                        <StyledButton
+                            onClick={giveCardsToChancellor}
+                            disabled={selectedPresidentCards.length < 2 || confirmCardsDisabled}
+                            text="Confirm cards"
+                        />
+                    </div>
+                </LoadingDiv>
             </div>
         );
     }
@@ -227,19 +229,21 @@ const CurrentGameStatus = props => {
                         label="Reply to Veto "
                     >
                         {props.currentGame.vetoRejected && <div>You have rejected this</div>}
-                        <div className={props.styles.confirmChancellorCards}>
-                            <StyledButton
-                                onClick={() => props.replyToVetoRequest(props.currentGameId, true)}
-                                text="Approve Veto"
-                                disabled={props.currentGame.vetoRejected}
-                            />
-                            <StyledButton
-                                onClick={() => props.replyToVetoRequest(props.currentGameId, false)}
-                                text="Reject Veto"
-                                color="secondary"
-                                disabled={props.currentGame.vetoRejected}
-                            />
-                        </div>
+                        <LoadingDiv isBlack isLoading={props.hasRepliedToVeto} isMargin>
+                            <div className={props.styles.confirmChancellorCards}>
+                                <StyledButton
+                                    onClick={() => props.replyToVetoRequest(props.currentGameId, true)}
+                                    text="Approve Veto"
+                                    disabled={props.currentGame.vetoRejected}
+                                />
+                                <StyledButton
+                                    onClick={() => props.replyToVetoRequest(props.currentGameId, false)}
+                                    text="Reject Veto"
+                                    color="secondary"
+                                    disabled={props.currentGame.vetoRejected}
+                                />
+                            </div>
+                        </LoadingDiv>
                     </Fade>
                 </div>
             );
@@ -281,14 +285,16 @@ const CurrentGameStatus = props => {
                             </div>
                         ))}
                     </div>
-                    <div className={props.styles.confirmChancellorCards}>
-                        <StyledButton
-                            onClick={playChancellorCard}
-                            disabled={(selectedChancellorCard !== 0
-                                    && selectedChancellorCard !== 1) || confirmCardDisabled}
-                            text="Confirm card"
-                        />
-                    </div>
+                    <LoadingDiv isFitContent isBorderRadius isLoading={confirmCardDisabled} isBlack>
+                        <div className={props.styles.confirmChancellorCards}>
+                            <StyledButton
+                                onClick={playChancellorCard}
+                                disabled={(selectedChancellorCard !== 0
+                                    && selectedChancellorCard !== 1) || confirmCardDisabled || props.currentGame.requestingVeto}
+                                text="Confirm card"
+                            />
+                        </div>
+                    </LoadingDiv>
                 </div>
                 {props.currentGame.numberFascistPlayed === 5
                 && !props.currentGame.vetoRejected && (
@@ -299,13 +305,15 @@ const CurrentGameStatus = props => {
                             includeCheckbox
                             label="Veto Power"
                         >
-                            <div className={props.styles.confirmChancellorCards}>
-                                <StyledButton
-                                    onClick={makeVetoRequest}
-                                    text="Request Veto"
-                                    disabled={props.currentGame.requestingVeto}
-                                />
-                            </div>
+                            <LoadingDiv isLoading={props.hasRequestedVeto} isFitContent isBlack isBorderRadius>
+                                <div className={props.styles.confirmChancellorCards}>
+                                    <StyledButton
+                                        onClick={makeVetoRequest}
+                                        text="Request Veto"
+                                        disabled={props.currentGame.requestingVeto}
+                                    />
+                                </div>
+                            </LoadingDiv>
                         </Fade>
                     </div>
                 )}
@@ -417,6 +425,8 @@ CurrentGameStatus.defaultProps = {
         vetoRejected: false
     },
     currentGameId: '',
+    hasRequestedVeto: false,
+    hasRepliedToVeto: false,
     hasLocalVoted: false,
     setHasLocalVoted: noop,
     styles: defaultStyles,
@@ -458,6 +468,8 @@ CurrentGameStatus.propTypes = {
         vetoRejected: PropTypes.bool
     }),
     currentGameId: PropTypes.string,
+    hasRequestedVeto: PropTypes.bool,
+    hasRepliedToVeto: PropTypes.bool,
     giveCardsToChancellorRequest: PropTypes.func.isRequired,
     hasLocalVoted: PropTypes.bool,
     initiateVetoRequest: PropTypes.func.isRequired,
@@ -477,6 +489,11 @@ const mapDispatchToProps = {
     replyToVetoRequest
 };
 
-export default connect(null, mapDispatchToProps)(CurrentGameStatus);
+const mapStateToProps = state => ({
+    hasRequestedVeto: state.hitler.hasRequestedVeto,
+    hasRepliedToVeto: state.hitler.hasRepliedToVeto
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(CurrentGameStatus);
 
 export { CurrentGameStatus as CurrentGameStatusUnconnected };

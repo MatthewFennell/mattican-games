@@ -16,6 +16,18 @@ export const REPLY_TO_VETO_REQUEST = `${pre}REPLY_TO_VETO_REQUEST`;
 export const CLOSE_LOOK_AT_TOP_THREE_REQUEST = `${pre}CLOSE_LOOK_AT_TOP_THREE_REQUEST`;
 export const EDIT_HITLER_GAME_REQUEST = `${pre}EDIT_HITLER_GAME_REQUEST`;
 export const CLOSE_LOOK_AT_INVESTIGATION_REQUEST = `${pre}CLOSE_LOOK_AT_INVESTIGATION_REQUEST`;
+export const SET_HAS_REQUESTED_VETO = `${pre}SET_HAS_REQUESTED_VETO`;
+export const SET_HAS_REPLIED_TO_VETO = `${pre}SET_HAS_REPLIED_TO_VETO`;
+
+export const setHasRequestedVeto = hasRequested => ({
+    type: SET_HAS_REQUESTED_VETO,
+    hasRequested
+});
+
+export const setHasRepliedToVeto = hasRequested => ({
+    type: SET_HAS_REPLIED_TO_VETO,
+    hasRequested
+});
 
 export const nominateChancellorRequest = (gameId, chancellor) => ({
     type: NOMINATE_CHANCELLOR_REQUEST,

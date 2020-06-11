@@ -160,6 +160,11 @@
     font-weight: bold;
 }
 
+.endGameButtons {
+    display: flex;
+    justify-content: space-evenly;
+}
+
 .confirmNominationWrapper {
     text-align: center;
 }

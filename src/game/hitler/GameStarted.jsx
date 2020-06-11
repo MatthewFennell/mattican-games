@@ -30,6 +30,7 @@ import {
     confirmInvesigationRequest, makeTemporaryPresidentRequest, confirmPresidentRequest,
     killPlayerRequest, confirmKillPlayerRequest, closeLookAtTopThreeRequest, closeLookAtInvestigationRequest
 } from './actions';
+import LoadingDiv from '../../common/loadingDiv/LoadingDiv';
 
 const playerIsBad = (player, roles) => {
     const role = fp.get('role')(roles.find(x => x.player === player));
@@ -55,14 +56,39 @@ const GameStarted = props => {
     const [showingHistory, setShowingHistory] = useState(false);
 
     const [hasLocalVoted, setHasLocalVoted] = useState(props.currentGame.votesFor.includes(props.auth.uid) || props.currentGame.votesAgainst.includes(props.auth.uid));
-
     const [localPlayerToKill, setLocalPlayerToKill] = useState(props.currentGame.playerToKill);
-
     const [localInvestigate, setLocalInvestigate] = useState(props.currentGame.playerToInvestigate);
-
     const [localTempPresident, setLocalTempPresident] = useState(props.currentGame.temporaryPresident);
-
     const [localChancellor, setLocalChancellor] = useState(props.currentGame.chancellor);
+    const [hasConfirmedNominations, setHasConfirmedNominations] = useState(false);
+    const [hasKilledPlayer, setHasKilledPlayer] = useState(false);
+    const [hasLeftOrDestroyedGame, setHasLeftOrDestroyedGame] = useState(false);
+    const [hasInvestigated, setHasInvestigated] = useState(false);
+    const [hasConfirmedPresident, setHasConfirmedPresident] = useState(false);
+
+    const destroyGame = useCallback(() => {
+        setHasLeftOrDestroyedGame(true);
+        props.destroyGameRequest(props.currentGameId);
+        // eslint-disable-next-line
+    }, [setHasLeftOrDestroyedGame, props.currentGameId])
+
+    const confirmPresident = useCallback(() => {
+        setHasConfirmedPresident(true);
+        props.confirmPresidentRequest(props.currentGameId, localTempPresident);
+        // eslint-disable-next-line
+    }, [setHasConfirmedPresident, props.currentGameId, localTempPresident]);
+
+    const confirmInvestigation = useCallback(() => {
+        setHasInvestigated(true);
+        props.confirmInvesigationRequest(props.currentGameId, localInvestigate);
+        // eslint-disable-next-line
+    }, [props.currentGameId, setHasInvestigated, localInvestigate])
+
+    const leaveGame = useCallback(() => {
+        setHasLeftOrDestroyedGame(true);
+        props.leaveGameRequest(props.currentGameId);
+        // eslint-disable-next-line
+    }, [setHasLeftOrDestroyedGame, props.currentGameId])
 
     const hasPlayerVoted = useCallback(player => {
         if (player === props.auth.uid) {
@@ -83,8 +109,9 @@ const GameStarted = props => {
 
     const submitNominations = useCallback(() => {
         props.confirmChancellorRequest(props.currentGameId, localChancellor);
+        setHasConfirmedNominations(true);
         // eslint-disable-next-line
-    }, [props.currentGame, localChancellor])
+    }, [props.currentGame, localChancellor, setHasConfirmedNominations])
 
     const generateHiddenInfo = () => {
         const items = props.currentGame.hiddenInfo.filter(x => x.president === props.auth.uid);
@@ -249,8 +276,15 @@ const GameStarted = props => {
         }
         if (props.currentGame.status === TemporaryPresident) {
             if (props.currentGame.temporaryPresident === props.auth.uid) {
-                setLocalChancellor(player);
-                props.nominateChancellorRequest(props.currentGameId, player);
+                if (canNominatePlayer(player)) {
+                    setLocalChancellor(player);
+                    props.nominateChancellorRequest(props.currentGameId, player);
+                } else {
+                    props.gameError({
+                        code: 'invalid-nomination',
+                        message: 'Invalid nomination target'
+                    }, 'Nominate error');
+                }
             }
         }
         if (props.currentGame.status === Kill) {
@@ -313,6 +347,7 @@ const GameStarted = props => {
                 }
             } else {
                 setLocalPlayerToKill('');
+                setHasKilledPlayer(false);
             }
         }, 5000);
         return () => clearInterval(interval);
@@ -320,7 +355,7 @@ const GameStarted = props => {
 
         // eslint-disable-next-line
     }, [props.currentGame.temporaryPresident, props.currentGame.president, props.auth.uid, localPlayerToKill,
-        props.currentGame.status, isPresident, props.currentGameId, setLocalPlayerToKill]);
+        props.currentGame.status, isPresident, props.currentGameId, setLocalPlayerToKill, setHasKilledPlayer]);
 
 
     useEffect(() => {
@@ -333,6 +368,7 @@ const GameStarted = props => {
                 }
             } else {
                 setLocalInvestigate('');
+                setHasInvestigated(false);
             }
         }, 5000);
         return () => clearInterval(interval);
@@ -340,7 +376,8 @@ const GameStarted = props => {
 
         // eslint-disable-next-line
         }, [props.currentGame.temporaryPresident, props.currentGame.president, props.auth.uid, localInvestigate,
-        props.currentGame.status, isPresident, props.currentGameId, setLocalInvestigate]);
+        props.currentGame.status, isPresident, props.currentGameId, setLocalInvestigate,
+        setHasInvestigated]);
 
 
     useEffect(() => {
@@ -387,13 +424,16 @@ const GameStarted = props => {
     useEffect(() => {
         if (props.auth.uid !== props.currentGame.president) {
             setLocalChancellor('');
+            setHasConfirmedNominations(false);
         }
-    }, [props.currentGame.president, props.currentGame.temporaryPresident, props.auth.uid]);
+    }, [props.currentGame.president, props.currentGame.temporaryPresident, props.auth.uid,
+        setHasConfirmedNominations]);
 
     const confirmKillPlayer = useCallback(() => {
         props.confirmKillPlayerRequest(props.currentGameId, localPlayerToKill);
+        setHasKilledPlayer(true);
         // eslint-disable-next-line
-    }, [props.auth.uid, props.currentGameId, localPlayerToKill]);
+    }, [props.auth.uid, props.currentGameId, localPlayerToKill, setHasKilledPlayer]);
 
     return (
         <>
@@ -424,9 +464,8 @@ const GameStarted = props => {
                                     || (shouldShowChancellor(player)
                                         && props.currentGame.status === TemporaryPresident),
                                 [props.styles.isActivePlayer]: (player === props.currentGame.president
-                            && props.currentGame.status !== TemporaryPresident)
-                             || (props.currentGame.status === TemporaryPresident
-                                && player === props.currentGame.temporaryPresident),
+                            && !props.currentGame.temporaryPresident)
+                             || (player === props.currentGame.temporaryPresident),
                                 [props.styles.activeChancellor]: (props.currentGame.status
                                 === PresidentDecidingCards
                                 || props.currentGame.status === ChancellorDecidingCards)
@@ -516,66 +555,83 @@ const GameStarted = props => {
              || (props.currentGame.temporaryPresident === props.auth.uid
             && props.currentGame.status === TemporaryPresident))
             && (
-                <div className={props.styles.confirmNominationWrapper}>
-                    <StyledButton
-                        text="Confirm Nomination"
-                        onClick={submitNominations}
-                        disabled={!localChancellor}
-                    />
-                </div>
+                <LoadingDiv isLoading={hasConfirmedNominations} isFitContent isBorderRadius isRed isMargin>
+                    <div className={props.styles.confirmNominationWrapper}>
+                        <StyledButton
+                            text="Confirm Nomination"
+                            onClick={submitNominations}
+                            disabled={!localChancellor || hasConfirmedNominations}
+                        />
+                    </div>
+                </LoadingDiv>
             ) }
 
                 {props.currentGame.president === props.auth.uid
             && props.currentGame.status === Transfer
             && (
-                <div className={props.styles.confirmNominationWrapper}>
-                    <StyledButton
-                        text="Confirm President"
-                        onClick={() => props.confirmPresidentRequest(props.currentGameId, localTempPresident)}
-                        disabled={!localTempPresident}
-                    />
-                </div>
+                <LoadingDiv isRed isMargin isFitContent isLoading={hasConfirmedPresident}>
+                    <div className={props.styles.confirmNominationWrapper}>
+                        <StyledButton
+                            text="Confirm President"
+                            onClick={confirmPresident}
+                            disabled={!localTempPresident || hasConfirmedPresident}
+                        />
+                    </div>
+                </LoadingDiv>
             ) }
 
                 {props.currentGame.president === props.auth.uid
             && props.currentGame.status === Investigate
             && (
-                <div className={props.styles.confirmNominationWrapper}>
-                    <StyledButton
-                        text="Confirm Investigation"
-                        onClick={() => props.confirmInvesigationRequest(props.currentGameId, localInvestigate)}
-                        disabled={!localInvestigate}
-                    />
-                </div>
+                <LoadingDiv isLoading={hasInvestigated} isMargin isFitContent isRed isBorderRadius>
+                    <div className={props.styles.confirmNominationWrapper}>
+                        <StyledButton
+                            text="Confirm Investigation"
+                            onClick={confirmInvestigation}
+                            disabled={!localInvestigate || hasInvestigated}
+                        />
+                    </div>
+                </LoadingDiv>
             ) }
 
                 {((props.currentGame.president === props.auth.uid
             && props.currentGame.status === Kill && !props.currentGame.temporaryPresident)
             || (props.currentGame.temporaryPresident === props.auth.uid && props.currentGame.status === Kill))
             && (
-                <div className={props.styles.confirmNominationWrapper}>
-                    <StyledButton
-                        text="Confirm Kill"
-                        onClick={confirmKillPlayer}
-                        disabled={!localPlayerToKill}
-                    />
-                </div>
+                <LoadingDiv isLoading={hasKilledPlayer} isMargin isFitContent isRed>
+                    <div className={props.styles.confirmNominationWrapper}>
+                        <StyledButton
+                            text="Confirm Kill"
+                            onClick={confirmKillPlayer}
+                            disabled={!localPlayerToKill || hasKilledPlayer}
+                        />
+                    </div>
+                </LoadingDiv>
             ) }
 
                 {props.currentGame.status === Finished && (
-                    <div className={props.styles.leaveGameButton}>
-                        <StyledButton text="Leave Game" color="secondary" onClick={() => props.leaveGameRequest(props.currentGameId)} />
-                    </div>
-                )}
-
-                {props.currentGame.status === Finished && props.currentGame.host === props.auth.uid && (
-                    <div className={props.styles.destroyGameButton}>
-                        <StyledButton
-                            text="Destroy Game"
-                            color="secondary"
-                            onClick={() => props.destroyGameRequest(props.currentGameId)}
-                        />
-                    </div>
+                    <LoadingDiv isLoading={hasLeftOrDestroyedGame} isMargin>
+                        <div className={props.styles.endGameButtons}>
+                            {props.currentGame.host === props.auth.uid && (
+                                <div className={props.styles.destroyGameButton}>
+                                    <StyledButton
+                                        text="Destroy Game"
+                                        color="secondary"
+                                        onClick={destroyGame}
+                                        disabled={hasLeftOrDestroyedGame}
+                                    />
+                                </div>
+                            )}
+                            <div className={props.styles.leaveGameButton}>
+                                <StyledButton
+                                    text="Leave Game"
+                                    color="secondary"
+                                    onClick={leaveGame}
+                                    disabled={hasLeftOrDestroyedGame}
+                                />
+                            </div>
+                        </div>
+                    </LoadingDiv>
                 )}
 
                 <div className={props.styles.toggleWrappers}>

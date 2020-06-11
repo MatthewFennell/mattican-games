@@ -14,25 +14,29 @@ const LoadingDiv = props => (
         <span className={classNames({
             [props.styles.firstSpan]: true,
             [props.styles.firstSpanLoading]: props.isLoading,
-            [props.styles.isRed]: props.isRed && props.isLoading
+            [props.styles.isRed]: props.isRed && props.isLoading,
+            [props.styles.isBlack]: props.isBlack && props.isLoading
         })}
         />
         <span className={classNames({
             [props.styles.secondSpan]: true,
             [props.styles.secondSpanLoading]: props.isLoading,
-            [props.styles.isRed]: props.isRed && props.isLoading
+            [props.styles.isRed]: props.isRed && props.isLoading,
+            [props.styles.isBlack]: props.isBlack && props.isLoading
         })}
         />
         <span className={classNames({
             [props.styles.thirdSpan]: true,
             [props.styles.thirdSpanLoading]: props.isLoading,
-            [props.styles.isRed]: props.isRed && props.isLoading
+            [props.styles.isRed]: props.isRed && props.isLoading,
+            [props.styles.isBlack]: props.isBlack && props.isLoading
         })}
         />
         <span className={classNames({
             [props.styles.fourthSpan]: true,
             [props.styles.fourthSpanLoading]: props.isLoading,
-            [props.styles.isRed]: props.isRed && props.isLoading
+            [props.styles.isRed]: props.isRed && props.isLoading,
+            [props.styles.isBlack]: props.isBlack && props.isLoading
         })}
         />
         {props.children}
@@ -42,6 +46,7 @@ const LoadingDiv = props => (
 
 LoadingDiv.defaultProps = {
     children: null,
+    isBlack: false,
     isBorderRadius: false,
     isFitContent: false,
     isLoading: false,
@@ -55,6 +60,7 @@ LoadingDiv.propTypes = {
         PropTypes.arrayOf(PropTypes.node),
         PropTypes.node
     ]),
+    isBlack: PropTypes.bool,
     isBorderRadius: PropTypes.bool,
     isFitContent: PropTypes.bool,
     isLoading: PropTypes.bool,
