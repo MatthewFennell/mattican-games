@@ -144,7 +144,7 @@ exports.nominateChancellor = functions
             }
             if (doc.data().status !== constants.hitlerGameStatuses.Nominating
             && doc.data().status !== constants.hitlerGameStatuses.TemporaryPresident) {
-                throw new functions.https.HttpsError('invalid-argument', 'We are not nominating currently');
+                return Promise.resolve();
             }
 
             if (context.auth.uid !== doc.data().president
@@ -693,7 +693,7 @@ exports.investigatePlayer = functions
                 throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
             }
             if (context.auth.uid !== doc.data().president) {
-                throw new functions.https.HttpsError('invalid-argument', 'You are not the President');
+                return Promise.resolve();
             }
             if (doc.data().status !== constants.hitlerGameStatuses.Investigate) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not investigating currently');
@@ -792,7 +792,7 @@ exports.temporaryPresident = functions
                 throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
             }
             if (context.auth.uid !== doc.data().president) {
-                throw new functions.https.HttpsError('invalid-argument', 'You are not the President');
+                return Promise.resolve();
             }
             if (doc.data().status !== constants.hitlerGameStatuses.Transfer) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not selecting that currently');
@@ -821,7 +821,7 @@ exports.confirmTemporaryPresident = functions
             if (context.auth.uid !== doc.data().president) {
                 throw new functions.https.HttpsError('invalid-argument', 'You are not the President');
             }
-            if (doc.data().status !== constants.hitlerGameStatuses.Investigate) {
+            if (doc.data().status !== constants.hitlerGameStatuses.Transfer) {
                 throw new functions.https.HttpsError('invalid-argument', 'We are not selecting that currently');
             }
 
@@ -937,6 +937,7 @@ exports.confirmKillPlayer = functions
             }
 
             return doc.ref.update({
+                chancellor: '',
                 deadPlayers: operations.arrayUnion(playerToKill),
                 playerToKill: '',
                 status: constants.hitlerGameStatuses.Nominating,

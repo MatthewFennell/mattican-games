@@ -327,11 +327,12 @@ const GameStarted = props => {
     }, [props.currentGame.president, localInvestigate, props.auth.uid, props.currentGame.playerToInvestigate]);
 
     const isTemporaryPresident = useCallback(player => {
-        if (props.currentGame.president === props.auth.uid) {
+        if (props.currentGame.president === props.auth.uid && props.currentGame.status === Transfer) {
             return localTempPresident === player;
         }
         return props.currentGame.temporaryPresident === player;
-    }, [props.currentGame.president, props.auth.uid, localTempPresident, props.currentGame.temporaryPresident]);
+    }, [props.currentGame.president, props.auth.uid, localTempPresident, props.currentGame.temporaryPresident,
+        props.currentGame.status, Transfer]);
 
     useEffect(() => {
         setHasLocalVoted(false);
@@ -384,7 +385,7 @@ const GameStarted = props => {
         const interval = setInterval(() => {
             if (props.currentGame.status === TemporaryPresident) {
                 if (props.currentGame.temporaryPresident === props.auth.uid && localChancellor) {
-                    if (props.currentGame.chancellor !== localChancellor) {
+                    if (canNominatePlayer(localChancellor)) {
                         props.nominateChancellorRequest(props.currentGameId, localChancellor);
                     }
                 }
@@ -392,11 +393,13 @@ const GameStarted = props => {
             if (props.currentGame.status === Nominating) {
                 if (props.currentGame.president === props.auth.uid && localChancellor) {
                     if (props.currentGame.chancellor !== localChancellor) {
-                        props.nominateChancellorRequest(props.currentGameId, localChancellor);
+                        if (canNominatePlayer(localChancellor)) {
+                            props.nominateChancellorRequest(props.currentGameId, localChancellor);
+                        }
                     }
                 }
             }
-        }, 2000);
+        }, 5000);
         return () => clearInterval(interval);
 
         // eslint-disable-next-line
@@ -428,6 +431,12 @@ const GameStarted = props => {
         }
     }, [props.currentGame.president, props.currentGame.temporaryPresident, props.auth.uid,
         setHasConfirmedNominations]);
+
+    useEffect(() => {
+        setLocalChancellor('');
+        setHasConfirmedNominations(false);
+    }, [props.currentGame.numberFascistPlayed, props.currentGame.numberLiberalPlayed,
+        setLocalChancellor, setHasConfirmedNominations]);
 
     const confirmKillPlayer = useCallback(() => {
         props.confirmKillPlayerRequest(props.currentGameId, localPlayerToKill);
@@ -465,7 +474,7 @@ const GameStarted = props => {
                                         && props.currentGame.status === TemporaryPresident),
                                 [props.styles.isActivePlayer]: (player === props.currentGame.president
                             && !props.currentGame.temporaryPresident)
-                             || (player === props.currentGame.temporaryPresident),
+                             || (isTemporaryPresident(player)),
                                 [props.styles.activeChancellor]: (props.currentGame.status
                                 === PresidentDecidingCards
                                 || props.currentGame.status === ChancellorDecidingCards)
@@ -569,7 +578,7 @@ const GameStarted = props => {
                 {props.currentGame.president === props.auth.uid
             && props.currentGame.status === Transfer
             && (
-                <LoadingDiv isRed isMargin isFitContent isLoading={hasConfirmedPresident}>
+                <LoadingDiv isRed isMargin isFitContent isLoading={hasConfirmedPresident} isBorderRadius>
                     <div className={props.styles.confirmNominationWrapper}>
                         <StyledButton
                             text="Confirm President"
@@ -598,7 +607,7 @@ const GameStarted = props => {
             && props.currentGame.status === Kill && !props.currentGame.temporaryPresident)
             || (props.currentGame.temporaryPresident === props.auth.uid && props.currentGame.status === Kill))
             && (
-                <LoadingDiv isLoading={hasKilledPlayer} isMargin isFitContent isRed>
+                <LoadingDiv isLoading={hasKilledPlayer} isMargin isFitContent isRed isBorderRadius>
                     <div className={props.styles.confirmNominationWrapper}>
                         <StyledButton
                             text="Confirm Kill"
@@ -610,7 +619,7 @@ const GameStarted = props => {
             ) }
 
                 {props.currentGame.status === Finished && (
-                    <LoadingDiv isLoading={hasLeftOrDestroyedGame} isMargin>
+                    <LoadingDiv isLoading={hasLeftOrDestroyedGame} isMargin isBorderRadius>
                         <div className={props.styles.endGameButtons}>
                             {props.currentGame.host === props.auth.uid && (
                                 <div className={props.styles.destroyGameButton}>
