@@ -34,7 +34,6 @@ const CurrentGameStatus = props => {
 
     const [selectedChancellorCard, setSelectedChancellorCard] = useState('');
 
-
     const [selectingVeto, setSelectingVeto] = useState(false);
     const [replyingToVeto, setReplyingToVeto] = useState(false);
 
@@ -118,6 +117,11 @@ const CurrentGameStatus = props => {
         setConfirmCardsDisabled]);
 
 
+    useEffect(() => {
+        setSelectedPresidentCards([]);
+    }, [props.currentGame.numberFascistPlayed, props.currentGame.numberLiberalPlayed,
+        setSelectedPresidentCards]);
+
     if (props.currentGame.status === constants.hitlerGameStatuses.Nominating) {
         return (
             <div className={props.styles.nominating}>
@@ -194,12 +198,19 @@ const CurrentGameStatus = props => {
         );
     }
 
+    const getPlayerElecting = () => {
+        if (props.currentGame.temporaryPresident) {
+            return helpers.mapUserIdToName(props.users, props.currentGame.temporaryPresident);
+        }
+        return helpers.mapUserIdToName(props.users, props.currentGame.president);
+    };
+
     if (props.currentGame.status === constants.hitlerGameStatuses.Voting
         && !props.currentGame.deadPlayers.includes(props.auth.uid)) {
         return (
             <div className={props.styles.votingWrapper}>
                 <div>
-                    {`${helpers.mapUserIdToName(props.users, props.currentGame.president)} is electing ${
+                    {`${getPlayerElecting()} is electing ${
                         helpers.mapUserIdToName(props.users, props.currentGame.chancellor)}` }
                 </div>
                 <div className={props.styles.votingButtons}>
@@ -229,18 +240,18 @@ const CurrentGameStatus = props => {
                         label="Reply to Veto "
                     >
                         {props.currentGame.vetoRejected && <div>You have rejected this</div>}
-                        <LoadingDiv isBlack isLoading={props.hasRepliedToVeto} isMargin>
+                        <LoadingDiv isBlack isLoading={props.hasRepliedToVeto} isMargin isBorderRadius>
                             <div className={props.styles.confirmChancellorCards}>
                                 <StyledButton
                                     onClick={() => props.replyToVetoRequest(props.currentGameId, true)}
                                     text="Approve Veto"
-                                    disabled={props.currentGame.vetoRejected}
+                                    disabled={props.currentGame.vetoRejected || props.hasRepliedToVeto}
                                 />
                                 <StyledButton
                                     onClick={() => props.replyToVetoRequest(props.currentGameId, false)}
                                     text="Reject Veto"
                                     color="secondary"
-                                    disabled={props.currentGame.vetoRejected}
+                                    disabled={props.currentGame.vetoRejected || props.hasRepliedToVeto}
                                 />
                             </div>
                         </LoadingDiv>
