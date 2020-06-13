@@ -865,7 +865,7 @@ exports.killPlayer = functions
                 return Promise.resolve();
             }
             if (doc.data().status !== constants.hitlerGameStatuses.Kill) {
-                throw new functions.https.HttpsError('invalid-argument', 'We are not killing currently');
+                return Promise.resolve();
             }
 
             if (!data.player) {

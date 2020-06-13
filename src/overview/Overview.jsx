@@ -178,7 +178,13 @@ const Overview = props => {
                 </div>
 
                 {props.allGames.map(game => (
-                    <LoadingDiv isMargin isLoading={game.id === joiningId} isBorderRadius isBlack>
+                    <LoadingDiv
+                        isMargin
+                        isLoading={game.id === joiningId}
+                        isBorderRadius
+                        isBlack
+                        key={game.name}
+                    >
                         <div
                             className={props.styles.gameWrapper}
                             onClick={() => clickOnGameToJoin(game)}

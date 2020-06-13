@@ -473,7 +473,7 @@ const GameStarted = props => {
                                     || (shouldShowChancellor(player)
                                         && props.currentGame.status === TemporaryPresident),
                                 [props.styles.isActivePlayer]: (player === props.currentGame.president
-                            && !props.currentGame.temporaryPresident)
+                            && !props.currentGame.temporaryPresident && !localTempPresident)
                              || (isTemporaryPresident(player)),
                                 [props.styles.activeChancellor]: (props.currentGame.status
                                 === PresidentDecidingCards
