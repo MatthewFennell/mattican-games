@@ -29,7 +29,7 @@ const PreboardLogic = props => {
     }, [hoverX, hoverY, props.currentGame]);
 
     return (
-        <LoadingDiv isLoading={props.generatingMove}>
+        <LoadingDiv isLoading={props.generatingMove} isBorderRadius>
             <Board
                 availableMoves={queries.getAvailableMoves(props.currentGame.board,
                     props.currentGame.activePlayer)}

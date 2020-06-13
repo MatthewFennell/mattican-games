@@ -435,8 +435,11 @@ const GameStarted = props => {
     useEffect(() => {
         setLocalChancellor('');
         setHasConfirmedNominations(false);
+        setLocalPlayerToKill('');
+        setHasKilledPlayer(false);
     }, [props.currentGame.numberFascistPlayed, props.currentGame.numberLiberalPlayed,
-        setLocalChancellor, setHasConfirmedNominations]);
+        setLocalChancellor, setHasConfirmedNominations, setLocalPlayerToKill, setHasKilledPlayer
+    ]);
 
     const confirmKillPlayer = useCallback(() => {
         props.confirmKillPlayerRequest(props.currentGameId, localPlayerToKill);

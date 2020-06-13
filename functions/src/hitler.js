@@ -795,7 +795,7 @@ exports.temporaryPresident = functions
                 return Promise.resolve();
             }
             if (doc.data().status !== constants.hitlerGameStatuses.Transfer) {
-                throw new functions.https.HttpsError('invalid-argument', 'We are not selecting that currently');
+                return Promise.resolve();
             }
             if (context.auth.uid === data.player) {
                 throw new functions.https.HttpsError('invalid-argument', 'Cannot select yourself');

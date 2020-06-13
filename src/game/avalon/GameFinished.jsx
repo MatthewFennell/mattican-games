@@ -120,7 +120,7 @@ GameFinished.propTypes = {
         status: PropTypes.string
     }),
     styles: PropTypes.objectOf(PropTypes.string),
-    users: PropTypes.objectOf(PropTypes.shape({}))
+    users: PropTypes.shape({})
 };
 
 export default GameFinished;
