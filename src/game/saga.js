@@ -4,7 +4,6 @@ import {
 import * as actions from './actions';
 import * as gameApi from './api';
 import * as constants from '../constants';
-import * as whoInHatActions from './whoInHat/actions';
 
 export function* leaveGame(api, action) {
     try {
@@ -83,12 +82,12 @@ export function* editDisplayName(api, action) {
 
 export function* addTeam(api, action) {
     try {
-        yield put(whoInHatActions.setIsAddingTeam(true));
+        yield put(actions.setIsAddingTeam(true));
         yield call(api.addTeam, ({
             gameId: action.gameId,
             teamName: action.teamName
         }));
-        yield put(whoInHatActions.setIsAddingTeam(false));
+        yield put(actions.setIsAddingTeam(false));
     } catch (error) {
         yield put(actions.gameError(error, 'Add Team error'));
     }
@@ -173,12 +172,12 @@ export function* joinTeamMidgame(api, action) {
 
 export function* randomiseTeams(api, action) {
     try {
-        yield put(whoInHatActions.setIsRandomisingTeams(true));
+        yield put(actions.setIsRandomisingTeams(true));
         yield call(api.randomiseTeams, ({
             gameId: action.gameId,
             numberOfTeams: action.numberOfTeams
         }));
-        yield put(whoInHatActions.setIsRandomisingTeams(false));
+        yield put(actions.setIsRandomisingTeams(false));
     } catch (error) {
         yield put(actions.gameError(error, 'Randomise Teams error'));
     }

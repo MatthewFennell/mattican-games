@@ -6,18 +6,6 @@ export const START_WHO_IN_HAT_ROUND_REQUEST = `${pre}START_WHO_IN_HAT_ROUND_REQU
 export const EDIT_WHO_IN_HAT_GAME_REQUEST = `${pre}EDIT_WHO_IN_HAT_GAME_REQUEST`;
 export const LOAD_SCORE_SUMMARY_REQUEST = `${pre}LOAD_SCORE_SUMMARY_REQUEST`;
 export const CONFIRM_SCORE_REQUEST = `${pre}CONFIRM_SCORE_REQUEST`;
-export const SET_IS_RANDOMISING_TEAMS = `${pre}SET_IS_RANDOMISING_TEAMS`;
-export const SET_IS_ADDING_TEAM = `${pre}SET_IS_ADDING_TEAM`;
-
-export const setIsAddingTeam = isAdding => ({
-    type: SET_IS_ADDING_TEAM,
-    isAdding
-});
-
-export const setIsRandomisingTeams = isRandomising => ({
-    type: SET_IS_RANDOMISING_TEAMS,
-    isRandomising
-});
 
 export const addWordRequest = (gameId, word) => ({
     type: ADD_WORD_REQUEST,

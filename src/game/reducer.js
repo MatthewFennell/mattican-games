@@ -8,7 +8,10 @@ export const initialState = {
 
     haveClosedPeekModal: false,
     haveClosedFirstInvestigation: false,
-    haveClosedSecondInvestigation: false
+    haveClosedSecondInvestigation: false,
+
+    isAddingTeam: false,
+    isRandomisingTeams: false
 };
 
 const overviewReducer = (state = initialState, action) => {
@@ -40,6 +43,18 @@ const overviewReducer = (state = initialState, action) => {
             ...state,
             haveClosedFirstInvestigation: action.isFirst,
             haveClosedSecondInvestigation: !action.isFirst
+        };
+    }
+    case actions.SET_IS_RANDOMISING_TEAMS: {
+        return {
+            ...state,
+            isRandomisingTeams: action.isRandomising
+        };
+    }
+    case actions.SET_IS_ADDING_TEAM: {
+        return {
+            ...state,
+            isAddingTeam: action.isAdding
         };
     }
     default:

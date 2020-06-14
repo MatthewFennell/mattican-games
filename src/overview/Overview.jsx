@@ -312,9 +312,9 @@ const mapDispatchToProps = {
 const mapStateToProps = state => ({
     allGames: selectors.getGames(state),
     creatingGame: state.overview.creatingGame,
-    errorHeader: state.avalon.errorHeader,
-    errorMessage: state.avalon.errorMessage,
-    errorCode: state.avalon.errorCode
+    errorHeader: state.game.errorHeader,
+    errorMessage: state.game.errorMessage,
+    errorCode: state.game.errorCode
 });
 
 export default compose(

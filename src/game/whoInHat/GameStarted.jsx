@@ -193,11 +193,6 @@ const mapDispatchToProps = {
     trashWordRequest
 };
 
-const mapStateToProps = state => ({
-    isAddingTeam: state.whoInHat.isAddingTeam,
-    isRandomisingTeams: state.whoInHat.isRandomisingTeams
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(GameStarted);
+export default connect(null, mapDispatchToProps)(GameStarted);
 
 export { GameStarted as GameStartedUnconnected };

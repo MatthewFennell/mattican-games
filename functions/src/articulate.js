@@ -264,8 +264,10 @@ exports.confirmScore = functions
                 throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
             }
 
+            const confirmedWords = data.confirmedWords || [];
+
             const {
-                activeCategory, activeTeam, teams, confirmedWords, words, skippedWords, trashedWords, temporaryTeam,
+                activeCategory, activeTeam, teams, words, skippedWords, trashedWords, temporaryTeam,
                 scoreCap
             } = doc.data();
 

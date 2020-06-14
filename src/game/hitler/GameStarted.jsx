@@ -873,9 +873,9 @@ const mapDispatchToProps = {
 };
 
 const mapStateToProps = state => ({
-    haveClosedPeekModal: state.avalon.haveClosedPeekModal,
-    haveClosedFirstInvestigation: state.avalon.haveClosedFirstInvestigation,
-    haveClosedSecondInvestigation: state.avalon.haveClosedSecondInvestigation
+    haveClosedPeekModal: state.game.haveClosedPeekModal,
+    haveClosedFirstInvestigation: state.game.haveClosedFirstInvestigation,
+    haveClosedSecondInvestigation: state.game.haveClosedSecondInvestigation
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GameStarted);

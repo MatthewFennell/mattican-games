@@ -6,19 +6,29 @@ import * as helpers from '../../helpers';
 import TeamsAndScore from '../../common/TeamsAndScore';
 import Fade from '../../../common/Fade/Fade';
 import StyledButton from '../../../common/StyledButton/StyledButton';
+import LoadingDiv from '../../../common/loadingDiv/LoadingDiv';
 
 const PrepareToGuess = props => {
+    const { currentGameId, startRoundRequest } = props;
+
     const [viewingTeams, setViewingTeams] = useState(false);
     const toggleViewingTeams = useCallback(() => {
         setViewingTeams(!viewingTeams);
     }, [viewingTeams, setViewingTeams]);
+
+    const [isStartingRound, setIsStartingRound] = useState(false);
+
+    const startRound = useCallback(() => {
+        setIsStartingRound(true);
+        startRoundRequest(currentGameId);
+    }, [startRoundRequest, currentGameId, setIsStartingRound]);
 
     return (
         <>
             <div className={props.styles.roundInfoWrapper}>
                 {props.currentGame.isSpadeRound || props.currentGame.isFinalRound ? (
                     <div className={props.styles.teamText}>
-                        {'All teams play this round!'}
+                        All teams play this round!
                     </div>
                 )
                     : (
@@ -37,7 +47,7 @@ const PrepareToGuess = props => {
                 </div>
                 {props.currentGame.temporaryTeam && (
                     <div className={props.styles.bonusRound}>
-                        {'Bonus round'}
+                        Bonus round
                     </div>
                 )}
                 {props.auth.uid !== props.currentGame.activeExplainer
@@ -54,14 +64,15 @@ const PrepareToGuess = props => {
 
                 <div className={props.styles.buttonsWrapper}>
                     {props.auth.uid === props.currentGame.activeExplainer && (
-                        <div className={props.styles.startRoundButton}>
-                            <StyledButton
-                                onClick={() => props.startRoundRequest(
-                                    props.currentGameId
-                                )}
-                                text="Start round"
-                            />
-                        </div>
+                        <LoadingDiv isLoading={isStartingRound} isFitContent isBorderRadius isBlack>
+                            <div className={props.styles.startRoundButton}>
+                                <StyledButton
+                                    onClick={startRound}
+                                    text="Start round"
+                                    disabled={isStartingRound}
+                                />
+                            </div>
+                        </LoadingDiv>
                     )}
                 </div>
             </div>

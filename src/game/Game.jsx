@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -58,6 +59,8 @@ const Game = props => {
                     auth={props.auth}
                     currentGame={props.currentGame}
                     currentGameId={props.currentGameId}
+                    isAddingTeam={props.isAddingTeam}
+                    isRandomisingTeams={props.isRandomisingTeams}
                     users={props.users}
                 />
             );
@@ -69,6 +72,8 @@ const Game = props => {
                     auth={props.auth}
                     currentGame={props.currentGame}
                     currentGameId={props.currentGameId}
+                    isAddingTeam={props.isAddingTeam}
+                    isRandomisingTeams={props.isRandomisingTeams}
                     users={props.users}
                 />
             );
@@ -148,9 +153,13 @@ const mapDispatchToProps = {
 
 const mapStateToProps = (state, props) => ({
     currentGame: selectors.getCurrentGame(state, props),
-    errorHeader: state.avalon.errorHeader,
-    errorMessage: state.avalon.errorMessage,
-    errorCode: state.avalon.errorCode,
+    errorHeader: state.game.errorHeader,
+    errorMessage: state.game.errorMessage,
+    errorCode: state.game.errorCode,
+
+
+    isAddingTeam: state.game.isAddingTeam,
+    isRandomisingTeams: state.game.isRandomisingTeams,
 
     auth: state.firebase.auth,
     currentGameId: selectors.getGameId(props),
