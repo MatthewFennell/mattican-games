@@ -182,6 +182,7 @@ const Overview = props => {
                         isMargin
                         isLoading={game.id === joiningId}
                         isBorderRadius
+                        isNoPadding
                         isBlack
                         key={game.name}
                     >

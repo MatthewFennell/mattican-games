@@ -10,6 +10,7 @@ import profileReducer from './profile/reducer';
 import avalon from './game/reducer';
 import othello from './game/othello/reducer';
 import hitler from './game/hitler/reducer';
+import whoInHat from './game/whoInHat/reducer';
 
 const appReducer = history => combineReducers({
     admin: adminReducer,
@@ -17,6 +18,7 @@ const appReducer = history => combineReducers({
     avalon,
     othello,
     hitler,
+    whoInHat,
     firestore: firestoreReducer,
     firebase: firebaseReducer,
     overview: overviewReducer,

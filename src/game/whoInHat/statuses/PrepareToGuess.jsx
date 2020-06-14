@@ -8,6 +8,7 @@ import Fade from '../../../common/Fade/Fade';
 import StyledButton from '../../../common/StyledButton/StyledButton';
 import { remainingCards } from './Guessing';
 import JoinTeamModal from '../../common/JoinTeamModal';
+import LoadingDiv from '../../../common/loadingDiv/LoadingDiv';
 
 const teamHasOnlyMe = (game, myId) => {
     if (!game || !game.teams) {
@@ -21,6 +22,8 @@ const teamHasOnlyMe = (game, myId) => {
 };
 
 const PrepareToGuess = props => {
+    const { currentGameId, joinTeamMidgameRequest, startWhoInHatRoundRequest } = props;
+
     const [viewingTeams, setViewingTeams] = useState(false);
     const toggleViewingTeams = useCallback(() => {
         setViewingTeams(!viewingTeams);
@@ -30,11 +33,17 @@ const PrepareToGuess = props => {
     const [teamToJoin, setTeamToJoin] = useState('');
 
     const joinTeam = useCallback(() => {
-        props.joinTeamMidgameRequest(props.currentGameId, teamToJoin);
+        joinTeamMidgameRequest(props.currentGameId, teamToJoin);
         setJoiningNewTeam(false);
         setTeamToJoin('');
-        // eslint-disable-next-line
-    }, [teamToJoin, props.joinTeamMidgameRequest, props.currentGameId])
+    }, [teamToJoin, joinTeamMidgameRequest, props.currentGameId]);
+
+    const [isStartingRound, setStartingRound] = useState(false);
+
+    const startRound = useCallback(() => {
+        startWhoInHatRoundRequest(currentGameId);
+        setStartingRound(true);
+    }, [currentGameId, startWhoInHatRoundRequest, setStartingRound]);
 
 
     return (
@@ -61,32 +70,35 @@ const PrepareToGuess = props => {
 
                 <div className={props.styles.buttonsWrapper}>
                     {props.auth.uid === props.currentGame.activeExplainer && (
-                        <div className={props.styles.startRoundButton}>
-                            <StyledButton
-                                onClick={() => props.startWhoInHatRoundRequest(props.currentGameId)}
-                                text="Start round"
-                            />
-                        </div>
+                        <LoadingDiv isFitContent isLoading={isStartingRound} isBlack isBorderRadius>
+                            <div className={props.styles.startRoundButton}>
+                                <StyledButton
+                                    onClick={startRound}
+                                    text="Start round"
+                                    disabled={isStartingRound}
+                                />
+                            </div>
+                        </LoadingDiv>
                     )}
 
                     {teamHasOnlyMe(props.currentGame, props.auth.uid) && (
-                    <>
-                        <div className={props.styles.joinTeamNewTeamButton}>
-                            <StyledButton
-                                onClick={() => setJoiningNewTeam(true)}
-                                text="Join New Team"
+                        <>
+                            <div className={props.styles.joinTeamNewTeamButton}>
+                                <StyledButton
+                                    onClick={() => setJoiningNewTeam(true)}
+                                    text="Join New Team"
+                                />
+                            </div>
+                            <JoinTeamModal
+                                closeModal={() => setJoiningNewTeam(false)}
+                                isOpen={joiningNewTeam}
+                                onChange={setTeamToJoin}
+                                value={teamToJoin}
+                                teams={props.currentGame.teams.filter(team => !team.members
+                                    .includes(props.auth.uid))}
+                                onConfirm={joinTeam}
                             />
-                        </div>
-                        <JoinTeamModal
-                            closeModal={() => setJoiningNewTeam(false)}
-                            isOpen={joiningNewTeam}
-                            onChange={setTeamToJoin}
-                            value={teamToJoin}
-                            teams={props.currentGame.teams.filter(team => !team.members
-                                .includes(props.auth.uid))}
-                            onConfirm={joinTeam}
-                        />
-                    </>
+                        </>
                     )}
                 </div>
             </div>

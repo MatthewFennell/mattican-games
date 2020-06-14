@@ -7,6 +7,7 @@ import StyledButton from '../../common/StyledButton/StyledButton';
 import TextInput from '../../common/TextInput/TextInput';
 import SuccessModal from '../../common/modal/SuccessModal';
 import TeamsAndScore from './TeamsAndScore';
+import LoadingDiv from '../../common/loadingDiv/LoadingDiv';
 
 const playerExistsInTeam = (game, playerId) => game.teams
     .some(team => team.members.includes(playerId));
@@ -51,6 +52,7 @@ const MakingTeams = props => {
 
     const [randomisingTeams, setRandomisingTeams] = useState(false);
     const [numberOfRandomTeams, setNumberOfRandomTeams] = useState(2);
+    const [hasStartedGame, setHasStartedGame] = useState(false);
 
     const closeRandomisingTeams = useCallback(() => {
         setRandomisingTeams(false);
@@ -63,6 +65,17 @@ const MakingTeams = props => {
         // eslint-disable-next-line
     }, [numberOfRandomTeams, setRandomisingTeams, props.currentGameId])
 
+    const shouldDisableButtons = useCallback(() => (props.isRandomisingTeams
+        || hasStartedGame || props.isAddingTeam),
+    [props.isRandomisingTeams, hasStartedGame, props.isAddingTeam]);
+
+
+    const startGame = useCallback(() => {
+        setHasStartedGame(true);
+        props.startGameRequest(props.currentGameId);
+        // eslint-disable-next-line
+    }, [setHasStartedGame, props.currentGameId])
+
     return (
         <div className={props.styles.makingTeamsWrapper}>
             <div className={props.styles.makingTeamsHeader}>
@@ -70,36 +83,61 @@ const MakingTeams = props => {
                     : `Waiting for ${helpers.mapUserIdToName(props.users, props.currentGame.host)} to start the game`}
             </div>
             <div className={props.styles.clickTeamToJoin}>
-                {'Click on a team to join it'}
+                Click on a team to join it
             </div>
             <div className={props.styles.createTeamWrapper}>
                 {props.currentGame.host === props.auth.uid && (
-                    <div className={props.styles.startGame}>
-                        <StyledButton
-                            onClick={() => props.startGameRequest(props.currentGameId)}
-                            text="Start Game"
-                        />
-                    </div>
+                    <LoadingDiv
+                        isLoading={hasStartedGame}
+                        isNoPadding
+                        isRed
+                        isBorderRadius
+                    >
+                        <div className={props.styles.startGame}>
+                            <StyledButton
+                                onClick={startGame}
+                                text="Start Game"
+                                disabled={shouldDisableButtons()}
+                            />
+                        </div>
+                    </LoadingDiv>
                 )}
-                <div>
-                    <StyledButton
-                        onClick={() => setAddingTeam(true)}
-                        text="Add team"
-                    />
-                </div>
-                {props.currentGame.host === props.auth.uid && (
-                    <div className={props.styles.startGame}>
+                <LoadingDiv
+                    isLoading={props.isAddingTeam}
+                    isNoPadding
+                    isRed
+                    isBorderRadius
+                >
+                    <div>
                         <StyledButton
-                            onClick={() => setRandomisingTeams(true)}
-                            text="Randomise Teams"
+                            onClick={() => setAddingTeam(true)}
+                            text="Add team"
+                            disabled={shouldDisableButtons()}
                         />
                     </div>
+                </LoadingDiv>
+                {props.currentGame.host === props.auth.uid && (
+                    <LoadingDiv
+                        isLoading={props.isRandomisingTeams}
+                        isNoPadding
+                        isRed
+                        isBorderRadius
+                    >
+                        <div className={props.styles.startGame}>
+                            <StyledButton
+                                onClick={() => setRandomisingTeams(true)}
+                                text="Randomise Teams"
+                                disabled={shouldDisableButtons()}
+                            />
+                        </div>
+                    </LoadingDiv>
                 )}
                 {props.currentGame.isCustomNames && (
                     <div>
                         <StyledButton
                             onClick={() => setAddingWord(true)}
                             text="Add word"
+                            disabled={shouldDisableButtons()}
                         />
                     </div>
                 ) }
@@ -224,6 +262,8 @@ MakingTeams.defaultProps = {
         teams: []
     },
     currentGameId: '',
+    isAddingTeam: false,
+    isRandomisingTeams: false,
     joinTeamRequest: noop,
     randomiseTeamsRequest: noop,
     startGameRequest: noop,
@@ -251,6 +291,8 @@ MakingTeams.propTypes = {
         }))
     }),
     currentGameId: PropTypes.string,
+    isAddingTeam: PropTypes.bool,
+    isRandomisingTeams: PropTypes.bool,
     joinTeamRequest: PropTypes.func,
     randomiseTeamsRequest: PropTypes.func,
     startGameRequest: PropTypes.func,

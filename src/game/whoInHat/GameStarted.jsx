@@ -39,6 +39,8 @@ const GameStarted = props => {
                     auth={props.auth}
                     currentGame={props.currentGame}
                     currentGameId={props.currentGameId}
+                    isAddingTeam={props.isAddingTeam}
+                    isRandomisingTeams={props.isRandomisingTeams}
                     joinTeamRequest={props.joinTeamRequest}
                     randomiseTeamsRequest={props.randomiseTeamsRequest}
                     startGameRequest={props.startWhoInHatGameRequest}
@@ -133,6 +135,8 @@ GameStarted.defaultProps = {
         waitingToJoinTeam: []
     },
     currentGameId: '',
+    isAddingTeam: false,
+    isRandomisingTeams: false,
     styles: defaultStyles,
     users: {}
 };
@@ -153,6 +157,8 @@ GameStarted.propTypes = {
     }),
     currentGameId: PropTypes.string,
     gotWordRequest: PropTypes.func.isRequired,
+    isAddingTeam: PropTypes.bool,
+    isRandomisingTeams: PropTypes.bool,
     joinTeamRequest: PropTypes.func.isRequired,
     joinTeamMidgameRequest: PropTypes.func.isRequired,
     leaveUnconstrainedGameRequest: PropTypes.func.isRequired,
@@ -184,6 +190,11 @@ const mapDispatchToProps = {
     trashWordRequest
 };
 
-export default connect(null, mapDispatchToProps)(GameStarted);
+const mapStateToProps = state => ({
+    isAddingTeam: state.whoInHat.isAddingTeam,
+    isRandomisingTeams: state.whoInHat.isRandomisingTeams
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(GameStarted);
 
 export { GameStarted as GameStartedUnconnected };
