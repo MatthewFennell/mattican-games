@@ -18,6 +18,13 @@ export const SET_WORD_CONFIRMED_REQUEST = `${pre}SET_WORD_CONFIRMED_REQUEST`;
 export const LEAVE_UNCONSTRAINED_GAME_REQUEST = `${pre}LEAVE_UNCONSTRAINED_GAME_REQUEST`;
 export const JOIN_TEAM_MIDGAME_REQUEST = `${pre}JOIN_TEAM_MIDGAME_REQUEST`;
 export const RANDOMISE_TEAMS_REQUEST = `${pre}RANDOMISE_TEAMS_REQUEST`;
+export const REALIGN_CONFIRMED_WORDS = `${pre}REALIGN_CONFIRMED_WORDS`;
+
+export const realignConfirmedWords = (gameId, confirmedWords) => ({
+    type: REALIGN_CONFIRMED_WORDS,
+    gameId,
+    confirmedWords
+});
 
 export const gameError = (error, header) => ({
     type: GAME_ERROR,

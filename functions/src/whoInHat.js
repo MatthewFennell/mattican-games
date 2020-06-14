@@ -210,8 +210,14 @@ exports.confirmScore = functions
                 throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
             }
 
+            if (!data.confirmedWords) {
+                throw new functions.https.HttpsError('not-found', 'Something wrong with confirmed words. Contact Matt');
+            }
+
+            const { confirmedWords } = data;
+
             const {
-                activeTeam, teams, confirmedWords, words, isCustomNames, scoreCap
+                activeTeam, teams, words, isCustomNames, scoreCap
             } = doc.data();
 
             const nextTeam = common.findNextTeam(activeTeam, teams);

@@ -383,31 +383,29 @@ exports.confirmWord = functions
         });
     });
 
-exports.joinMidgame = functions
+exports.realignConfirmedWords = functions
     .region(constants.region)
     .https.onCall((data, context) => {
         common.isAuthenticated(context);
         return db.collection('games').doc(data.gameId).get().then(doc => {
             if (!doc.exists) {
-                throw new functions.https.HttpsError('not-found', 'Game not found');
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
             }
 
-            return db.collection('users').doc(context.auth.uid).get().then(response => {
-                const { displayName } = response.data();
-                if (!displayName) {
-                    throw new functions.https.HttpsError('invalid-argument', 'Please set a display name before joining');
-                }
-                return doc.ref.update({
-                    currentPlayers: operations.arrayUnion(context.auth.uid),
-                    usernameMappings: {
-                        ...doc.data().usernameMappings,
-                        [context.auth.uid]: displayName
-                    },
-                    waitingToJoinTeam: operations.arrayUnion(context.auth.uid)
-                });
+            if (doc.data().status !== constants.whoInHatGameStatuses.RoundSummary) {
+                return Promise.resolve();
+            }
+
+            if (!data.confirmedWords) {
+                return Promise.resolve();
+            }
+
+            return doc.ref.update({
+                confirmedWords: data.confirmedWords
             });
         });
     });
+
 
 exports.joinTeam = functions
     .region(constants.region)

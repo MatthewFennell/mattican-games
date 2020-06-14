@@ -184,6 +184,16 @@ export function* randomiseTeams(api, action) {
     }
 }
 
+export function* realignConfirmedWords(api, action) {
+    try {
+        yield call(api.realignConfirmedWords, ({
+            gameId: action.gameId,
+            confirmedWords: action.confirmedWords
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Realign Words error'));
+    }
+}
 export default function* overviewSaga() {
     yield all([
         takeEvery(actions.LEAVE_GAME_REQUEST, leaveGame, gameApi),
@@ -202,6 +212,7 @@ export default function* overviewSaga() {
         takeEvery(actions.SET_WORD_CONFIRMED_REQUEST, confirmWord, gameApi),
         takeEvery(actions.LEAVE_UNCONSTRAINED_GAME_REQUEST, leaveUnconstrainedGame, gameApi),
         takeEvery(actions.JOIN_TEAM_MIDGAME_REQUEST, joinTeamMidgame, gameApi),
-        takeEvery(actions.RANDOMISE_TEAMS_REQUEST, randomiseTeams, gameApi)
+        takeEvery(actions.RANDOMISE_TEAMS_REQUEST, randomiseTeams, gameApi),
+        takeEvery(actions.REALIGN_CONFIRMED_WORDS, realignConfirmedWords, gameApi)
     ]);
 }
