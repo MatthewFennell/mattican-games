@@ -7,6 +7,8 @@ import TeamsAndScore from '../../common/TeamsAndScore';
 import Fade from '../../../common/Fade/Fade';
 import StyledButton from '../../../common/StyledButton/StyledButton';
 import LoadingDiv from '../../../common/loadingDiv/LoadingDiv';
+import Switch from '../../../common/Switch/Switch';
+import GameRules from './GameRules';
 
 const PrepareToGuess = props => {
     const { currentGameId, startRoundRequest } = props;
@@ -15,6 +17,11 @@ const PrepareToGuess = props => {
     const toggleViewingTeams = useCallback(() => {
         setViewingTeams(!viewingTeams);
     }, [viewingTeams, setViewingTeams]);
+
+    const [viewingRules, setViewingRules] = useState(false);
+    const toggleViewingRules = useCallback(() => {
+        setViewingRules(!viewingRules);
+    }, [viewingRules, setViewingRules]);
 
     const [isStartingRound, setIsStartingRound] = useState(false);
 
@@ -77,12 +84,30 @@ const PrepareToGuess = props => {
                 </div>
             </div>
 
+            <div className={props.styles.switchesWrapper}>
+                <div className={props.styles.teamsWrapper}>
+                    <div className={props.styles.teamsDescription}>
+                        View Teams
+                    </div>
+                    <Switch
+                        checked={viewingTeams}
+                        onChange={toggleViewingTeams}
+                    />
+                </div>
+                <div className={props.styles.rulesWrapper}>
+                    <div className={props.styles.rulesDescription}>
+                        View Rules
+                    </div>
+                    <Switch
+                        checked={viewingRules}
+                        onChange={toggleViewingRules}
+                    />
+                </div>
+            </div>
+
             <div className={props.styles.viewTeamsWrapper}>
                 <Fade
                     checked={viewingTeams}
-                    onChange={toggleViewingTeams}
-                    includeCheckbox
-                    label="View teams"
                 >
                     <TeamsAndScore
                         auth={props.auth}
@@ -90,6 +115,14 @@ const PrepareToGuess = props => {
                         showScore
                         users={props.users}
                     />
+                </Fade>
+            </div>
+
+            <div className={props.styles.viewTeamsWrapper}>
+                <Fade
+                    checked={viewingRules}
+                >
+                    <GameRules />
                 </Fade>
             </div>
         </>
