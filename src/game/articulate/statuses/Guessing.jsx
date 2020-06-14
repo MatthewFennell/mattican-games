@@ -7,6 +7,7 @@ import { noop } from 'lodash';
 import moment from 'moment';
 import fp from 'lodash/fp';
 import classNames from 'classnames';
+import GameRules from './GameRules';
 import defaultStyles from './Guessing.module.scss';
 import * as helpers from '../../helpers';
 import TeamsAndScore from '../../common/TeamsAndScore';
@@ -17,6 +18,7 @@ import Spinner from '../../../common/spinner/Spinner';
 import SuccessModal from '../../../common/modal/SuccessModal';
 import Dropdown from '../../../common/dropdown/Dropdown';
 import LoadingDiv from '../../../common/loadingDiv/LoadingDiv';
+import Switch from '../../../common/Switch/Switch';
 
 const isSkippingDisabled = (skippingRule, skippedWord) => {
     if (skippingRule === constants.articulateSkipping.Unlimited) {
@@ -50,6 +52,11 @@ const Guessing = props => {
     const toggleViewingTeams = useCallback(() => {
         setViewingTeams(!viewingTeams);
     }, [viewingTeams, setViewingTeams]);
+
+    const [viewingRules, setViewingRules] = useState(false);
+    const toggleViewingRules = useCallback(() => {
+        setViewingRules(!viewingRules);
+    }, [viewingRules, setViewingRules]);
 
     const [viewingOtherTeamWord, setViewingOtherTeamWord] = useState(false);
 
@@ -313,7 +320,9 @@ const Guessing = props => {
                                 <StyledButton
                                     onClick={trashWord}
                                     text="Trash word"
-                                    disabled={isNoWords()}
+                                    disabled={isNoWords()
+                                        || confirmingGameFinished
+                                        || confirmingSpadeWinner}
                                 />
                                     </div>
                         </div>
@@ -322,7 +331,9 @@ const Guessing = props => {
                                     <StyledButton
                                         onClick={gotWord}
                                         text="Got it!"
-                                        disabled={isNoWords()}
+                                        disabled={isNoWords()
+                                            || confirmingGameFinished
+                                            || confirmingSpadeWinner}
                                     />
                         </div>
                                 </LoadingDiv>
@@ -347,21 +358,48 @@ const Guessing = props => {
                             )}
                 </div>
                     ) }
-                    <div className={props.styles.viewTeamsWrapper}>
-                    <Fade
+
+                <div className={props.styles.switchesWrapper}>
+                <div className={props.styles.teamsWrapper}>
+                    <div className={props.styles.teamsDescription}>
+                        View Teams
+                    </div>
+                    <Switch
                         checked={viewingTeams}
                         onChange={toggleViewingTeams}
-                        includeCheckbox
-                        label="View teams"
-                    >
-                            <TeamsAndScore
-                                auth={props.auth}
-                                currentGame={props.currentGame}
-                                showScore
-                                users={props.users}
-                            />
-                    </Fade>
+                    />
+                </div>
+                <div className={props.styles.rulesWrapper}>
+                    <div className={props.styles.rulesDescription}>
+                        View Rules
                     </div>
+                    <Switch
+                        checked={viewingRules}
+                        onChange={toggleViewingRules}
+                    />
+                </div>
+                </div>
+
+            <div className={props.styles.viewTeamsWrapper}>
+                <Fade
+                    checked={viewingTeams}
+                >
+                    <TeamsAndScore
+                        auth={props.auth}
+                        currentGame={props.currentGame}
+                        showScore
+                        users={props.users}
+                    />
+                </Fade>
+            </div>
+
+            <div className={props.styles.viewTeamsWrapper}>
+                <Fade
+                    checked={viewingRules}
+                >
+                    <GameRules />
+                </Fade>
+            </div>
                     <SuccessModal
                         backdrop
                         closeModal={closeSpadeFinished}

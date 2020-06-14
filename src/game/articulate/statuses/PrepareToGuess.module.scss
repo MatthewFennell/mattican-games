@@ -68,3 +68,13 @@
     background-color: khaki;
     border-radius: $spacing-small;
 }
+
+.switchesWrapper {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.teamsDescription, .rulesDescription {
+    text-align: center;
+    font-weight: bold;
+}
