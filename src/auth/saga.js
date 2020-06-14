@@ -1,5 +1,5 @@
 import {
-    all, call, takeEvery, put
+    all, call, takeEvery, put, delay, fork
 } from 'redux-saga/effects';
 import firebase from 'firebase';
 import { push } from 'connected-react-router';
@@ -22,23 +22,29 @@ export function* signOut() {
     }
 }
 
-export function* loggingIn(api, action) {
-    try {
-        if (action.auth && !action.auth.emailVerified) {
-            yield put(push(consts.URL.VERIFY_EMAIL));
-        }
-        const user = yield firebase.auth().currentUser.getIdTokenResult();
-        const rolePermissions = yield call(api.getRolePermissions);
-        yield put(actions.setPermissionsMappingsAndRoles(rolePermissions));
+export function* setAppLoading() {
+    yield put(actions.setLoadingApp(true));
+    yield delay(3000);
+    yield put(actions.setLoadingApp(false));
+}
 
-        yield all(rolePermissions.allRoles.map(role => {
-            if (user.claims[role]) {
-                const permissions = rolePermissions.mappings[role];
-                return put(actions.addPermissions(permissions));
-            }
-            return null;
-        }));
+
+export function* loggingIn() {
+    try {
+        yield fork(setAppLoading);
+        // const user = yield firebase.auth().currentUser.getIdTokenResult();
+        // const rolePermissions = yield call(api.getRolePermissions);
+        // yield put(actions.setPermissionsMappingsAndRoles(rolePermissions));
+
+        // yield all(rolePermissions.allRoles.map(role => {
+        //     if (user.claims[role]) {
+        //         const permissions = rolePermissions.mappings[role];
+        //         return put(actions.addPermissions(permissions));
+        //     }
+        //     return null;
+        // }));
         yield put(actions.setLoadedPermissions(true));
+        yield put(push(consts.URL.OVERVIEW));
     } catch (error) {
         yield put(actions.signInError(error));
     }
@@ -47,8 +53,8 @@ export function* loggingIn(api, action) {
 export function* signUp(api, action) {
     try {
         yield firebase.auth().createUserWithEmailAndPassword(action.email, action.password);
+        yield delay(5000);
         yield call(api.updateDisplayName, ({ displayName: action.displayName }));
-        yield firebase.auth().currentUser.sendEmailVerification(actionCodeSettings);
     } catch (error) {
         yield put(actions.signUpError(error));
     }

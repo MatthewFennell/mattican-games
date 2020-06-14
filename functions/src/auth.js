@@ -129,3 +129,18 @@ exports.getRolePermissions = functions
             };
         });
     });
+
+
+exports.deleteUser = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return admin.auth().getUser(context.auth.uid).then(user => {
+            if (user.email === data.email) {
+                return admin.auth().deleteUser(context.auth.uid).then(
+                    () => db.collection('users').doc(context.auth.uid).delete()
+                );
+            }
+            throw new functions.https.HttpsError('not-found', 'That is not your email');
+        });
+    });

@@ -27,14 +27,16 @@ export const signedOutLinks = [
         icon: <DoubleArrowIcon color="primary" />,
         component: rootComponents.SignIn,
         path: () => constants.URL.SIGN_IN,
-        urlIncludes: constants.URL.SIGN_IN
+        urlIncludes: constants.URL.SIGN_IN,
+        showInSideBar: true
     },
     {
         title: 'Sign Up',
         icon: <AccountBoxIcon color="primary" />,
         component: rootComponents.SignUp,
         path: () => constants.URL.SIGN_UP,
-        urlIncludes: constants.URL.SIGN_UP
+        urlIncludes: constants.URL.SIGN_UP,
+        showInSideBar: true
     }
 ];
 
@@ -47,6 +49,17 @@ export const signedInLinks = [
         path: () => `${constants.URL.OVERVIEW}`,
         renderPath: `${constants.URL.OVERVIEW}`,
         urlIncludes: constants.URL.OVERVIEW,
-        canToggle: false
+        canToggle: false,
+        showInSideBar: true
+    },
+    {
+        title: 'Game',
+        icon: <HomeIcon color="primary" />,
+        component: rootComponents.Game,
+        addUserId: false,
+        path: () => `${constants.URL.GAME}`,
+        renderPath: `${constants.URL.GAME}`,
+        urlIncludes: constants.URL.GAME,
+        showInSideBar: false
     }
 ];

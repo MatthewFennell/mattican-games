@@ -28,7 +28,7 @@ const sagaMiddleware = createSagaMiddleware();
 
 const enhancers = compose(
     applyMiddleware(routerMiddleware(history), sagaMiddleware),
-    window.__REDUX_DEVTOOLS_EXTENSION__
+    process.env.NODE_ENV === 'development' && window.__REDUX_DEVTOOLS_EXTENSION__
         ? window.__REDUX_DEVTOOLS_EXTENSION__()
         : f => f
 );
@@ -54,3 +54,6 @@ ReactDOM.render(
 );
 
 serviceWorker.register();
+
+
+// https://console.cloud.google.com/functions/list?project=YOUR_PROJECT_NAME - kill cloud function

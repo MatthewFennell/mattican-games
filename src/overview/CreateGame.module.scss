@@ -1,0 +1,83 @@
+@import "../common/Styles.scss";
+
+.createGameModalWrapper {
+  width: 30%;
+  margin-left: auto;
+  margin-right: auto;
+    :first-child {
+      :first-child {
+        width: 100%;
+      }
+    }
+  }
+  
+  .goodGuyRoles, .badGuyRoles {
+    display: flex;
+    justify-content: space-evenly;
+  }
+  
+  .roleWrapper {
+    text-align: center;
+  }
+  
+  .avalonRolesMessage {
+    color: $color-green;
+    text-align: center;
+    padding: $spacing-small;
+  }
+  
+  .avalonGoodRoleName {
+    color: $color-blue;
+    font-weight: bold;
+  }
+  
+  .avalonBadRoleName {
+    color: $color-red;
+    font-weight: bold;
+  }
+  
+  .createGameWrapper {
+    text-align: center;
+  }
+  
+  .spinnerWrapper {
+    text-align: center;
+  }
+  
+  .skippingRules {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+  }
+
+  .createOthelloGame {
+    * {
+      * {
+        width: 100%;
+      }
+    }
+  }
+
+  .gameNameWrapper, .numberOfPlayersWrapper, .scoreCap, .timePerRound, .goodGuyRoles, .createOthelloGame  {
+    width: 30%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .badGuyRoles {
+    width: 40%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  @media only screen and (max-width: 600px) {
+    .createGameModalWrapper, .gameNameWrapper, .numberOfPlayersWrapper, .scoreCap, .timePerRound  {
+      width: 100%;
+    }
+    .goodGuyRoles {
+      width: 80%;
+    }
+    .badGuyRoles, .createOthelloGame {
+      width: 100%;
+    }
+  }

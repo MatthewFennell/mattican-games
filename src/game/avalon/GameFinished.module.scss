@@ -1,0 +1,41 @@
+@import "../../common/Styles.scss";
+
+.goodGuysHeader {
+    color: $color-blue;
+    font-weight: bold;
+    text-align: center;
+    font-size: $font-size-large;
+}
+
+.badGuysHeader {
+    color: $color-red;
+    font-weight: bold;
+    text-align: center;
+    font-size: $font-size-huge;
+}
+
+.finalPlayerRoles {
+    text-align: center;
+    color: $color-green;
+    font-weight: bold;
+    margin: $spacing-small;
+    padding: $spacing-small;
+    background-color: moccasin;
+    border-radius: $spacing-small;
+}
+
+.guessedMerlin {
+    text-align: center;
+    font-weight: bold;
+    font-size: $font-size-huge;
+}
+
+.allRolesWrapper {
+    text-align: center;
+    color: $color-green;
+    font-weight: bold;
+    margin: $spacing-small;
+    padding: $spacing-small;
+    background-color: moccasin;
+    border-radius: $spacing-small;
+}

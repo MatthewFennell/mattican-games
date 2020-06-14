@@ -1,0 +1,137 @@
+@import "../../common/Styles.scss";
+
+.currentGameStateWrapper, .nominating, .chancellorDeciding, .presidentDeciding {
+    text-align: center;
+    color: $color-green;
+    margin-left: $spacing-medium;
+    margin-right: $spacing-medium;
+    font-weight: bold;
+}
+
+.investigating {
+    text-align: center;
+    color: $color-black;
+    padding: $spacing-small;
+    margin-left: $spacing-small;
+    margin-right: $spacing-small;
+    background-color: $color-amber;
+    border-radius: $spacing-small;
+}
+
+.presidentDecidingWrapper {
+    text-align: center;
+    margin: $spacing-small;
+    padding: $spacing-small;
+    background-color: $color-amber;
+    border-radius: $spacing-small;
+}
+
+.allPresidentCards {
+    display: flex;
+    justify-content: space-evenly;
+    margin-bottom: $spacing-small;
+
+     > div {
+         font-weight: bold;
+         padding: 15px;
+     }
+
+
+     .fascistCard {
+        background-color: orangered;
+        border: 4px solid orangered;
+     }
+     
+     .liberalCard {
+         background-color: $color-light-blue;
+         border: 4px solid $color-light-blue;
+     }
+
+     .fascistCard:focus {
+        outline: 0;
+     }
+
+     .liberalCard:focus {
+        outline: 0;
+     }
+
+     .selected {
+         border: 4px solid $color-black;
+     }
+}
+
+.confirmChancellorCards {
+    text-align: center;
+}
+
+.votingWrapper {
+    text-align: center;
+    margin: $spacing-small;
+    padding: $spacing-small;
+    background-color: $color-amber;
+    font-weight: bold;
+    border-radius: $spacing-small;
+}
+
+.questingWrapper {
+    text-align: center;
+    margin: $spacing-small;
+    padding: $spacing-small;
+    background-color: $color-amber;
+}
+
+.guessingMerlinWrapper {
+    padding: $spacing-small;
+    margin: $spacing-small;
+    background-color: blanchedalmond;
+}
+
+.notOnQuestMessage {
+    text-align: center;
+    color: $color-green;
+    font-weight: bold;
+}
+
+.loadingVote {
+    text-align: center;
+}
+
+.guessingMessage {
+    text-align: center;
+    color: $color-red;
+    font-weight: bold;
+}
+
+.badGuysWrapper {
+    text-align: center;
+    color: $color-green;
+}
+
+.playerWithGuess {
+    text-align: center;
+    color: $color-blue;
+    font-weight: bold;
+}
+
+
+.allRolesWrapper {
+    text-align: center;
+    color: $color-green;
+    font-weight: bold;
+    margin: $spacing-small;
+    padding: $spacing-small;
+    background-color: moccasin;
+    border-radius: $spacing-small;
+}
+
+.goodGuysWon {
+    text-align: center;
+    font-weight: bold;
+    color: $color-blue;
+}
+
+.badGuysWon {
+    text-align: center;
+    font-weight: bold;
+    color: $color-red;
+}

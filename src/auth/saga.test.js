@@ -8,7 +8,6 @@ import { constants } from 'react-redux-firebase';
 import * as sagas from './saga';
 import * as consts from '../constants';
 import * as actions from './actions';
-import { fetchMaxGameWeekRequest } from '../overview/actions';
 
 // https://github.com/jfairbank/redux-saga-test-plan - Docs
 
@@ -99,23 +98,6 @@ describe('Auth saga', () => {
             .run();
     });
 
-    it('logging in', () => {
-        const action = {
-            type: constants.actionTypes.LOGIN,
-            auth: {
-                emailVerified: false
-            }
-        };
-        return expectSaga(sagas.loggingIn, api, action)
-            .put(fetchMaxGameWeekRequest())
-            .put(push(consts.URL.VERIFY_EMAIL))
-            .put(actions.setPermissionsMappingsAndRoles(rolePermissions))
-            .put(actions.addPermissions(adminPermissions))
-            .put(actions.addPermissions(editorPermissions))
-            .put(actions.setLoadedPermissions(true))
-            .run();
-    });
-
     it('logging in email verified', () => {
         const action = {
             type: constants.actionTypes.LOGIN,
@@ -128,36 +110,9 @@ describe('Auth saga', () => {
             .run();
     });
 
-    it('logging in error', () => {
-        const error = new Error('error');
-        const action = {
-            type: constants.actionTypes.LOGIN,
-            auth: {
-                emailVerified: false
-            }
-        };
-        return expectSaga(sagas.loggingIn, api, action)
-            .provide([
-                [matchers.call.fn(api.getRolePermissions), throwError(error)]
-            ])
-            .put(actions.signInError(error))
-            .run();
-    });
-
     it('sign up', () => {
         const action = actions.signUp('email', 'password', 'display');
         return expectSaga(sagas.signUp, api, action)
-            .run();
-    });
-
-    it('sign up error', () => {
-        const error = new Error('error');
-        const action = actions.signUp('email', 'password');
-        return expectSaga(sagas.signUp, api, action)
-            .provide([
-                [matchers.call.fn(api.updateDisplayName), throwError(error)]
-            ])
-            .put(actions.signUpError(error))
             .run();
     });
 

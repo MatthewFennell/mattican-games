@@ -1,0 +1,42 @@
+@import "../../common/Styles.scss";
+
+.teamWrapper {
+    margin: $spacing-medium;
+    padding: $spacing-tiny;
+    padding-top: $spacing-tiny;
+    margin-top: $spacing-small;
+    margin-bottom: $spacing-small;
+    text-align: center;
+    color: $color-black;
+    border-radius: $spacing-small;
+}
+
+.playersNotInTeams {
+    background-color: bisque;
+    border-radius: $spacing-small;
+}
+
+.team-0 {
+    background-color: aquamarine;
+}
+
+.team-1 {
+    background-color: mediumpurple;
+}
+
+.team-2 {
+    background-color: darkseagreen;
+}
+
+.team-3 {
+    background-color: greenyellow;
+}
+
+.team-4 {
+    background-color: darksalmon;
+}
+
+.teamName {
+    font-weight: bold;
+    font-size: $font-size-medium;
+}

@@ -9,7 +9,7 @@ const UnauthenticatedRoute = ({
 }) => (
     <Route
         {...rest}
-        render={props => (auth.uid && auth.emailVerified
+        render={props => (auth.uid
             ? <Redirect to={redirect} /> : <Component {...props} />)}
     />
 );

@@ -21,7 +21,7 @@ const generateRows = permissions => {
             permission
         };
         Object.keys(permissions).forEach(p => {
-            if (permissions[p].includes(permission)) {
+            if (permissions[p] && permissions[p].includes(permission)) {
                 rowToReturn[p] = <FiberManualRecordIcon color="primary" />;
             }
         });

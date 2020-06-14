@@ -9,7 +9,7 @@ import TextInput from '../../common/TextInput/TextInput';
 import * as textInputConstants from '../../common/TextInput/constants';
 
 const SelectProfilePicture = props => {
-    const [ownPhotoUrl, setOwnPhotoUrl] = useState(props.currentPhotoUrl);
+    const [ownPhotoUrl, setOwnPhotoUrl] = useState(props.currentPhotoUrl || '');
 
     const updateImage = useCallback(photoUrl => {
         if (photoUrl !== props.currentPhotoUrl) {
@@ -44,7 +44,6 @@ const SelectProfilePicture = props => {
                     </div>
                 ))}
             </div>
-            <hr />
             <div className={props.styles.selectOwnPictureWrapper}>
                 <div className={props.styles.uploadOwnIconMessage}>
                     Upload your own avatar
@@ -67,11 +66,14 @@ const SelectProfilePicture = props => {
                         </div>
                     </div>
                     <div className={props.styles.ownImageExample}>
-                        <img
-                            className={props.styles.exampleImage}
-                            src={ownPhotoUrl}
-                            alt="new"
-                        />
+                        {ownPhotoUrl
+                        && (
+                            <img
+                                className={props.styles.exampleImage}
+                                src={ownPhotoUrl}
+                                alt="new"
+                            />
+                        ) }
                         <div>
                             <StyledButton color="primary" onClick={() => updateImage(ownPhotoUrl)} text="Change my icon" />
                         </div>

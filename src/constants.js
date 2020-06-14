@@ -1,78 +1,14 @@
 export const REGION = 'europe-west2';
 
 export const URL = {
-    LEAGUES: '/leagues',
     OVERVIEW: '/overview',
     PROFILE: '/profile',
     RESET_PASSWORD: '/reset-password',
     SIGN_IN: '/sign-in',
     SIGN_UP: '/sign-up',
     VERIFY_EMAIL: '/need-to-verify-email',
-    CURRENT_TEAM: '/current-team',
-    POINTS: '/points',
-    TRANSFERS: '/transfers',
-    STATS: '/stats',
-    CHARTS: '/charts',
-    HIGHLIGHTS: '/highlights',
-    FIXTURES: '/fixtures',
-    FEATURE_REQUEST: '/feature-request',
-
-    CREATE_PLAYER: '/create-player',
-    DELETE_PLAYER: '/delete-player',
-    CREATE_TEAM: '/create-team',
-    DELETE_TEAM: '/delete-team',
-    SUBMIT_RESULT: '/submit-result',
-    TRIGGER_WEEK: '/trigger-week',
-    EDIT_PLAYER: '/edit-player',
-    APPROVE_HIGHLIGHTS: '/approve-highlights',
-    MANAGE_SUBS: '/manage-subs',
     MANAGE_USERS: '/manage-users',
-    TOGGLE_PAGES: '/toggle-pages'
-};
-
-export const POSITIONS = {
-    GOALKEEPER: 'GOALKEEPER',
-    DEFENDER: 'DEFENDER',
-    MIDFIELDER: 'MIDFIELDER',
-    ATTACKER: 'ATTACKER',
-    OUTFIELD: 'OUTFIELD'
-};
-
-export const POINTS = {
-    GOAL: {
-        [POSITIONS.ATTACKER]: 4,
-        [POSITIONS.MIDFIELDER]: 5,
-        [POSITIONS.DEFENDER]: 6,
-        [POSITIONS.GOALKEEPER]: 6
-    },
-    ASSIST: 3,
-    CLEAN_SHEET: {
-        [POSITIONS.GOALKEEPER]: 6,
-        [POSITIONS.DEFENDER]: 4,
-        [POSITIONS.MIDFIELDER]: 1,
-        [POSITIONS.ATTACKER]: 0
-    },
-    RED_CARD: -3,
-    YELLOW_CARD: -1,
-    MOTM: 3,
-    DOTD: -3,
-    OWN_GOAL: -2,
-    PENALTY_SAVE: 3,
-    PENALTY_MISS: -3
-};
-
-export const maxPerPosition = {
-    [POSITIONS.GOALKEEPER]: 1,
-    [POSITIONS.DEFENDER]: 5,
-    [POSITIONS.MIDFIELDER]: 5,
-    [POSITIONS.ATTACKER]: 3
-};
-
-export const minPerPosition = {
-    [POSITIONS.GOALKEEPER]: 1,
-    [POSITIONS.DEFENDER]: 3,
-    [POSITIONS.MIDFIELDER]: 3,
-    [POSITIONS.ATTACKER]: 1
+    GAME: '/game'
 };
 
 // KEEP IN SYNC WITH SERVER
@@ -94,8 +30,205 @@ export const PERMISSIONS = {
 };
 
 export const successDelay = 3500;
-export const matchLengthMinutes = 100;
 
-// Things to fix
+export const gameModes = {
+    Articulate: 'Articulate',
+    Avalon: 'Avalon',
+    Hitler: 'Hitler',
+    Othello: 'Othello',
+    WhosInTheHat: 'Who\'s in the Hat?'
+};
 
-// Cancel button focus goes blue?
+export const hitlerRoles = {
+    Fascist: 'Fascist',
+    Hitler: 'Hitler',
+    Liberal: 'Liberal'
+};
+
+export const avalonRoles = {
+    Merlin: {
+        isGood: true,
+        name: 'Merlin',
+        isSpecial: true
+    },
+    Percival: {
+        isGood: true,
+        name: 'Percival',
+        isSpecial: true
+    },
+    Morgana: {
+        isGood: false,
+        name: 'Morgana',
+        isSpecial: true
+    },
+    Mordred: {
+        isGood: false,
+        name: 'Mordred',
+        isSpecial: true
+    },
+    Oberon: {
+        isGood: false,
+        name: 'Oberon',
+        isSpecial: true
+    },
+    RegularGood: {
+        isGood: true,
+        name: 'RegularGood',
+        isSpecial: false
+    },
+    RegularBad: {
+        isGood: false,
+        name: 'RegularBad',
+        isSpecial: false
+    }
+};
+
+export const avalonGameStatuses = {
+    Nominating: 'Nominating',
+    Voting: 'Voting',
+    Questing: 'Questing',
+    Finished: 'Finished',
+    GuessingMerlin: 'GuessingMerlin'
+};
+
+export const hitlerGameStatuses = {
+    ChancellorDecidingCards: 'ChancellorDecidingCards',
+    Finished: 'Finished',
+    Nominating: 'Nominating',
+    PresidentDecidingCards: 'PresidentDecidingCards',
+    Investigate: 'Investigate',
+    Kill: 'Kill',
+    Peek: 'Peek',
+    Transfer: 'Transfer',
+    Voting: 'Voting',
+    TemporaryPresident: 'TemporaryPresident'
+};
+
+export const whoInHatGameStatuses = {
+    MakingTeams: 'MakingTeams',
+    PrepareToGuess: 'PrepareToGuess',
+    Guessing: 'Guessing',
+    RoundSummary: 'RoundSummary',
+    ScoreCapReached: 'ScoreCapReached',
+    NoCardsLeft: 'NoCardsLeft'
+};
+
+export const articulateGameStatuses = {
+    MakingTeams: 'MakingTeams',
+    PrepareToGuess: 'PrepareToGuess',
+    Guessing: 'Guessing',
+    RoundSummary: 'RoundSummary',
+    GameFinished: 'GameFinished'
+};
+
+// round -> num players
+export const fivePlayerGame = {
+    1: 2,
+    2: 3,
+    3: 2,
+    4: 3,
+    5: 3
+};
+
+export const sixPlayerGame = {
+    1: 2,
+    2: 3,
+    3: 4,
+    4: 3,
+    5: 4
+};
+
+export const sevenPlayerGame = {
+    1: 2,
+    2: 3,
+    3: 3,
+    4: 4,
+    5: 4
+};
+
+export const eightPlayerGame = {
+    1: 3,
+    2: 4,
+    3: 4,
+    4: 5,
+    5: 5
+};
+
+export const ninePlayerGame = {
+    1: 3,
+    2: 4,
+    3: 4,
+    4: 5,
+    5: 5
+};
+
+export const tenPlayerGame = {
+    1: 3,
+    2: 4,
+    3: 4,
+    4: 5,
+    5: 5
+};
+
+export const avalonRounds = {
+    5: fivePlayerGame,
+    6: sixPlayerGame,
+    7: sevenPlayerGame,
+    8: eightPlayerGame,
+    9: ninePlayerGame,
+    10: tenPlayerGame
+};
+
+export const historyTypes = {
+    Vote: 'Vote',
+    Quest: 'Quest',
+    TopCardFlipped: 'TopCardFlipped',
+    PlayChancellorCard: 'PlayChancellorCard',
+    Investigate: 'Investigate',
+    TransferPresident: 'TransferPresident',
+    Veto: 'Veto',
+    Peek: 'Peek',
+    Kill: 'Kill'
+};
+
+
+export const whoInHatSkipping = {
+    Unlimited: 'Unlimited',
+    OneSkip: 'One Skip',
+    NoSkipping: 'No Skipping'
+};
+
+export const articulateSkipping = {
+    Unlimited: 'Unlimited',
+    OneSkip: 'One Skip',
+    NoSkipping: 'No Skipping'
+};
+
+export const articulateCategories = {
+    Action: 'Action',
+    Nature: 'Nature',
+    Person: 'Person',
+    Random: 'Random',
+    Spade: 'Spade',
+    World: 'World',
+    Object: 'Object'
+};
+
+export const articulateMaxScore = 50;
+
+export const othelloPlayerTypes = {
+    Human: 'Human',
+    Computer: 'Computer'
+};
+
+export const othelloAIDifficulties = {
+    Easy: 'Easy',
+    Medium: 'Medium',
+    Hard: 'Hard'
+};
+
+export const othelloDifficulties = [
+    othelloAIDifficulties.Easy,
+    othelloAIDifficulties.Medium,
+    othelloAIDifficulties.Hard
+];

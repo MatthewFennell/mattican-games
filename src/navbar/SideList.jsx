@@ -19,7 +19,7 @@ const SideList = props => {
             onKeyDown={props.closeNavbar}
         >
             <List>
-                {linksToRender.map(item => (
+                {linksToRender.filter(x => x.showInSideBar).map(item => (
                     <ListItem
                         button
                         key={item.title}

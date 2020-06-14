@@ -1,0 +1,14 @@
+
+@import "../../../common/Styles.scss";
+
+.boardWrapper {
+    padding: $spacing-small;    
+    width: fit-content;
+}
+
+@media only screen and (max-width: 1200px) {
+    .boardWrapper {
+        margin-left: auto;
+        margin-right: auto;
+    }    
+}

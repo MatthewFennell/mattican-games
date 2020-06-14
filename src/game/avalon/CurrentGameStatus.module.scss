@@ -1,0 +1,59 @@
+@import "../../common/Styles.scss";
+
+.currentGameStateWrapper, .nominating {
+    text-align: center;
+    color: $color-green;
+    margin-left: $spacing-medium;
+    margin-right: $spacing-medium;
+    font-weight: bold;
+}
+
+.votingWrapper {
+    text-align: center;
+    margin: $spacing-small;
+    padding: $spacing-small;
+    background-color: $color-amber;
+    border-radius: $spacing-small;
+}
+
+.questingWrapper {
+    text-align: center;
+    margin: $spacing-small;
+    padding: $spacing-small;
+    background-color: $color-amber;
+    border-radius: $spacing-small;
+}
+
+.guessingMerlinWrapper {
+    padding: $spacing-small;
+    margin: $spacing-small;
+    border-radius: $spacing-small;
+    background-color: blanchedalmond;
+}
+
+.notOnQuestMessage {
+    text-align: center;
+    color: $color-green;
+    font-weight: bold;
+}
+
+.loadingVote {
+    text-align: center;
+}
+
+.guessingMessage {
+    text-align: center;
+    color: $color-red;
+    font-weight: bold;
+}
+
+.badGuysWrapper {
+    text-align: center;
+    color: $color-green;
+}
+
+.playerWithGuess {
+    text-align: center;
+    color: $color-blue;
+    font-weight: bold;
+}

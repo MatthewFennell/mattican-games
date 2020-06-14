@@ -37,6 +37,13 @@ export const SET_PERMISSIONS_MAPPINGS_AND_ROLES = `${pre}SET_PERMISSIONS_MAPPING
 export const EDIT_DISABLED_PAGE_REQUEST = `${pre}EDIT_DISABLED_PAGE_REQUEST`;
 export const EDIT_DISABLED_PAGE_ERROR = `${pre}EDIT_DISABLED_PAGE_ERROR`;
 
+export const SET_LOADING_APP = `${pre}SET_LOADING_APP`;
+
+export const setLoadingApp = isLoadingApp => ({
+    type: SET_LOADING_APP,
+    isLoadingApp
+});
+
 export const editDisabledPageRequest = (page, isDisabled) => ({
     type: EDIT_DISABLED_PAGE_REQUEST,
     page,

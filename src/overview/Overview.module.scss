@@ -1,96 +1,61 @@
 @import "../common/Styles.scss";
 
 .overviewWrapper {
-  margin-left: 10%;
-  margin-right: 10%;
+  margin-top: $spacing-medium;
+  text-align: center;
+}
 
-  .pointsWrapper {
-    padding-bottom: $spacing-medium;
-    background-color: $color-white;
-    text-align: center;
-    color: $color-white;
-    padding-top: $spacing-medium;
-    margin-top: $spacing-medium;
-    @include light-box-shadow();
+.allGamesHeader {
+  font-size: $font-size-large;
+  font-weight: bold;
+  color: $color-green;
+  text-align: center;
+  margin: $spacing-small;
+}
 
-    .totalPointsWrapper {
-      justify-content: center;
+.alreadyStarted {
+  color: $color-black;
+}
 
-      .totalPointsText{
-        @include vertical-center-div();
-        font-size: $font-size-small;
-        color: $color-gray;
-      }
-      .totalPointsValue {
-        font-size: $font-size-gigantic;
-        color: $color-blue;
-      }
-    }    
-  }
+.gameWrapper {
+  padding: $spacing-small;
+  background-color: khaki;
+  border-radius: $spacing-small;
+  cursor: pointer;
+}
 
-  .gameweekPointsWrapper {
-    margin-top: $spacing-huge;
-    padding: $spacing-average;
-    justify-content: center;
-    @include light-box-shadow();
-    background-color: $color-white;
-    text-align: center;
+.gameWrapper:focus {
+  outline: none;
+}
 
-    .gameWeekText{
-      font-size: $font-size-large;
-      color: $color-gray;
-      display: flex;
-      justify-content: center;
-      .arrowBackWrapper{
-        margin-right: $spacing-medium;
-        cursor: pointer;
-      }
-      .arrowForwardWrapper{
-        margin-left: $spacing-medium;
-        cursor: pointer;
-      }
-    }
+.gameName {
+  text-align: center;
+  color: $color-blue;
+  font-size: $font-size-medium;
+  font-weight: bold;
+}
 
-    .gameweekStats {
-      margin-top: $spacing-small;
-      text-align: center;      
-      font-size: $font-size-small;      
-      display: flex;
-      color: $color-gray;
-      > div{
-        flex-grow: 1;
-      }
-      .averagePointsValue, .yourPointsValue, .highestPointsValue {
-        font-size: $font-size-gigantic;
-        color: $color-blue;
-      }
-    }
-  }
+.gameCurrentPlayers {
+  margin-right: $spacing-small;
+  margin-left: $spacing-small;
+  word-break: break-all;
+}
 
-  .userInfoWrapper {
-    margin-top: $spacing-huge;
-    margin-bottom: $spacing-huge;
-    padding: $spacing-average;
-    justify-content: center;
-    @include light-box-shadow();
-    background-color: $color-white;
-    text-align: center;
-    display: flex;
-    color: $color-gray;
+.joiningGame {
+  text-align: center;
+}
 
-    .remainingTransfersWrapper{
-      margin-right: $spacing-small;
-      flex-grow: 1;
-    }
+.textWrapper {
+  text-align: center;
+  color: $color-green;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  font-size: $font-size-medium;
+  flex-wrap: wrap;
+}
 
-    .remainingBudgetWrapper{
-      margin-left: $spacing-small;
-      flex-grow: 1;
-    }
-
-    .remainingTransfersValue, .remainingBudgetValue {
-      font-size: $font-size-massive;
-      color: $color-blue;
-    }
-  }
+.textValue {
+  color: $color-black;
+  margin-left: 4px;
 }

@@ -10,3 +10,13 @@
     max-width: 100%;
   }
 }
+
+.loadingWrapper {
+  margin-top: $spacing-gigantic;
+  text-align: center;
+}
+
+.loadingMessage {
+  color: $color-gray;
+  font-weight: bold;
+}

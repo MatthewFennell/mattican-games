@@ -1,0 +1,41 @@
+@import "../../../common/Styles.scss";
+
+.gameFinishedHeader, .winningTeam {
+    text-align: center;
+    font-weight: bold;
+    color: $color-blue;
+    font-size: $font-size-medium;
+}
+
+.teamText  {
+    text-align: center;
+    color: $color-green;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    font-size: $font-size-medium;
+}
+
+.teamValue {
+    color: $color-black;
+    margin-left: 4px;
+}
+
+.gameFinishedValue {
+    color: $color-black;
+    text-align: center;
+    font-weight: bold;
+}
+
+.leaveGameButton {
+    text-align: center;
+}
+
+.gameFinishedInfoWrapper {
+    margin: $spacing-medium;
+    padding: $spacing-small;
+    background-color: khaki;
+    border-radius: $spacing-small;
+    margin-top: $spacing-small;
+    margin-bottom: $spacing-small;
+}

@@ -1,0 +1,250 @@
+@import "../common/Styles.scss";
+
+.lobbyHeader {
+    text-align: center;
+    font-weight: bold;
+    color: $color-blue;
+    font-size: $font-size-large;
+    margin-top: $spacing-small;
+}
+
+.currentPlayersMessage, .gameModeText {
+    text-align: center;
+    color: $color-green;
+    font-weight: bold;
+    margin-top: $spacing-small;
+}
+
+.timePerRoundWrapper {
+    text-align: center;
+    color: $color-green;
+    font-weight: bold;
+}
+
+.gameModeText, .timePerRoundWrapper {
+    display: flex;
+}
+
+.currentPlayersText {
+    font-weight: bold;
+    text-align: center;
+    justify-content: center;
+    color: $color-green;
+    display: flex;
+}
+
+.timePerRoundWrapper {
+    justify-content: center;
+}
+
+.gameModeValue, .timePerRoundValue, .currentPlayersValue {
+    color: $color-black;
+    margin-left: 4px;
+}
+
+.timePerRound {
+    display: flex;
+    justify-content: space-evenly;
+    > div {
+        @include vertical-center-div();
+    }
+}
+
+.currentPlayersWrapper {
+    margin: $spacing-small;
+    padding: $spacing-small;
+    background-color: khaki;
+    border-radius: $spacing-small;
+}
+
+.editGame {
+    margin: $spacing-small;
+    padding: $spacing-small;
+    background-color: khaki;
+    border-radius: $spacing-small;
+}
+
+.readyUp {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.hostValue {
+    text-align: center;
+    color: $color-black;
+    margin-left: $spacing-tiny;
+    display: flex;
+}
+
+.playerName {
+    text-align: center;
+    color: $color-red;
+    display: flex;
+    padding: $spacing-tiny;
+
+    .name {
+        width: 100%;
+        margin-left: $spacing-medium;
+        @include vertical-center-div();
+    }
+
+    .status {
+        @include vertical-center-div();
+        width: $spacing-medium;
+        margin-right: $spacing-small;
+        right: 0;
+        // -webkit-animation: flickerAnimation 4s infinite;
+        // -moz-animation: flickerAnimation 4s infinite;
+        // -o-animation: flickerAnimation 4s infinite;
+        //  animation: flickerAnimation 4s infinite;
+    }
+
+    .ready {
+        color: $color-green;
+    }
+
+    .notReady {
+        color: $color-red;
+    }
+}
+
+
+.editNumberOfPlayers {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.confirmEditButton {
+    text-align: center;
+}
+
+// @keyframes flickerAnimation {
+//     0%   { opacity:1; }
+//     50%  { opacity:0; }
+//     100% { opacity:1; }
+// }
+// @-o-keyframes flickerAnimation{
+//     0%   { opacity:1; }
+//     50%  { opacity:0; }
+//     100% { opacity:1; }
+// }
+// @-moz-keyframes flickerAnimation{
+//     0%   { opacity:1; }
+//     50%  { opacity:0; }
+//     100% { opacity:1; }
+// }
+// @-webkit-keyframes flickerAnimation{
+//     0%   { opacity:1; }
+//     50%  { opacity:0; }
+//     100% { opacity:1; }
+// }
+
+.testing {
+    $color: yellow;
+}
+
+.rolesMessage {
+    text-align: center;
+    margin-top: $spacing-small;
+    color: $color-green;
+    font-weight: bold;
+}
+
+.goodRole {
+    text-align: center;
+    color: $color-blue;
+}
+
+.badRole {
+    text-align: center;
+    color: $color-red;
+}
+
+.readyUp {
+    text-align: center;
+    color: $color-green;
+}
+
+.startGameWrapper {
+    margin-top: $spacing-small;
+    text-align: center;
+}
+
+.leaveGameWrapper {
+    margin-top: $spacing-small;
+    margin-bottom: $spacing-small;
+    text-align: center;
+}
+
+.waitingForHost, .waitingForPlayersToReady, .waitingForPlayersToJoin {
+    text-align: center;
+    color: $color-gray;
+}
+
+.waitingForPlayersToJoin {
+    margin-bottom: $spacing-medium;
+}
+
+.profilePicture {
+    height: 40px;
+    width: 40px;
+}
+
+.startAndLeave {
+    display: flex;
+    justify-content: space-evenly;
+    text-align: center;
+    padding: $spacing-small;
+    background-color: khaki;
+    border-radius: $spacing-small;
+    color: $color-black;
+}
+
+.goodGuyRoles, .badGuyRoles {
+    display: flex;
+    justify-content: space-evenly;
+  }
+  
+  .roleWrapper {
+    text-align: center;
+  }
+  
+  .avalonRolesMessage {
+    color: $color-green;
+    text-align: center;
+    padding: $spacing-small;
+  }
+  
+  .avalonGoodRoleName {
+    color: $color-blue;
+    font-weight: bold;
+  }
+  
+  .avalonBadRoleName {
+    color: $color-red;
+    font-weight: bold;
+  }
+
+  .skippingRules {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+  }
+
+  .scoreCap, .timePerRound {
+    text-align: center;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .othelloDropdown {
+      text-align: center;
+      flex-wrap: wrap;
+      justify-content: space-evenly;
+  }
+
+  .doubleSelected {
+      display: flex;
+  }

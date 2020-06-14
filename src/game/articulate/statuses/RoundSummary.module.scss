@@ -1,0 +1,72 @@
+@import "../../../common/Styles.scss";
+
+.timeUp {
+    font-size: $font-size-medium;
+    color: crimson;
+    font-weight: bold;
+    text-align: center;
+}
+
+.confirmWords {
+    font-size: $font-size-medium;
+    color: $color-green;
+    font-weight: bold;
+    text-align: center;
+}
+
+.currentScore {
+    text-align: center;
+    font-weight: bold;
+}
+
+.word {
+    @include vertical-center-div();
+}
+
+.isConfirmedWord {
+    font-weight: bold;
+}
+
+.notConfirmed {
+    color: crimson;
+}
+
+.wordsGuessed {
+    text-align: center;
+    margin: $spacing-medium;
+    padding: $spacing-small;
+    margin-top: $spacing-small;
+    background-color: aquamarine;
+    border-radius: $spacing-small;
+}
+
+.headerWrapper {
+    margin: $spacing-medium;
+    margin-bottom: $spacing-small;
+    margin-top: $spacing-small;
+    padding: $spacing-small;
+    background-color: gold;
+    border-radius: $spacing-small;
+}
+
+.confirmedWrapper {
+    justify-content: center;
+}
+
+.wordRowWrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.skippedWraper {
+    margin-top: $spacing-small;
+}
+
+.confirmedWordsHeader, .skippedWordsHeader, .trashedWordsHeader {
+    text-align: center;
+    font-weight: bold;
+}
+
+.trashedWordsHeader, .skippedWordsHeader, .confirmedWordsHeader {
+    color: blueviolet;
+}

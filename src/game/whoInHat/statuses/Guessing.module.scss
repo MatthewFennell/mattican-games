@@ -1,0 +1,142 @@
+@import "../../../common/Styles.scss";
+
+.guessingHeader {
+    text-align: center;
+    font-weight: bold;
+    font-size: $font-size-medium;
+    color: $color-blue;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.remainingTime {
+    text-align: center;
+    color: crimson;
+    font-size: 60px;
+    font-weight: bold;
+}
+
+.wordToDescribe {
+    text-align: center;
+    margin: $spacing-medium;
+    margin-top: $spacing-small;
+    margin-bottom: $spacing-small;
+    padding: $spacing-medium;
+    border: 2px solid black;
+    font-size: $font-size-large;
+    border-radius: $spacing-average;
+    background-color: cornflowerblue;
+}
+
+.buttonOptions {
+    display: flex;
+    justify-content: center;
+}
+
+.gotWord {
+    text-align: center;
+}
+
+.skippedWord {
+    text-align: center;
+    margin: $spacing-large;
+    padding: $spacing-small;
+    border: 2px solid $color-black;
+    font-size: $font-size-medium;
+    margin-top: $spacing-small;
+    margin-bottom: $spacing-small;
+    background-color: aliceblue;
+}
+
+.swapBackMessage {
+    color: $color-gray;
+    font-size: $font-size-small;
+    color: $color-green;
+    font-weight: bold;
+}
+
+.viewTeamsWrapper {
+    text-align: center;
+    color: crimson;
+}
+
+.remainingWordsInPool {
+    margin-top: $spacing-tiny;
+    text-align: center;
+    color: $color-green;
+    font-weight: bold;
+    margin-top: $spacing-large;
+    font-size: $font-size-large;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.loadingWrapper {
+    font-weight: bold;
+    margin-top: $spacing-gigantic;
+    text-align: center;
+    align-items: center;
+    color: $color-blue;
+    justify-content: center;
+}
+
+.guessDescribedWord {
+    color: darkslategray;
+    font-weight: bold;
+    text-align: center;
+    justify-content: center;
+}
+
+.viewOtherTeamWordWrapper {
+    text-align: center;
+    border: 2px solid $color-green;
+    margin: $spacing-huge;
+    margin-top: $spacing-tiny;
+    margin-bottom: $spacing-tiny;
+    padding: $spacing-small;
+}
+
+.otherTeamGuessingMessage {
+    color: darkslategray;
+    font-weight: bold;
+    text-align: center;
+    justify-content: center;
+}
+
+.otherCardsWrapper {
+    text-align: center;
+    justify-content: center;
+    color: $color-blue;
+}
+
+.textWrapper {
+    text-align: center;
+    color: $color-green;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    font-size: $font-size-medium;
+}
+
+.textValue {
+    color: $color-black;
+    margin-left: 4px;
+}
+
+.infoWrapper {
+    margin: $spacing-medium;
+    margin-top: $spacing-small;
+    margin-bottom: $spacing-small;
+    padding: $spacing-small;
+    background-color: khaki;
+    border-radius: $spacing-small;
+}
+
+.allButtonsWrapper {
+    margin: $spacing-medium;
+    margin-top: $spacing-small;
+    margin-bottom: $spacing-small;
+    padding: $spacing-small;
+    background-color: burlywood;
+    border-radius: $spacing-small;
+}

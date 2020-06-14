@@ -1,0 +1,148 @@
+@import "../Styles.scss";
+
+.margin {
+  margin: $spacing-small;
+}
+
+.borderRadius {
+  border-radius: $spacing-small;
+}
+
+.fitContent {
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.wrapper{
+    position: relative;
+    color:#1670f0;
+    padding: 10px;
+    overflow:hidden;
+  }
+
+.noPadding {
+  padding: 0px;
+}
+  
+  .firstSpan {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;    
+  }
+
+  .firstSpanLoading {
+    background: linear-gradient(to right,$color-light-gray,#1779ff);
+    animation: animate1 2s linear infinite;
+  }
+  
+  .secondSpan {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 2px;
+    height: 100%;    
+  }
+
+  .secondSpanLoading {
+    background: linear-gradient(to bottom,$color-light-gray,#1779ff);
+    animation: animate2 2s linear infinite;
+    animation-delay: 1s;
+  }
+  
+  .thirdSpan {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+  }
+
+  .thirdSpanLoading {
+    background: linear-gradient(to left,$color-light-gray,#1779ff);
+    animation: animate3 2s linear infinite;
+  }
+  
+  .fourthSpan {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2px;
+    height: 100%;
+  }
+  
+.fourthSpanLoading {
+    background: linear-gradient(to top,$color-light-gray,#1779ff);
+    animation: animate4 2s linear infinite;
+    animation-delay: 1s;
+}
+
+.isRed {
+  background: linear-gradient(to right,$color-light-gray,$color-red);
+}
+
+.isBlack  {
+  background: linear-gradient(to right,$color-dark-gray,$color-black);
+}
+
+  @keyframes animate1
+  {
+   0%
+   {
+     transform:translateX(-100%);
+   
+   }
+   100%
+   {
+     transform:translateX(100%);
+   
+   }
+  }
+  @keyframes animate2 
+  {
+   0%
+   {
+     transform:translateY(-100%);
+   
+   }
+   100%
+   {
+     transform:translateY(100%);
+   
+   }
+  }
+  
+  @keyframes animate3
+  {
+   0%
+   {
+     transform:translateX(100%);
+   
+   }
+   100%
+   {
+     transform:translateX(-100%);
+   
+   }
+  }
+  @keyframes animate4 
+  {
+   0%
+   {
+     transform:translateY(100%);
+   
+   }
+   100%
+   {
+     transform:translateY(-100%);
+   
+   }
+  }
+
+  @media only screen and (max-width: 1200px) {
+    .wrapper {
+        padding: 0px;
+    }    
+}

@@ -1,0 +1,9 @@
+@import "../../common/Styles.scss";
+
+.gameTitle {
+    margin-top: $spacing-small;
+    text-align: center;
+    font-size: $font-size-huge;
+    color: $color-blue;
+    font-weight: bold;
+}

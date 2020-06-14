@@ -1,0 +1,40 @@
+@import "../../../common/Styles.scss";
+
+.gameRulesWrapper {
+    margin: $spacing-medium;
+    background-color: darksalmon;
+    border-radius: $spacing-small;
+    padding: $spacing-tiny;
+    margin-top: 0px;
+    color: $color-black;
+}
+
+.bulletPoints {
+    > li {
+        color: $color-black;
+        text-align: left;
+        margin-bottom: $spacing-small;
+    }
+}
+
+.modulusResults {
+    text-align: center;
+}
+
+.option {
+    display: flex;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    .number {
+        margin-right: $spacing-tiny;
+    }
+}
+
+.categoryModulus {
+    font-weight: bold;
+}
+
+.modulusExplanation {
+    margin-bottom: $spacing-small;
+}

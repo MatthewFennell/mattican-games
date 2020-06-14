@@ -48,9 +48,6 @@
     }
 
     .selectOwnPictureWrapper{
-        border-right: 1px solid $color-separator;
-        border-left: 1px solid $color-separator;
-
         .ownPictureOptions{
             display: flex;
             flex-wrap: wrap;
@@ -82,7 +79,8 @@
 
 @media only screen and (max-width: 600px) {
     .selectProfilePictureWrapper {
-      margin: 0px;
-      margin-top: $spacing-medium;
+    //   margin: 0px;
+      margin-top: 0px;
+      margin-bottom: 0px;
     }
   }

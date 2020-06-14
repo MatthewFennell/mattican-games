@@ -8,12 +8,19 @@ body{
   /* background-image: url("./styles/styles.png"); */
   height:100%;
   min-height: 100%;
+  font-family: 'Special Elite', cursive !important;
 }
 
 #root{
   height: 100%; 
   overflow-y: scroll;
+  font-family: 'Special Elite', cursive !important;
 }
+
+* {
+  font-family: 'Special Elite', cursive !important;
+ }
+
 
 /* input[type=text]:not(.browser-default):focus:not([readonly]),
 input[type=email]:not(.browser-default):focus:not([readonly]),
