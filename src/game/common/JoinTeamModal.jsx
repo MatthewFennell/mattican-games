@@ -1,40 +1,57 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
 import defaultStyles from './JoinTeamModal.module.scss';
 import SuccessModal from '../../common/modal/SuccessModal';
 import Dropdown from '../../common/dropdown/Dropdown';
 import StyledButton from '../../common/StyledButton/StyledButton';
+import LoadingDiv from '../../common/loadingDiv/LoadingDiv';
 
-const JoinTeamModal = props => (
-    <SuccessModal
-        backdrop
-        closeModal={props.closeModal}
-        error
-        isOpen={props.isOpen}
-        headerMessage="Choose a team to join"
-    >
-        <div className={props.styles.joinTeamWrapper}>
-            <Dropdown
-                title="Choose a team"
-                value={props.value}
-                onChange={props.onChange}
-                options={props.teams.map(team => ({
-                    id: team.name,
-                    value: team.name,
-                    text: team.name
-                }))}
-            />
+const JoinTeamModal = props => {
+    const { onConfirm } = props;
 
-            <div className={props.styles.confirmButtons}>
-                <StyledButton
-                    text="Confirm"
-                    onClick={props.onConfirm}
+    const [joiningTeam, setJoiningTeam] = useState(false);
+
+    const joinTeam = useCallback(() => {
+        setJoiningTeam(true);
+        onConfirm();
+    }, [setJoiningTeam, onConfirm]);
+
+    return (
+        <SuccessModal
+            backdrop
+            closeModal={props.closeModal}
+            error
+            isOpen={props.isOpen}
+            headerMessage="Choose a team to join"
+        >
+
+            <div className={props.styles.joinTeamWrapper}>
+                <Dropdown
+                    title="Choose a team"
+                    value={props.value}
+                    onChange={props.onChange}
+                    options={props.teams.map(team => ({
+                        id: team.name,
+                        value: team.name,
+                        text: team.name
+                    }))}
                 />
             </div>
-        </div>
-    </SuccessModal>
-);
+            <div>
+                <LoadingDiv isLoading={joiningTeam} isBorderRadius isFitContent>
+                    <div className={props.styles.confirmButtons}>
+                        <StyledButton
+                            text="Confirm"
+                            onClick={joinTeam}
+                            disabled={joiningTeam}
+                        />
+                    </div>
+                </LoadingDiv>
+            </div>
+        </SuccessModal>
+    );
+};
 
 JoinTeamModal.defaultProps = {
     closeModal: noop,

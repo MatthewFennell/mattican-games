@@ -39,11 +39,11 @@ export function* destroyGame(api, action) {
 export function* leaveMidgame(api, action) {
     try {
         if (action.mode === constants.gameModes.WhosInTheHat) {
-            yield call(api.sharedLeaveMidgame, ({
+            yield call(api.leaveUnconstrainedMidgame, ({
                 gameId: action.gameId
             }));
         } else if (action.mode === constants.gameModes.Articulate) {
-            yield call(api.sharedLeaveMidgame, ({
+            yield call(api.leaveUnconstrainedMidgame, ({
                 gameId: action.gameId
             }));
         } else if (action.mode === constants.gameModes.Othello) {
