@@ -38,7 +38,8 @@ export const loadScoreSummaryRequest = gameId => ({
     gameId
 });
 
-export const confirmScoreRequest = gameId => ({
+export const confirmScoreRequest = (gameId, confirmedWords) => ({
     type: CONFIRM_SCORE_REQUEST,
-    gameId
+    gameId,
+    confirmedWords
 });

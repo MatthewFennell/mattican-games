@@ -435,8 +435,11 @@ const GameStarted = props => {
     useEffect(() => {
         setLocalChancellor('');
         setHasConfirmedNominations(false);
+        setLocalPlayerToKill('');
+        setHasKilledPlayer(false);
     }, [props.currentGame.numberFascistPlayed, props.currentGame.numberLiberalPlayed,
-        setLocalChancellor, setHasConfirmedNominations]);
+        setLocalChancellor, setHasConfirmedNominations, setLocalPlayerToKill, setHasKilledPlayer
+    ]);
 
     const confirmKillPlayer = useCallback(() => {
         props.confirmKillPlayerRequest(props.currentGameId, localPlayerToKill);
@@ -870,9 +873,9 @@ const mapDispatchToProps = {
 };
 
 const mapStateToProps = state => ({
-    haveClosedPeekModal: state.avalon.haveClosedPeekModal,
-    haveClosedFirstInvestigation: state.avalon.haveClosedFirstInvestigation,
-    haveClosedSecondInvestigation: state.avalon.haveClosedSecondInvestigation
+    haveClosedPeekModal: state.game.haveClosedPeekModal,
+    haveClosedFirstInvestigation: state.game.haveClosedFirstInvestigation,
+    haveClosedSecondInvestigation: state.game.haveClosedSecondInvestigation
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GameStarted);

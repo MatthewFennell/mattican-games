@@ -18,6 +18,25 @@ export const SET_WORD_CONFIRMED_REQUEST = `${pre}SET_WORD_CONFIRMED_REQUEST`;
 export const LEAVE_UNCONSTRAINED_GAME_REQUEST = `${pre}LEAVE_UNCONSTRAINED_GAME_REQUEST`;
 export const JOIN_TEAM_MIDGAME_REQUEST = `${pre}JOIN_TEAM_MIDGAME_REQUEST`;
 export const RANDOMISE_TEAMS_REQUEST = `${pre}RANDOMISE_TEAMS_REQUEST`;
+export const REALIGN_CONFIRMED_WORDS = `${pre}REALIGN_CONFIRMED_WORDS`;
+export const SET_IS_RANDOMISING_TEAMS = `${pre}SET_IS_RANDOMISING_TEAMS`;
+export const SET_IS_ADDING_TEAM = `${pre}SET_IS_ADDING_TEAM`;
+
+export const setIsAddingTeam = isAdding => ({
+    type: SET_IS_ADDING_TEAM,
+    isAdding
+});
+
+export const setIsRandomisingTeams = isRandomising => ({
+    type: SET_IS_RANDOMISING_TEAMS,
+    isRandomising
+});
+
+export const realignConfirmedWords = (gameId, confirmedWords) => ({
+    type: REALIGN_CONFIRMED_WORDS,
+    gameId,
+    confirmedWords
+});
 
 export const gameError = (error, header) => ({
     type: GAME_ERROR,

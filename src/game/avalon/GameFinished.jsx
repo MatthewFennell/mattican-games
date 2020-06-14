@@ -40,7 +40,7 @@ const GameFinished = props => {
                 <div className={props.styles.goodGuysHeader}>The loyal servants of Arthur won</div>
                 <div className={props.styles.allRolesWrapper}>
                     {props.currentGame.playerRoles.map(r => (
-                        <div>
+                        <div key={r.player}>
                             {`${helpers.mapUserIdToName(props.users, r.player)}
                          was ${r.role === 'RegularGood' ? 'Regular Good' : r.role}`}
 
@@ -120,7 +120,7 @@ GameFinished.propTypes = {
         status: PropTypes.string
     }),
     styles: PropTypes.objectOf(PropTypes.string),
-    users: PropTypes.objectOf(PropTypes.shape({}))
+    users: PropTypes.shape({})
 };
 
 export default GameFinished;

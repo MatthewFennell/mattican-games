@@ -7,7 +7,7 @@ import {
     addTeamRequest, joinTeamRequest,
     trashWordRequest, randomiseTeamsRequest, gotWordRequest,
     leaveUnconstrainedGameRequest, joinTeamMidgameRequest, setWordConfirmedRequest,
-    skipWordRequest
+    skipWordRequest, realignConfirmedWords
 } from '../actions';
 import MakingTeams from '../common/MakingTeams';
 import PrepareToGuess from './statuses/PrepareToGuess';
@@ -41,6 +41,8 @@ const GameStarted = props => {
                     auth={props.auth}
                     currentGame={props.currentGame}
                     currentGameId={props.currentGameId}
+                    isAddingTeam={props.isAddingTeam}
+                    isRandomisingTeams={props.isRandomisingTeams}
                     joinTeamRequest={props.joinTeamRequest}
                     randomiseTeamsRequest={props.randomiseTeamsRequest}
                     startGameRequest={props.startGameRequest}
@@ -86,6 +88,7 @@ const GameStarted = props => {
                     confirmScoreRequest={props.confirmScoreRequest}
                     currentGame={props.currentGame}
                     currentGameId={props.currentGameId}
+                    realignConfirmedWords={props.realignConfirmedWords}
                     setWordConfirmedRequest={props.setWordConfirmedRequest}
                     users={props.users}
                 />
@@ -134,6 +137,8 @@ GameStarted.defaultProps = {
         waitingToJoinTeam: []
     },
     currentGameId: '',
+    isAddingTeam: false,
+    isRandomisingTeams: false,
     users: {},
     styles: defaultStyles
 };
@@ -148,6 +153,7 @@ GameStarted.propTypes = {
     joinTeamMidgameRequest: PropTypes.func.isRequired,
     loadSummaryRequest: PropTypes.func.isRequired,
     randomiseTeamsRequest: PropTypes.func.isRequired,
+    realignConfirmedWords: PropTypes.func.isRequired,
     setWordConfirmedRequest: PropTypes.func.isRequired,
     startGameRequest: PropTypes.func.isRequired,
     startRoundRequest: PropTypes.func.isRequired,
@@ -167,6 +173,8 @@ GameStarted.propTypes = {
         waitingToJoinTeam: PropTypes.arrayOf(PropTypes.string)
     }),
     currentGameId: PropTypes.string,
+    isAddingTeam: PropTypes.bool,
+    isRandomisingTeams: PropTypes.bool,
     users: PropTypes.shape({})
 };
 
@@ -180,6 +188,7 @@ const mapDispatchToProps = {
     joinTeamRequest,
     joinTeamMidgameRequest,
     randomiseTeamsRequest,
+    realignConfirmedWords,
     setWordConfirmedRequest,
     skipWordRequest,
     spadeRoundWinnerRequest,

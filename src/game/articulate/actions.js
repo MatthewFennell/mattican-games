@@ -31,9 +31,10 @@ export const loadSummaryRequest = gameId => ({
     gameId
 });
 
-export const confirmScoreRequest = gameId => ({
+export const confirmScoreRequest = (gameId, confirmedWords) => ({
     type: CONFIRM_SCORE_REQUEST,
-    gameId
+    gameId,
+    confirmedWords
 });
 
 export const spadeRoundWinnerRequest = (gameId, name) => ({

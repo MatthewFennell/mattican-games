@@ -1,4 +1,5 @@
-import React, { useCallback } from 'react';
+/* eslint-disable max-len */
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
 import classNames from 'classnames';
@@ -6,13 +7,57 @@ import defaultStyles from './RoundSummary.module.scss';
 import * as helpers from '../../helpers';
 import StyledButton from '../../../common/StyledButton/StyledButton';
 import Switch from '../../../common/Switch/Switch';
+import LoadingDiv from '../../../common/loadingDiv/LoadingDiv';
 
 const RoundSummary = props => {
+    const {
+        setWordConfirmedRequest, realignConfirmedWords, currentGameId,
+        confirmScoreRequest
+    } = props;
+
+    const [localConfirmedWords, setLocalConfiredWords] = useState(props.currentGame.confirmedWords);
+    const [isConfirmingScore, setIsConfirmingScore] = useState(false);
+
     const toggleWord = useCallback(word => {
-        props.setWordConfirmedRequest(props.currentGameId, word,
+        setWordConfirmedRequest(props.currentGameId, word,
             !props.currentGame.confirmedWords.includes(word));
-        // eslint-disable-next-line
-    }, [props.currentGameId, props.currentGame, props.setWordConfirmedRequest]);
+
+        if (localConfirmedWords.includes(word)) {
+            setLocalConfiredWords(localConfirmedWords.filter(w => w !== word));
+        } else {
+            setLocalConfiredWords([...localConfirmedWords, word]);
+        }
+    }, [props.currentGameId, props.currentGame.confirmedWords, setWordConfirmedRequest, setLocalConfiredWords,
+        localConfirmedWords]);
+
+    const arraysAreEqual = (arr1, arr2) => {
+        if (arr1.some(x => !arr2.includes(x))) {
+            return false;
+        }
+        if (arr2.some(x => !arr1.includes(x))) {
+            return false;
+        }
+        return true;
+    };
+
+    const confirmScore = useCallback(() => {
+        setIsConfirmingScore(true);
+        confirmScoreRequest(currentGameId, localConfirmedWords);
+    }, [confirmScoreRequest, currentGameId, localConfirmedWords, setIsConfirmingScore]);
+
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (props.auth.uid === props.currentGame.activeExplainer) {
+                if (!arraysAreEqual(localConfirmedWords, props.currentGame.confirmedWords)) {
+                    realignConfirmedWords(currentGameId, localConfirmedWords);
+                }
+            }
+        }, 5000);
+        return () => clearInterval(interval);
+    },
+    [props.auth.uid, props.currentGame.activeExplainer, localConfirmedWords, props.currentGame.confirmedWords, currentGameId,
+        realignConfirmedWords]);
 
     return (
         <div className={props.styles.roundSummaryWrapper}>
@@ -42,17 +87,16 @@ const RoundSummary = props => {
                             <div className={props.styles.wordRowWrapper} key={word}>
                                 <div className={classNames({
                                     [props.styles.word]: true,
-                                    [props.styles.isConfirmedWord]: props.currentGame
-                                        .confirmedWords.includes(word),
-                                    [props.styles.notConfirmed]: !props.currentGame
-                                        .confirmedWords.includes(word)
+                                    [props.styles.isConfirmedWord]: localConfirmedWords
+                                        .includes(word),
+                                    [props.styles.notConfirmed]: !localConfirmedWords.includes(word)
                                 })}
                                 >
                                     {word}
                                 </div>
                                 <div>
                                     <Switch
-                                        checked={props.currentGame.confirmedWords.includes(word)}
+                                        checked={localConfirmedWords.includes(word)}
                                         onChange={() => toggleWord(word)}
                                         color="primary"
                                     />
@@ -72,17 +116,15 @@ const RoundSummary = props => {
                             <div className={props.styles.wordRowWrapper} key={word}>
                                 <div className={classNames({
                                     [props.styles.word]: true,
-                                    [props.styles.isConfirmedWord]: props.currentGame
-                                        .confirmedWords.includes(word),
-                                    [props.styles.notConfirmed]: !props.currentGame
-                                        .confirmedWords.includes(word)
+                                    [props.styles.isConfirmedWord]: localConfirmedWords.includes(word),
+                                    [props.styles.notConfirmed]: !localConfirmedWords.includes(word)
                                 })}
                                 >
                                     {word}
                                 </div>
                                 <div>
                                     <Switch
-                                        checked={props.currentGame.confirmedWords.includes(word)}
+                                        checked={localConfirmedWords.includes(word)}
                                         onChange={() => toggleWord(word)}
                                         color="primary"
                                     />
@@ -122,11 +164,12 @@ const RoundSummary = props => {
                         ))}
                     </div>
                 ) }
-
-                    <StyledButton
-                        onClick={() => props.confirmScoreRequest(props.currentGameId)}
-                        text={`Confirm score of ${props.currentGame.confirmedWords.length}`}
-                    />
+                    <LoadingDiv isFitContent isBlack isBorderRadius isLoading={isConfirmingScore}>
+                        <StyledButton
+                            onClick={confirmScore}
+                            text={`Confirm score of ${localConfirmedWords.length}`}
+                        />
+                    </LoadingDiv>
 
                 </div>
             )}
@@ -153,6 +196,7 @@ RoundSummary.defaultProps = {
         wordsGuessed: []
     },
     currentGameId: '',
+    realignConfirmedWords: noop,
     setWordConfirmedRequest: noop,
     styles: defaultStyles,
     users: {}
@@ -181,6 +225,7 @@ RoundSummary.propTypes = {
         wordsGuessed: PropTypes.arrayOf(PropTypes.string)
     }),
     currentGameId: PropTypes.string,
+    realignConfirmedWords: PropTypes.func,
     setWordConfirmedRequest: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})

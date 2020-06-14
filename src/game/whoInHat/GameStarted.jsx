@@ -12,7 +12,7 @@ import {
     addTeamRequest, joinTeamRequest, gotWordRequest, skipWordRequest,
     trashWordRequest, setWordConfirmedRequest,
     leaveUnconstrainedGameRequest, joinTeamMidgameRequest,
-    randomiseTeamsRequest
+    randomiseTeamsRequest, realignConfirmedWords
 } from '../actions';
 import defaultStyles from './GameStarted.module.scss';
 import JoinTeamModal from '../common/JoinTeamModal';
@@ -39,6 +39,8 @@ const GameStarted = props => {
                     auth={props.auth}
                     currentGame={props.currentGame}
                     currentGameId={props.currentGameId}
+                    isAddingTeam={props.isAddingTeam}
+                    isRandomisingTeams={props.isRandomisingTeams}
                     joinTeamRequest={props.joinTeamRequest}
                     randomiseTeamsRequest={props.randomiseTeamsRequest}
                     startGameRequest={props.startWhoInHatGameRequest}
@@ -83,6 +85,7 @@ const GameStarted = props => {
                     confirmScoreRequest={props.confirmScoreRequest}
                     currentGame={props.currentGame}
                     currentGameId={props.currentGameId}
+                    realignConfirmedWords={props.realignConfirmedWords}
                     setWordConfirmedRequest={props.setWordConfirmedRequest}
                     users={props.users}
                 />
@@ -133,6 +136,8 @@ GameStarted.defaultProps = {
         waitingToJoinTeam: []
     },
     currentGameId: '',
+    isAddingTeam: false,
+    isRandomisingTeams: false,
     styles: defaultStyles,
     users: {}
 };
@@ -153,11 +158,14 @@ GameStarted.propTypes = {
     }),
     currentGameId: PropTypes.string,
     gotWordRequest: PropTypes.func.isRequired,
+    isAddingTeam: PropTypes.bool,
+    isRandomisingTeams: PropTypes.bool,
     joinTeamRequest: PropTypes.func.isRequired,
     joinTeamMidgameRequest: PropTypes.func.isRequired,
     leaveUnconstrainedGameRequest: PropTypes.func.isRequired,
     loadScoreSummaryRequest: PropTypes.func.isRequired,
     randomiseTeamsRequest: PropTypes.func.isRequired,
+    realignConfirmedWords: PropTypes.func.isRequired,
     setWordConfirmedRequest: PropTypes.func.isRequired,
     skipWordRequest: PropTypes.func.isRequired,
     startWhoInHatGameRequest: PropTypes.func.isRequired,
@@ -177,6 +185,7 @@ const mapDispatchToProps = {
     leaveUnconstrainedGameRequest,
     loadScoreSummaryRequest,
     randomiseTeamsRequest,
+    realignConfirmedWords,
     setWordConfirmedRequest,
     skipWordRequest,
     startWhoInHatGameRequest,

@@ -218,7 +218,7 @@ const Guessing = props => {
                                     <StyledButton
                                         disabled={isSkippingDisabled(
                                             props.currentGame.skippingRule, skippedWord
-                                        )}
+                                        ) || (!viewingSkippedWord && !words[currentWordIndex])}
                                         onClick={skipWord}
                                         text="Skip word"
                                     />
@@ -228,6 +228,7 @@ const Guessing = props => {
                                     <StyledButton
                                         onClick={trashWord}
                                         text="Trash word"
+                                        disabled={(!viewingSkippedWord && !words[currentWordIndex])}
                                     />
                                 </div>
                             </div>
@@ -236,6 +237,7 @@ const Guessing = props => {
                                 <StyledButton
                                     onClick={gotWord}
                                     text="Got it!"
+                                    disabled={(!viewingSkippedWord && !words[currentWordIndex])}
                                 />
                             </div>
 

@@ -24,6 +24,10 @@
   cursor: pointer;
 }
 
+.gameWrapper:focus {
+  outline: none;
+}
+
 .gameName {
   text-align: center;
   color: $color-blue;

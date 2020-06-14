@@ -65,7 +65,8 @@ export function* loadSummary(api, action) {
 export function* confirmScore(api, action) {
     try {
         yield call(api.confirmScore, ({
-            gameId: action.gameId
+            gameId: action.gameId,
+            confirmedWords: action.confirmedWords
         }));
     } catch (error) {
         yield put(commonActions.gameError(error, 'Confirm Score error'));

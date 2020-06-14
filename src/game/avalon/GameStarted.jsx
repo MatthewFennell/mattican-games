@@ -265,7 +265,7 @@ const GameStarted = props => {
             {props.currentGame.status === constants.avalonGameStatuses.GuessingMerlin
             && props.currentGame
                 .playerToGuessMerlin === props.auth.uid && (
-                <LoadingDiv isLoading={hasGuessedMerlin} isMargin>
+                <LoadingDiv isLoading={hasGuessedMerlin} isMargin isBlack isBorderRadius>
                     <div className={props.styles.guessingMerlinWrapper}>
                         <Fade
                             includeCheckbox
@@ -366,7 +366,7 @@ const GameStarted = props => {
             ) }
 
             {props.currentGame.status === constants.avalonGameStatuses.Finished && (
-                <LoadingDiv isMargin isFitContent isLoading={isLeavingOrDestroyingGame}>
+                <LoadingDiv isMargin isFitContent isLoading={isLeavingOrDestroyingGame} isBorderRadius>
                     <div className={props.styles.endGameWrapper}>
                         {props.currentGame.host === props.auth.uid && (
                             <div className={props.styles.destroyGameButton}>

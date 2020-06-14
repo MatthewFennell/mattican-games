@@ -82,10 +82,12 @@ export function* editDisplayName(api, action) {
 
 export function* addTeam(api, action) {
     try {
+        yield put(actions.setIsAddingTeam(true));
         yield call(api.addTeam, ({
             gameId: action.gameId,
             teamName: action.teamName
         }));
+        yield put(actions.setIsAddingTeam(false));
     } catch (error) {
         yield put(actions.gameError(error, 'Add Team error'));
     }
@@ -170,15 +172,27 @@ export function* joinTeamMidgame(api, action) {
 
 export function* randomiseTeams(api, action) {
     try {
+        yield put(actions.setIsRandomisingTeams(true));
         yield call(api.randomiseTeams, ({
             gameId: action.gameId,
             numberOfTeams: action.numberOfTeams
         }));
+        yield put(actions.setIsRandomisingTeams(false));
     } catch (error) {
         yield put(actions.gameError(error, 'Randomise Teams error'));
     }
 }
 
+export function* realignConfirmedWords(api, action) {
+    try {
+        yield call(api.realignConfirmedWords, ({
+            gameId: action.gameId,
+            confirmedWords: action.confirmedWords
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Realign Words error'));
+    }
+}
 export default function* overviewSaga() {
     yield all([
         takeEvery(actions.LEAVE_GAME_REQUEST, leaveGame, gameApi),
@@ -197,6 +211,7 @@ export default function* overviewSaga() {
         takeEvery(actions.SET_WORD_CONFIRMED_REQUEST, confirmWord, gameApi),
         takeEvery(actions.LEAVE_UNCONSTRAINED_GAME_REQUEST, leaveUnconstrainedGame, gameApi),
         takeEvery(actions.JOIN_TEAM_MIDGAME_REQUEST, joinTeamMidgame, gameApi),
-        takeEvery(actions.RANDOMISE_TEAMS_REQUEST, randomiseTeams, gameApi)
+        takeEvery(actions.RANDOMISE_TEAMS_REQUEST, randomiseTeams, gameApi),
+        takeEvery(actions.REALIGN_CONFIRMED_WORDS, realignConfirmedWords, gameApi)
     ]);
 }

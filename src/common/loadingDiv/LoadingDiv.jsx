@@ -8,7 +8,8 @@ const LoadingDiv = props => (
         [props.styles.wrapper]: true,
         [props.styles.margin]: props.isMargin,
         [props.styles.borderRadius]: props.isBorderRadius,
-        [props.styles.fitContent]: props.isFitContent
+        [props.styles.fitContent]: props.isFitContent,
+        [props.styles.noPadding]: props.isNoPadding
     })}
     >
         <span className={classNames({
@@ -51,6 +52,7 @@ LoadingDiv.defaultProps = {
     isFitContent: false,
     isLoading: false,
     isMargin: false,
+    isNoPadding: false,
     isRed: false,
     styles: defaultStyles
 };
@@ -65,6 +67,7 @@ LoadingDiv.propTypes = {
     isFitContent: PropTypes.bool,
     isLoading: PropTypes.bool,
     isMargin: PropTypes.bool,
+    isNoPadding: PropTypes.bool,
     isRed: PropTypes.bool,
     styles: PropTypes.objectOf(PropTypes.string)
 };

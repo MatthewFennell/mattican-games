@@ -203,7 +203,7 @@ const GameNotStarted = props => {
                             <div>Time per round:</div>
 
                             <div className={props.styles.timePerRoundValue}>
-                                <div>{`${props.currentGame.timePerRound} (s)`}</div>
+                                <div>{`${props.currentGame.timePerRound}s`}</div>
                             </div>
                         </div>
                         <div className={props.styles.timePerRoundWrapper}>
@@ -213,13 +213,15 @@ const GameNotStarted = props => {
                                 <div>{`${constants.whoInHatSkipping[props.currentGame.skippingRule]}`}</div>
                             </div>
                         </div>
-                        <div className={props.styles.timePerRoundWrapper}>
-                            <div>Score cap:</div>
+                        {props.currentGame.scoreCap && (
+                            <div className={props.styles.timePerRoundWrapper}>
+                                <div>Score cap:</div>
 
-                            <div className={props.styles.timePerRoundValue}>
-                                <div>{`${props.currentGame.scoreCap}`}</div>
+                                <div className={props.styles.timePerRoundValue}>
+                                    <div>{`${props.currentGame.scoreCap}`}</div>
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </>
                 )}
 
