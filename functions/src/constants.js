@@ -318,3 +318,5 @@ module.exports.othelloPlayerTypes = {
     Human: 'Human',
     Computer: 'Computer'
 };
+
+module.exports.statsId = 'game-stats-id';

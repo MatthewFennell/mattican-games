@@ -1,3 +1,4 @@
+/* eslint-disable no-loop-func */
 
 /* eslint-disable max-len */
 const admin = require('firebase-admin');
@@ -177,6 +178,32 @@ const runtimeOpts = {
     memory: '2GB'
 };
 
+const updateStats = (board, playerWhite, playerBlack, difficulty) => db.collection('stats')
+    .doc(constants.statsId).get().then(document => {
+        const { Othello } = document.data();
+
+        const whiteScore = common.calculateScore(board, 1);
+        const blackScore = common.calculateScore(board, -1);
+
+        const computerWon = (whiteScore > blackScore && playerWhite === constants.othelloPlayerTypes.Computer)
+        || (blackScore > whiteScore && playerBlack === constants.othelloPlayerTypes.Computer);
+
+        const isDraw = whiteScore === blackScore;
+
+        const humanWon = !isDraw && !computerWon;
+
+        document.ref.update({
+            Othello: {
+                ...Othello,
+                [difficulty]: {
+                    Computer: computerWon ? Othello[difficulty].Computer + 1 : Othello[difficulty].Computer,
+                    Human: humanWon ? Othello[difficulty].Human + 1 : Othello[difficulty].Human,
+                    Draw: isDraw ? Othello[difficulty].Draw + 1 : Othello[difficulty].Draw
+                }
+            }
+        });
+    });
+
 exports.placeDisc = functions
     .runWith(runtimeOpts)
     .region(constants.region)
@@ -188,7 +215,7 @@ exports.placeDisc = functions
             }
 
             const {
-                activePlayer, board, playerBlack, playerWhite
+                activePlayer, board, playerBlack, playerWhite, difficulty
             } = doc.data();
 
             if (activePlayer === 1 && context.auth.uid !== playerWhite) {
@@ -221,7 +248,7 @@ exports.placeDisc = functions
                     board: newBoard,
                     hasFinished: true,
                     aiError: false
-                });
+                }).then(() => updateStats(newBoard, playerWhite, playerBlack, difficulty));
             }
 
             let nextPlayer = activePlayer * -1;
@@ -267,7 +294,7 @@ exports.placeDisc = functions
                         board: newBoard,
                         hasFinished: true,
                         aiError: false
-                    });
+                    }).then(() => updateStats(newBoard, playerWhite, playerBlack, difficulty));
                 }
 
                 // This is after the computer has played and we know that at least one player can go
@@ -279,7 +306,7 @@ exports.placeDisc = functions
                             board: newBoard,
                             hasFinished: true,
                             aiError: false
-                        });
+                        }).then(() => updateStats(newBoard, playerWhite, playerBlack, difficulty));
                     }
 
                     const nextComputerMove = queries.getComputerMove(newBoard, activePlayer, difficulty);
@@ -356,7 +383,6 @@ exports.regenerateComputerMove = functions
 
             // At this point we can assume that they have available moves
             // If they had no moves available, it wouldn't be their turn
-            console.log('getting computer move');
             const computerMove = queries.getComputerMove(board, activePlayer, constants.othelloAIDifficulties.Hard);
             let newBoard = queries.placeDisc(board, computerMove.row, computerMove.column, activePlayer);
 
@@ -374,7 +400,6 @@ exports.regenerateComputerMove = functions
             // This is after the computer has played and we know that at least one player can go
             // It should keep making moves whilst the human has no available moves
             while (queries.getNumberOfAvailableMoves(newBoard, activePlayer * -1) === 0) {
-                console.log('looping');
                 // It may be the case after placing their second move that now neither player have any moves available
                 if (queries.getNumberOfAvailableMoves(newBoard, activePlayer) === 0) {
                     return doc.ref.update({

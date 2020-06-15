@@ -2,6 +2,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const fp = require('lodash/fp');
+const _ = require('lodash');
 const constants = require('./constants');
 
 module.exports.isAuthenticated = context => {
@@ -230,3 +231,7 @@ module.exports.findNextExplainerInTeam = team => {
     const index = team.members.findIndex(member => member === team.previousExplainer);
     return team.members[(index + 1) % team.members.length];
 };
+
+
+module.exports.calculateScore = (board, player) => _.flatten(Object.values(board))
+    .filter(x => x === player).length;

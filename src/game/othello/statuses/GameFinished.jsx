@@ -5,6 +5,7 @@ import defaultStyles from './GameFinished.module.scss';
 import StyledButton from '../../../common/StyledButton/StyledButton';
 import LoadingDiv from '../../../common/loadingDiv/LoadingDiv';
 
+
 const GameFinished = props => {
     const { leaveGameRequest } = props;
 
@@ -25,9 +26,9 @@ const GameFinished = props => {
             <LoadingDiv isLoading={hasLeft} isBlack isBorderRadius isFitContent>
                 <div className={props.styles.leaveButton}>
                     <StyledButton
-                        text="Leave"
+                        text="Leave game"
                         onClick={leaveGame}
-                        diabled={hasLeft}
+                        disabled={hasLeft}
                     />
                 </div>
             </LoadingDiv>
