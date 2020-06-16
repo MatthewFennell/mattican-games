@@ -503,7 +503,7 @@ const GameNotStarted = props => {
             )}
 
 
-            <LoadingDiv isMargin isLoading={isStartingOrLeavingGame} isBorderRadius isBlack>
+            <LoadingDiv isMargin isLoading={isStartingOrLeavingGame} isBorderRadius isBlack isNoPadding>
                 <div className={props.styles.startAndLeave}>
                     {props.currentGame.host !== props.auth.uid
                 && (
