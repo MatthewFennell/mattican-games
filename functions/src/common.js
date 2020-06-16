@@ -107,6 +107,9 @@ module.exports.hasQuestFailed = (round, numberOfPlayers, numFail) => {
     if (round !== 4 && numFail >= 1) {
         return true;
     }
+    if (round === 4 && numberOfPlayers <= 6 && numFail >= 1) {
+        return true;
+    }
     return false;
 };
 

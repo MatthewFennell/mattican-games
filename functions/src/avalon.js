@@ -9,6 +9,20 @@ const db = admin.firestore();
 
 const operations = admin.firestore.FieldValue;
 
+const updateStats = (isGoodWin, numberOfPlayers) => db.collection('stats')
+    .doc(constants.statsId).get().then(doc => {
+        const { Avalon } = doc.data();
+        return doc.ref.update({
+            Avalon: {
+                ...Avalon,
+                [numberOfPlayers]: {
+                    Good: isGoodWin ? Avalon[numberOfPlayers].Good + 1 : Avalon[numberOfPlayers].Good,
+                    Bad: isGoodWin ? Avalon[numberOfPlayers].Bad : Avalon[numberOfPlayers].Bad + 1
+                }
+            }
+        });
+    });
+
 exports.createAvalonGame = functions
     .region(constants.region)
     .https.onCall((data, context) => {
@@ -344,10 +358,10 @@ exports.goOnQuest = functions
                     }
                     if (numSuc === 3 && playingWithMerlin) {
                         nextStatus = constants.avalonGameStatuses.GuessingMerlin;
-
                         const badPlayers = playerRoles.filter(r => !constants.avalonRoles[r.role].isGood).map(r => r.player);
-
                         randomBadGuyToGuessMerlin = badPlayers[Math.floor(Math.random() * badPlayers.length)];
+                    } else if (numSuc === 3) {
+                        nextStatus = constants.avalonGameStatuses.Finished;
                     }
                     if (numSuc < 3 && numFail < 3) {
                         nextStatus = constants.avalonGameStatuses.Nominating;
@@ -372,6 +386,11 @@ exports.goOnQuest = functions
                                 round
                             }, ...history
                         ]
+                    }).then(() => {
+                        if (nextStatus === constants.avalonGameStatuses.Finished) {
+                            return updateStats(numSuc === 3, numberOfPlayers);
+                        }
+                        return Promise.resolve();
                     });
                 }
                 return Promise.resolve();
@@ -390,11 +409,13 @@ exports.guessMerlin = functions
             if (!doc.data().playerToGuessMerlin === context.auth.uid) {
                 throw new functions.https.HttpsError('invalid-argument', 'You aren\'t the one to guess Merlin');
             }
+            const { numberOfPlayers } = doc.data();
+
             const merlin = doc.data().playerRoles.filter(r => r.role === constants.avalonRoles.Merlin.name).map(r => r.player);
 
             return doc.ref.update({
                 guessedMerlinCorrectly: merlin.includes(data.merlin),
                 status: constants.avalonGameStatuses.Finished
-            });
+            }).then(() => updateStats(merlin.includes(data.merlin), numberOfPlayers));
         });
     });
