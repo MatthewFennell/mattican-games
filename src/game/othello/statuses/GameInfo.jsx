@@ -48,6 +48,7 @@ const getWinner = (game, users) => {
     return 'No Winners! It was a draw';
 };
 
+
 const GameInfo = props => (
     <div className={props.styles.gameInfoWrapper}>
         <Fade
@@ -115,6 +116,7 @@ const GameInfo = props => (
                 <StyledButton
                     text="Regenerate AI move"
                     onClick={() => props.regenerateComputerMove(props.currentGameId)}
+                    disabled={props.currentGame.hasFinished}
                 />
             </div>
         )}

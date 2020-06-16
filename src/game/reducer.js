@@ -11,7 +11,9 @@ export const initialState = {
     haveClosedSecondInvestigation: false,
 
     isAddingTeam: false,
-    isRandomisingTeams: false
+    isRandomisingTeams: false,
+
+    isApprovingLeaveMidgame: false
 };
 
 const overviewReducer = (state = initialState, action) => {
@@ -55,6 +57,12 @@ const overviewReducer = (state = initialState, action) => {
         return {
             ...state,
             isAddingTeam: action.isAdding
+        };
+    }
+    case actions.SET_IS_APPROVING_LEAVE_MIDGAME: {
+        return {
+            ...state,
+            isApprovingLeaveMidgame: action.isApproving
         };
     }
     default:

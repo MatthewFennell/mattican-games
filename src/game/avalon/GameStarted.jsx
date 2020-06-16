@@ -233,6 +233,17 @@ const GameStarted = props => {
     }, [props.currentGame.leader, props.auth.uid, props.currentGameId, localOnQuest, props.currentGame.questNominations,
         hasSentNominations]);
 
+
+    const getRole = role => {
+        if (role === constants.avalonRoles.RegularGood.name) {
+            return 'Regular Good';
+        }
+        if (role === constants.avalonRoles.RegularBad.name) {
+            return 'Regular Bad';
+        }
+        return role;
+    };
+
     return (
         <div className={props.styles.gameStartedWrapper}>
             {props.currentGame.status === constants.avalonGameStatuses.Finished
@@ -416,7 +427,7 @@ const GameStarted = props => {
                         [props.styles.isBad]: !helpers.isRoleGood(props.myRole)
                     })}
                     >
-                        {`Role: ${props.myRole === constants.avalonRoles.RegularGood.name ? 'Regular Good' : props.myRole}`}
+                        {`Role: ${getRole(props.myRole)}`}
                     </div>
                     {generateSecretInfo(props.myRole)}
                 </div>
@@ -490,26 +501,29 @@ const GameStarted = props => {
                         {props.currentGame.rejectLeaveMidgame.map(id => <div className={props.styles.rejection} key={id}><FiberManualRecordIcon fontSize="small" /></div>)}
                     </div>
 
-                    <div className={props.styles.endGameButtons}>
-
-                        <StyledButton
-                            text="Approve"
-                            onClick={() => props.approveLeaveMidgameRequest(
-                                props.currentGameId, true
-                            )}
-                            disabled={props.currentGame.approveLeaveMidgame.includes(props.auth.uid)
-                                || props.currentGame.rejectLeaveMidgame.includes(props.auth.uid)}
-                        />
-                        <StyledButton
-                            text="Reject"
-                            color="secondary"
-                            onClick={() => props.approveLeaveMidgameRequest(
-                                props.currentGameId, false
-                            )}
-                            disabled={props.currentGame.approveLeaveMidgame.includes(props.auth.uid)
-                                || props.currentGame.rejectLeaveMidgame.includes(props.auth.uid)}
-                        />
-                    </div>
+                    <LoadingDiv isLoading={props.isApprovingLeaveMidgame} isBorderRadius isBlack>
+                        <div className={props.styles.endGameButtons}>
+                            <StyledButton
+                                text="Approve"
+                                onClick={() => props.approveLeaveMidgameRequest(
+                                    props.currentGameId, true
+                                )}
+                                disabled={props.currentGame.approveLeaveMidgame.includes(props.auth.uid)
+                                || props.currentGame.rejectLeaveMidgame.includes(props.auth.uid)
+                                || props.isApprovingLeaveMidgame}
+                            />
+                            <StyledButton
+                                text="Reject"
+                                color="secondary"
+                                onClick={() => props.approveLeaveMidgameRequest(
+                                    props.currentGameId, false
+                                )}
+                                disabled={props.currentGame.approveLeaveMidgame.includes(props.auth.uid)
+                                || props.currentGame.rejectLeaveMidgame.includes(props.auth.uid)
+                                || props.isApprovingLeaveMidgame}
+                            />
+                        </div>
+                    </LoadingDiv>
                 </div>
             </SuccessModal>
         </div>
@@ -545,6 +559,7 @@ GameStarted.defaultProps = {
         rejectLeaveMidgame: []
     },
     currentGameId: '',
+    isApprovingLeaveMidgame: false,
     myRole: '',
     styles: defaultStyles,
     users: {}
@@ -583,6 +598,7 @@ GameStarted.propTypes = {
         status: PropTypes.string
     }),
     destroyGameRequest: PropTypes.func.isRequired,
+    isApprovingLeaveMidgame: PropTypes.bool,
     leaveGameRequest: PropTypes.func.isRequired,
     guessMerlinRequest: PropTypes.func.isRequired,
     nominatePlayerForQuest: PropTypes.func.isRequired,
@@ -604,6 +620,10 @@ const mapDispatchToProps = {
     realignQuestNominations
 };
 
-export default connect(null, mapDispatchToProps)(GameStarted);
+const mapStateToProps = state => ({
+    isApprovingLeaveMidgame: state.game.isApprovingLeaveMidgame
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(GameStarted);
 
 export { GameStarted as GameStartedUnconnected };

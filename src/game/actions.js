@@ -21,6 +21,12 @@ export const RANDOMISE_TEAMS_REQUEST = `${pre}RANDOMISE_TEAMS_REQUEST`;
 export const REALIGN_CONFIRMED_WORDS = `${pre}REALIGN_CONFIRMED_WORDS`;
 export const SET_IS_RANDOMISING_TEAMS = `${pre}SET_IS_RANDOMISING_TEAMS`;
 export const SET_IS_ADDING_TEAM = `${pre}SET_IS_ADDING_TEAM`;
+export const SET_IS_APPROVING_LEAVE_MIDGAME = `${pre}SET_IS_APPROVING_LEAVE_MIDGAME`;
+
+export const setIsApprovingLeaveMidgame = isApproving => ({
+    type: SET_IS_APPROVING_LEAVE_MIDGAME,
+    isApproving
+});
 
 export const setIsAddingTeam = isAdding => ({
     type: SET_IS_ADDING_TEAM,

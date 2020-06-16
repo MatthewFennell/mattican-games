@@ -217,6 +217,20 @@ exports.confirmChancellor = functions
         });
     });
 
+const updateStats = (isFascistWin, numberOfPlayers) => db.collection('stats')
+    .doc(constants.statsId).get().then(doc => {
+        const { Hitler } = doc.data();
+        return doc.ref.update({
+            Hitler: {
+                ...Hitler,
+                [numberOfPlayers]: {
+                    Fascist: isFascistWin ? Hitler[numberOfPlayers].Fascist + 1 : Hitler[numberOfPlayers].Fascist,
+                    Liberal: isFascistWin ? Hitler[numberOfPlayers].Liberal : Hitler[numberOfPlayers].Liberal + 1
+                }
+            }
+        });
+    });
+
 exports.makeVote = functions
     .region(constants.region)
     .https.onCall((data, context) => {
@@ -274,7 +288,7 @@ exports.makeVote = functions
                                             votesNo: votesAgainst
                                         }, ...history
                                     ]
-                                });
+                                }).then(() => updateStats(true, numberOfPlayers));
                             }
                         }
 
@@ -329,7 +343,7 @@ exports.makeVote = functions
                                         votesNo: votesAgainst
                                     }, ...history
                                 ]
-                            });
+                            }).then(() => updateStats(topCard === -1, numberOfPlayers));
                         }
 
                         return doc.ref.update({
@@ -482,7 +496,7 @@ exports.playChancellorCard = functions
                                 card: data.card
                             }, ...history
                         ]
-                    });
+                    }).then(() => updateStats(false, numberOfPlayers));
                 }
 
 
@@ -532,7 +546,7 @@ exports.playChancellorCard = functions
                             card: data.card
                         }, ...history
                     ]
-                });
+                }).then(() => updateStats(true, numberOfPlayers));
             }
 
             const nextMode = common.nextGameStatus(numberOfPlayers, numberFascistPlayed + 1);
@@ -910,7 +924,7 @@ exports.confirmKillPlayer = functions
 
             const {
                 president, currentPlayers, playerRoles, deadPlayers, temporaryPresident,
-                history
+                history, numberOfPlayers
             } = doc.data();
 
             const { playerToKill } = data;
@@ -933,7 +947,7 @@ exports.confirmKillPlayer = functions
                             round: doc.data().round
                         }, ...history
                     ]
-                });
+                }).then(() => updateStats(false, numberOfPlayers));
             }
 
             return doc.ref.update({
@@ -1009,7 +1023,8 @@ exports.replyToVeto = functions
 
             const {
                 cardDeck, consecutiveRejections, numberFascistPlayed, numberLiberalPlayed, discardPile,
-                president, currentPlayers, deadPlayers, chancellor, history, chancellorCards
+                president, currentPlayers, deadPlayers, chancellor, history, chancellorCards,
+                numberOfPlayers
             } = doc.data();
 
             if (!data.isApprove) {
@@ -1067,7 +1082,7 @@ exports.replyToVeto = functions
                                 round: doc.data().round
                             }, ...history
                         ]
-                    });
+                    }).then(() => updateStats(topCard === -1, numberOfPlayers));
                 }
 
                 return doc.ref.update({

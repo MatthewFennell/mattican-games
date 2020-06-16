@@ -1,5 +1,5 @@
 import {
-    all, takeEvery, put, call
+    all, takeEvery, put, call, delay
 } from 'redux-saga/effects';
 import * as actions from './actions';
 import * as gameApi from './api';
@@ -60,10 +60,13 @@ export function* leaveMidgame(api, action) {
 
 export function* approveLeaveMidgame(api, action) {
     try {
+        yield put(actions.setIsApprovingLeaveMidgame(true));
         yield call(api.approveLeaveMidgame, ({
             gameId: action.gameId,
             isApprove: action.isApprove
         }));
+        yield delay(1000);
+        yield put(actions.setIsApprovingLeaveMidgame(false));
     } catch (error) {
         yield put(actions.gameError(error, 'Leave Midgame Error'));
     }
