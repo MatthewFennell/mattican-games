@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
 
-
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Toolbar from '@material-ui/core/Toolbar';
 import Container from '@material-ui/core/Container';
@@ -82,7 +81,5 @@ export default compose(
         {
             collection: 'games'
         }
-    ]),
+    ])
 )(App);
-
-// Multiple occurences in history

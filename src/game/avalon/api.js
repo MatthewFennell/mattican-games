@@ -8,4 +8,4 @@ export const makeVote = request => functionToCall('avalon-makeVote')(request);
 export const goOnQuest = request => functionToCall('avalon-goOnQuest')(request);
 export const guessMerlin = request => functionToCall('avalon-guessMerlin')(request);
 export const createAvalonGame = request => functionToCall('avalon-createAvalonGame')(request);
-export const realignQuestNominations = request => functionToCall('realignQuestNominations')(request);
+export const realignQuestNominations = request => functionToCall('avalon-realignQuestNominations')(request);

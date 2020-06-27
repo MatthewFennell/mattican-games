@@ -164,7 +164,6 @@ exports.startGame = functions
                 const computerMove = queries.getComputerMove(board, activePlayer, difficulty);
                 const newBoard = queries.placeDisc(board, computerMove.row, computerMove.column, activePlayer);
 
-
                 // It must always end with it becoming the other players turn (or the game ending above)
                 return doc.ref.update({
                     activePlayer: activePlayer * -1,
@@ -313,7 +312,6 @@ exports.placeDisc = functions
                     newBoard = queries.placeDisc(newBoard, nextComputerMove.row, nextComputerMove.column, activePlayer);
                 }
 
-
                 // It must always end with it becoming the other players turn (or the game ending above)
                 return doc.ref.update({
                     activePlayer: activePlayer * -1,
@@ -322,7 +320,6 @@ exports.placeDisc = functions
                 });
             }));
     });
-
 
 exports.leaveGame = functions
     .region(constants.region)
@@ -364,7 +361,6 @@ exports.resign = functions
             });
         });
     });
-
 
 exports.regenerateComputerMove = functions
     .runWith(runtimeOpts)
@@ -413,7 +409,6 @@ exports.regenerateComputerMove = functions
                 newBoard = queries.placeDisc(newBoard, nextComputerMove.row, nextComputerMove.column, activePlayer);
             }
 
-
             // It must always end with it becoming the other players turn (or the game ending above)
             return doc.ref.update({
                 activePlayer: activePlayer * -1,
@@ -422,7 +417,6 @@ exports.regenerateComputerMove = functions
             });
         });
     });
-
 
 exports.setAiError = functions
     .region(constants.region)
