@@ -404,7 +404,6 @@ export const getAvailableMoves = (board, activePlayer) => {
     return availableMoves;
 };
 
-
 // Takes non converted board
 export const getRandomMove = (board, activePlayer) => {
     const availableMoves = getAvailableMoves(board, activePlayer);
@@ -538,7 +537,6 @@ const isRightDownStable = (board, row, column, stableDiscs) => {
     if (row === 0 || row === 7 || column === 0 || column === 7) {
         return true;
     }
-
 
     // Extrapolate back to their earliest point, then loop as far as it can go without overflowing board
     // Don't need to start at the first one - that is covered above
@@ -773,7 +771,6 @@ const isAdjacentToCorner = (row, column) => (row === 0 && column === 1)
                                          || (row === 7 && column === 6)
                                          || (row === 6 && column === 7);
 
-
 const isEdgeCell = (row, column) => {
     if (isCorner(row, column) || isAdjacentToCorner(row, column)) {
         return false;
@@ -951,16 +948,13 @@ export const evaluatePosition = (board, history, maximisingPlayerNumber) => {
     const availableMovesBlack = getAvailableMoves(transformedBoard, -1);
     const stableDiscs = findStableDiscs(convertedBoard);
 
-
     const winner = hasPlayerWon(transformedBoard, availableMovesBlack, availableMovesWhite);
     const differenceInMobility = getMobilityDifference(availableMovesBlack, availableMovesWhite, maximisingPlayerNumber);
-
 
     const potentialMobility = calculatePotentialMobility(convertedBoard, maximisingPlayerNumber);
     const stableScore = getStableDiscsScore(convertedBoard, stableDiscs, maximisingPlayerNumber);
 
     const xSquareScore = getXSquares(convertedBoard, maximisingPlayerNumber, stableDiscs);
-
 
     if (winner === maximisingPlayerNumber) {
         return Number.MAX_SAFE_INTEGER;
@@ -968,7 +962,6 @@ export const evaluatePosition = (board, history, maximisingPlayerNumber) => {
     if (winner === maximisingPlayerNumber * -1) {
         return Number.MAX_SAFE_INTEGER * -1;
     }
-
 
     const evaluation = differenceInMobility + potentialMobility + stableScore + xSquareScore;
     return evaluation;
@@ -1042,7 +1035,6 @@ const findRoughMaxDepthOfTree = (node, depth) => {
     }
     return findRoughMaxDepthOfTree(node.children[0], depth + 1);
 };
-
 
 export const getMinimaxMove = (board, currentPlayer, maxDepth) => {
     const rootNode = makeNode(currentPlayer, null, [], currentPlayer, 0);

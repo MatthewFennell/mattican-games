@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { compose } from 'redux';
 import defaultStyles from './Overview.module.scss';
 import * as constants from '../constants';
@@ -143,6 +144,8 @@ const Overview = props => {
         setCustomNames(!isCustomNames);
     }, [isCustomNames, setCustomNames]);
 
+    const isMobile = useMediaQuery('(max-width:600px)');
+
     return (
         <>
             <div className={props.styles.overviewWrapper}>
@@ -172,6 +175,13 @@ const Overview = props => {
                     toggleCustomNames={toggleCustomNames}
                     toggleRole={toggleRole}
                 />
+
+                {!isMobile && (
+                    <div className={props.styles.playOnPhoneMessage}>
+                        Secret Hitler and Avalon are best played
+                        on a mobile or when emulating a mobile phone
+                    </div>
+                )}
 
                 <div className={props.styles.allGamesHeader}>
                     {props.allGames.length ? 'All Games' : 'No Games Exist'}
@@ -215,7 +225,6 @@ const Overview = props => {
                                         {game.mode}
                                     </div>
                                 </div>
-
 
                                 {game.currentPlayers
                         && (
@@ -325,6 +334,5 @@ export default compose(
         }
     ])
 )(Overview);
-
 
 export { Overview as OverviewUnconnected };
