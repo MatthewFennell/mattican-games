@@ -55,5 +55,4 @@ ReactDOM.render(
 
 serviceWorker.register();
 
-
 // https://console.cloud.google.com/functions/list?project=YOUR_PROJECT_NAME - kill cloud function

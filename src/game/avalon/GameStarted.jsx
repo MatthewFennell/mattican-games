@@ -28,8 +28,8 @@ import {
 } from './actions';
 
 const GameStarted = props => {
-    const [viewingRole, setViewingRole] = useState(false);
-    const [viewingBoard, setViewingBoard] = useState(false);
+    const [viewingRole, setViewingRole] = useState(true);
+    const [viewingBoard, setViewingBoard] = useState(true);
     const [merlinGuess, setMerlinGuess] = useState('');
     const [showingHistory, setShowingHistory] = useState(false);
     const [localOnQuest, setLocalOnQuest] = useState(_.union([...props.currentGame.questNominations, ...props.currentGame.playersOnQuest]));
@@ -59,7 +59,6 @@ const GameStarted = props => {
             setLocalOnQuest([...localOnQuest, player]);
         }
     }, [localOnQuest, setLocalOnQuest, props.currentGame]);
-
 
     const [guessingMerlin, setGuessingMerlin] = useState(false);
     const toggleGuessingMerlin = useCallback(() => {
@@ -172,7 +171,6 @@ const GameStarted = props => {
         );
     };
 
-
     const isPlayerOnQuest = useCallback(player => {
         if (props.currentGame.leader === props.auth.uid) {
             return localOnQuest.includes(player);
@@ -213,7 +211,6 @@ const GameStarted = props => {
         return props.currentGame.questSuccesses.includes(player) || props.currentGame.questFails.includes(player);
     }, [hasLocalPlayed, props.currentGame, props.auth.uid]);
 
-
     useEffect(() => {
         const interval = setInterval(() => {
             if (props.currentGame.leader === props.auth.uid) {
@@ -232,7 +229,6 @@ const GameStarted = props => {
         // eslint-disable-next-line
     }, [props.currentGame.leader, props.auth.uid, props.currentGameId, localOnQuest, props.currentGame.questNominations,
         hasSentNominations]);
-
 
     const getRole = role => {
         if (role === constants.avalonRoles.RegularGood.name) {
@@ -416,7 +412,6 @@ const GameStarted = props => {
                 </div>
             </div>
 
-
             <Fade
                 checked={viewingRole}
             >
@@ -461,7 +456,6 @@ const GameStarted = props => {
                     </div>
                 )}
                         </div>
-
 
                         {props.currentGame.numberOfPlayers >= 7 && (
                             <div className={props.styles.specialRoundMessage}>

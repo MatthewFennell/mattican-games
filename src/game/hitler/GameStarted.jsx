@@ -51,8 +51,8 @@ const GameStarted = props => {
         Kill
     } = constants.hitlerGameStatuses;
 
-    const [viewingRole, setViewingRole] = useState(false);
-    const [viewingBoard, setViewingBoard] = useState(false);
+    const [viewingRole, setViewingRole] = useState(true);
+    const [viewingBoard, setViewingBoard] = useState(true);
     const [showingHistory, setShowingHistory] = useState(false);
 
     const [hasLocalVoted, setHasLocalVoted] = useState(props.currentGame.votesFor.includes(props.auth.uid) || props.currentGame.votesAgainst.includes(props.auth.uid));
@@ -106,7 +106,6 @@ const GameStarted = props => {
     }, [props.auth.uid, props.currentGame.chancellor, localChancellor,
         props.currentGame.president, props.currentGame.temporaryPresident]);
 
-
     const submitNominations = useCallback(() => {
         props.confirmChancellorRequest(props.currentGameId, localChancellor);
         setHasConfirmedNominations(true);
@@ -158,7 +157,6 @@ const GameStarted = props => {
         }
         return props.currentGame.president === player;
     };
-
 
     const generateSecretInfo = role => {
         if (props.currentGame.numberOfPlayers <= 6) {
@@ -353,11 +351,9 @@ const GameStarted = props => {
         }, 5000);
         return () => clearInterval(interval);
 
-
         // eslint-disable-next-line
     }, [props.currentGame.temporaryPresident, props.currentGame.president, props.auth.uid, localPlayerToKill,
         props.currentGame.status, isPresident, props.currentGameId, setLocalPlayerToKill, setHasKilledPlayer]);
-
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -374,12 +370,10 @@ const GameStarted = props => {
         }, 5000);
         return () => clearInterval(interval);
 
-
         // eslint-disable-next-line
         }, [props.currentGame.temporaryPresident, props.currentGame.president, props.auth.uid, localInvestigate,
         props.currentGame.status, isPresident, props.currentGameId, setLocalInvestigate,
         setHasInvestigated]);
-
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -418,7 +412,6 @@ const GameStarted = props => {
             }
         }, 5000);
         return () => clearInterval(interval);
-
 
         // eslint-disable-next-line
         }, [props.currentGame.temporaryPresident, props.currentGame.president, props.auth.uid, localTempPresident,
@@ -661,7 +654,6 @@ const GameStarted = props => {
                     </div>
                 </div>
 
-
                 <Fade
                     checked={viewingRole}
                 >
@@ -677,7 +669,6 @@ const GameStarted = props => {
                         {generateHiddenInfo()}
                     </div>
                 </Fade>
-
 
                 <div className={props.styles.viewingBoardWrapper}>
                     <Fade
