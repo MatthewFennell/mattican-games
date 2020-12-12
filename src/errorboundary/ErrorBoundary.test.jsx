@@ -44,7 +44,7 @@ describe('ErrorBoundary', () => {
 
         wrapper.setState({ hasError: true });
         expect(wrapper.find('.errorHeader')).toHaveLength(1);
-        expect(wrapper.find('.errorHeader').text()).toBe(`There was an error in the ${moduleName} module. This error has been reported to the web developer.`);
+        expect(wrapper.find('.errorHeader').text()).toBe(`There was an error in the ${moduleName} module. This error has been reported to Matt.`);
     });
 });
 
