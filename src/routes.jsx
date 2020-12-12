@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 
 import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
 import HomeIcon from '@material-ui/icons/Home';
@@ -8,12 +8,23 @@ import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import ManageUsers from './admin/manageusers/ManageUsers';
 import * as rootComponents from './rootComponents';
 import * as constants from './constants';
+import Spinner from './common/spinner/Spinner';
+
+import ErrorBoundary from './errorboundary/ErrorBoundary';
+
+const generateLazyComponent = (Component, moduleName) => () => (
+    <Suspense fallback={<div style={{ textAlign: 'center', marginTop: '30px' }}><Spinner /></div>}>
+        <ErrorBoundary moduleName={moduleName}>
+            <Component />
+        </ErrorBoundary>
+    </Suspense>
+);
 
 export const adminLinks = [
     {
         title: 'Manage Users',
         icon: <SupervisorAccountIcon color="primary" />,
-        component: ManageUsers,
+        component: generateLazyComponent(ManageUsers, 'Manage Users'),
         addUserId: false,
         path: () => constants.URL.MANAGE_USERS,
         urlIncludes: constants.URL.MANAGE_USERS,
@@ -25,7 +36,7 @@ export const signedOutLinks = [
     {
         title: 'Sign In',
         icon: <DoubleArrowIcon color="primary" />,
-        component: rootComponents.SignIn,
+        component: generateLazyComponent(rootComponents.SignIn, 'Sign In'),
         path: () => constants.URL.SIGN_IN,
         urlIncludes: constants.URL.SIGN_IN,
         showInSideBar: true
@@ -33,7 +44,7 @@ export const signedOutLinks = [
     {
         title: 'Sign Up',
         icon: <AccountBoxIcon color="primary" />,
-        component: rootComponents.SignUp,
+        component: generateLazyComponent(rootComponents.SignUp, 'Sign Up'),
         path: () => constants.URL.SIGN_UP,
         urlIncludes: constants.URL.SIGN_UP,
         showInSideBar: true
@@ -44,7 +55,7 @@ export const signedInLinks = [
     {
         title: 'Overview',
         icon: <HomeIcon color="primary" />,
-        component: rootComponents.Overview,
+        component: generateLazyComponent(rootComponents.Overview, 'Overview'),
         addUserId: false,
         path: () => `${constants.URL.OVERVIEW}`,
         renderPath: `${constants.URL.OVERVIEW}`,
@@ -55,7 +66,7 @@ export const signedInLinks = [
     {
         title: 'Game',
         icon: <HomeIcon color="primary" />,
-        component: rootComponents.Game,
+        component: generateLazyComponent(rootComponents.Game, 'Game'),
         addUserId: false,
         path: () => `${constants.URL.GAME}`,
         renderPath: `${constants.URL.GAME}`,

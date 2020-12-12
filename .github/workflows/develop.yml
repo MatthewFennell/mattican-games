@@ -20,6 +20,13 @@ jobs:
     - name: install
       run:
         npm ci
+
+    - name: get-npm-version
+      id: package-version
+      uses: martinbeentjes/npm-get-version-action@master
+      with:
+        path: .
+
     - name: Load API Config
       run: |
           echo 'REACT_APP_API_KEY=${{ secrets.FIREBASE_API_KEY }}' >> .env.production
@@ -30,6 +37,8 @@ jobs:
           echo 'REACT_APP_MESSAGING_SENDER_ID=${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}' >> .env.production
           echo 'REACT_APP_APP_ID=${{ secrets.FIREBASE_APP_ID }}' >> .env.production
           echo 'REACT_APP_MEASUREMENT_ID=${{ secrets.FIREBASE_MEASUREMENT_ID }}' >> .env.production
+          echo 'REACT_APP_SENTRY_DSN=${{ secrets.SENTRY_DSN }}' >> .env.production
+          echo 'REACT_APP_VERSION=${{ steps.package-version.outputs.current-version}}' >> .env.production
 
     - name: Build
       run: 

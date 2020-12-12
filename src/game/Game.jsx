@@ -157,7 +157,6 @@ const mapStateToProps = (state, props) => ({
     errorMessage: state.game.errorMessage,
     errorCode: state.game.errorCode,
 
-
     isAddingTeam: state.game.isAddingTeam,
     isRandomisingTeams: state.game.isRandomisingTeams,
 

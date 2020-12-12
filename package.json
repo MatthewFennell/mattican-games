@@ -9,6 +9,8 @@
     "@material-ui/icons": "^4.4.3",
     "@material-ui/lab": "^4.0.0-alpha.39",
     "@material-ui/styles": "^4.5.0",
+    "@sentry/browser": "^5.29.0",
+    "@sentry/react": "^5.29.0",
     "bootstrap-css-only": "^4.3.1",
     "classnames": "^2.2.6",
     "connected-react-router": "^6.0.0",

@@ -32,7 +32,11 @@ const CreateGame = props => (
     <>
         <LoadingDiv isLoading={props.creatingGame} isFitContent isBorderRadius isRed>
             <div className={props.styles.createGameWrapper}>
-                <StyledButton text="Create Game" onClick={() => props.setMakingGame(true)} />
+                <StyledButton
+                    text="Create Game"
+                    onClick={() => props.setMakingGame(true)}
+                    disabled={props.creatingGame}
+                />
             </div>
         </LoadingDiv>
         <SuccessModal

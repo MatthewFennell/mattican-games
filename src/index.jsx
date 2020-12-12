@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import { Provider } from 'react-redux';
 import { applyMiddleware, compose, createStore } from 'redux';
+import * as Sentry from '@sentry/react';
 import createSagaMiddleware from 'redux-saga';
 import { ReactReduxFirebaseProvider, getFirebase } from 'react-redux-firebase';
 import { createFirestoreInstance } from 'redux-firestore';
@@ -14,6 +15,12 @@ import createRootReducer from './rootReducer';
 import rootSaga from './rootSaga';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+
+Sentry.init({
+    environment: process.env.REACT_APP_PROJECT_ID,
+    dsn: process.env.REACT_APP_SENTRY_DSN,
+    release: process.env.REACT_APP_VERSION
+});
 
 const history = createBrowserHistory();
 

@@ -1,0 +1,25 @@
+@import "../common/Styles.scss";
+
+.errorMessageWrapper {
+    height: calc(100vh - 64px); // Height of the top navbar
+    background-color: rgb(29, 27, 27);;
+}
+
+.errorHeader {
+    padding-top: $spacing-large;
+    text-align: center;
+    font-weight: bold;
+    color: rgb(223, 194, 194)
+}
+
+.options {
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    color: rgb(223, 194, 194);
+    padding-right: $spacing-medium;
+}
+
+.linkColor {
+    color: blueviolet
+}
