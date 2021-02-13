@@ -7,6 +7,7 @@ import pytesseract as tess
 tess.pytesseract.tesseract_cmd = r'C:\Users\mfenn\AppData\Local\Tesseract-OCR\tesseract.exe'
 import os
 import json
+import re
 
 
 allPeople = []
@@ -21,15 +22,14 @@ badFilenames = []
 def cropCards():
 	counter = -1;
 	for filename in os.listdir(os.getcwd()):
-		print (os.getcwd())
 		if filename.endswith(".png"): 
 			counter += 1
 			img = cv2.imread(filename, cv2.IMREAD_GRAYSCALE);
 			height, width = img.shape[:2]
 			crop_img = img[0:638, 110:750]
-			filename = os.getcwd()+"articulate_card_"+str(counter)+".png"
-			cv2.imwrite("articulate_card"+str(counter)+".png", crop_img)		
+			cv2.imwrite("articulate_card_"+str(counter)+".png", crop_img)		
 	print ("Cards cropped")
+	return counter
 	
 def getWords(img):
     text = tess.image_to_string(img)
@@ -37,6 +37,14 @@ def getWords(img):
     lineSplit = removedText.splitlines()
     str_list = list(filter(None, lineSplit))
     return str_list
+	
+def fixCharacters(inp):
+	return re.sub(r'\W+', '', inp)
+	
+def fixArray(inp):
+	unique = list(set(inp))
+	return list(map(fixCharacters, unique))
+	
 	
 def extractWords():
 	allPeople = []
@@ -50,7 +58,7 @@ def extractWords():
 	for filename in os.listdir(os.getcwd()):
 		if filename.startswith("articulate_card") and filename.endswith(".png"): 
 			words = getWords(filename)
-			print("filename", filename)
+			print (filename)
 			print ("words", words)
 			print("")
 			if (len(words) >= 6):
@@ -62,6 +70,14 @@ def extractWords():
 				allRandom.append(words[5])
 			else:
 				badFilenames.append(filename)
+	
+	print ("Removing duplicates")
+	allPeople = fixArray(allPeople)
+	allWorld = fixArray(allWorld)
+	allObject = fixArray(allObject)
+	allAction = fixArray(allAction)
+	allNature = fixArray(allNature)
+	allRandom = fixArray(allRandom)
 				
 	with open('badFilenames.json', 'w') as f:
 		json.dump(badFilenames, f)
@@ -87,7 +103,8 @@ def extractWords():
 	print ("Words extracted and dumped")
 
 print ("Script Started")
-cropCards()
+numCards = cropCards()
 extractWords()
-print ("Script Finished")
+print ("Script Finished - " + str(numCards) + " cards used")
+
 
