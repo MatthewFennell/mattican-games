@@ -8,6 +8,7 @@ import * as Sentry from '@sentry/react';
 import createSagaMiddleware from 'redux-saga';
 import { ReactReduxFirebaseProvider, getFirebase } from 'react-redux-firebase';
 import { createFirestoreInstance } from 'redux-firestore';
+import 'react-notifications-component/dist/theme.css';
 import { createBrowserHistory } from 'history';
 import { routerMiddleware } from 'connected-react-router';
 import { firebaseApp } from './config/fbConfig';
@@ -15,6 +16,8 @@ import createRootReducer from './rootReducer';
 import rootSaga from './rootSaga';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import * as notificationActions from './notifications/actions';
+import * as notificationTypes from './notifications/constants';
 
 Sentry.init({
     environment: process.env.REACT_APP_PROJECT_ID,
@@ -60,6 +63,16 @@ ReactDOM.render(
     document.getElementById('root')
 );
 
-serviceWorker.register();
+serviceWorker.register({
+    onUpdate: () => {
+        store.dispatch({
+            type: notificationActions.ADD_NOTIFICATION,
+            notificationType: notificationTypes.NOTIFICATION_TYPE_INFO,
+            notification: 'There are new updates available. Close all tabs of Mattican game to receive the updates',
+            duration: 0,
+            title: 'Updates Available'
+        });
+    }
+});
 
 // https://console.cloud.google.com/functions/list?project=YOUR_PROJECT_NAME - kill cloud function

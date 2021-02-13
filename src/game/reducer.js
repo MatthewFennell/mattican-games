@@ -1,5 +1,6 @@
 import * as actions from './actions';
 import * as hitlerActions from './hitler/actions';
+import * as whoInHatActions from './whoInHat/actions';
 
 export const initialState = {
     errorCode: '',
@@ -12,6 +13,8 @@ export const initialState = {
 
     isAddingTeam: false,
     isRandomisingTeams: false,
+
+    isAddingWord: false,
 
     isApprovingLeaveMidgame: false
 };
@@ -63,6 +66,18 @@ const overviewReducer = (state = initialState, action) => {
         return {
             ...state,
             isApprovingLeaveMidgame: action.isApproving
+        };
+    }
+    case whoInHatActions.ADD_WORD_REQUEST: {
+        return {
+            ...state,
+            isAddingWord: true
+        };
+    }
+    case whoInHatActions.CANCEL_ADDING_WORD: {
+        return {
+            ...state,
+            isAddingWord: false
         };
     }
     default:

@@ -6,6 +6,7 @@ import * as whoInHatApi from './api';
 import * as commonActions from '../actions';
 import * as constants from '../../constants';
 import * as overviewActions from '../../overview/actions';
+import * as notificationActions from '../../notifications/actions';
 
 export function* addWord(api, action) {
     try {
@@ -13,8 +14,11 @@ export function* addWord(api, action) {
             gameId: action.gameId,
             word: action.word
         }));
+        yield put(notificationActions.addNotification(`Successfully added word ${action.word}`));
     } catch (error) {
         yield put(commonActions.gameError(error, 'Add Word error'));
+    } finally {
+        yield put(actions.cancelAddingWord());
     }
 }
 
@@ -102,7 +106,6 @@ export function* createGame(api, action) {
         yield put(commonActions.gameError(error, 'Create Game Error'));
     }
 }
-
 
 export default function* whoInHatSaga() {
     yield all([

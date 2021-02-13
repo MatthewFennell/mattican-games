@@ -69,7 +69,6 @@ const MakingTeams = props => {
         || hasStartedGame || props.isAddingTeam),
     [props.isRandomisingTeams, hasStartedGame, props.isAddingTeam]);
 
-
     const startGame = useCallback(() => {
         setHasStartedGame(true);
         props.startGameRequest(props.currentGameId);
@@ -205,19 +204,29 @@ const MakingTeams = props => {
             >
                 <div className={props.styles.addNewWordWrapper}>
                     <TextInput onChange={setWord} value={word} label="Choose word" />
+                    <LoadingDiv
+                        isLoading={props.isAddingWord}
+                        isFitContent
+                        isNoPadding
+                        isRed
+                        isBorderRadius
+                    >
 
-                    <div className={props.styles.confirmButtons}>
-                        <StyledButton
-                            text="Confirm"
-                            onClick={confirmAddWord}
-                        />
+                        <div className={props.styles.confirmButtons}>
+                            <StyledButton
+                                text="Confirm"
+                                onClick={confirmAddWord}
+                                disabled={props.isAddingWord}
+                            />
 
-                        <StyledButton
-                            color="secondary"
-                            onClick={closeAddingWord}
-                            text="Close"
-                        />
-                    </div>
+                            <StyledButton
+                                color="secondary"
+                                onClick={closeAddingWord}
+                                text="Close"
+                                disabled={props.isAddingWord}
+                            />
+                        </div>
+                    </LoadingDiv>
                 </div>
             </SuccessModal>
 
@@ -263,6 +272,7 @@ MakingTeams.defaultProps = {
     },
     currentGameId: '',
     isAddingTeam: false,
+    isAddingWord: false,
     isRandomisingTeams: false,
     joinTeamRequest: noop,
     randomiseTeamsRequest: noop,
@@ -292,6 +302,7 @@ MakingTeams.propTypes = {
     }),
     currentGameId: PropTypes.string,
     isAddingTeam: PropTypes.bool,
+    isAddingWord: PropTypes.bool,
     isRandomisingTeams: PropTypes.bool,
     joinTeamRequest: PropTypes.func,
     randomiseTeamsRequest: PropTypes.func,

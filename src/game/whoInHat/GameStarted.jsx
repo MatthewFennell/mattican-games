@@ -40,6 +40,7 @@ const GameStarted = props => {
                     currentGame={props.currentGame}
                     currentGameId={props.currentGameId}
                     isAddingTeam={props.isAddingTeam}
+                    isAddingWord={props.isAddingWord}
                     isRandomisingTeams={props.isRandomisingTeams}
                     joinTeamRequest={props.joinTeamRequest}
                     randomiseTeamsRequest={props.randomiseTeamsRequest}
@@ -48,7 +49,6 @@ const GameStarted = props => {
                 />
             );
         }
-
 
         if (props.currentGame.status === constants.whoInHatGameStatuses.PrepareToGuess) {
             return (
@@ -137,6 +137,7 @@ GameStarted.defaultProps = {
     },
     currentGameId: '',
     isAddingTeam: false,
+    isAddingWord: false,
     isRandomisingTeams: false,
     styles: defaultStyles,
     users: {}
@@ -159,6 +160,7 @@ GameStarted.propTypes = {
     currentGameId: PropTypes.string,
     gotWordRequest: PropTypes.func.isRequired,
     isAddingTeam: PropTypes.bool,
+    isAddingWord: PropTypes.bool,
     isRandomisingTeams: PropTypes.bool,
     joinTeamRequest: PropTypes.func.isRequired,
     joinTeamMidgameRequest: PropTypes.func.isRequired,

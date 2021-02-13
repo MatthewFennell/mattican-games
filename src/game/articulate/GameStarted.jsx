@@ -32,7 +32,6 @@ const GameStarted = props => {
         // eslint-disable-next-line
     }, [teamToJoin, props.joinTeamMidgameRequest, props.currentGameId])
 
-
     const generateComponent = () => {
         if (props.currentGame.status === constants.whoInHatGameStatuses.MakingTeams) {
             return (

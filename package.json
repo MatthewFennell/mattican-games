@@ -36,6 +36,7 @@
     "react-google-login": "^5.0.5",
     "react-media": "^1.10.0",
     "react-modal": "^3.10.1",
+    "react-notifications-component": "^3.0.3",
     "react-redux": "^6.0.0",
     "react-redux-firebase": "^3.0.0-alpha.16",
     "react-router": "^4.3.1",

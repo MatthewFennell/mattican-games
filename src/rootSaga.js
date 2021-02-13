@@ -9,6 +9,7 @@ import whoInHatSaga from './game/whoInHat/saga';
 import avalonSaga from './game/avalon/saga';
 import hitlerSaga from './game/hitler/saga';
 import othelloSaga from './game/othello/saga';
+import notificationSaga from './notifications/saga';
 
 export default function* rootSaga() {
     yield all([
@@ -17,6 +18,7 @@ export default function* rootSaga() {
         authSaga(),
         avalonSaga(),
         hitlerSaga(),
+        notificationSaga(),
         othelloSaga(),
         overviewSaga(),
         profileSaga(),

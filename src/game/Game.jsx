@@ -17,6 +17,7 @@ import { closeGameError } from './actions';
 import * as constants from '../constants';
 
 const Game = props => {
+    console.log('isAddingWord', props.isAddingWord);
     const generateGameThingToLoad = (gameId, isReady, myRole) => {
         if (!props.currentGame.hasStarted) {
             return (
@@ -60,6 +61,7 @@ const Game = props => {
                     currentGame={props.currentGame}
                     currentGameId={props.currentGameId}
                     isAddingTeam={props.isAddingTeam}
+                    isAddingWord={props.isAddingWord}
                     isRandomisingTeams={props.isRandomisingTeams}
                     users={props.users}
                 />
@@ -159,6 +161,7 @@ const mapStateToProps = (state, props) => ({
 
     isAddingTeam: state.game.isAddingTeam,
     isRandomisingTeams: state.game.isRandomisingTeams,
+    isAddingWord: state.game.isAddingWord,
 
     auth: state.firebase.auth,
     currentGameId: selectors.getGameId(props),
