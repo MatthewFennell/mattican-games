@@ -39,24 +39,24 @@ exports.createGame = functions
                         throw new functions.https.HttpsError('already-exists', 'A game with that name already exists');
                     }
 
-                    const spade = [];
-                    const random = [];
-                    const object = [];
-                    const action = [];
-                    const world = [];
-                    const person = [];
-                    const nature = [];
+                    const spades = [];
 
-                    for (let x = 0; x < 100; x += 1) {
-                        spade.push(`Spade ${x}`);
-                        random.push(`Random ${x}`);
-                        object.push(`Object ${x}`);
-                        action.push(`Action ${x}`);
-                        world.push(`World ${x}`);
-                        person.push(`Person ${x}`);
-                        nature.push(`Nature ${x}`);
+                    for (let x = 0; x < constants.articulateObject.length; x += 1) {
+                        const rand = Math.floor(Math.random() * 6);
+                        if (rand === 0) {
+                            spades.push(constants.articulateAction[x]);
+                        } else if (rand === 1) {
+                            spades.push(constants.articulateNature[x]);
+                        } else if (rand === 2) {
+                            spades.push(constants.articulateObject[x]);
+                        } else if (rand === 3) {
+                            spades.push(constants.articulatePeople[x]);
+                        } else if (rand === 4) {
+                            spades.push(constants.articulateRandom[x]);
+                        } else {
+                            spades.push(constants.articulateWorld[x]);
+                        }
                     }
-
 
                     return db.collection('games').add({
                         activeCategory: null,
@@ -80,13 +80,13 @@ exports.createGame = functions
                         temporaryTeam: null,
                         trashedWords: [],
                         words: {
-                            Object: object,
-                            World: world,
-                            Spade: spade,
-                            Nature: nature,
-                            Random: random,
-                            Action: action,
-                            Person: person
+                            Object: constants.articulateObject,
+                            World: constants.articulateWorld,
+                            Spade: spades,
+                            Nature: constants.articulateNature,
+                            Random: constants.articulateRandom,
+                            Action: constants.articulateAction,
+                            Person: constants.articulatePeople
                         },
                         timePerRound: Math.min(Number(data.timePerRound), 120),
                         waitingToJoinTeam: [],
@@ -119,7 +119,6 @@ exports.editGame = functions
             });
         });
     });
-
 
 exports.startGame = functions
     .region(constants.region)
@@ -267,7 +266,7 @@ exports.confirmScore = functions
             const confirmedWords = data.confirmedWords || [];
 
             const {
-                activeCategory, activeTeam, teams, words, skippedWords, trashedWords, temporaryTeam,
+                activeCategory, activeTeam, teams, words, temporaryTeam,
                 scoreCap
             } = doc.data();
 
@@ -281,8 +280,7 @@ exports.confirmScore = functions
 
             const newWords = {
                 ...words,
-                [activeCategory]: words[activeCategory].filter(x => !confirmedWords.includes(x)
-            && !skippedWords.includes(x) && !trashedWords.includes(x))
+                [activeCategory]: fp.shuffle(words[activeCategory].filter(x => !confirmedWords.includes(x)))
             };
 
             const newTeamScores = teams.map(team => {

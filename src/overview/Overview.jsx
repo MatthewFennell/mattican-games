@@ -41,7 +41,7 @@ const Overview = props => {
 
     const [skippingRule, setSkippingRule] = useState(constants.whoInHatSkipping.Unlimited);
     const [isCustomNames, setCustomNames] = useState(false);
-    const [scoreCap, setScoreCap] = useState(50);
+    const [scoreCap, setScoreCap] = useState(constants.articulateMaxScore);
     const [timePerRound, setTimePerRound] = useState(60);
 
     const [othelloPlayerType, setOthelloPlayerType] = useState('');

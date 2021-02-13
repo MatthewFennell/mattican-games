@@ -502,7 +502,6 @@ const GameNotStarted = props => {
                 </div>
             )}
 
-
             <LoadingDiv
                 isMargin
                 isLoading={isStartingOrLeavingGame}

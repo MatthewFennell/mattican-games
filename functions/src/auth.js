@@ -130,7 +130,6 @@ exports.getRolePermissions = functions
         });
     });
 
-
 exports.deleteUser = functions
     .region(constants.region)
     .https.onCall((data, context) => {

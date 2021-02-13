@@ -6,6 +6,8 @@
 /imageRecognition/*.jpeg
 /imageRecognition/*.png
 
+/imageRecognition/AllPhotos/*
+
 # config-file
 # env
 .env.development

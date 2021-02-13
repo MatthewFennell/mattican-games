@@ -292,7 +292,6 @@ exports.makeVote = functions
                             }
                         }
 
-
                         const presidentCards = cardDeck.slice(0, 3);
                         const remainingCards = cardDeck.slice(3);
 
@@ -426,7 +425,6 @@ exports.giveCardsToChancellor = functions
             const remainingCard = doc.data().presidentCards;
             const chancellorCards = data.cards;
 
-
             chancellorCards.forEach(x => {
                 const index = remainingCard.indexOf(x);
                 if (index > -1) {
@@ -442,7 +440,6 @@ exports.giveCardsToChancellor = functions
             });
         });
     });
-
 
 exports.playChancellorCard = functions
     .region(constants.region)
@@ -498,7 +495,6 @@ exports.playChancellorCard = functions
                         ]
                     }).then(() => updateStats(false, numberOfPlayers));
                 }
-
 
                 return doc.ref.update({
                     cardDeck: common.generateNewPackOfCards(cardDeck, newDiscardPile),
@@ -1048,7 +1044,6 @@ exports.replyToVeto = functions
 
                 const nextCardDeck = common.generateNewPackOfCards(cardDeck, firstDiscardPile);
                 const nextDiscardDeck = cardDeck.length < 3 ? [] : firstDiscardPile;
-
 
                 const topCard = fp.first(nextCardDeck);
                 const remainingCards = nextCardDeck.slice(1);

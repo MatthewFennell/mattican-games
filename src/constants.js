@@ -191,7 +191,6 @@ export const historyTypes = {
     Kill: 'Kill'
 };
 
-
 export const whoInHatSkipping = {
     Unlimited: 'Unlimited',
     OneSkip: 'One Skip',
@@ -214,7 +213,7 @@ export const articulateCategories = {
     Object: 'Object'
 };
 
-export const articulateMaxScore = 50;
+export const articulateMaxScore = 20;
 
 export const othelloPlayerTypes = {
     Human: 'Human',
