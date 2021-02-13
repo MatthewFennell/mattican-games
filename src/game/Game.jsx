@@ -17,7 +17,6 @@ import { closeGameError } from './actions';
 import * as constants from '../constants';
 
 const Game = props => {
-    console.log('isAddingWord', props.isAddingWord);
     const generateGameThingToLoad = (gameId, isReady, myRole) => {
         if (!props.currentGame.hasStarted) {
             return (

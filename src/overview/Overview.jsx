@@ -40,7 +40,7 @@ const Overview = props => {
     const [activeAvalonRoles, setActiveAvalonRoles] = useState([]);
 
     const [skippingRule, setSkippingRule] = useState(constants.whoInHatSkipping.Unlimited);
-    const [isCustomNames, setCustomNames] = useState(false);
+    const [isCustomNames, setCustomNames] = useState(true);
     const [scoreCap, setScoreCap] = useState(constants.articulateMaxScore);
     const [timePerRound, setTimePerRound] = useState(60);
 
