@@ -9,5 +9,6 @@ export const confirmScore = request => functionToCall('articulate-confirmScore')
 export const confirmSpadeRoundWinner = request => functionToCall('articulate-confirmSpadeRoundWinner')(request);
 export const confirmWinner = request => functionToCall('articulate-confirmWinner')(request);
 export const createArticulateGame = request => functionToCall('articulate-createGame')(request);
+export const deleteGame = request => functionToCall('articulate-deleteGame')(request);
 
 export { gotWord, skipWord, trashWord } from '../api';

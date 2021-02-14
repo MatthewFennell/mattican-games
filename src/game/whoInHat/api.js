@@ -8,3 +8,4 @@ export const editGameWhoInHat = request => functionToCall('whoInHat-editGame')(r
 export const loadSummary = request => functionToCall('whoInHat-loadSummary')(request);
 export const confirmScore = request => functionToCall('whoInHat-confirmScore')(request);
 export const createWhoInHatGame = request => functionToCall('whoInHat-createGame')(request);
+export const deleteGame = request => functionToCall('whoInHat-deleteGame')(request);

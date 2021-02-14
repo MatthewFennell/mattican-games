@@ -9,6 +9,8 @@ import StyledButton from '../../../common/StyledButton/StyledButton';
 import LoadingDiv from '../../../common/loadingDiv/LoadingDiv';
 import Switch from '../../../common/Switch/Switch';
 import GameRules from './GameRules';
+import DeleteGame from '../../../common/DeleteGame/DeleteGame';
+import * as constants from '../../../constants';
 
 const PrepareToGuess = props => {
     const { currentGameId, startRoundRequest } = props;
@@ -94,6 +96,14 @@ const PrepareToGuess = props => {
                         onChange={toggleViewingTeams}
                     />
                 </div>
+                {props.auth.uid === props.currentGame.host && (
+                    <div>
+                        <DeleteGame
+                            gameId={props.currentGameId}
+                            gameMode={constants.articulateGameMode}
+                        />
+                    </div>
+                )}
                 <div className={props.styles.rulesWrapper}>
                     <div className={props.styles.rulesDescription}>
                         View Rules

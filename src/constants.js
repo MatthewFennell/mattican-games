@@ -31,12 +31,18 @@ export const PERMISSIONS = {
 
 export const successDelay = 3500;
 
+export const articulateGameMode = 'Articulate';
+export const avalonGameMode = 'Avalon';
+export const hitlerGameMode = 'Hitler';
+export const othelloGameMode = 'Othello';
+export const whoInHatGameMode = 'Who\'s in the Hat?';
+
 export const gameModes = {
-    Articulate: 'Articulate',
-    Avalon: 'Avalon',
-    Hitler: 'Hitler',
-    Othello: 'Othello',
-    WhosInTheHat: 'Who\'s in the Hat?'
+    Articulate: articulateGameMode,
+    Avalon: avalonGameMode,
+    Hitler: hitlerGameMode,
+    Othello: othelloGameMode,
+    WhosInTheHat: whoInHatGameMode
 };
 
 export const hitlerRoles = {

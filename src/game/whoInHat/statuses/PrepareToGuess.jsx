@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
+import DeleteGame from '../../../common/DeleteGame/DeleteGame';
 import defaultStyles from './PrepareToGuess.module.scss';
 import * as helpers from '../../helpers';
 import TeamsAndScore from '../../common/TeamsAndScore';
@@ -9,6 +10,7 @@ import StyledButton from '../../../common/StyledButton/StyledButton';
 import { remainingCards } from './Guessing';
 import JoinTeamModal from '../../common/JoinTeamModal';
 import LoadingDiv from '../../../common/loadingDiv/LoadingDiv';
+import * as constants from '../../../constants';
 
 const teamHasOnlyMe = (game, myId) => {
     if (!game || !game.teams) {
@@ -45,7 +47,6 @@ const PrepareToGuess = props => {
         setStartingRound(true);
     }, [currentGameId, startWhoInHatRoundRequest, setStartingRound]);
 
-
     return (
         <div className={props.styles.prepareToGuessWrapper}>
             <div className={props.styles.infoWrapper}>
@@ -70,7 +71,7 @@ const PrepareToGuess = props => {
 
                 <div className={props.styles.buttonsWrapper}>
                     {props.auth.uid === props.currentGame.activeExplainer && (
-                        <LoadingDiv isFitContent isLoading={isStartingRound} isBlack isBorderRadius>
+                        <LoadingDiv isLoading={isStartingRound} isBlack isBorderRadius>
                             <div className={props.styles.startRoundButton}>
                                 <StyledButton
                                     onClick={startRound}
@@ -99,6 +100,12 @@ const PrepareToGuess = props => {
                                 onConfirm={joinTeam}
                             />
                         </>
+                    )}
+                    {props.auth.uid === props.currentGame.host && (
+                        <DeleteGame
+                            gameId={props.currentGameId}
+                            gameMode={constants.whoInHatGameMode}
+                        />
                     )}
                 </div>
             </div>

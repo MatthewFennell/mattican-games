@@ -3,7 +3,28 @@ import {
 } from 'redux-saga/effects';
 import * as actions from './actions';
 import * as gameApi from './api';
+import * as articulateApi from './articulate/api';
+import * as whoInHatApi from './whoInHat/api';
 import * as constants from '../constants';
+
+const deleteGameApis = {
+    [constants.articulateGameMode]: articulateApi.deleteGame,
+    [constants.whoInHatGameMode]: whoInHatApi.deleteGame
+};
+
+export function* deleteGame(api, action) {
+    const apiToUse = deleteGameApis[action.gameMode];
+
+    try {
+        yield call(apiToUse, ({
+            gameId: action.gameId
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Delete Game error'));
+    } finally {
+        yield put(actions.cancelDeletingGame());
+    }
+}
 
 export function* leaveGame(api, action) {
     try {
@@ -215,6 +236,7 @@ export default function* overviewSaga() {
         takeEvery(actions.LEAVE_UNCONSTRAINED_GAME_REQUEST, leaveUnconstrainedGame, gameApi),
         takeEvery(actions.JOIN_TEAM_MIDGAME_REQUEST, joinTeamMidgame, gameApi),
         takeEvery(actions.RANDOMISE_TEAMS_REQUEST, randomiseTeams, gameApi),
-        takeEvery(actions.REALIGN_CONFIRMED_WORDS, realignConfirmedWords, gameApi)
+        takeEvery(actions.REALIGN_CONFIRMED_WORDS, realignConfirmedWords, gameApi),
+        takeEvery(actions.DELETE_GAME_REQUEST, deleteGame, gameApi)
     ]);
 }

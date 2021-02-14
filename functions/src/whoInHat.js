@@ -119,7 +119,6 @@ exports.startGame = functions
         });
     });
 
-
 exports.start = functions
     .region(constants.region)
     .https.onCall((data, context) => {
@@ -130,7 +129,6 @@ exports.start = functions
             }
 
             const playersNotInTeams = common.findPlayersNotInTeam(doc.data());
-
 
             if (playersNotInTeams && playersNotInTeams.length > 0) {
                 throw new functions.https.HttpsError('invalid-argument', 'There are some players not in a team');
@@ -179,7 +177,6 @@ exports.startRound = functions
             });
         });
     });
-
 
 exports.addWord = functions
     .region(constants.region)
@@ -294,7 +291,6 @@ exports.loadSummary = functions
 
             const endingWord = words[currentWordIndex];
 
-
             return doc.ref.update({
                 currentWordIndex: 0,
                 status: constants.whoInHatGameStatuses.RoundSummary,
@@ -304,5 +300,20 @@ exports.loadSummary = functions
                 words: words.filter(word => word !== endingWord),
                 trashedWords: endingWord ? [...trashedWords, endingWord] : trashedWords
             });
+        });
+    });
+
+exports.deleteGame = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found');
+            }
+            if (doc.data().host !== context.auth.uid) {
+                throw new functions.https.HttpsError('permission-denied', 'You are not the host');
+            }
+            return doc.ref.delete();
         });
     });

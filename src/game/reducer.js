@@ -12,9 +12,9 @@ export const initialState = {
     haveClosedSecondInvestigation: false,
 
     isAddingTeam: false,
-    isRandomisingTeams: false,
-
     isAddingWord: false,
+    isDeletingGame: false,
+    isRandomisingTeams: false,
 
     isApprovingLeaveMidgame: false
 };
@@ -78,6 +78,18 @@ const overviewReducer = (state = initialState, action) => {
         return {
             ...state,
             isAddingWord: false
+        };
+    }
+    case actions.DELETE_GAME_REQUEST: {
+        return {
+            ...state,
+            isDeletingGame: true
+        };
+    }
+    case actions.CANCEL_DELETING_GAME: {
+        return {
+            ...state,
+            isDeletingGame: false
         };
     }
     default:

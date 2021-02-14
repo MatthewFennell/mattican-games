@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
+import LoadingDiv from '../loadingDiv/LoadingDiv';
 import defaultStyles from './ConfirmModal.module.scss';
 import StyledButton from '../StyledButton/StyledButton';
 import WithModal from './WithModal';
@@ -10,23 +11,29 @@ const ConfirmModal = props => (
         <div className={props.styles.modalText}>
             {props.text}
         </div>
-        <div className={props.styles.buttonsWrapper}>
-            <StyledButton
-                color="primary"
-                onClick={props.submit}
-                text="Yes"
-            />
-            <StyledButton
-                color="secondary"
-                onClick={props.cancel}
-                text="No"
-            />
-        </div>
+        <LoadingDiv isLoading={props.isLoading} isBorderRadius isFitContent>
+            <div className={props.styles.buttonsWrapper}>
+                <StyledButton
+                    color="primary"
+                    onClick={props.submit}
+                    text="Yes"
+                    disabled={props.isDisabled}
+                />
+                <StyledButton
+                    color="secondary"
+                    onClick={props.cancel}
+                    text="No"
+                    disabled={props.isDisabled}
+                />
+            </div>
+        </LoadingDiv>
     </>
 );
 
 ConfirmModal.defaultProps = {
     cancel: noop,
+    isDisabled: false,
+    isLoading: false,
     styles: defaultStyles,
     submit: noop,
     text: 'Are you sure?'
@@ -34,6 +41,8 @@ ConfirmModal.defaultProps = {
 
 ConfirmModal.propTypes = {
     cancel: PropTypes.func,
+    isDisabled: PropTypes.bool,
+    isLoading: PropTypes.bool,
     styles: PropTypes.objectOf(PropTypes.string),
     submit: PropTypes.func,
     text: PropTypes.string

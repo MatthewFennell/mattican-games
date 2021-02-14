@@ -22,6 +22,8 @@ export const REALIGN_CONFIRMED_WORDS = `${pre}REALIGN_CONFIRMED_WORDS`;
 export const SET_IS_RANDOMISING_TEAMS = `${pre}SET_IS_RANDOMISING_TEAMS`;
 export const SET_IS_ADDING_TEAM = `${pre}SET_IS_ADDING_TEAM`;
 export const SET_IS_APPROVING_LEAVE_MIDGAME = `${pre}SET_IS_APPROVING_LEAVE_MIDGAME`;
+export const DELETE_GAME_REQUEST = `${pre}DELETE_GAME_REQUEST`;
+export const CANCEL_DELETING_GAME = `${pre}CANCEL_DELETING_GAME`;
 
 export const setIsApprovingLeaveMidgame = isApproving => ({
     type: SET_IS_APPROVING_LEAVE_MIDGAME,
@@ -100,7 +102,6 @@ export const addTeamRequest = (gameId, teamName) => ({
     teamName
 });
 
-
 export const joinTeamRequest = (gameId, teamName) => ({
     type: JOIN_TEAM_REQUEST,
     gameId,
@@ -147,4 +148,14 @@ export const randomiseTeamsRequest = (gameId, numberOfTeams) => ({
     type: RANDOMISE_TEAMS_REQUEST,
     gameId,
     numberOfTeams
+});
+
+export const deleteGameRequest = (gameId, gameMode) => ({
+    type: DELETE_GAME_REQUEST,
+    gameId,
+    gameMode
+});
+
+export const cancelDeletingGame = () => ({
+    type: CANCEL_DELETING_GAME
 });

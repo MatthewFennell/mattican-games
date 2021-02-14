@@ -422,3 +422,18 @@ exports.confirmWinner = functions
             });
         });
     });
+
+exports.deleteGame = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found');
+            }
+            if (doc.data().host !== context.auth.uid) {
+                throw new functions.https.HttpsError('permission-denied', 'You are not the host');
+            }
+            return doc.ref.delete();
+        });
+    });

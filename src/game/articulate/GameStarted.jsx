@@ -7,7 +7,7 @@ import {
     addTeamRequest, joinTeamRequest,
     trashWordRequest, randomiseTeamsRequest, gotWordRequest,
     leaveUnconstrainedGameRequest, joinTeamMidgameRequest, setWordConfirmedRequest,
-    skipWordRequest, realignConfirmedWords
+    skipWordRequest, realignConfirmedWords, deleteGameRequest
 } from '../actions';
 import MakingTeams from '../common/MakingTeams';
 import PrepareToGuess from './statuses/PrepareToGuess';
@@ -56,6 +56,7 @@ const GameStarted = props => {
                     auth={props.auth}
                     currentGame={props.currentGame}
                     currentGameId={props.currentGameId}
+                    deleteGameRequest={props.deleteGameRequest}
                     startRoundRequest={props.startRoundRequest}
                     users={props.users}
                 />
@@ -146,6 +147,7 @@ GameStarted.propTypes = {
     addTeamRequest: PropTypes.func.isRequired,
     confirmScoreRequest: PropTypes.func.isRequired,
     confirmWinner: PropTypes.func.isRequired,
+    deleteGameRequest: PropTypes.func.isRequired,
     gotWordRequest: PropTypes.func.isRequired,
     leaveUnconstrainedGameRequest: PropTypes.func.isRequired,
     joinTeamRequest: PropTypes.func.isRequired,
@@ -181,6 +183,7 @@ const mapDispatchToProps = {
     addTeamRequest,
     confirmScoreRequest,
     confirmWinner,
+    deleteGameRequest,
     gotWordRequest,
     leaveUnconstrainedGameRequest,
     loadSummaryRequest,

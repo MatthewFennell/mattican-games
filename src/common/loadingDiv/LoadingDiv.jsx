@@ -44,7 +44,6 @@ const LoadingDiv = props => (
     </div>
 );
 
-
 LoadingDiv.defaultProps = {
     children: null,
     isBlack: false,

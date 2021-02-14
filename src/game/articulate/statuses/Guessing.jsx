@@ -19,6 +19,7 @@ import SuccessModal from '../../../common/modal/SuccessModal';
 import Dropdown from '../../../common/dropdown/Dropdown';
 import LoadingDiv from '../../../common/loadingDiv/LoadingDiv';
 import Switch from '../../../common/Switch/Switch';
+import DeleteGame from '../../../common/DeleteGame/DeleteGame';
 
 const isSkippingDisabled = (skippingRule, skippedWord) => {
     if (skippingRule === constants.articulateSkipping.Unlimited) {
@@ -252,14 +253,12 @@ const Guessing = props => {
                         </div>
                     ) }
 
-
                     {(props.currentGame.isSpadeRound || props.currentGame.isFinalRound) && (
                             <div className={props.styles.allPlayMessage}>
                         This is an all play round!
                             </div>
                         )}
                     </div>
-
 
                     {!isActiveExplainerOnMyTeam(props.currentGame, props.auth.uid)
                  && props.auth.uid !== props.currentGame.activeExplainer
@@ -360,24 +359,32 @@ const Guessing = props => {
                     ) }
 
                 <div className={props.styles.switchesWrapper}>
-                <div className={props.styles.teamsWrapper}>
-                    <div className={props.styles.teamsDescription}>
-                        View Teams
+                    <div className={props.styles.teamsWrapper}>
+                        <div className={props.styles.teamsDescription}>
+                            View Teams
+                        </div>
+                        <Switch
+                            checked={viewingTeams}
+                            onChange={toggleViewingTeams}
+                        />
                     </div>
-                    <Switch
-                        checked={viewingTeams}
-                        onChange={toggleViewingTeams}
-                    />
-                </div>
-                <div className={props.styles.rulesWrapper}>
-                    <div className={props.styles.rulesDescription}>
-                        View Rules
+                    {props.auth.uid === props.currentGame.host && (
+                    <div>
+                        <DeleteGame
+                            gameId={props.currentGameId}
+                            gameMode={constants.articulateGameMode}
+                        />
                     </div>
-                    <Switch
-                        checked={viewingRules}
-                        onChange={toggleViewingRules}
-                    />
-                </div>
+                )}
+                    <div className={props.styles.rulesWrapper}>
+                        <div className={props.styles.rulesDescription}>
+                            View Rules
+                        </div>
+                        <Switch
+                            checked={viewingRules}
+                            onChange={toggleViewingRules}
+                        />
+                    </div>
                 </div>
 
             <div className={props.styles.viewTeamsWrapper}>
