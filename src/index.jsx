@@ -68,7 +68,7 @@ serviceWorker.register({
         store.dispatch({
             type: notificationActions.ADD_NOTIFICATION,
             notificationType: notificationTypes.NOTIFICATION_TYPE_INFO,
-            notification: 'There are new updates available. Close all tabs of Mattican game to receive the updates',
+            notification: 'There are new updates available. Close all tabs of Mattican games to receive the updates',
             duration: 0,
             title: 'Updates Available'
         });
