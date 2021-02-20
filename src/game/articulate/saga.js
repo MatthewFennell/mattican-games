@@ -22,11 +22,14 @@ export function* editGame(api, action) {
 
 export function* start(api, action) {
     try {
+        yield put(commonActions.setIsStartingGame(true));
         yield call(api.start, ({
             gameId: action.gameId
         }));
     } catch (error) {
         yield put(commonActions.gameError(error, 'Start Game error'));
+    } finally {
+        yield put(commonActions.setIsStartingGame(false));
     }
 }
 

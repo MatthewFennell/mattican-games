@@ -52,7 +52,6 @@ const MakingTeams = props => {
 
     const [randomisingTeams, setRandomisingTeams] = useState(false);
     const [numberOfRandomTeams, setNumberOfRandomTeams] = useState(2);
-    const [hasStartedGame, setHasStartedGame] = useState(false);
 
     const closeRandomisingTeams = useCallback(() => {
         setRandomisingTeams(false);
@@ -66,14 +65,13 @@ const MakingTeams = props => {
     }, [numberOfRandomTeams, setRandomisingTeams, props.currentGameId])
 
     const shouldDisableButtons = useCallback(() => (props.isRandomisingTeams
-        || hasStartedGame || props.isAddingTeam),
-    [props.isRandomisingTeams, hasStartedGame, props.isAddingTeam]);
+        || props.isStartingGame || props.isAddingTeam),
+    [props.isRandomisingTeams, props.isStartingGame, props.isAddingTeam]);
 
     const startGame = useCallback(() => {
-        setHasStartedGame(true);
         props.startGameRequest(props.currentGameId);
         // eslint-disable-next-line
-    }, [setHasStartedGame, props.currentGameId])
+    }, [props.currentGameId])
 
     return (
         <div className={props.styles.makingTeamsWrapper}>
@@ -87,7 +85,7 @@ const MakingTeams = props => {
             <div className={props.styles.createTeamWrapper}>
                 {props.currentGame.host === props.auth.uid && (
                     <LoadingDiv
-                        isLoading={hasStartedGame}
+                        isLoading={props.isStartingGame}
                         isNoPadding
                         isRed
                         isBorderRadius
@@ -274,6 +272,7 @@ MakingTeams.defaultProps = {
     isAddingTeam: false,
     isAddingWord: false,
     isRandomisingTeams: false,
+    isStartingGame: false,
     joinTeamRequest: noop,
     randomiseTeamsRequest: noop,
     startGameRequest: noop,
@@ -304,6 +303,7 @@ MakingTeams.propTypes = {
     isAddingTeam: PropTypes.bool,
     isAddingWord: PropTypes.bool,
     isRandomisingTeams: PropTypes.bool,
+    isStartingGame: PropTypes.bool,
     joinTeamRequest: PropTypes.func,
     randomiseTeamsRequest: PropTypes.func,
     startGameRequest: PropTypes.func,

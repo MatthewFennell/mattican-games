@@ -24,11 +24,14 @@ export function* addWord(api, action) {
 
 export function* startWhoInHat(api, action) {
     try {
+        yield put(commonActions.setIsStartingGame(true));
         yield call(api.startWhoInHat, ({
             gameId: action.gameId
         }));
     } catch (error) {
         yield put(commonActions.gameError(error, 'Start Game error'));
+    } finally {
+        yield put(commonActions.setIsStartingGame(false));
     }
 }
 

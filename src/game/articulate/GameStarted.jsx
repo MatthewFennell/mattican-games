@@ -42,6 +42,7 @@ const GameStarted = props => {
                     currentGameId={props.currentGameId}
                     isAddingTeam={props.isAddingTeam}
                     isRandomisingTeams={props.isRandomisingTeams}
+                    isStartingGame={props.isStartingGame}
                     joinTeamRequest={props.joinTeamRequest}
                     randomiseTeamsRequest={props.randomiseTeamsRequest}
                     startGameRequest={props.startGameRequest}
@@ -139,6 +140,7 @@ GameStarted.defaultProps = {
     currentGameId: '',
     isAddingTeam: false,
     isRandomisingTeams: false,
+    isStartingGame: false,
     users: {},
     styles: defaultStyles
 };
@@ -176,6 +178,7 @@ GameStarted.propTypes = {
     currentGameId: PropTypes.string,
     isAddingTeam: PropTypes.bool,
     isRandomisingTeams: PropTypes.bool,
+    isStartingGame: PropTypes.bool,
     users: PropTypes.shape({})
 };
 
@@ -199,6 +202,10 @@ const mapDispatchToProps = {
     trashWordRequest
 };
 
-export default connect(null, mapDispatchToProps)(GameStarted);
+const mapStateToProps = state => ({
+    isStartingGame: state.game.isStartingGame
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(GameStarted);
 
 export { GameStarted as GameStartedUnconnected };

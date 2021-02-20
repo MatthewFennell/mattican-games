@@ -75,5 +75,4 @@ JoinTeamModal.propTypes = {
     value: PropTypes.string
 };
 
-
 export default JoinTeamModal;

@@ -16,6 +16,8 @@ export const initialState = {
     isDeletingGame: false,
     isRandomisingTeams: false,
 
+    isStartingGame: false,
+
     isApprovingLeaveMidgame: false
 };
 
@@ -35,6 +37,12 @@ const overviewReducer = (state = initialState, action) => {
             errorMessage: '',
             errorCode: '',
             errorHeader: ''
+        };
+    }
+    case actions.SET_IS_STARTING_GAME: {
+        return {
+            ...state,
+            isStartingGame: action.isStarting
         };
     }
     case hitlerActions.CLOSE_LOOK_AT_TOP_THREE_REQUEST: {
