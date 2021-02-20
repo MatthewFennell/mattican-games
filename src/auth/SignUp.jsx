@@ -22,7 +22,13 @@ const SignUp = props => {
     const uiConfig = {
         signInFlow: 'popup',
         signInOptions: [
-            firebase.auth.GoogleAuthProvider.PROVIDER_ID
+            firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+            {
+                provider: firebase.auth.PhoneAuthProvider.PROVIDER_ID,
+                defaultCountry: 'GB',
+                defaultNationalNumber: '1234567890',
+                loginHint: '+11234567890'
+            }
         ],
         callbacks: {
             signInSuccess: noop
@@ -50,7 +56,7 @@ const SignUp = props => {
                     onSubmit={handleSubmit}
                 >
                     <div className={props.styles.signUpMessage}>
-                    Sign up
+                        Sign up
                     </div>
                     <div className={props.styles.textInputsWrapper}>
                         <TextInput

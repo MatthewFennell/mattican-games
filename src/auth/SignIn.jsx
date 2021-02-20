@@ -21,7 +21,13 @@ const SignIn = props => {
     const uiConfig = {
         signInFlow: 'popup',
         signInOptions: [
-            firebase.auth.GoogleAuthProvider.PROVIDER_ID
+            firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+            {
+                provider: firebase.auth.PhoneAuthProvider.PROVIDER_ID,
+                defaultCountry: 'GB',
+                defaultNationalNumber: '1234567890',
+                loginHint: '+11234567890'
+            }
         ],
         callbacks: {
             signInSuccess: noop
@@ -81,7 +87,7 @@ const SignIn = props => {
                             tabIndex={0}
                             onClick={redirectToPasswordReset}
                         >
-                        Forgot your password?
+                            Forgot your password?
                         </div>
                     </div>
                 </form>
