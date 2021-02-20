@@ -102,17 +102,15 @@ const CreateGame = props => (
                     </div>
 
                 </div>
-                {!props.isCustomNames
-                && (
-                    <div className={props.styles.scoreCap}>
-                        <TextInput
-                            type="number"
-                            value={props.scoreCap}
-                            onChange={props.setScoreCap}
-                            label="Score cap"
-                        />
-                    </div>
-                )}
+
+                <div className={props.styles.scoreCap}>
+                    <TextInput
+                        type="number"
+                        value={props.scoreCap}
+                        onChange={props.setScoreCap}
+                        label="Score cap"
+                    />
+                </div>
 
                 <div className={props.styles.timePerRound}>
                     <TextInput

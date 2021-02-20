@@ -50,7 +50,7 @@ exports.createGame = functions
                         name: data.name,
                         playersReady: [],
                         round: null,
-                        scoreCap: data.isCustomNames ? null : Math.min(data.scoreCap, 50),
+                        scoreCap: Math.min(data.scoreCap, 30),
                         skippingRule: data.skippingRule,
                         teams: constants.initialTeams,
                         usernameMappings: {
@@ -114,7 +114,7 @@ exports.startGame = functions
                 hasStarted: true,
                 round: 1,
                 status: constants.whoInHatGameStatuses.MakingTeams,
-                words: isCustomNames ? [] : ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'y', 'z']
+                words: isCustomNames ? [] : constants.whoInHatNames
             });
         });
     });
