@@ -82,7 +82,7 @@ exports.createGame = functions
                         words: {
                             Object: constants.articulateObject,
                             World: constants.articulateWorld,
-                            Spade: spades,
+                            Spade: spades.reverse(),
                             Nature: constants.articulateNature,
                             Random: constants.articulateRandom,
                             Action: constants.articulateAction,
@@ -234,8 +234,12 @@ exports.loadSummary = functions
             }
 
             const {
-                activeCategory, wordsGuessed, trashedWords, skippedWords, words, currentWordIndex
+                activeCategory, wordsGuessed, trashedWords, skippedWords, words, currentWordIndex, finishTime
             } = doc.data();
+
+            if (moment().add(5, 'seconds').isBefore(moment(finishTime))) {
+                return Promise.resolve();
+            }
 
             const endingWord = fp.flow(fp.get(activeCategory), fp.get(currentWordIndex))(words);
 

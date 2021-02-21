@@ -101,6 +101,8 @@ export function* editDisplayName(api, action) {
         }));
     } catch (error) {
         yield put(actions.gameError(error, 'Edit Display Name error'));
+    } finally {
+        yield put(actions.cancelEditingDisplayName());
     }
 }
 

@@ -25,6 +25,7 @@ export const SET_IS_APPROVING_LEAVE_MIDGAME = `${pre}SET_IS_APPROVING_LEAVE_MIDG
 export const DELETE_GAME_REQUEST = `${pre}DELETE_GAME_REQUEST`;
 export const CANCEL_DELETING_GAME = `${pre}CANCEL_DELETING_GAME`;
 export const SET_IS_STARTING_GAME = `${pre}SET_IS_STARTING_GAME`;
+export const CANCEL_EDITING_DISPLAY_NAME = `${pre}CANCEL_EDITING_DISPLAY_NAME`;
 
 export const setIsApprovingLeaveMidgame = isApproving => ({
     type: SET_IS_APPROVING_LEAVE_MIDGAME,
@@ -95,6 +96,10 @@ export const editDisplayName = (gameId, displayName) => ({
     type: EDIT_DISPLAY_NAME,
     gameId,
     displayName
+});
+
+export const cancelEditingDisplayName = () => ({
+    type: CANCEL_EDITING_DISPLAY_NAME
 });
 
 export const addTeamRequest = (gameId, teamName) => ({

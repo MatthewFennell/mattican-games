@@ -29,6 +29,7 @@ const NewNavbar = props => {
                 currentGame={props.currentGame}
                 currentGameId={props.currentGameId}
                 editDisplayName={props.editDisplayName}
+                isEditingDisplayName={props.isEditingDisplayName}
                 leaveMidgameRequest={props.leaveMidgameRequest}
                 openNavbar={openSidebar}
                 closeNavbar={closeSidebar}
@@ -67,6 +68,7 @@ NewNavbar.propTypes = {
         })
     }).isRequired,
     editDisplayName: PropTypes.func.isRequired,
+    isEditingDisplayName: PropTypes.bool,
     leaveMidgameRequest: PropTypes.func.isRequired,
     maxGameWeek: PropTypes.number,
     signOut: PropTypes.func.isRequired,
@@ -77,6 +79,7 @@ NewNavbar.defaultProps = {
     auth: {},
     currentGame: {},
     currentGameId: '',
+    isEditingDisplayName: false,
     maxGameWeek: null,
     userPermissions: []
 };
@@ -85,6 +88,7 @@ const mapStateToProps = state => ({
     auth: state.firebase.auth,
     currentGame: selectors.getCurrentGame(state),
     currentGameId: selectors.getGameId(state),
+    isEditingDisplayName: state.game.isEditingDisplayName,
     maxGameWeek: state.overview.maxGameWeek,
     profile: state.firebase.profile,
     pathname: state.router.location.pathname,
@@ -103,8 +107,7 @@ export default withRouter(compose(
         {
             collection: 'games'
         }
-    ]),
+    ])
 )(NewNavbar));
-
 
 export { NewNavbar as NewNavbarUnconnected };

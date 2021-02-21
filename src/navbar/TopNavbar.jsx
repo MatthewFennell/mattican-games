@@ -14,6 +14,7 @@ import { noop } from 'lodash';
 import fp from 'lodash/fp';
 import * as constants from '../constants';
 import defaultStyles from './TopNavbar.module.scss';
+import LoadingDiv from '../common/loadingDiv/LoadingDiv';
 import SuccessModal from '../common/modal/SuccessModal';
 import TextInput from '../common/TextInput/TextInput';
 import StyledButton from '../common/StyledButton/StyledButton';
@@ -194,19 +195,27 @@ const TopNavbar = props => {
                 </Toolbar>
             </AppBar>
             <SuccessModal
-                isOpen={editingDisplayName}
+                isOpen={editingDisplayName || props.isEditingDisplayName}
                 closeModal={() => setEditingDisplayName(false)}
                 headerMessage="Edit Display Name"
             >
                 <div className={props.styles.editDisplayName}>
                     <TextInput value={displayName} onChange={setDisplayName} label="Enter new name" />
                 </div>
-                <div className={props.styles.confirmDisplayButton}>
-                    <StyledButton
-                        text="Confirm display name"
-                        onClick={editName}
-                    />
-                </div>
+                <LoadingDiv
+                    isLoading={props.isEditingDisplayName}
+                    isBorderRadius
+                    isFitContent
+                    isBlack
+                >
+                    <div className={props.styles.confirmDisplayButton}>
+                        <StyledButton
+                            text="Confirm display name"
+                            onClick={editName}
+                            disabled={props.isEditingDisplayName}
+                        />
+                    </div>
+                </LoadingDiv>
             </SuccessModal>
         </>
     );
@@ -219,6 +228,7 @@ TopNavbar.defaultProps = {
     },
     currentGameId: null,
     editDisplayName: noop,
+    isEditingDisplayName: false,
     leaveMidgameRequest: noop,
     redirect: noop,
     signOut: noop,
@@ -236,6 +246,7 @@ TopNavbar.propTypes = {
     }),
     currentGameId: PropTypes.string,
     editDisplayName: PropTypes.func,
+    isEditingDisplayName: PropTypes.bool,
     leaveMidgameRequest: PropTypes.func,
     redirect: PropTypes.func,
     signOut: PropTypes.func,

@@ -18,7 +18,9 @@ export const initialState = {
 
     isStartingGame: false,
 
-    isApprovingLeaveMidgame: false
+    isApprovingLeaveMidgame: false,
+
+    isEditingDisplayName: false
 };
 
 const overviewReducer = (state = initialState, action) => {
@@ -29,6 +31,18 @@ const overviewReducer = (state = initialState, action) => {
             errorMessage: action.error.message,
             errorCode: action.error.code,
             errorHeader: action.header
+        };
+    }
+    case actions.EDIT_DISPLAY_NAME: {
+        return {
+            ...state,
+            isEditingDisplayName: true
+        };
+    }
+    case actions.CANCEL_EDITING_DISPLAY_NAME: {
+        return {
+            ...state,
+            isEditingDisplayName: false
         };
     }
     case actions.CLOSE_GAME_ERROR: {
