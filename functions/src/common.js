@@ -58,7 +58,6 @@ module.exports.makeAvalonRoles = (roles, players) => {
 module.exports.makeHitlerRoles = players => {
     const { Fascist, Liberal, Hitler } = constants.hitlerRoles;
 
-
     const roleMappings = {
         5: [Hitler, Fascist, Liberal, Liberal, Liberal],
         6: [Hitler, Fascist, Liberal, Liberal, Liberal, Liberal],
@@ -79,7 +78,6 @@ module.exports.makeHitlerRoles = players => {
     }
     return roleAssignments;
 };
-
 
 module.exports.isIntegerGreaterThanEqualZero = value => Number.isInteger(value) && value >= 0;
 module.exports.isNumber = value => Boolean((Number(value) && value) >= 0 || Number(value) === 0);
@@ -120,7 +118,6 @@ module.exports.validAvalonRoles = (numberOfPlayers, roles) => {
     }
     return true;
 };
-
 
 // ------------------------------------------------------------------------------------------------- //
 // Hitler helpers
@@ -234,7 +231,6 @@ module.exports.findNextExplainerInTeam = team => {
     const index = team.members.findIndex(member => member === team.previousExplainer);
     return team.members[(index + 1) % team.members.length];
 };
-
 
 module.exports.calculateScore = (board, player) => _.flatten(Object.values(board))
     .filter(x => x === player).length;

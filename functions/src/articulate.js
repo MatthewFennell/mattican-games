@@ -5,6 +5,12 @@ const fp = require('lodash/fp');
 const moment = require('moment');
 const constants = require('./constants');
 const common = require('./common');
+const articulateObjects = require('./articulateCategories/object.json');
+const articulateActions = require('./articulateCategories/action.json');
+const articulateNature = require('./articulateCategories/nature.json');
+const articulateRandom = require('./articulateCategories/random.json');
+const articulateWorld = require('./articulateCategories/world.json');
+const articulatePeople = require('./articulateCategories/people.json');
 
 const db = admin.firestore();
 
@@ -13,8 +19,6 @@ const operations = admin.firestore.FieldValue;
 exports.createGame = functions
     .region(constants.region)
     .https.onCall((data, context) => {
-        common.isAuthenticated(context);
-
         if (!data.name) {
             throw new functions.https.HttpsError('invalid-argument', 'Must provide a game name');
         }
@@ -41,27 +45,32 @@ exports.createGame = functions
 
                     const spades = [];
 
-                    for (let x = 0; x < constants.articulateObject.length; x += 1) {
+                    for (let x = 0; x < articulateObjects.length; x += 1) {
                         const rand = Math.floor(Math.random() * 6);
                         if (rand === 0) {
-                            spades.push(constants.articulateAction[x]);
+                            spades.push(articulateActions[x % articulateActions.length]);
                         } else if (rand === 1) {
-                            spades.push(constants.articulateNature[x]);
+                            spades.push(articulateNature[x % articulateNature.length]);
                         } else if (rand === 2) {
-                            spades.push(constants.articulateObject[x]);
+                            spades.push(articulateObjects[x % articulateObjects.length]);
                         } else if (rand === 3) {
-                            spades.push(constants.articulatePeople[x]);
+                            spades.push(articulatePeople[x % articulatePeople.length]);
                         } else if (rand === 4) {
-                            spades.push(constants.articulateRandom[x]);
+                            spades.push(articulateRandom[x % articulateRandom.length]);
                         } else {
-                            spades.push(constants.articulateWorld[x]);
+                            spades.push(articulateWorld[x % articulateWorld.length]);
                         }
                     }
+
+                    functions.logger.error('Articulate game created', {
+                        GameCreatedBy: context.auth.uid
+                    });
 
                     return db.collection('games').add({
                         activeCategory: null,
                         activeTeam: '',
                         activeExplainer: '',
+                        completedWords: [],
                         currentPlayers: [context.auth.uid],
                         currentWordIndex: 0,
                         hasStarted: false,
@@ -80,13 +89,13 @@ exports.createGame = functions
                         temporaryTeam: null,
                         trashedWords: [],
                         words: {
-                            Object: constants.articulateObject,
-                            World: constants.articulateWorld,
-                            Spade: spades.reverse(),
-                            Nature: constants.articulateNature,
-                            Random: constants.articulateRandom,
-                            Action: constants.articulateAction,
-                            Person: constants.articulatePeople
+                            Object: articulateObjects,
+                            World: articulateWorld,
+                            Spade: spades,
+                            Nature: articulateNature,
+                            Random: articulateRandom,
+                            Action: articulateActions,
+                            Person: articulatePeople
                         },
                         timePerRound: Math.min(Number(data.timePerRound), 120),
                         waitingToJoinTeam: [],
@@ -271,7 +280,7 @@ exports.confirmScore = functions
 
             const {
                 activeCategory, activeTeam, teams, words, temporaryTeam,
-                scoreCap
+                scoreCap, completedWords
             } = doc.data();
 
             const teamThatPlayed = temporaryTeam || activeTeam;
@@ -284,7 +293,7 @@ exports.confirmScore = functions
 
             const newWords = {
                 ...words,
-                [activeCategory]: fp.shuffle(words[activeCategory].filter(x => !confirmedWords.includes(x)))
+                [activeCategory]: fp.shuffle(words[activeCategory].filter(x => !confirmedWords.includes(x) && !completedWords.includes(x)))
             };
 
             const newTeamScores = teams.map(team => {
@@ -318,6 +327,7 @@ exports.confirmScore = functions
                 return doc.ref.update({
                     activeExplainer: nextExplainerInTeam,
                     activeCategory: constants.articulateCategories.Spade,
+                    completedWords: [...completedWords, ...confirmedWords],
                     confirmedWords: [],
                     confirmedTrashed: [],
                     confirmedSkipped: [],
@@ -339,6 +349,7 @@ exports.confirmScore = functions
                 activeTeam: nextTeam.name, // If PrepareToGuess, game has not finished
                 activeExplainer: nextExplainer, // If PrepareToGuess, game has not finished,
                 activeCategory: common.getCategory(nextTeamCurrentScore, scoreCap),
+                completedWords: [...completedWords, ...confirmedWords],
                 status: constants.articulateGameStatuses.PrepareToGuess,
                 isFinalRound: nextTeamCurrentScore === scoreCap,
                 isSpadeRound: false,
