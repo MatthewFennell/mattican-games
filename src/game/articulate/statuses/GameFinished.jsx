@@ -5,12 +5,13 @@ import defaultStyles from './GameFinished.module.scss';
 import TeamsAndScore from '../../common/TeamsAndScore';
 import StyledButton from '../../../common/StyledButton/StyledButton';
 import LoadingDiv from '../../../common/loadingDiv/LoadingDiv';
+import * as constants from '../../../constants';
 
 const sortingMethod = (a, b) => (b.score - a.score !== 0
     ? b.score - a.score : a.members.length - b.members.length);
 
 const GameFinished = props => {
-    const { currentGameId, leaveUnconstrainedGameRequest } = props;
+    const { currentGameId, leaveUnconstrainedGameRequest, isPlayingAgain } = props;
 
     const [isLeavingGame, setIsLeavingGame] = useState(false);
 
@@ -42,15 +43,29 @@ const GameFinished = props => {
                 users={props.users}
             />
 
-            <LoadingDiv isLoading={isLeavingGame} isFitContent isBorderRadius>
-                <div className={props.styles.leaveGameButton}>
-                    <StyledButton
-                        onClick={leaveGame}
-                        text="Leave Game"
-                        disabled={isLeavingGame}
-                    />
-                </div>
-            </LoadingDiv>
+            <div className={props.styles.gameFinishedButtons}>
+
+                <LoadingDiv isLoading={isPlayingAgain} isFitContent isBorderRadius>
+                    <div className={props.styles.leaveGameButton}>
+                        <StyledButton
+                            onClick={() => props.playAgainRequest(props.currentGameId,
+                                constants.gameModes.Articulate)}
+                            text="Play again"
+                            disabled={isLeavingGame}
+                        />
+                    </div>
+                </LoadingDiv>
+
+                <LoadingDiv isLoading={isLeavingGame} isFitContent isBorderRadius>
+                    <div className={props.styles.leaveGameButton}>
+                        <StyledButton
+                            onClick={leaveGame}
+                            text="Leave Game"
+                            disabled={isLeavingGame}
+                        />
+                    </div>
+                </LoadingDiv>
+            </div>
         </div>
     );
 };
@@ -71,7 +86,9 @@ GameFinished.defaultProps = {
         winningTeam: ''
     },
     currentGameId: '',
+    isPlayingAgain: false,
     leaveUnconstrainedGameRequest: noop,
+    playAgainRequest: noop,
     styles: defaultStyles,
     users: {}
 };
@@ -96,7 +113,9 @@ GameFinished.propTypes = {
         winningTeam: PropTypes.string
     }),
     currentGameId: PropTypes.string,
+    isPlayingAgain: PropTypes.bool,
     leaveUnconstrainedGameRequest: PropTypes.func,
+    playAgainRequest: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),
     users: PropTypes.shape({})
 };

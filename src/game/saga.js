@@ -182,6 +182,8 @@ export function* leaveUnconstrainedGame(api, action) {
         }));
     } catch (error) {
         yield put(actions.gameError(error, 'Leave Game error'));
+    } finally {
+        yield put(actions.cancelLeaveGame());
     }
 }
 
@@ -219,6 +221,20 @@ export function* realignConfirmedWords(api, action) {
         yield put(actions.gameError(error, 'Realign Words error'));
     }
 }
+
+export function* kickUser(api, action) {
+    try {
+        yield call(api.kickUser, ({
+            gameId: action.gameId,
+            userId: action.userId
+        }));
+    } catch (error) {
+        yield put(actions.gameError(error, 'Error Kicking User'));
+    } finally {
+        yield put(actions.cancelKickUser());
+    }
+}
+
 export default function* overviewSaga() {
     yield all([
         takeEvery(actions.LEAVE_GAME_REQUEST, leaveGame, gameApi),
@@ -239,6 +255,7 @@ export default function* overviewSaga() {
         takeEvery(actions.JOIN_TEAM_MIDGAME_REQUEST, joinTeamMidgame, gameApi),
         takeEvery(actions.RANDOMISE_TEAMS_REQUEST, randomiseTeams, gameApi),
         takeEvery(actions.REALIGN_CONFIRMED_WORDS, realignConfirmedWords, gameApi),
-        takeEvery(actions.DELETE_GAME_REQUEST, deleteGame, gameApi)
+        takeEvery(actions.DELETE_GAME_REQUEST, deleteGame, gameApi),
+        takeEvery(actions.KICK_USER_REQUEST, kickUser, gameApi)
     ]);
 }

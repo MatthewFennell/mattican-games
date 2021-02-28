@@ -16,6 +16,29 @@ const db = admin.firestore();
 
 const operations = admin.firestore.FieldValue;
 
+const generateSpades = () => {
+    const spades = [];
+
+    for (let x = 0; x < articulateObjects.length; x += 1) {
+        const rand = Math.floor(Math.random() * 6);
+        if (rand === 0) {
+            spades.push(articulateActions[x % articulateActions.length]);
+        } else if (rand === 1) {
+            spades.push(articulateNature[x % articulateNature.length]);
+        } else if (rand === 2) {
+            spades.push(articulateObjects[x % articulateObjects.length]);
+        } else if (rand === 3) {
+            spades.push(articulatePeople[x % articulatePeople.length]);
+        } else if (rand === 4) {
+            spades.push(articulateRandom[x % articulateRandom.length]);
+        } else {
+            spades.push(articulateWorld[x % articulateWorld.length]);
+        }
+    }
+
+    return spades;
+};
+
 exports.createGame = functions
     .region(constants.region)
     .https.onCall((data, context) => {
@@ -41,25 +64,6 @@ exports.createGame = functions
                 docs => {
                     if (docs.size > 0) {
                         throw new functions.https.HttpsError('already-exists', 'A game with that name already exists');
-                    }
-
-                    const spades = [];
-
-                    for (let x = 0; x < articulateObjects.length; x += 1) {
-                        const rand = Math.floor(Math.random() * 6);
-                        if (rand === 0) {
-                            spades.push(articulateActions[x % articulateActions.length]);
-                        } else if (rand === 1) {
-                            spades.push(articulateNature[x % articulateNature.length]);
-                        } else if (rand === 2) {
-                            spades.push(articulateObjects[x % articulateObjects.length]);
-                        } else if (rand === 3) {
-                            spades.push(articulatePeople[x % articulatePeople.length]);
-                        } else if (rand === 4) {
-                            spades.push(articulateRandom[x % articulateRandom.length]);
-                        } else {
-                            spades.push(articulateWorld[x % articulateWorld.length]);
-                        }
                     }
 
                     functions.logger.error('Articulate game created', {
@@ -91,7 +95,7 @@ exports.createGame = functions
                         words: {
                             Object: articulateObjects,
                             World: articulateWorld,
-                            Spade: spades,
+                            Spade: generateSpades(),
                             Nature: articulateNature,
                             Random: articulateRandom,
                             Action: articulateActions,
@@ -450,5 +454,50 @@ exports.deleteGame = functions
                 throw new functions.https.HttpsError('permission-denied', 'You are not the host');
             }
             return doc.ref.delete();
+        });
+    });
+
+exports.playAgain = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            if (doc.data().status !== constants.articulateGameStatuses.GameFinished) {
+                throw new functions.https.HttpsError('invalid-argument', 'Must finish the game first');
+            }
+
+            return doc.ref.update({
+                activeCategory: null,
+                activeTeam: '',
+                activeExplainer: '',
+                completedWords: [],
+                currentPlayers: [context.auth.uid],
+                currentWordIndex: 0,
+                hasStarted: true,
+                playersReady: [],
+                round: 1,
+                status: constants.articulateGameStatuses.MakingTeams,
+                teams: constants.initialTeams,
+                wordsGuessed: [],
+                skippedWords: [],
+                temporaryTeam: null,
+                trashedWords: [],
+                words: {
+                    Object: articulateObjects,
+                    World: articulateWorld,
+                    Spade: generateSpades(),
+                    Nature: articulateNature,
+                    Random: articulateRandom,
+                    Action: articulateActions,
+                    Person: articulatePeople
+                },
+                timePerRound: Math.min(Number(data.timePerRound), 120),
+                waitingToJoinTeam: [],
+                winningTeam: null
+            });
         });
     });

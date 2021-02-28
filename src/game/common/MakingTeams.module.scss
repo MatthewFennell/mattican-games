@@ -86,3 +86,11 @@
     text-align: center;
     margin-bottom: $spacing-tiny;
 }
+
+.kickUser {
+    margin-left: auto;
+    margin-right: auto;
+    > form > div {
+        width: 100%;
+    }
+}

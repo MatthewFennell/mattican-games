@@ -7,7 +7,8 @@ import {
     addTeamRequest, joinTeamRequest,
     trashWordRequest, randomiseTeamsRequest, gotWordRequest,
     leaveUnconstrainedGameRequest, joinTeamMidgameRequest, setWordConfirmedRequest,
-    skipWordRequest, realignConfirmedWords, deleteGameRequest
+    skipWordRequest, realignConfirmedWords, deleteGameRequest, playAgainRequest,
+    kickUserRequest
 } from '../actions';
 import MakingTeams from '../common/MakingTeams';
 import PrepareToGuess from './statuses/PrepareToGuess';
@@ -41,9 +42,13 @@ const GameStarted = props => {
                     currentGame={props.currentGame}
                     currentGameId={props.currentGameId}
                     isAddingTeam={props.isAddingTeam}
+                    isKickingUser={props.isKickingUser}
+                    isLeavingGame={props.isLeavingGame}
                     isRandomisingTeams={props.isRandomisingTeams}
                     isStartingGame={props.isStartingGame}
                     joinTeamRequest={props.joinTeamRequest}
+                    kickUserRequest={props.kickUserRequest}
+                    leaveUnconstrainedGameRequest={props.leaveUnconstrainedGameRequest}
                     randomiseTeamsRequest={props.randomiseTeamsRequest}
                     startGameRequest={props.startGameRequest}
                     users={props.users}
@@ -101,6 +106,8 @@ const GameStarted = props => {
                     auth={props.auth}
                     currentGame={props.currentGame}
                     currentGameId={props.currentGameId}
+                    isPlayingAgain={props.isPlayingAgain}
+                    playAgainRequest={props.playAgainRequest}
                     leaveUnconstrainedGameRequest={props.leaveUnconstrainedGameRequest}
                     users={props.users}
                 />
@@ -140,7 +147,10 @@ GameStarted.defaultProps = {
     currentGameId: '',
     isAddingTeam: false,
     isRandomisingTeams: false,
+    isLeavingGame: false,
+    isKickingUser: false,
     isStartingGame: false,
+    isPlayingAgain: false,
     users: {},
     styles: defaultStyles
 };
@@ -154,9 +164,11 @@ GameStarted.propTypes = {
     leaveUnconstrainedGameRequest: PropTypes.func.isRequired,
     joinTeamRequest: PropTypes.func.isRequired,
     joinTeamMidgameRequest: PropTypes.func.isRequired,
+    kickUserRequest: PropTypes.func.isRequired,
     loadSummaryRequest: PropTypes.func.isRequired,
     randomiseTeamsRequest: PropTypes.func.isRequired,
     realignConfirmedWords: PropTypes.func.isRequired,
+    playAgainRequest: PropTypes.func.isRequired,
     setWordConfirmedRequest: PropTypes.func.isRequired,
     startGameRequest: PropTypes.func.isRequired,
     startRoundRequest: PropTypes.func.isRequired,
@@ -177,8 +189,11 @@ GameStarted.propTypes = {
     }),
     currentGameId: PropTypes.string,
     isAddingTeam: PropTypes.bool,
+    isKickingUser: PropTypes.bool,
     isRandomisingTeams: PropTypes.bool,
+    isLeavingGame: PropTypes.bool,
     isStartingGame: PropTypes.bool,
+    isPlayingAgain: PropTypes.bool,
     users: PropTypes.shape({})
 };
 
@@ -192,8 +207,10 @@ const mapDispatchToProps = {
     loadSummaryRequest,
     joinTeamRequest,
     joinTeamMidgameRequest,
+    kickUserRequest,
     randomiseTeamsRequest,
     realignConfirmedWords,
+    playAgainRequest,
     setWordConfirmedRequest,
     skipWordRequest,
     spadeRoundWinnerRequest,
@@ -203,7 +220,10 @@ const mapDispatchToProps = {
 };
 
 const mapStateToProps = state => ({
-    isStartingGame: state.game.isStartingGame
+    isLeavingGame: state.game.isLeavingGame,
+    isKickingUser: state.game.isKickingUser,
+    isStartingGame: state.game.isStartingGame,
+    isPlayingAgain: state.game.isPlayingAgain
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GameStarted);

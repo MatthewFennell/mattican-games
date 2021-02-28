@@ -17,3 +17,4 @@ export const skipWord = request => functionToCall('shared-skipWord')(request);
 export const trashWord = request => functionToCall('shared-trashWord')(request);
 export const joinTeamMidgame = request => functionToCall('shared-joinTeamMidgame')(request);
 export const realignConfirmedWords = request => functionToCall('shared-realignConfirmedWords')(request);
+export const kickUser = request => functionToCall('shared-kickUser')(request);

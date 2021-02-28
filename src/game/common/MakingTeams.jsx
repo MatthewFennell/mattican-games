@@ -8,6 +8,8 @@ import TextInput from '../../common/TextInput/TextInput';
 import SuccessModal from '../../common/modal/SuccessModal';
 import TeamsAndScore from './TeamsAndScore';
 import LoadingDiv from '../../common/loadingDiv/LoadingDiv';
+import Dropdown from '../../common/dropdown/Dropdown';
+import * as constants from '../../constants';
 
 const playerExistsInTeam = (game, playerId) => game.teams
     .some(team => team.members.includes(playerId));
@@ -16,6 +18,19 @@ const findPlayersNotInTeam = game => game.currentPlayers
     .filter(playerId => !playerExistsInTeam(game, playerId));
 
 const MakingTeams = props => {
+    const [isKicking, setIsKicking] = useState(false);
+    const [userBeingKicked, setUserBeingKicked] = useState('');
+
+    const closeKickingModal = () => {
+        setIsKicking(false);
+    };
+
+    const confirmKickUser = () => {
+        setIsKicking(false);
+        props.kickUserRequest(props.currentGameId, userBeingKicked);
+        setUserBeingKicked('');
+    };
+
     const [addingTeam, setAddingTeam] = useState(false);
     const [teamName, setTeamName] = useState('');
 
@@ -65,8 +80,10 @@ const MakingTeams = props => {
     }, [numberOfRandomTeams, setRandomisingTeams, props.currentGameId])
 
     const shouldDisableButtons = useCallback(() => (props.isRandomisingTeams
-        || props.isStartingGame || props.isAddingTeam),
-    [props.isRandomisingTeams, props.isStartingGame, props.isAddingTeam]);
+        || props.isStartingGame || props.isAddingTeam
+        || props.isLeavingGame || props.isKickingUser),
+    [props.isRandomisingTeams, props.isStartingGame, props.isAddingTeam,
+        props.isLeavingGame, props.isKickingUser]);
 
     const startGame = useCallback(() => {
         props.startGameRequest(props.currentGameId);
@@ -138,6 +155,39 @@ const MakingTeams = props => {
                         />
                     </div>
                 ) }
+                <LoadingDiv
+                    isLoading={props.isLeavingGame}
+                    isNoPadding
+                    isRed
+                    isBorderRadius
+                >
+                    <div className={props.styles.startGame}>
+                        <StyledButton
+                            onClick={() => props.leaveUnconstrainedGameRequest(
+                                props.currentGameId
+                            )}
+                            text="Leave Game"
+                            disabled={shouldDisableButtons()}
+                        />
+                    </div>
+                </LoadingDiv>
+                {props.currentGame.host === props.auth.uid
+                && props.currentGame.mode === constants.gameModes.Articulate && (
+                    <LoadingDiv
+                        isLoading={props.isKickingUser}
+                        isNoPadding
+                        isRed
+                        isBorderRadius
+                    >
+                        <div className={props.styles.startGame}>
+                            <StyledButton
+                                onClick={() => setIsKicking(true)}
+                                text="Kick User"
+                                disabled={shouldDisableButtons()}
+                            />
+                        </div>
+                    </LoadingDiv>
+                )}
             </div>
             {props.currentGame.isCustomNames && (
                 <div className={props.styles.numberOfWordsAdded}>
@@ -252,6 +302,41 @@ const MakingTeams = props => {
                     </div>
                 </div>
             </SuccessModal>
+
+            <SuccessModal
+                backdrop
+                closeModal={closeKickingModal}
+                isOpen={isKicking}
+                headerMessage="Kick"
+            >
+                <div className={props.styles.kickUser}>
+                    <Dropdown
+                        options={Object.keys(props.currentGame.usernameMappings)
+                            .filter(x => x !== props.auth.uid).map(username => ({
+                                id: username,
+                                value: username,
+                                text: props.currentGame.usernameMappings[username]
+                            }))}
+                        value={userBeingKicked}
+                        onChange={val => setUserBeingKicked(val)}
+                        title="Kick somebody"
+                    />
+
+                    <div className={props.styles.confirmButtons}>
+                        <StyledButton
+                            text="Confirm"
+                            onClick={confirmKickUser}
+                            disabled={!userBeingKicked}
+                        />
+
+                        <StyledButton
+                            color="secondary"
+                            onClick={closeKickingModal}
+                            text="Cancel"
+                        />
+                    </div>
+                </div>
+            </SuccessModal>
         </div>
     );
 };
@@ -265,14 +350,20 @@ MakingTeams.defaultProps = {
     currentGame: {
         words: [],
         host: '',
+        mode: '',
         isCustomNames: false,
-        teams: []
+        teams: [],
+        usernameMappings: {}
     },
     currentGameId: '',
+    leaveUnconstrainedGameRequest: noop,
     isAddingTeam: false,
     isAddingWord: false,
+    isKickingUser: false,
+    isLeavingGame: false,
     isRandomisingTeams: false,
     isStartingGame: false,
+    kickUserRequest: noop,
     joinTeamRequest: noop,
     randomiseTeamsRequest: noop,
     startGameRequest: noop,
@@ -292,18 +383,24 @@ MakingTeams.propTypes = {
             PropTypes.shape({})
         ]),
         host: PropTypes.string,
+        mode: PropTypes.string,
         isCustomNames: PropTypes.bool,
         teams: PropTypes.arrayOf(PropTypes.shape({
             members: PropTypes.arrayOf(PropTypes.string),
             name: PropTypes.string,
             score: PropTypes.number
-        }))
+        })),
+        usernameMappings: PropTypes.objectOf(PropTypes.string)
     }),
     currentGameId: PropTypes.string,
+    leaveUnconstrainedGameRequest: PropTypes.func,
     isAddingTeam: PropTypes.bool,
     isAddingWord: PropTypes.bool,
+    isKickingUser: PropTypes.bool,
+    isLeavingGame: PropTypes.bool,
     isRandomisingTeams: PropTypes.bool,
     isStartingGame: PropTypes.bool,
+    kickUserRequest: PropTypes.func,
     joinTeamRequest: PropTypes.func,
     randomiseTeamsRequest: PropTypes.func,
     startGameRequest: PropTypes.func,

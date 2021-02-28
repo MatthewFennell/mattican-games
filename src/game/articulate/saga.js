@@ -114,6 +114,20 @@ export function* createGame(api, action) {
     }
 }
 
+export function* playAgain(api, action) {
+    try {
+        if (action.mode === constants.gameModes.Articulate) {
+            yield call(api.playAgain, ({
+                gameId: action.gameId
+            }));
+        }
+    } catch (error) {
+        yield put(commonActions.gameError(error, 'Play again error'));
+    } finally {
+        yield put(commonActions.cancelPlayAgain());
+    }
+}
+
 export default function* articulateSaga() {
     yield all([
         takeEvery(actions.EDIT_GAME_REQUEST, editGame, articulateApi),
@@ -123,6 +137,7 @@ export default function* articulateSaga() {
         takeEvery(actions.CONFIRM_SCORE_REQUEST, confirmScore, articulateApi),
         takeEvery(actions.SPADE_ROUND_WINNER_REQUEST, confirmSpadeRoundWinner, articulateApi),
         takeEvery(actions.CONFIRM_WINNER, confirmWinner, articulateApi),
+        takeEvery(commonActions.PLAY_AGAIN_REQUEST, playAgain, articulateApi),
         takeEvery(commonActions.START_ANY_GAME_REQUEST, startGame, articulateApi),
         takeEvery(overviewActions.CREATE_GAME_REQUEST, createGame, articulateApi)
     ]);

@@ -39,7 +39,6 @@ exports.leaveUnconstrainedMidgame = functions
                 });
             }
 
-
             return doc.ref.update({
                 playersReady: operations.arrayRemove(context.auth.uid),
                 currentPlayers: operations.arrayRemove(context.auth.uid),
@@ -77,7 +76,6 @@ exports.gotWord = functions
         });
     });
 
-
 exports.skipWord = functions
     .region(constants.region)
     .https.onCall((data, context) => {
@@ -103,7 +101,6 @@ exports.skipWord = functions
             });
         });
     });
-
 
 exports.trashWord = functions
     .region(constants.region)
@@ -154,7 +151,6 @@ exports.editDisplayName = functions
             batch.commit();
         });
     });
-
 
 exports.joinGame = functions
     .region(constants.region)
@@ -261,7 +257,6 @@ exports.destroyGame = functions
         });
     });
 
-
 exports.leaveGame = functions
     .region(constants.region)
     .https.onCall((data, context) => {
@@ -322,7 +317,6 @@ exports.leaveMidgame = functions
             });
         });
     });
-
 
 exports.approveLeaveMidgame = functions
     .region(constants.region)
@@ -406,7 +400,6 @@ exports.realignConfirmedWords = functions
         });
     });
 
-
 exports.joinTeam = functions
     .region(constants.region)
     .https.onCall((data, context) => {
@@ -438,7 +431,6 @@ exports.joinTeam = functions
         });
     });
 
-
 exports.joinTeamMidgame = functions
     .region(constants.region)
     .https.onCall((data, context) => {
@@ -467,7 +459,6 @@ exports.joinTeamMidgame = functions
 
             const newIndex = previousIndex === 0 ? teamToBeAddedTo.members.length : previousIndex - 1;
             teamToBeAddedTo.members.splice(newIndex, 0, context.auth.uid);
-
 
             return doc.ref.update({
                 teams: doc.data().teams.map(team => (team.name === data.teamName ? teamToBeAddedTo : ({
@@ -537,6 +528,35 @@ exports.randomiseTeams = functions
             return doc.ref.update({
                 teams: newTeamsArray,
                 waitingToJoinTeam: []
+            });
+        });
+    });
+
+exports.kickUser = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+            if (!data.userId) {
+                throw new functions.https.HttpsError('invalid-argument', 'Must provide a valid userId');
+            }
+
+            const { teams, usernameMappings, host } = doc.data();
+
+            if (data.userId === host) {
+                throw new functions.https.HttpsError('invalid-argument', 'Cannot kick the host');
+            }
+
+            return doc.ref.update({
+                teams: teams.map(team => ({
+                    ...team,
+                    members: team.members.filter(x => x !== data.userId)
+                })),
+                currentPlayers: operations.arrayRemove(data.userId),
+                usernameMappings: fp.unset(data.userId)(usernameMappings)
             });
         });
     });

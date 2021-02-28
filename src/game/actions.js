@@ -16,6 +16,7 @@ export const SKIP_WORD_WHO_IN_HAT_REQUEST = `${pre}SKIP_WORD_WHO_IN_HAT_REQUEST`
 export const TRASH_WORD_WHO_IN_HAT_REQUEST = `${pre}TRASH_WORD_WHO_IN_HAT_REQUEST`;
 export const SET_WORD_CONFIRMED_REQUEST = `${pre}SET_WORD_CONFIRMED_REQUEST`;
 export const LEAVE_UNCONSTRAINED_GAME_REQUEST = `${pre}LEAVE_UNCONSTRAINED_GAME_REQUEST`;
+export const CANCEL_LEAVE_GAME = `${pre}CANCEL_LEAVE_GAME`;
 export const JOIN_TEAM_MIDGAME_REQUEST = `${pre}JOIN_TEAM_MIDGAME_REQUEST`;
 export const RANDOMISE_TEAMS_REQUEST = `${pre}RANDOMISE_TEAMS_REQUEST`;
 export const REALIGN_CONFIRMED_WORDS = `${pre}REALIGN_CONFIRMED_WORDS`;
@@ -26,6 +27,10 @@ export const DELETE_GAME_REQUEST = `${pre}DELETE_GAME_REQUEST`;
 export const CANCEL_DELETING_GAME = `${pre}CANCEL_DELETING_GAME`;
 export const SET_IS_STARTING_GAME = `${pre}SET_IS_STARTING_GAME`;
 export const CANCEL_EDITING_DISPLAY_NAME = `${pre}CANCEL_EDITING_DISPLAY_NAME`;
+export const PLAY_AGAIN_REQUEST = `${pre}PLAY_AGAIN_REQUEST`;
+export const CANCEL_PLAY_AGAIN = `${pre}CANCEL_PLAY_AGAIN`;
+export const KICK_USER_REQUEST = `${pre}KICK_USER_REQUEST`;
+export const CANCEL_KICK_USER = `${pre}CANCEL_KICK_USER`;
 
 export const setIsApprovingLeaveMidgame = isApproving => ({
     type: SET_IS_APPROVING_LEAVE_MIDGAME,
@@ -144,6 +149,10 @@ export const leaveUnconstrainedGameRequest = gameId => ({
     gameId
 });
 
+export const cancelLeaveGame = () => ({
+    type: CANCEL_LEAVE_GAME
+});
+
 export const joinTeamMidgameRequest = (gameId, teamName) => ({
     type: JOIN_TEAM_MIDGAME_REQUEST,
     gameId,
@@ -169,4 +178,24 @@ export const cancelDeletingGame = () => ({
 export const setIsStartingGame = isStarting => ({
     type: SET_IS_STARTING_GAME,
     isStarting
+});
+
+export const playAgainRequest = (gameId, mode) => ({
+    type: PLAY_AGAIN_REQUEST,
+    gameId,
+    mode
+});
+
+export const cancelPlayAgain = () => ({
+    type: CANCEL_PLAY_AGAIN
+});
+
+export const kickUserRequest = (gameId, userId) => ({
+    type: KICK_USER_REQUEST,
+    gameId,
+    userId
+});
+
+export const cancelKickUser = () => ({
+    type: CANCEL_KICK_USER
 });

@@ -14,7 +14,10 @@ export const initialState = {
     isAddingTeam: false,
     isAddingWord: false,
     isDeletingGame: false,
+    isLeavingGame: false,
+    isKickingUser: false,
     isRandomisingTeams: false,
+    isPlayingAgain: false,
 
     isStartingGame: false,
 
@@ -43,6 +46,42 @@ const overviewReducer = (state = initialState, action) => {
         return {
             ...state,
             isEditingDisplayName: false
+        };
+    }
+    case actions.PLAY_AGAIN_REQUEST: {
+        return {
+            ...state,
+            isPlayingAgain: true
+        };
+    }
+    case actions.LEAVE_UNCONSTRAINED_GAME_REQUEST: {
+        return {
+            ...state,
+            isLeavingGame: true
+        };
+    }
+    case actions.CANCEL_LEAVE_GAME: {
+        return {
+            ...state,
+            isLeavingGame: false
+        };
+    }
+    case actions.CANCEL_PLAY_AGAIN: {
+        return {
+            ...state,
+            isPlayingAgain: false
+        };
+    }
+    case actions.KICK_USER_REQUEST: {
+        return {
+            ...state,
+            isKickingUser: true
+        };
+    }
+    case actions.CANCEL_KICK_USER: {
+        return {
+            ...state,
+            isKickingUser: false
         };
     }
     case actions.CLOSE_GAME_ERROR: {
