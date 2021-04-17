@@ -556,7 +556,7 @@ exports.kickUser = functions
                     members: team.members.filter(x => x !== data.userId)
                 })),
                 currentPlayers: operations.arrayRemove(data.userId),
-                usernameMappings: fp.unset(data.userId)(usernameMappings)
+                usernameMappings: fp.unset(data.userIdx)(usernameMappings)
             });
         });
     });
