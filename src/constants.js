@@ -35,6 +35,7 @@ export const articulateGameMode = 'Articulate';
 export const avalonGameMode = 'Avalon';
 export const hitlerGameMode = 'Hitler';
 export const othelloGameMode = 'Othello';
+export const telestrations = 'Telestrations';
 export const whoInHatGameMode = 'Who\'s in the Hat?';
 
 export const gameModes = {
@@ -42,6 +43,7 @@ export const gameModes = {
     Avalon: avalonGameMode,
     Hitler: hitlerGameMode,
     Othello: othelloGameMode,
+    Telestrations: telestrations,
     WhosInTheHat: whoInHatGameMode
 };
 
@@ -117,6 +119,11 @@ export const whoInHatGameStatuses = {
     RoundSummary: 'RoundSummary',
     ScoreCapReached: 'ScoreCapReached',
     NoCardsLeft: 'NoCardsLeft'
+};
+
+export const telestrationGameStatuses = {
+    AddingWords: 'AddingWords',
+    Drawing: 'Drawing'
 };
 
 export const articulateGameStatuses = {

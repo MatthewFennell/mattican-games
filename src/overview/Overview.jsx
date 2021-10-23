@@ -105,6 +105,12 @@ const Overview = props => {
                     difficulty: othelloDifficulty
                 });
         }
+        if (gameMode === constants.gameModes.Telestrations) {
+            props.createGameRequest(gameMode,
+                {
+                    name: gameName
+                });
+        }
         setMakingGame(false);
 
         // eslint-disable-next-line
@@ -121,7 +127,8 @@ const Overview = props => {
             setGameToJoin(game.id);
         }
         if (game.hasStarted && (game.mode === constants.gameModes.WhosInTheHat
-            || game.mode === constants.gameModes.Articulate)) {
+            || game.mode === constants.gameModes.Articulate
+            || game.mode === constants.gameModes.Telestrations)) {
             setGameToJoin(game.id);
             setGameModeToJoin(game.mode);
         }

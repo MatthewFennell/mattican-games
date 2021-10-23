@@ -31,6 +31,8 @@ export const PLAY_AGAIN_REQUEST = `${pre}PLAY_AGAIN_REQUEST`;
 export const CANCEL_PLAY_AGAIN = `${pre}CANCEL_PLAY_AGAIN`;
 export const KICK_USER_REQUEST = `${pre}KICK_USER_REQUEST`;
 export const CANCEL_KICK_USER = `${pre}CANCEL_KICK_USER`;
+export const SET_IS_DESTROYING_GAME = `${pre}SET_IS_DESTROYING_GAME`;
+export const SET_IS_LEAVING_GAME = `${pre}SET_IS_LEAVING_GAME`;
 
 export const setIsApprovingLeaveMidgame = isApproving => ({
     type: SET_IS_APPROVING_LEAVE_MIDGAME,
@@ -198,4 +200,14 @@ export const kickUserRequest = (gameId, userId) => ({
 
 export const cancelKickUser = () => ({
     type: CANCEL_KICK_USER
+});
+
+export const setIsDestroyingGame = isDestroyingGame => ({
+    type: SET_IS_DESTROYING_GAME,
+    isDestroyingGame
+});
+
+export const setIsLeavingGame = isLeavingGame => ({
+    type: SET_IS_LEAVING_GAME,
+    isLeavingGame
 });

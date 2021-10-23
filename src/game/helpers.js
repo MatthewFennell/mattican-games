@@ -1,4 +1,3 @@
-
 import fp from 'lodash/fp';
 
 import * as constants from '../constants';
@@ -21,7 +20,8 @@ export const printRoleName = role => {
 export const gameHasSetNumberOfPlayers = gameMode => {
     if (gameMode === constants.gameModes.WhosInTheHat
         || gameMode === constants.gameModes.Articulate
-        || gameMode === constants.gameModes.Othello) {
+        || gameMode === constants.gameModes.Othello
+        || gameMode === constants.gameModes.Telestrations) {
         return false;
     }
     return true;

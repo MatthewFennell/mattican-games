@@ -1,0 +1,19 @@
+@import "../../../common/Styles.scss";
+
+.drawTitle {
+    text-align: center;
+    margin-top: $spacing-small;
+}
+
+.itemToDraw {
+    text-align: center;
+    font-size: $font-size-huge;
+    color: $color-green;
+    margin-top: $spacing-small;
+}
+
+.playingButtons {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}

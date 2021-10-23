@@ -14,6 +14,7 @@ export const initialState = {
     isAddingTeam: false,
     isAddingWord: false,
     isDeletingGame: false,
+    isDestroyingGame: false,
     isLeavingGame: false,
     isKickingUser: false,
     isRandomisingTeams: false,
@@ -151,6 +152,18 @@ const overviewReducer = (state = initialState, action) => {
         return {
             ...state,
             isDeletingGame: false
+        };
+    }
+    case actions.SET_IS_DESTROYING_GAME: {
+        return {
+            ...state,
+            isDestroyingGame: action.isDestroyingGame
+        };
+    }
+    case actions.SET_IS_LEAVING_GAME: {
+        return {
+            ...state,
+            isLeavingGame: action.isLeavingGame
         };
     }
     default:
