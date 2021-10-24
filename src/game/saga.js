@@ -28,11 +28,14 @@ export function* deleteGame(api, action) {
 
 export function* leaveGame(api, action) {
     try {
+        yield put(actions.setIsLeavingGame(true));
         yield call(api.leaveGame, ({
             gameId: action.gameId
         }));
     } catch (error) {
         yield put(actions.gameError(error, 'Leave Game Error'));
+    } finally {
+        yield put(actions.setIsLeavingGame(false));
     }
 }
 
@@ -49,11 +52,14 @@ export function* readyUp(api, action) {
 
 export function* destroyGame(api, action) {
     try {
+        yield put(actions.setIsDestroyingGame(true));
         yield call(api.destroyGame, ({
             gameId: action.gameId
         }));
     } catch (error) {
         yield put(actions.gameError(error, 'Destroy Game Error'));
+    } finally {
+        yield put(actions.setIsDestroyingGame(false));
     }
 }
 

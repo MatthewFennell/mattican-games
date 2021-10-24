@@ -42,6 +42,9 @@ const canStartGame = game => {
         return game.currentPlayers.length === game.playersReady.length
         && game.currentPlayers.length === 2;
     }
+    if (game.mode === constants.gameModes.Telestrations) {
+        return game.currentPlayers.length === game.playersReady.length;
+    }
     return false;
 };
 
@@ -289,13 +292,16 @@ const GameNotStarted = props => {
                                 />
                             </div>
                         )}
-                        <div>
-                            <div>Edit game</div>
-                            <Switch
-                                checked={editingGame}
-                                onChange={toggleEditingGame}
-                            />
-                        </div>
+                        {!props.currentGame.mode === constants.gameModes.Telestrations
+                        && (
+                            <div>
+                                <div>Edit game</div>
+                                <Switch
+                                    checked={editingGame}
+                                    onChange={toggleEditingGame}
+                                />
+                            </div>
+                        )}
                     </div>
                     <Fade
 

@@ -163,8 +163,25 @@ exports.joinGame = functions
             if (doc.data().currentPlayers.length === doc.data().numberOfPlayers) {
                 throw new functions.https.HttpsError('invalid-argument', 'That game is full');
             }
-            if (doc.data().hasStarted) {
+            if (doc.data().hasStarted && doc.data().mode !== 'Telestrations') {
                 throw new functions.https.HttpsError('invalid-argument', 'That game has already started');
+            }
+
+            if (doc.data().hasStarted && doc.data().mode === 'Telestrations' && doc.data().status == constants.telestrationGameStatuses.Drawing) {
+                return db.collection('users').doc(context.auth.uid).get().then(response => {
+                    const { displayName } = response.data();
+                    if (!displayName) {
+                        throw new functions.https.HttpsError('invalid-argument', 'Please set a display name before joining');
+                    }
+                    return doc.ref.update({
+                        currentPlayers: operations.arrayUnion(context.auth.uid),
+                        usernameMappings: {
+                            ...doc.data().usernameMappings,
+                            [context.auth.uid]: displayName
+                        },
+                        usersToJoinNextRound: operations.arrayUnion(context.auth.uid)
+                    });
+                });
             }
 
             if (doc.data().mode === 'Othello') {
@@ -275,7 +292,7 @@ exports.leaveGame = functions
                     currentPlayers: operations.arrayRemove(context.auth.uid)
                 });
             }
-            if (doc.data().hasStarted) {
+            if (doc.data().hasStarted && doc.data().mode !== 'Telestrations') {
                 if (doc.data().status !== constants.avalonGameStatuses.Finished) {
                     throw new functions.https.HttpsError('invalid-argument', 'That game has not finished yet');
                 }

@@ -225,6 +225,13 @@ module.exports.articulateGameStatuses = {
     GameFinished: 'GameFinished'
 };
 
+module.exports.telestrationGameStatuses = {
+    AddingWords: 'AddingWords',
+    Drawing: 'Drawing'
+};
+
+module.exports.telestrationObjects = ['Dinosaur', 'Pikachu', 'Dragon']
+
 module.exports.articulateCategories = {
     Action: 'Action',
     Nature: 'Nature',
@@ -251,6 +258,7 @@ module.exports.gameModes = {
     Avalon: 'Avalon',
     Hitler: 'Hitler',
     Othello: 'Othello',
+    Telestrations: 'Telestrations',
     WhosInTheHat: 'Who\'s in the Hat'
 };
 

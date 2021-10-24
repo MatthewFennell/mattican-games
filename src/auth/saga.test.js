@@ -1,13 +1,11 @@
-import { expectSaga } from 'redux-saga-test-plan';
-import * as matchers from 'redux-saga-test-plan/matchers';
-import { throwError } from 'redux-saga-test-plan/providers';
+import { push } from 'connected-react-router';
 import firebase from 'firebase';
 import { noop } from 'lodash';
-import { push } from 'connected-react-router';
 import { constants } from 'react-redux-firebase';
-import * as sagas from './saga';
+import { expectSaga } from 'redux-saga-test-plan';
 import * as consts from '../constants';
 import * as actions from './actions';
+import * as sagas from './saga';
 
 // https://github.com/jfairbank/redux-saga-test-plan - Docs
 
