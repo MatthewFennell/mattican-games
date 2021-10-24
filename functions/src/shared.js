@@ -292,8 +292,6 @@ exports.leaveGame = functions
                     currentPlayers: operations.arrayRemove(context.auth.uid)
                 });
             }
-            console.log("current mode", doc.data().mode);
-            console.log("telestrations status", constants.gameModes.Telestrations);
             if (doc.data().hasStarted && doc.data().mode !== 'Telestrations') {
                 if (doc.data().status !== constants.avalonGameStatuses.Finished) {
                     throw new functions.https.HttpsError('invalid-argument', 'That game has not finished yet');

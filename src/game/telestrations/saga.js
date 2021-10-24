@@ -24,7 +24,8 @@ export function* createGame(api, action) {
     try {
         if (action.mode === constants.gameModes.Telestrations) {
             yield call(api.createTelestrationsGame, ({
-                name: action.gameInfo.name
+                name: action.gameInfo.name,
+                includesPresetWords: action.gameInfo.includesPresetWords
             }));
             yield put(overviewActions.createGameSuccess());
         }
@@ -43,6 +44,8 @@ export function* addWord(api, action) {
         yield put(notificationActions.addNotification(`Successfully added word ${action.word}`));
     } catch (error) {
         yield put(commonActions.gameError(error, 'Add Word Error'));
+    } finally {
+        yield put(actions.cancelAddingWord());
     }
 }
 

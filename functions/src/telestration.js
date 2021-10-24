@@ -3,6 +3,7 @@ const admin = require('firebase-admin');
 const functions = require('firebase-functions');
 const common = require('./common');
 const constants = require('./constants');
+const telestrationWords = require('./telestration/telestration.json');
 
 const db = admin.firestore();
 
@@ -11,7 +12,6 @@ const operations = admin.firestore.FieldValue;
 exports.createGame = functions
     .region(constants.region)
     .https.onCall((data, context) => {
-        console.log("mode", constants.gameModes.Telestrations)
         common.isAuthenticated(context);
 
         if (!data.name) {
@@ -31,7 +31,7 @@ exports.createGame = functions
                     }
                     return db.collection('games').add({
                         currentPlayers: [context.auth.uid],
-                        objectsToDraw: constants.telestrationObjects,
+                        objectsToDraw: data.includesPresetWords ? telestrationWords : [],
                         hasStarted: false,
                         host: context.auth.uid,
                         mode: 'Telestrations',
@@ -79,8 +79,6 @@ exports.addWord = functions
     .https.onCall((data, context) => {
         common.isAuthenticated(context);
 
-        console.log("hey", data.word)
-
         if (!data.word) {
             throw new functions.https.HttpsError('not-found', 'Must provide a word');
         }
@@ -109,11 +107,15 @@ exports.startRound = functions
                 throw new functions.https.HttpsError('invalid-argument', 'You are not the host');
             }
 
-            const { usedWords, usersToJoinNextRound } = doc.data();
+            const { usedWords, objectsToDraw } = doc.data();
 
-            const nextWord = _.chain(doc.data().objectsToDraw).filter(word => !usedWords.includes(word)).shuffle().head().value()
+            if (usedWords.length === objectsToDraw.length) {
+                throw new functions.https.HttpsError('invalid-argument', 'You need to add more words');
+            }
 
-            const nextUsers = [...doc.data().currentPlayers, ...usersToJoinNextRound]
+            const nextWord = _.chain(objectsToDraw).filter(word => !usedWords.includes(word)).shuffle().head().value()
+
+            const nextUsers = doc.data().currentPlayers;
 
             return doc.ref.update({
                 round: operations.increment(1),

@@ -108,7 +108,8 @@ const Overview = props => {
         if (gameMode === constants.gameModes.Telestrations) {
             props.createGameRequest(gameMode,
                 {
-                    name: gameName
+                    name: gameName,
+                    includesPresetWords: isCustomNames // Inverse of naming
                 });
         }
         setMakingGame(false);

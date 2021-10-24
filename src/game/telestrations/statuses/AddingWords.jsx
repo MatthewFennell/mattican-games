@@ -1,11 +1,10 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import fp from 'lodash/fp';
 import { noop } from 'lodash';
-import { mapUserIdToName } from '../../helpers';
+import PropTypes from 'prop-types';
+import React, { useCallback, useState } from 'react';
 import LoadingDiv from '../../../common/loadingDiv/LoadingDiv';
-import TextInput from '../../../common/TextInput/TextInput';
 import StyledButton from '../../../common/StyledButton/StyledButton';
+import TextInput from '../../../common/TextInput/TextInput';
+import { mapUserIdToName } from '../../helpers';
 import defaultStyles from './AddingWords.module.scss';
 
 const AddingWords = props => {
@@ -14,13 +13,12 @@ const AddingWords = props => {
     const addWord = useCallback(() => {
         props.addWordRequest(props.currentGameId, wordToAdd);
         setWordToAdd('');
+        // eslint-disable-next-line
     }, [wordToAdd, props.addWordRequest]);
 
     const startGame = () => {
         props.startGameRequest(props.currentGameId);
     };
-
-    console.log('isStartingGame', props.isStartingGame);
 
     return (
         <>
@@ -29,7 +27,6 @@ const AddingWords = props => {
             </div>
             <div className={props.styles.addWordsTextInput}>
                 <TextInput
-                // icon={textInputConstants.textInputIcons.email}
                     label="Word to add"
                     onChange={setWordToAdd}
                     value={wordToAdd}
@@ -37,11 +34,20 @@ const AddingWords = props => {
                 />
             </div>
             <div className={props.styles.addWordButton}>
-                <StyledButton
-                    text="Add Word"
-                    onClick={addWord}
-                    disabled={!wordToAdd}
-                />
+                <LoadingDiv
+                    isMargin
+                    isLoading={props.isAddingWord}
+                    isBorderRadius
+                    isBlack
+                    isNoPadding
+                    isFitContent
+                >
+                    <StyledButton
+                        text="Add Word"
+                        onClick={addWord}
+                        disabled={!wordToAdd}
+                    />
+                </LoadingDiv>
             </div>
             <div className={props.styles.wordsInPool}>
                 {`Current number of words in the pool: ${props.currentGame.objectsToDraw.length}`}
@@ -88,6 +94,7 @@ AddingWords.defaultProps = {
     },
     currentGameId: '',
     isStartingGame: false,
+    isAddingWord: false,
     startGameRequest: noop,
     styles: defaultStyles,
     users: {}
@@ -104,6 +111,7 @@ AddingWords.propTypes = {
         objectsToDraw: PropTypes.arrayOf(PropTypes.string)
     }),
     currentGameId: PropTypes.string,
+    isAddingWord: PropTypes.bool,
     isStartingGame: PropTypes.bool,
     startGameRequest: PropTypes.func,
     styles: PropTypes.objectOf(PropTypes.string),

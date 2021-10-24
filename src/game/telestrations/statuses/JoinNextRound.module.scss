@@ -1,0 +1,17 @@
+@import "../../../common/Styles.scss";
+
+.joinNextRound {
+    text-align: center;
+    margin-top: $spacing-small;
+    margin-left: $spacing-small;
+    margin-right: $spacing-small;
+}
+
+.leaveGame {
+    text-align: center;
+}
+
+.confirmButtons {
+    display: flex;
+    justify-content: center;
+}

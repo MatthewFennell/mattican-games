@@ -35,8 +35,6 @@ exports.updateProfilePicture = functions
 exports.createGame = functions
     .region(constants.region)
     .https.onCall((data, context) => {
-
-        console.log("CALLED")
         common.isAuthenticated(context);
 
         if (!data.name) {

@@ -122,6 +122,21 @@ const CreateGame = props => (
                 </div>
             </Fade>
 
+            <Fade checked={props.gameMode === constants.gameModes.Telestrations} label="Telestrations">
+                <div className={props.styles.skippingRules}>
+                    <div>
+                        <div>
+                            Include Preset Words
+                        </div>
+                        <Switch
+                            checked={props.isCustomNames}
+                            onChange={props.toggleCustomNames}
+                            color="primary"
+                        />
+                    </div>
+                </div>
+            </Fade>
+
             <Fade checked={props.gameMode === constants.gameModes.Articulate} label="Articulate">
                 <div className={props.styles.skippingRules}>
                     <Dropdown

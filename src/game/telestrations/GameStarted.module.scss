@@ -7,3 +7,23 @@
     color: $color-blue;
     font-weight: bold;
 }
+
+.textWrapper, .textWrapperTwo {
+    text-align: center;
+    justify-content: center;
+    color: $color-green;
+    font-weight: bold;
+    display: flex;
+    font-size: $font-size-medium;
+    flex-wrap: wrap;
+  }
+
+  .textWrapper {
+    margin-top: $spacing-small; 
+  }
+  
+  .textValue {
+    color: $color-black;
+    margin-left: 4px;
+  }
+  
