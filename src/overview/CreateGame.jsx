@@ -76,6 +76,20 @@ const CreateGame = props => (
                 />
             </div>
 
+            {props.gameMode === constants.gameModes.Telestrations
+            && (
+
+                <div className={props.styles.numberOfPlayersWrapper}>
+                    <TextInput
+                        onChange={props.setNumberOfSpies}
+                        value={props.numberOfSpies}
+                        type="number"
+                        label="Number of spies"
+                    />
+                </div>
+            )}
+            
+
             <Fade checked={props.gameMode === constants.gameModes.WhosInTheHat} label="WhosInHat">
                 <div className={props.styles.skippingRules}>
                     <div>

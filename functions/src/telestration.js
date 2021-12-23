@@ -22,6 +22,8 @@ exports.createGame = functions
             throw new functions.https.HttpsError('invalid-argument', 'Game name too long. Max 32 characters');
         }
 
+        const numberOfSpies = Math.max(1, data.numberOfSpies);
+
         return db.collection('users').doc(context.auth.uid).get().then(response => {
             const { displayName } = response.data();
             return db.collection('games').where('name', '==', data.name).get().then(
@@ -42,7 +44,8 @@ exports.createGame = functions
                             [context.auth.uid]: displayName
                         },
                         usedWords: [],
-                        usersToJoinNextRound: []
+                        usersToJoinNextRound: [],
+                        numberOfSpies
                     });
                 }
             );
@@ -66,10 +69,12 @@ exports.startGame = functions
                 throw new functions.https.HttpsError('invalid-argument', 'Not everybody is ready');
             }
 
+            const { currentPlayers, numberOfSpies } = doc.data();
 
             return doc.ref.update({
                 hasStarted: true,
                 status: constants.telestrationGameStatuses.AddingWords,
+                numberOfSpies: Math.min(numberOfSpies, currentPlayers.length)
             });
         });
     });
@@ -107,7 +112,7 @@ exports.startRound = functions
                 throw new functions.https.HttpsError('invalid-argument', 'You are not the host');
             }
 
-            const { usedWords, objectsToDraw } = doc.data();
+            const { usedWords, objectsToDraw, numberOfSpies } = doc.data();
 
             if (usedWords.length === objectsToDraw.length) {
                 throw new functions.https.HttpsError('invalid-argument', 'You need to add more words');
@@ -117,15 +122,49 @@ exports.startRound = functions
 
             const nextUsers = doc.data().currentPlayers;
 
+            const randomUsers = _.shuffle(nextUsers);
+
+            if (numberOfSpies > nextUsers.length) {
+                numberOfSpies = nextUsers.length
+            }
+
+            const spies = randomUsers.slice(0, numberOfSpies) 
+
             return doc.ref.update({
                 round: operations.increment(1),
                 hasStarted: true,
                 status: constants.telestrationGameStatuses.Drawing,
                 wordToDraw: nextWord,
-                blindUser: _.chain(nextUsers).shuffle().head().value(),
+                firstDrawer: _.chain(nextUsers).shuffle().head().value(),
+                blindUser: spies,
                 usedWords: operations.arrayUnion(nextWord),
                 currentPlayers: nextUsers,
                 usersToJoinNextRound: []
+            });
+        });
+    });
+
+exports.setNumberOfSpies = functions
+    .region(constants.region)
+    .https.onCall((data, context) => {
+        common.isAuthenticated(context);
+        return db.collection('games').doc(data.gameId).get().then(doc => {
+            if (!doc.exists) {
+                throw new functions.https.HttpsError('not-found', 'Game not found. Contact Matt');
+            }
+
+            if (doc.data().host !== context.auth.uid) {
+                throw new functions.https.HttpsError('invalid-argument', 'You are not the host');
+            }
+
+            const { currentPlayers } = doc.data();
+
+            if (data.numberOfSpies < 0 || data.numberOfSpies > currentPlayers.length) {
+                throw new functions.https.HttpsError('invalid-argument', 'Invalid number of spies');
+            }
+
+            return doc.ref.update({
+                numberOfSpies: data.numberOfSpies
             });
         });
     });

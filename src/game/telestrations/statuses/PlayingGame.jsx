@@ -1,6 +1,7 @@
 import { noop } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
+import { mapUserIdToName } from '../../helpers';
 import LoadingDiv from '../../../common/loadingDiv/LoadingDiv';
 import ConfirmModal from '../../../common/modal/ConfirmModal';
 import SuccessModal from '../../../common/modal/SuccessModal';
@@ -47,7 +48,10 @@ const PlayingGame = props => {
             <div className={props.styles.drawTitle}>
                 {`Draw the object! - Round ${props.currentGame.round}`}
             </div>
-            {props.auth.uid !== props.currentGame.blindUser ? (
+            <div className={props.styles.drawTitle}>
+                {`${mapUserIdToName(props.currentGame.usernameMappings, props.currentGame.firstDrawer)} should start the drawing`}
+            </div>
+            {!props.currentGame.blindUsers?.includes(props.auth.uid) ? (
                 <div className={props.styles.itemToDraw}>
                     {`Item to draw: ${props.currentGame.wordToDraw}`}
                 </div>
@@ -197,7 +201,8 @@ PlayingGame.defaultProps = {
         uid: ''
     },
     currentGame: {
-        blindUser: '',
+        blindUsers: [],
+        firstDrawer: '',
         host: '',
         objectsToDraw: [],
         usedWords: [],
@@ -222,7 +227,8 @@ PlayingGame.propTypes = {
         uid: PropTypes.string
     }),
     currentGame: PropTypes.shape({
-        blindUser: PropTypes.string,
+        blindUsers: PropTypes.arrayOf(PropTypes.string),
+        firstDrawer: PropTypes.string,
         host: PropTypes.string,
         objectsToDraw: PropTypes.arrayOf(PropTypes.string),
         usedWords: PropTypes.arrayOf(PropTypes.string),

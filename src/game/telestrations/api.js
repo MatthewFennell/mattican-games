@@ -4,3 +4,4 @@ export const startTelestrationsGame = request => functionToCall('telestration-st
 export const createTelestrationsGame = request => functionToCall('telestration-createGame')(request);
 export const addTelestrationWord = request => functionToCall('telestration-addWord')(request);
 export const startTelestrationsRound = request => functionToCall('telestration-startRound')(request);
+export const setNumberOfSpies = request => functionToCall('telestration-setNumberOfSpies')(request);

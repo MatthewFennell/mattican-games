@@ -5,12 +5,16 @@ import React from 'react';
 import { connect } from 'react-redux';
 import * as constants from '../../constants';
 import { destroyGameRequest, leaveGameRequest } from '../actions';
-import { addWordRequest, startGameRequest } from './actions';
+import SuccessModal from '../../common/modal/SuccessModal';
+import { addWordRequest, startGameRequest, editNumberOfSpies } from './actions';
 import { mapUserIdToName } from '../helpers';
 import defaultStyles from './GameStarted.module.scss';
 import AddingWords from './statuses/AddingWords';
 import JoinNextRound from './statuses/JoinNextRound';
 import PlayingGame from './statuses/PlayingGame';
+import StyledButton from '../../common/StyledButton/StyledButton';
+import TextInput from '../../common/TextInput/TextInput';
+import LoadingDiv from '../../common/loadingDiv/LoadingDiv';
 
 const convertToString = items => {
     let string = '';
@@ -25,6 +29,18 @@ const convertToString = items => {
 };
 
 const GameStarted = props => {
+    const [isNumSpiesOpen, setIsNumSpiesOpen] = React.useState(false);
+    const openNumSpies = () => setIsNumSpiesOpen(true);
+    const closeNumSpies = () => {
+        setIsNumSpiesOpen(false)
+        setNumSpies(props.currentGame.numberOfSpies)
+    };
+    const [numSpies, setNumSpies] = React.useState(props.currentGame.numberOfSpies)
+    const editSpies = React.useCallback(() => {
+        props.editNumberOfSpies(props.currentGameId, numSpies)
+        setIsNumSpiesOpen(false)
+        // eslint-disable-next-line
+    }, [props.currentGameId, numSpies])
     const generateComponent = () => {
         if (props.currentGame.usersToJoinNextRound.includes(props.auth.uid)) {
             return (
@@ -90,6 +106,14 @@ const GameStarted = props => {
                         .map(x => mapUserIdToName(props.currentGame.usernameMappings, x)))}
                 </div>
             </div>
+            {props.currentGame.host === props.auth.uid && (
+                <div className={props.styles.textWrapperTwo}>
+                    <div>Current number of spies:</div>
+                    <div className={props.styles.textValue}>
+                        {props.currentGame.numberOfSpies} 
+                    </div>
+                </div>
+            )}
             {props.currentGame.usersToJoinNextRound.length > 0
             && (
                 <div className={props.styles.textWrapperTwo}>
@@ -100,6 +124,42 @@ const GameStarted = props => {
                     </div>
                 </div>
             )}
+            {props.currentGame.host === props.auth.uid && (
+                <div className={props.styles.setNumSpies}>
+                <StyledButton 
+                    text='Set number of spies'
+                    onClick={openNumSpies}
+                />
+                </div>
+            )}
+                <SuccessModal
+                    backdrop
+                    closeModal={closeNumSpies}
+                    isOpen={isNumSpiesOpen || props.isEditingSpies}
+                    headerMessage="Set spies"
+            >
+                    <div>
+                        <TextInput value={numSpies} onChange={setNumSpies}/>
+                        
+                    <LoadingDiv isLoading={props.isEditingSpies} isBorderRadius isBlack>
+                        <div className={props.styles.editSpiesButtons}>
+                            <StyledButton
+                                onClick={editSpies}
+                                isFullWidth
+                                text="Edit"
+                                disabled={props.isEditingSpies}
+                            />
+                            <StyledButton
+                                isFullWidth
+                                text="Cancel"
+                                color="secondary"
+                                onClick={closeNumSpies}
+                                disabled={props.isEditingSpies}
+                            />
+                        </div>
+                    </LoadingDiv>
+                    </div>
+            </SuccessModal>
         </>
     );
 };
@@ -156,14 +216,16 @@ const mapDispatchToProps = {
     addWordRequest,
     destroyGameRequest,
     leaveGameRequest,
-    startGameRequest
+    startGameRequest,
+    editNumberOfSpies
 };
 
 const mapStateToProps = state => ({
     isAddingWord: state.telestrations.isAddingWord,
     isDestroyingGame: state.game.isDestroyingGame,
     isLeavingGame: state.game.isLeavingGame,
-    isStartingGame: state.game.isStartingGame
+    isStartingGame: state.game.isStartingGame,
+    isEditingSpies: state.telestrations.isEditingSpies
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GameStarted);

@@ -38,6 +38,7 @@ const Overview = props => {
     const [numberOfPlayers, setNumberOfPlayers] = useState(5);
     const [gameName, setGameName] = useState('');
     const [activeAvalonRoles, setActiveAvalonRoles] = useState([]);
+    const [numberOfSpies, setNumberOfSpies] = useState(1);
 
     const [skippingRule, setSkippingRule] = useState(constants.whoInHatSkipping.Unlimited);
     const [isCustomNames, setCustomNames] = useState(true);
@@ -109,7 +110,8 @@ const Overview = props => {
             props.createGameRequest(gameMode,
                 {
                     name: gameName,
-                    includesPresetWords: isCustomNames // Inverse of naming
+                    includesPresetWords: isCustomNames, // Inverse of naming
+                    numberOfSpies
                 });
         }
         setMakingGame(false);
@@ -167,12 +169,14 @@ const Overview = props => {
                     isCustomNames={isCustomNames}
                     makingGame={makingGame}
                     numberOfPlayers={numberOfPlayers}
+                    numberOfSpies={numberOfSpies}
                     othelloDifficulty={othelloDifficulty}
                     othelloPlayerType={othelloPlayerType}
                     scoreCap={scoreCap}
                     setGameMode={setGameMode}
                     setGameName={setGameName}
                     setMakingGame={setMakingGame}
+                    setNumberOfSpies={setNumberOfSpies}
                     setOthelloDifficulty={setOthelloDifficulty}
                     setOthelloPlayerType={setOthelloPlayerType}
                     setScoreCap={setScoreCap}

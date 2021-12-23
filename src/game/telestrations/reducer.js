@@ -1,7 +1,8 @@
 import * as actions from './actions';
 
 export const initialState = {
-    isAddingWord: false
+    isAddingWord: false,
+    isEditingSpies: false
 };
 
 const telestrationsReducer = (state = initialState, action) => {
@@ -16,6 +17,18 @@ const telestrationsReducer = (state = initialState, action) => {
         return {
             ...state,
             isAddingWord: false
+        };
+    }
+    case actions.EDIT_NUMBER_OF_SPIES: {
+        return {
+            ...state,
+            isEditingSpies: true
+        };
+    }
+    case actions.CANCEL_EDITING_SPIES: {
+        return {
+            ...state,
+            isEditingSpies: false
         };
     }
     default:
