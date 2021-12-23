@@ -1,29 +1,39 @@
 @import "../../common/Styles.scss";
 
 .gameTitle {
-    margin-top: $spacing-small;
-    text-align: center;
-    font-size: $font-size-huge;
-    color: $color-blue;
-    font-weight: bold;
+  margin-top: $spacing-small;
+  text-align: center;
+  font-size: $font-size-huge;
+  color: $color-blue;
+  font-weight: bold;
 }
 
-.textWrapper, .textWrapperTwo {
-    text-align: center;
-    justify-content: center;
-    color: $color-green;
-    font-weight: bold;
-    display: flex;
-    font-size: $font-size-medium;
-    flex-wrap: wrap;
-  }
+.textWrapper,
+.textWrapperTwo {
+  text-align: center;
+  justify-content: center;
+  color: $color-green;
+  font-weight: bold;
+  display: flex;
+  font-size: $font-size-medium;
+  flex-wrap: wrap;
+}
 
-  .textWrapper {
-    margin-top: $spacing-small; 
-  }
-  
-  .textValue {
-    color: $color-black;
-    margin-left: 4px;
-  }
-  
+.textWrapper {
+  margin-top: $spacing-small;
+}
+
+.textValue {
+  color: $color-black;
+  margin-left: 4px;
+}
+
+.setNumSpies {
+  text-align: center;
+  justify-content: center;
+}
+
+.editSpiesButtons {
+  display: flex;
+  justify-content: space-evenly;
+}
