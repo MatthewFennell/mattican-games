@@ -61,7 +61,7 @@ exports.createHitlerGame = functions
                         numberFascistPlayed: 0,
                         numberLiberalPlayed: 0,
                         numberOfPlayers: Math.min(data.numberOfPlayers, 10),
-                        playersReady: [],
+                        // playersReady: [],
                         playerRoles: [],
                         playerToInvestigate: '',
                         president: null,
@@ -104,9 +104,9 @@ exports.startGame = functions
                 throw new functions.https.HttpsError('invalid-argument', 'You are not the host');
             }
 
-            if (doc.data().playersReady.length !== doc.data().numberOfPlayers) {
-                throw new functions.https.HttpsError('invalid-argument', 'Not everybody is ready');
-            }
+            // if (doc.data().playersReady.length !== doc.data().numberOfPlayers) {
+            //     throw new functions.https.HttpsError('invalid-argument', 'Not everybody is ready');
+            // }
 
             const playerOrder = fp.shuffle(doc.data().currentPlayers);
 

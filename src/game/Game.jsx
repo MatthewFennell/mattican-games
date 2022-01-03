@@ -176,7 +176,8 @@ const mapStateToProps = (state, props) => ({
 
     auth: state.firebase.auth,
     currentGameId: selectors.getGameId(props),
-    isReady: selectors.getIsReady(state, props),
+    // isReady: selectors.getIsReady(state, props),
+    isReady: true,
     myRole: selectors.getMyRole(state, props),
     users: selectors.getUsernameMappings(state, props)
 });

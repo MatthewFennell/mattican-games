@@ -39,7 +39,7 @@ exports.createGame = functions
                         mode: 'Telestrations',
                         name: data.name,
                         round: 0,
-                        playersReady: [],
+                        // playersReady: [],
                         usernameMappings: {
                             [context.auth.uid]: displayName
                         },
@@ -65,9 +65,9 @@ exports.startGame = functions
                 throw new functions.https.HttpsError('invalid-argument', 'You are not the host');
             }
 
-            if (doc.data().playersReady.length !== doc.data().currentPlayers.length) {
-                throw new functions.https.HttpsError('invalid-argument', 'Not everybody is ready');
-            }
+            // if (doc.data().playersReady.length !== doc.data().currentPlayers.length) {
+            //     throw new functions.https.HttpsError('invalid-argument', 'Not everybody is ready');
+            // }
 
             const { currentPlayers, numberOfSpies } = doc.data();
 

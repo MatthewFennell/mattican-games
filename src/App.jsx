@@ -88,3 +88,5 @@ export default compose(
         }
     ])
 )(App);
+
+// Current node version = 10.13.0

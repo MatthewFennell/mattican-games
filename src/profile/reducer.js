@@ -6,7 +6,6 @@ export const initialState = {
     updateDisplayNameError: '',
     updateDisplayNameErrorCode: '',
 
-
     deletingAccount: false,
     deleteAccountError: '',
     deleteAccountErrorCode: ''

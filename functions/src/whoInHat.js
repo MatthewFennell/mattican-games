@@ -48,7 +48,7 @@ exports.createGame = functions
                         isCustomNames: Boolean(data.isCustomNames),
                         mode: constants.gameModes.WhosInTheHat,
                         name: data.name,
-                        playersReady: [],
+                        // playersReady: [],
                         round: null,
                         scoreCap: Math.min(data.scoreCap, 30),
                         skippingRule: data.skippingRule,
@@ -104,9 +104,9 @@ exports.startGame = functions
                 throw new functions.https.HttpsError('invalid-argument', 'You are not the host');
             }
 
-            if (doc.data().playersReady.length !== doc.data().currentPlayers.length) {
-                throw new functions.https.HttpsError('invalid-argument', 'Not everybody is ready');
-            }
+            // if (doc.data().playersReady.length !== doc.data().currentPlayers.length) {
+            //     throw new functions.https.HttpsError('invalid-argument', 'Not everybody is ready');
+            // }
 
             const { isCustomNames } = doc.data();
 

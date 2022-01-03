@@ -81,7 +81,7 @@ exports.createGame = functions
                         host: context.auth.uid,
                         mode: constants.gameModes.Articulate,
                         name: data.name,
-                        playersReady: [],
+                        // playersReady: [],
                         round: null,
                         skippingRule: data.skippingRule,
                         teams: constants.initialTeams,
@@ -146,9 +146,9 @@ exports.startGame = functions
                 throw new functions.https.HttpsError('invalid-argument', 'You are not the host');
             }
 
-            if (doc.data().playersReady.length !== doc.data().currentPlayers.length) {
-                throw new functions.https.HttpsError('invalid-argument', 'Not everybody is ready');
-            }
+            // if (doc.data().playersReady.length !== doc.data().currentPlayers.length) {
+            //     throw new functions.https.HttpsError('invalid-argument', 'Not everybody is ready');
+            // }
 
             return doc.ref.update({
                 hasStarted: true,
@@ -478,7 +478,7 @@ exports.playAgain = functions
                 currentPlayers: [context.auth.uid],
                 currentWordIndex: 0,
                 hasStarted: true,
-                playersReady: [],
+                // playersReady: [],
                 round: 1,
                 status: constants.articulateGameStatuses.MakingTeams,
                 teams: constants.initialTeams,

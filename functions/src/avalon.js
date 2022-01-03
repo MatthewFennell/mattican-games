@@ -60,7 +60,7 @@ exports.createAvalonGame = functions
                         name: data.name,
                         numberOfPlayers: Math.min(data.numberOfPlayers, 10),
                         playersOnQuest: [],
-                        playersReady: [],
+                        // playersReady: [],
                         playerToGuessMerlin: '',
                         questNominations: [],
                         questResult: [],
@@ -94,9 +94,9 @@ exports.startGame = functions
                 throw new functions.https.HttpsError('invalid-argument', 'You are not the host');
             }
 
-            if (doc.data().playersReady.length !== doc.data().numberOfPlayers) {
-                throw new functions.https.HttpsError('invalid-argument', 'Not everybody is ready');
-            }
+            // if (doc.data().playersReady.length !== doc.data().numberOfPlayers) {
+            //     throw new functions.https.HttpsError('invalid-argument', 'Not everybody is ready');
+            // }
 
             const playerRoles = common.makeAvalonRoles(doc.data().roles, doc.data().currentPlayers);
             const playerOrder = fp.shuffle(doc.data().currentPlayers);

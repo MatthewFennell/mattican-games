@@ -79,7 +79,6 @@ export const updateTeamNameRequest = teamName => ({
     teamName
 });
 
-
 export const closeDisplayNameError = () => ({
     type: CLOSE_DISPLAY_NAME_ERROR
 });
