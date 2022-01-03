@@ -74,7 +74,7 @@ exports.createGame = functions
                         mode: 'Othello',
                         name: data.name,
                         opponentType: data.opponent,
-                        playersReady: [],
+                        // playersReady: [],
                         usernameMappings: {
                             [context.auth.uid]: displayName
                         }
@@ -124,10 +124,10 @@ exports.startGame = functions
                 throw new functions.https.HttpsError('invalid-argument', 'You are not the host');
             }
 
-            if (doc.data().playersReady.length !== doc.data().currentPlayers.length
-            && doc.data().opponentType === constants.othelloPlayerTypes.Human) {
-                throw new functions.https.HttpsError('invalid-argument', 'Not everybody is ready');
-            }
+            // if (doc.data().playersReady.length !== doc.data().currentPlayers.length
+            // && doc.data().opponentType === constants.othelloPlayerTypes.Human) {
+            //     throw new functions.https.HttpsError('invalid-argument', 'Not everybody is ready');
+            // }
 
             const { opponentType, currentPlayers } = doc.data();
 

@@ -4,6 +4,7 @@ import firebase from 'firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import * as firebaseui from 'firebaseui';
 import { noop } from 'lodash';
 import { withRouter } from 'react-router-dom';
 import defaultStyles from './SignIn.module.scss';
@@ -27,7 +28,8 @@ const SignIn = props => {
                 defaultCountry: 'GB',
                 defaultNationalNumber: '1234567890',
                 loginHint: '+11234567890'
-            }
+            },
+            firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
         ],
         callbacks: {
             signInSuccess: noop

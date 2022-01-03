@@ -2,7 +2,8 @@ import * as actions from './actions';
 
 export const initialState = {
     creatingGame: false,
-    joiningGame: false
+    joiningGame: false,
+    settingDisplayName: false
 };
 
 const overviewReducer = (state = initialState, action) => {

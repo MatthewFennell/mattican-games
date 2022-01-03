@@ -30,7 +30,7 @@ exports.leaveUnconstrainedMidgame = functions
             if (doc.data().host === context.auth.uid && doc.data().currentPlayers && doc.data().currentPlayers.length > 1) {
                 return doc.ref.update({
                     host: doc.data().currentPlayers.find(x => x !== context.auth.uid),
-                    playersReady: operations.arrayRemove(context.auth.uid),
+                    // playersReady: operations.arrayRemove(context.auth.uid),
                     currentPlayers: operations.arrayRemove(context.auth.uid),
                     teams: doc.data().teams.map(team => ({
                         ...team,
@@ -40,7 +40,7 @@ exports.leaveUnconstrainedMidgame = functions
             }
 
             return doc.ref.update({
-                playersReady: operations.arrayRemove(context.auth.uid),
+                // playersReady: operations.arrayRemove(context.auth.uid),
                 currentPlayers: operations.arrayRemove(context.auth.uid),
                 teams: doc.data().teams.map(team => ({
                     ...team,
@@ -243,21 +243,21 @@ exports.addTeam = functions
         });
     });
 
-exports.readyUp = functions
-    .region(constants.region)
-    .https.onCall((data, context) => {
-        common.isAuthenticated(context);
-        return db.collection('games').doc(data.gameId).get().then(doc => {
-            if (data.isReady) {
-                return doc.ref.update({
-                    playersReady: operations.arrayUnion(context.auth.uid)
-                });
-            }
-            return doc.ref.update({
-                playersReady: operations.arrayRemove(context.auth.uid)
-            });
-        });
-    });
+// exports.readyUp = functions
+//     .region(constants.region)
+//     .https.onCall((data, context) => {
+//         common.isAuthenticated(context);
+//         return db.collection('games').doc(data.gameId).get().then(doc => {
+//             if (data.isReady) {
+//                 return doc.ref.update({
+//                     playersReady: operations.arrayUnion(context.auth.uid)
+//                 });
+//             }
+//             return doc.ref.update({
+//                 playersReady: operations.arrayRemove(context.auth.uid)
+//             });
+//         });
+//     });
 
 exports.destroyGame = functions
     .region(constants.region)
@@ -288,7 +288,7 @@ exports.leaveGame = functions
             if (doc.data().host === context.auth.uid && doc.data().currentPlayers && doc.data().currentPlayers.length > 1) {
                 return doc.ref.update({
                     host: doc.data().currentPlayers.find(x => x !== context.auth.uid),
-                    playersReady: operations.arrayRemove(context.auth.uid),
+                    // playersReady: operations.arrayRemove(context.auth.uid),
                     currentPlayers: operations.arrayRemove(context.auth.uid)
                 });
             }
@@ -298,7 +298,7 @@ exports.leaveGame = functions
                 }
             }
             return doc.ref.update({
-                playersReady: operations.arrayRemove(context.auth.uid),
+                // playersReady: operations.arrayRemove(context.auth.uid),
                 currentPlayers: operations.arrayRemove(context.auth.uid)
             });
         });

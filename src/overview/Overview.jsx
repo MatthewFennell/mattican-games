@@ -11,6 +11,7 @@ import {
     joinTeamMidgameRequest,
     createGameRequest
 } from './actions';
+import { updateDisplayNameRequest } from '../profile/actions';
 import CreateGame from './CreateGame';
 import * as selectors from './selectors';
 import ConfirmModal from '../common/modal/ConfirmModal';
@@ -18,6 +19,10 @@ import { mapUserIdToName } from '../game/helpers';
 import ErrorModal from '../common/modal/ErrorModal';
 import { closeGameError } from '../game/actions';
 import LoadingDiv from '../common/loadingDiv/LoadingDiv';
+import SuccessModal from '../common/modal/SuccessModal';
+import TextInput from '../common/TextInput/TextInput';
+import { textInputIcons } from '../common/TextInput/constants';
+import StyledButton from '../common/StyledButton/StyledButton';
 
 const convertToString = items => {
     let string = '';
@@ -48,6 +53,8 @@ const Overview = props => {
     const [othelloPlayerType, setOthelloPlayerType] = useState('');
     const [othelloDifficulty, setOthelloDifficulty] = useState(constants
         .othelloAIDifficulties.Easy);
+
+    const [displayName, setDisplayName] = useState(props.actualDisplayName);
 
     const [joiningId, setJoiningId] = useState('');
 
@@ -155,6 +162,10 @@ const Overview = props => {
     }, [isCustomNames, setCustomNames]);
 
     const isMobile = useMediaQuery('(max-width:600px)');
+
+    const updateDisplayName = () => {
+        props.updateDisplayNameRequest(displayName);
+    };
 
     return (
         <>
@@ -297,6 +308,32 @@ const Overview = props => {
                 errorCode={props.errorCode}
                 errorMessage={props.errorMessage}
             />
+
+            <SuccessModal
+                backdrop
+                closeModal={() => {}}
+                error
+                isOpen={!props.actualDisplayName}
+                headerMessage="Set Display Name"
+            >
+                <TextInput
+                    value={displayName}
+                    onChange={setDisplayName}
+                    icon={textInputIcons.user}
+                    disabled={props.updatingDisplayName}
+                />
+
+                <LoadingDiv isLoading={props.updatingDisplayName} isFitContent isBorderRadius>
+                    <div className={props.styles.confirmDisplayNameButton}>
+                        <StyledButton
+                            text="Confirm"
+                            disabled={!displayName || props.updatingDisplayName}
+                            onClick={updateDisplayName}
+                        />
+                    </div>
+                </LoadingDiv>
+
+            </SuccessModal>
         </>
     );
 };
@@ -304,38 +341,47 @@ const Overview = props => {
 Overview.defaultProps = {
     allGames: [],
     creatingGame: false,
+    actualDisplayName: '',
     styles: defaultStyles,
     errorHeader: '',
     errorMessage: '',
-    errorCode: ''
+    errorCode: '',
+    updatingDisplayName: false,
+    updateDisplayNameRequest: () => {}
 };
 
 Overview.propTypes = {
     allGames: PropTypes.arrayOf(PropTypes.shape({})),
     closeGameError: PropTypes.func.isRequired,
     createGameRequest: PropTypes.func.isRequired,
+    actualDisplayName: PropTypes.string,
     joinTeamMidgameRequest: PropTypes.func.isRequired,
     creatingGame: PropTypes.bool,
     joinGameRequest: PropTypes.func.isRequired,
     styles: PropTypes.objectOf(PropTypes.string),
     errorHeader: PropTypes.string,
     errorMessage: PropTypes.string,
-    errorCode: PropTypes.string
+    errorCode: PropTypes.string,
+    updatingDisplayName: PropTypes.bool,
+    updateDisplayNameRequest: PropTypes.func
 };
 
 const mapDispatchToProps = {
     closeGameError,
     createGameRequest,
     joinGameRequest,
-    joinTeamMidgameRequest
+    joinTeamMidgameRequest,
+    updateDisplayNameRequest
 };
 
 const mapStateToProps = state => ({
     allGames: selectors.getGames(state),
     creatingGame: state.overview.creatingGame,
+    actualDisplayName: state.firebase.profile.displayName,
     errorHeader: state.game.errorHeader,
     errorMessage: state.game.errorMessage,
-    errorCode: state.game.errorCode
+    errorCode: state.game.errorCode,
+    updatingDisplayName: state.profile.updatingDisplayName
 });
 
 export default compose(

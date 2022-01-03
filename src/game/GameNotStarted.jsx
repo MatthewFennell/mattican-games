@@ -26,24 +26,23 @@ import LoadingDiv from '../common/loadingDiv/LoadingDiv';
 
 const canStartGame = game => {
     if (game.mode === constants.gameModes.Hitler || game.mode === constants.gameModes.Avalon) {
-        return (game.currentPlayers.length === game.numberOfPlayers)
-            && game.playersReady.length === game.numberOfPlayers;
+        return (game.currentPlayers.length === game.numberOfPlayers);
+        // && game.playersReady.length === game.numberOfPlayers;
     }
     if (game.mode === constants.gameModes.WhosInTheHat) {
-        return game.currentPlayers.length === game.playersReady.length;
+        return true;
     }
     if (game.mode === constants.gameModes.Articulate) {
-        return game.currentPlayers.length === game.playersReady.length;
+        return true;
     }
     if (game.mode === constants.gameModes.Othello) {
         if (game.opponentType === constants.othelloPlayerTypes.Computer) {
             return true;
         }
-        return game.currentPlayers.length === game.playersReady.length
-        && game.currentPlayers.length === 2;
+        return game.currentPlayers.length === 2;
     }
     if (game.mode === constants.gameModes.Telestrations) {
-        return game.currentPlayers.length === game.playersReady.length;
+        return true;
     }
     return false;
 };
@@ -121,22 +120,18 @@ const GameNotStarted = props => {
     }, [props.currentGame, numberOfPlayers, editedAvalonRoles, editedSkippingRule, editedIsCustomNames, scoreCap, timePerRound,
         othelloPlayerType, othelloDifficulty]);
 
-    const [isLocalReady, setIsLocalReady] = useState(props.isReady);
+    // const [isLocalReady, setIsLocalReady] = useState(props.isReady);
 
-    const newReadyUp = useCallback(() => {
-        setIsLocalReady(!isLocalReady);
-        props.readyUpRequest(props.currentGameId,
-            !isLocalReady);
+    // const newReadyUp = useCallback(() => {
+    //     setIsLocalReady(!isLocalReady);
+    //     props.readyUpRequest(props.currentGameId,
+    //         !isLocalReady);
 
-        // eslint-disable-next-line
-    }, [setIsLocalReady, isLocalReady]);
+    //     // eslint-disable-next-line
+    // }, [setIsLocalReady, isLocalReady]);
 
-    const isPlayerReady = useCallback(player => {
-        if (player === props.auth.uid) {
-            return isLocalReady;
-        }
-        return props.currentGame.playersReady.includes(player);
-    }, [isLocalReady, props.currentGame.playersReady, props.auth.uid]);
+    // const isPlayerReady = useCallback(() =>
+    // true, [props.currentGame.playersReady, props.auth.uid]);
 
     const startGame = useCallback(() => {
         setIsStartingOrLeavingGame(true);
@@ -244,8 +239,8 @@ const GameNotStarted = props => {
                         </div>
                         <div className={classNames({
                             [props.styles.status]: true,
-                            [props.styles.ready]: isPlayerReady(player),
-                            [props.styles.notReady]: !isPlayerReady(player)
+                            [props.styles.ready]: true,
+                            [props.styles.notReady]: false
                         })}
                         >
                             <FiberManualRecordIcon fontSize="small" />
@@ -278,10 +273,10 @@ const GameNotStarted = props => {
             </div>
 
             {props.currentGame.host === props.auth.uid
-            && (
+            && props.currentGame.mode !== constants.gameModes.Telestrations && (
                 <div className={props.styles.editGame}>
                     <div className={props.styles.readyUp}>
-                        {!(props.currentGame.mode === constants.gameModes.Othello
+                        {/* {!(props.currentGame.mode === constants.gameModes.Othello
                         && props.currentGame.opponentType === constants.othelloPlayerTypes.Computer)
                         && (
                             <div>
@@ -291,8 +286,8 @@ const GameNotStarted = props => {
                                     onChange={newReadyUp}
                                 />
                             </div>
-                        )}
-                        {!props.currentGame.mode === constants.gameModes.Telestrations
+                        )} */}
+                        {props.currentGame.mode !== constants.gameModes.Telestrations
                         && (
                             <div>
                                 <div>Edit game</div>
@@ -516,7 +511,7 @@ const GameNotStarted = props => {
                 isNoPadding
             >
                 <div className={props.styles.startAndLeave}>
-                    {props.currentGame.host !== props.auth.uid
+                    {/* {props.currentGame.host !== props.auth.uid
                 && (
                     <div>
                         <div>Ready Up</div>
@@ -525,7 +520,7 @@ const GameNotStarted = props => {
                             onChange={newReadyUp}
                         />
                     </div>
-                ) }
+                ) } */}
                     {props.currentGame.host === props.auth.uid
             && (
                 <div
@@ -549,20 +544,19 @@ const GameNotStarted = props => {
                 </div>
             </LoadingDiv>
 
-            {props.currentGame.playersReady.length === props.currentGame.numberOfPlayers
-            && props.currentGame.host !== props.auth.uid && (
+            { props.currentGame.host !== props.auth.uid && (
                 <div className={props.styles.waitingForHost}>
                     {`Waiting for ${mapUserIdToName(props.users,
                         props.currentGame.host)} to start the game`}
                 </div>
             )}
 
-            {props.currentGame.playersReady.length < props.currentGame.numberOfPlayers
+            {/* {props.currentGame.playersReady.length < props.currentGame.numberOfPlayers
             && props.currentGame.numberOfPlayers === props.currentGame.currentPlayers.length && (
                 <div className={props.styles.waitingForPlayersToReady}>
                     Waiting for players to ready up
                 </div>
-            )}
+            )} */}
 
             {props.currentGame.currentPlayers.length < props.currentGame.numberOfPlayers && (
                 <div className={props.styles.waitingForPlayersToJoin}>
@@ -570,15 +564,14 @@ const GameNotStarted = props => {
                 </div>
             )}
 
-            {!props.currentGame.numberOfPlayers
+            {/* {!props.currentGame.numberOfPlayers
             && props.currentGame.playersReady.length < props.currentGame.currentPlayers.length && (
                 <div className={props.styles.waitingForPlayersToReady}>
                     Waiting for players to ready up
                 </div>
-            )}
+            )} */}
 
             {!props.currentGame.numberOfPlayers
-            && props.currentGame.playersReady.length === props.currentGame.currentPlayers.length
             && props.currentGame.host !== props.auth.uid && (
                 <div className={props.styles.waitingForHost}>
                     {`Waiting for ${mapUserIdToName(props.users,
@@ -608,7 +601,7 @@ GameNotStarted.defaultProps = {
         playersReady: []
     },
     currentGameId: '',
-    isReady: false,
+    // isReady: false,
     styles: defaultStyles,
     users: {}
 };
@@ -636,9 +629,9 @@ GameNotStarted.propTypes = {
     editArticulateGameRequest: PropTypes.func.isRequired,
     editOthelloGameRequest: PropTypes.func.isRequired,
     editWhoInHatGameRequest: PropTypes.func.isRequired,
-    isReady: PropTypes.bool,
+    // isReady: PropTypes.bool,
     leaveGameRequest: PropTypes.func.isRequired,
-    readyUpRequest: PropTypes.func.isRequired,
+    // readyUpRequest: PropTypes.func.isRequired,
     editHitlerGameRequest: PropTypes.func.isRequired,
     gameError: PropTypes.func.isRequired,
     startAnyGameRequest: PropTypes.func.isRequired,
