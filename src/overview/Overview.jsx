@@ -145,8 +145,7 @@ const Overview = props => {
     }, [setGameToJoin, setGameModeToJoin]);
 
     const joinGame = useCallback(() => {
-        if (gameModeToJoin === constants.gameModes.WhosInTheHat
-            || gameModeToJoin === constants.gameModes.Articulate) {
+        if (gameModeToJoin === constants.gameModes.WhosInTheHat) {
             props.joinTeamMidgameRequest(gameToJoin);
         } else {
             props.joinGameRequest(gameToJoin, gameModeToJoin);

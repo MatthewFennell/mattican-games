@@ -136,7 +136,7 @@ exports.startRound = functions
                 status: constants.telestrationGameStatuses.Drawing,
                 wordToDraw: nextWord,
                 firstDrawer: _.chain(nextUsers).shuffle().head().value(),
-                blindUser: spies,
+                blindUsers: spies,
                 usedWords: operations.arrayUnion(nextWord),
                 currentPlayers: nextUsers,
                 usersToJoinNextRound: []
