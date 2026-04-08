@@ -30,17 +30,17 @@ const convertToString = items => {
 
 const GameStarted = props => {
     const [isNumSpiesOpen, setIsNumSpiesOpen] = React.useState(false);
+    const [numSpies, setNumSpies] = React.useState(props.currentGame.numberOfSpies);
     const openNumSpies = () => setIsNumSpiesOpen(true);
     const closeNumSpies = () => {
-        setIsNumSpiesOpen(false)
-        setNumSpies(props.currentGame.numberOfSpies)
+        setIsNumSpiesOpen(false);
+        setNumSpies(props.currentGame.numberOfSpies);
     };
-    const [numSpies, setNumSpies] = React.useState(props.currentGame.numberOfSpies)
     const editSpies = React.useCallback(() => {
-        props.editNumberOfSpies(props.currentGameId, numSpies)
-        setIsNumSpiesOpen(false)
+        props.editNumberOfSpies(props.currentGameId, numSpies);
+        setIsNumSpiesOpen(false);
         // eslint-disable-next-line
-    }, [props.currentGameId, numSpies])
+    }, [props.currentGameId, numSpies]);
     const generateComponent = () => {
         if (props.currentGame.usersToJoinNextRound.includes(props.auth.uid)) {
             return (
@@ -195,14 +195,18 @@ GameStarted.propTypes = {
     addWordRequest: PropTypes.func,
     currentGame: PropTypes.shape({
         currentPlayers: PropTypes.arrayOf(PropTypes.string),
+        host: PropTypes.string,
+        numberOfSpies: PropTypes.number,
         status: PropTypes.string,
         usersToJoinNextRound: PropTypes.arrayOf(PropTypes.string),
         usernameMappings: PropTypes.shape({})
     }),
     currentGameId: PropTypes.string,
     destroyGameRequest: PropTypes.func,
+    editNumberOfSpies: PropTypes.func,
     isAddingWord: PropTypes.bool,
     isDestroyingGame: PropTypes.bool,
+    isEditingSpies: PropTypes.bool,
     isLeavingGame: PropTypes.bool,
     isRandomisingTeams: PropTypes.bool,
     isStartingGame: PropTypes.bool,

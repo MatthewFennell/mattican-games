@@ -19,7 +19,6 @@ export function* editGameAvalon(api, action) {
     }
 }
 
-
 export function* nominatePlayerForQuest(api, action) {
     try {
         yield call(api.nominatePlayer, ({
@@ -32,7 +31,6 @@ export function* nominatePlayerForQuest(api, action) {
     }
 }
 
-
 export function* confirmNominations(api, action) {
     try {
         yield call(api.confirmNominations, ({
@@ -43,7 +41,6 @@ export function* confirmNominations(api, action) {
         yield put(commonActions.gameError(error, 'Nominate Player Error'));
     }
 }
-
 
 export function* makeVote(api, action) {
     try {
@@ -56,7 +53,6 @@ export function* makeVote(api, action) {
     }
 }
 
-
 export function* goOnQuest(api, action) {
     try {
         yield call(api.goOnQuest, ({
@@ -67,7 +63,6 @@ export function* goOnQuest(api, action) {
         yield put(commonActions.gameError(error, 'Go On Quest Error'));
     }
 }
-
 
 export function* guessMerlin(api, action) {
     try {

@@ -112,23 +112,28 @@ exports.startRound = functions
                 throw new functions.https.HttpsError('invalid-argument', 'You are not the host');
             }
 
-            const { usedWords, objectsToDraw, numberOfSpies } = doc.data();
+            const { usedWords, objectsToDraw } = doc.data();
+            let { numberOfSpies } = doc.data();
 
             if (usedWords.length === objectsToDraw.length) {
                 throw new functions.https.HttpsError('invalid-argument', 'You need to add more words');
             }
 
-            const nextWord = _.chain(objectsToDraw).filter(word => !usedWords.includes(word)).shuffle().head().value()
+            const nextWord = _.chain(objectsToDraw)
+                .filter(word => !usedWords.includes(word))
+                .shuffle()
+                .head()
+                .value();
 
             const nextUsers = doc.data().currentPlayers;
 
             const randomUsers = _.shuffle(nextUsers);
 
             if (numberOfSpies > nextUsers.length) {
-                numberOfSpies = nextUsers.length
+                numberOfSpies = nextUsers.length;
             }
 
-            const spies = randomUsers.slice(0, numberOfSpies) 
+            const spies = randomUsers.slice(0, numberOfSpies);
 
             return doc.ref.update({
                 round: operations.increment(1),

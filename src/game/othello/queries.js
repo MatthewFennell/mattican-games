@@ -417,8 +417,12 @@ export const getRandomMove = (board, activePlayer) => {
 // Takes history of moves
 // Returns the board after all of the moves have been applied
 // Does not need to take transformed board
-export const getBoardFromHistory = (board, history) => history.reduce((prev, cur) => placeDisc(prev,
-    cur.row, cur.column, cur.player), _.cloneDeep(board));
+export const getBoardFromHistory = (board, history) => history.reduce((prev, cur) => placeDisc(
+    prev,
+    cur.row,
+    cur.column,
+    cur.player
+), _.cloneDeep(board));
 
 const makeNode = (playerNumber, selectedMove, history, maximisingPlayerNumber, depth) => ({
     playerNumber,

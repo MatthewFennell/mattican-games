@@ -1,5 +1,4 @@
 import { push } from 'connected-react-router';
-import firebase from 'firebase';
 import { noop } from 'lodash';
 import { constants } from 'react-redux-firebase';
 import { expectSaga } from 'redux-saga-test-plan';
@@ -8,6 +7,55 @@ import * as actions from './actions';
 import * as sagas from './saga';
 
 // https://github.com/jfairbank/redux-saga-test-plan - Docs
+
+jest.mock('firebase', () => {
+    const sendEmailVerification = jest.fn(() => Promise.resolve('result of sendEmailVerification'));
+    const signOut = jest.fn(() => Promise.resolve('result of signOut'));
+    const sendPasswordResetEmail = jest.fn(() => Promise.resolve());
+    const createUserWithEmailAndPassword = jest.fn(() => Promise.resolve('result of createUserWithEmailAndPassword'));
+    const signInWithEmailAndPassword = jest.fn(() => Promise.resolve('result of signInWithEmailAndPassword'));
+    const signInWithRedirect = jest.fn(() => Promise.resolve('result of signInWithRedirect'));
+    const onAuthStateChanged = jest.fn();
+    const getRedirectResult = jest.fn(() => Promise.resolve({
+        user: {
+            displayName: 'redirectResultTestDisplayName',
+            email: 'redirectTest@test.com',
+            emailVerified: true
+        }
+    }));
+
+    const auth = () => ({
+        onAuthStateChanged,
+        currentUser: {
+            displayName: 'testDisplayName',
+            email: 'test@test.com',
+            emailVerified: true,
+            providerData: ['google', 'facebook'],
+            sendEmailVerification,
+            getIdTokenResult: () => ({
+                claims: {
+                    ADMIN: true,
+                    EDITOR: true
+                }
+            })
+        },
+        getRedirectResult,
+        sendPasswordResetEmail,
+        signOut,
+        createUserWithEmailAndPassword,
+        signInWithEmailAndPassword,
+        signInWithRedirect
+    });
+    auth.FacebookAuthProvider = jest.fn(() => {});
+    auth.GoogleAuthProvider = jest.fn(() => {});
+
+    return {
+        __esModule: true,
+        default: { initializeApp: jest.fn(), auth },
+        initializeApp: jest.fn(),
+        auth
+    };
+});
 
 const adminPermissions = ['PERMISSION_ONE', 'PERMISSION_TWO'];
 const editorPermissions = ['PERMISSION_FOUR', 'PERMISSION_FIVE'];
@@ -27,68 +75,6 @@ const api = {
 };
 
 describe('Auth saga', () => {
-    const onAuthStateChanged = jest.fn();
-
-    const getRedirectResult = jest.fn(() => Promise.resolve({
-        user: {
-            displayName: 'redirectResultTestDisplayName',
-            email: 'redirectTest@test.com',
-            emailVerified: true
-        }
-    }));
-
-    const sendEmailVerification = jest.fn(() => Promise.resolve('result of sendEmailVerification'));
-    const signOut = jest.fn(() => Promise.resolve('result of sendEmailVerification'));
-
-    const sendPasswordResetEmail = jest.fn(() => Promise.resolve());
-
-    const createUserWithEmailAndPassword = jest.fn(() => Promise.resolve('result of createUserWithEmailAndPassword'));
-
-    const signInWithEmailAndPassword = jest.fn(() => Promise.resolve('result of signInWithEmailAndPassword'));
-
-    const signInWithRedirect = jest.fn(() => Promise.resolve('result of signInWithRedirect'));
-
-    jest.spyOn(firebase, 'initializeApp')
-        .mockImplementation(() => ({
-            auth: () => ({
-                createUserWithEmailAndPassword,
-                signInWithEmailAndPassword,
-                currentUser: {
-                    sendEmailVerification
-                },
-                signInWithRedirect,
-                signOut
-            })
-        }));
-
-    jest.spyOn(firebase, 'auth').mockImplementation(() => ({
-        onAuthStateChanged,
-        currentUser: {
-            displayName: 'testDisplayName',
-            email: 'test@test.com',
-            emailVerified: true,
-            providerData: ['google', 'facebook'],
-            sendEmailVerification: noop,
-            getIdTokenResult: () => ({
-                claims: {
-                    ADMIN: true,
-                    EDITOR: true
-                }
-            })
-        },
-        getRedirectResult,
-        sendPasswordResetEmail,
-        signOut,
-        createUserWithEmailAndPassword: noop,
-        signInWithEmailAndPassword: noop
-
-    }));
-
-    firebase.auth.FacebookAuthProvider = jest.fn(() => {});
-    firebase.auth.GoogleAuthProvider = jest.fn(() => {});
-
-    firebase.auth().signOut = jest.fn(noop);
-
     it('sign out success', () => {
         const action = actions.signOut();
         return expectSaga(sagas.signOut, api, action)

@@ -230,7 +230,7 @@ module.exports.telestrationGameStatuses = {
     Drawing: 'Drawing'
 };
 
-module.exports.telestrationObjects = ['Dinosaur', 'Pikachu', 'Dragon']
+module.exports.telestrationObjects = ['Dinosaur', 'Pikachu', 'Dragon'];
 
 module.exports.articulateCategories = {
     Action: 'Action',

@@ -313,6 +313,11 @@ CreateGame.propTypes = {
     setGameMode: PropTypes.func,
     setGameName: PropTypes.func,
     setMakingGame: PropTypes.func,
+    setNumberOfSpies: PropTypes.func,
+    numberOfSpies: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+    ]),
     setOthelloDifficulty: PropTypes.func,
     setOthelloPlayerType: PropTypes.func,
     setScoreCap: PropTypes.func,

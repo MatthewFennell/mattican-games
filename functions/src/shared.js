@@ -148,7 +148,7 @@ exports.editDisplayName = functions
             batch.update(userRef, { displayName: data.displayName });
             const newMappings = fp.set(context.auth.uid, data.displayName)(doc.data().usernameMappings);
             batch.update(doc.ref, { usernameMappings: newMappings });
-            batch.commit();
+            return batch.commit();
         });
     });
 
@@ -167,7 +167,7 @@ exports.joinGame = functions
                 throw new functions.https.HttpsError('invalid-argument', 'That game has already started');
             }
 
-            if (doc.data().hasStarted && doc.data().mode === 'Telestrations' && doc.data().status == constants.telestrationGameStatuses.Drawing) {
+            if (doc.data().hasStarted && doc.data().mode === 'Telestrations' && doc.data().status === constants.telestrationGameStatuses.Drawing) {
                 return db.collection('users').doc(context.auth.uid).get().then(response => {
                     const { displayName } = response.data();
                     if (!displayName) {

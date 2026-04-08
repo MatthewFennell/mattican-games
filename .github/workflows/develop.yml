@@ -9,17 +9,18 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [8.x]
+        node-version: [20.x]
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v4
 
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
+        cache: 'npm'
     - name: install
       run:
-        npm ci
+        npm ci --legacy-peer-deps
 
     - name: get-npm-version
       id: package-version
@@ -52,7 +53,7 @@ jobs:
       env:
         CI: true
     - name: Archive Production Artifact
-      uses: actions/upload-artifact@master
+      uses: actions/upload-artifact@v4
       with:
         name: build
         path: build
@@ -63,21 +64,21 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [8.x]
+        node-version: [20.x]
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
     - name: Download Artifact
-      uses: actions/download-artifact@master
+      uses: actions/download-artifact@v4
       with:
         name: build
         path: build
     - name: Deploy Firebase Hosting
       run: |
-        npm ci
+        npm ci --legacy-peer-deps
         npx firebase use mattican-games
         npx firebase deploy --only hosting
       env:

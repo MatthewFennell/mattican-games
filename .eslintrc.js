@@ -3,6 +3,11 @@ module.exports = {
     browser: true,
     es6: true,
   },
+  settings: {
+    react: {
+      version: 'detect',
+    },
+  },
   extends: [
     'airbnb',"plugin:jest/recommended"
   ],
@@ -32,6 +37,9 @@ module.exports = {
     "indent": ["error", 4],
     "react/jsx-indent": ["error", 4],
     "react/jsx-indent-props": ["error", 4],
-    "react-hooks/exhaustive-deps": "off"
+    "react-hooks/exhaustive-deps": "off",
+    "react/function-component-definition": [2, { "namedComponents": "arrow-function", "unnamedComponents": "arrow-function" }],
+    "default-param-last": "off",
+    "import/prefer-default-export": "off"
   }
 };
