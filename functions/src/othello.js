@@ -191,7 +191,7 @@ const updateStats = (board, playerWhite, playerBlack, difficulty) => db.collecti
 
         const humanWon = !isDraw && !computerWon;
 
-        document.ref.update({
+        return document.ref.update({
             Othello: {
                 ...Othello,
                 [difficulty]: {
@@ -202,7 +202,6 @@ const updateStats = (board, playerWhite, playerBlack, difficulty) => db.collecti
             }
         });
     });
-
 exports.placeDisc = functions
     .runWith(runtimeOpts)
     .region(constants.region)

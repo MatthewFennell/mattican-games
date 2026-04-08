@@ -6,7 +6,6 @@ import * as adminApi from './api';
 import * as selectors from './selectors';
 import { successDelay } from '../constants';
 
-
 export function* usersWithExtraRoles(api) {
     try {
         const alreadyFetched = yield select(selectors.getUsersWithExtraRoles);

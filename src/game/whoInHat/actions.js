@@ -28,8 +28,13 @@ export const startWhoInHatRoundRequest = gameId => ({
     gameId
 });
 
-export const editGameRequest = (gameId, skippingRule,
-    isCustomNames, scoreCap, timePerRound) => ({
+export const editGameRequest = (
+    gameId,
+    skippingRule,
+    isCustomNames,
+    scoreCap,
+    timePerRound
+) => ({
     type: EDIT_WHO_IN_HAT_GAME_REQUEST,
     gameId,
     skippingRule,

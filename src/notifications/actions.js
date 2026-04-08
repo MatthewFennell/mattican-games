@@ -10,9 +10,12 @@ export const closeNotification = notification => ({
     notification
 });
 
-export const addNotification = (notification,
+export const addNotification = (
+    notification,
     notificationType = constants.NOTIFICATION_TYPE_SUCCESS,
-    duration = 5000, title = 'Success') => ({
+    duration = 5000,
+    title = 'Success'
+) => ({
     type: ADD_NOTIFICATION,
     notification,
     notificationType,

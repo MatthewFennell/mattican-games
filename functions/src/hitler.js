@@ -288,7 +288,7 @@ exports.makeVote = functions
                                             votesNo: votesAgainst
                                         }, ...history
                                     ]
-                                }).then(() => updateStats(true, numberOfPlayers));
+                                }).then(() => { return updateStats(true, numberOfPlayers); });
                             }
                         }
 
@@ -342,7 +342,7 @@ exports.makeVote = functions
                                         votesNo: votesAgainst
                                     }, ...history
                                 ]
-                            }).then(() => updateStats(topCard === -1, numberOfPlayers));
+                            }).then(() => { return updateStats(topCard === -1, numberOfPlayers); });
                         }
 
                         return doc.ref.update({
@@ -493,7 +493,7 @@ exports.playChancellorCard = functions
                                 card: data.card
                             }, ...history
                         ]
-                    }).then(() => updateStats(false, numberOfPlayers));
+                    }).then(() => { return updateStats(false, numberOfPlayers); });
                 }
 
                 return doc.ref.update({
@@ -542,7 +542,7 @@ exports.playChancellorCard = functions
                             card: data.card
                         }, ...history
                     ]
-                }).then(() => updateStats(true, numberOfPlayers));
+                }).then(() => { return updateStats(true, numberOfPlayers); });
             }
 
             const nextMode = common.nextGameStatus(numberOfPlayers, numberFascistPlayed + 1);
@@ -943,7 +943,7 @@ exports.confirmKillPlayer = functions
                             round: doc.data().round
                         }, ...history
                     ]
-                }).then(() => updateStats(false, numberOfPlayers));
+                }).then(() => { return updateStats(false, numberOfPlayers); });
             }
 
             return doc.ref.update({
@@ -1077,7 +1077,7 @@ exports.replyToVeto = functions
                                 round: doc.data().round
                             }, ...history
                         ]
-                    }).then(() => updateStats(topCard === -1, numberOfPlayers));
+                    }).then(() => { return updateStats(topCard === -1, numberOfPlayers); });
                 }
 
                 return doc.ref.update({

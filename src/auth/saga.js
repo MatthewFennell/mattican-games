@@ -28,7 +28,6 @@ export function* setAppLoading() {
     yield put(actions.setLoadingApp(false));
 }
 
-
 export function* loggingIn() {
     try {
         yield fork(setAppLoading);

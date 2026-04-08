@@ -40,7 +40,6 @@ export function* makeHitlerVote(api, action) {
     }
 }
 
-
 export function* giveCardsToChancellor(api, action) {
     try {
         yield call(api.giveCardsToChancellor, ({
@@ -51,7 +50,6 @@ export function* giveCardsToChancellor(api, action) {
         yield put(commonActions.gameError(error, 'Give cards to chancellor error'));
     }
 }
-
 
 export function* playChancellorCard(api, action) {
     try {
@@ -187,7 +185,6 @@ export function* closeLookAtInvestigation(api, action) {
     }
 }
 
-
 export function* startGame(api, action) {
     try {
         if (action.mode === constants.gameModes.Hitler) {
@@ -224,8 +221,11 @@ export default function* whoInHatSaga() {
         takeEvery(actions.PLAY_CHANCELLOR_CARD_REQUEST, playChancellorCard, hitlerApi),
         takeEvery(actions.SELECT_INVESTIGATE_REQUEST, selectInvestigateRequest, hitlerApi),
         takeEvery(actions.CONFIRM_INVESIGATION_REQUEST, confirmInvestigation, hitlerApi),
-        takeEvery(actions.MAKE_TEMPORARY_PRESIDENT_REQUEST, makeTemporaryPresidentRequest,
-            hitlerApi),
+        takeEvery(
+            actions.MAKE_TEMPORARY_PRESIDENT_REQUEST,
+            makeTemporaryPresidentRequest,
+            hitlerApi
+        ),
         takeEvery(actions.CONFIRM_PRESIDENT_REQUEST, confirmPresident, hitlerApi),
         takeEvery(actions.KILL_PLAYER_REQUEST, killPlayer, hitlerApi),
         takeEvery(actions.CONFIRM_KILL_PLAYER_REQUEST, confirmKillPlayer, hitlerApi),

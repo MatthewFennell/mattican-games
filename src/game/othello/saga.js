@@ -7,7 +7,6 @@ import * as commonActions from '../actions';
 import * as constants from '../../constants';
 import * as overviewActions from '../../overview/actions';
 
-
 export function* createGame(api, action) {
     try {
         if (action.mode === constants.gameModes.Othello) {

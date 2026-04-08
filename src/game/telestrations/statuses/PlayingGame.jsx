@@ -233,6 +233,7 @@ PlayingGame.propTypes = {
         objectsToDraw: PropTypes.arrayOf(PropTypes.string),
         usedWords: PropTypes.arrayOf(PropTypes.string),
         status: PropTypes.string,
+        usernameMappings: PropTypes.shape({}),
         wordToDraw: PropTypes.string,
         round: PropTypes.number
     }),
